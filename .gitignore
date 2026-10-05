@@ -1,0 +1,10 @@
+.godot/
+artifacts/
+.aws/
+.codex/
+.agents/
+__pycache__/
+*.pyc
+*.tmp
+
+native/build/

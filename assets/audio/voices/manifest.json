@@ -1,0 +1,3001 @@
+{
+  "version": 1,
+  "language": "zh-CN",
+  "format": "PCM signed 16-bit mono WAV",
+  "sample_rate": 22050,
+  "dialogue_source": "res://data/rules.json",
+  "regenerate": "python tools/generate_unit_voices.py [--force] [--units UNIT_GLOB ...]",
+  "speech_notice": "Synthetic Chinese speech; provider voices and service are not claimed as CC0 or original human recordings. No API key is required for this regeneration method.",
+  "clips": [
+    {
+      "key": "iron_ship_frigate/attack/0",
+      "unit": "iron_ship_frigate",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/iron_ship_frigate_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "a99d7cd8cbd046a7a3666f6b3766b0d2cd58a886f0c52457b1a8d2a65767b623",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_frigate/move/0",
+      "unit": "iron_ship_frigate",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/iron_ship_frigate_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "01989f276d91c87abe6ee730d0c801a973dec4a81107cbbd94b10234dff09667",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_frigate/ready/0",
+      "unit": "iron_ship_frigate",
+      "action": "ready",
+      "variant": 0,
+      "text": "铆钉护卫舰下水。",
+      "path": "res://assets/audio/voices/iron_ship_frigate_ready_01.wav",
+      "duration": 2.208,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "6ea4dcb45cc1bac665e0fd6a0c77ba77c7721dc8c32b49331862b005632c0527",
+      "sha256": "e1da25115941ac8f4478f292a6f411f8b2c037c6d17d5992b0a0ef3c7239b08a",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_frigate/select/0",
+      "unit": "iron_ship_frigate",
+      "action": "select",
+      "variant": 0,
+      "text": "铆钉护卫舰就位。",
+      "path": "res://assets/audio/voices/iron_ship_frigate_select_01.wav",
+      "duration": 2.04,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "5fa132b8daa0af9f3db1c62a25978774aa610bf7a3c1116e654149a49b06c3a5",
+      "sha256": "691031c028128445bdf5840756d63c7228b4ec7ce64e12cc7c814042e19795bc",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_signature/attack/0",
+      "unit": "iron_ship_signature",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/iron_ship_signature_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "24330c170858df2c70ff2e98c75e101014d90db131a77e2286ad870bc27f83d5",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_signature/move/0",
+      "unit": "iron_ship_signature",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/iron_ship_signature_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "baa34a7e7f70d6e52bb77f8f554d2a6bb91a6a99492200a93691736d4f13de25",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_signature/ready/0",
+      "unit": "iron_ship_signature",
+      "action": "ready",
+      "variant": 0,
+      "text": "铁钉工坊舰下水。",
+      "path": "res://assets/audio/voices/iron_ship_signature_ready_01.wav",
+      "duration": 2.208,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "80656e0c1d5e7d635a6523aec781d5c8e128fa7fb44cd871f983013995c502aa",
+      "sha256": "9ca647b2a73d7f92e6130037117f3a074c3043720463921ad5bb1ca42b47f189",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_signature/select/0",
+      "unit": "iron_ship_signature",
+      "action": "select",
+      "variant": 0,
+      "text": "铁钉工坊舰就位。",
+      "path": "res://assets/audio/voices/iron_ship_signature_select_01.wav",
+      "duration": 2.064,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "95aa245a80145b78202ee42d009f43dc7c075d868c6ee2257338c3d685a8c366",
+      "sha256": "3504a5373c1ba28e4e3e44340357fdb00d51e99c0d4efa6e4092e3cd10bcc22e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_transport/attack/0",
+      "unit": "iron_ship_transport",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/iron_ship_transport_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "5fa4afedfa3ce3a336a08d595f34a518eedd4eecc48f57163c2f8ec2888f0d19",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_transport/move/0",
+      "unit": "iron_ship_transport",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/iron_ship_transport_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "e78ba10eaf5479bcf98c9f93552d8fe6e60bd72796ba3dcd8b2111649f38a1b6",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_transport/ready/0",
+      "unit": "iron_ship_transport",
+      "action": "ready",
+      "variant": 0,
+      "text": "补给渡船下水。",
+      "path": "res://assets/audio/voices/iron_ship_transport_ready_01.wav",
+      "duration": 2.016,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "fcbdd77a7a51e3e9cbfc7b05ec7467a79c0acd0eda9568c0367b6fed89fc8832",
+      "sha256": "dbb722698b8eea57c432ae203f13bad7c947a9182b64b119e850eb1a2fc9d2df",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "iron_ship_transport/select/0",
+      "unit": "iron_ship_transport",
+      "action": "select",
+      "variant": 0,
+      "text": "补给渡船就位。",
+      "path": "res://assets/audio/voices/iron_ship_transport_select_01.wav",
+      "duration": 1.92,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "fcf799fdbd7622d3a6072734d3c83aeb84aa3f8e4312aa9f7e0772c972b0fb35",
+      "sha256": "e953f39660ca12e2e5b9ff1d815e8c3f4b2385380507fdd50ec36f5dc9bfabaa",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_aa/attack/0",
+      "unit": "kestrel_aa",
+      "action": "attack",
+      "variant": 0,
+      "text": "空中目标偏离许可。",
+      "path": "res://assets/audio/voices/kestrel_aa_attack_01.wav",
+      "duration": 2.736,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "2b44a2d4e309c8bb9020a86b251d5a2b7fbe4ee6a22d17c03610e647d1cc4cbb",
+      "sha256": "f98b7d825f21219bbd1519a1e7edf4cb68f16f6b9547f9605649d7181a584c9e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_aa/move/0",
+      "unit": "kestrel_aa",
+      "action": "move",
+      "variant": 0,
+      "text": "护空车跟随主队。",
+      "path": "res://assets/audio/voices/kestrel_aa_move_01.wav",
+      "duration": 2.64,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "078154296ba4e23990c91615cdba587d4a30f8379e8a8b76ee5b2faaaa67971e",
+      "sha256": "0d1c1fc5c071003305f5edc3ebb2dd911402ed386df9d9451d7212e7910d4b70",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_aa/ready/0",
+      "unit": "kestrel_aa",
+      "action": "ready",
+      "variant": 0,
+      "text": "护空系统上线。",
+      "path": "res://assets/audio/voices/kestrel_aa_ready_01.wav",
+      "duration": 2.256,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "7355792a38c05ce4822daf265679ecb5254e10a34192e7140689dbaec65185ed",
+      "sha256": "a9099d69f52f8e0d1839702d1b59b3d22f47b7d7d0a40762d42e187bdd609c3a",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_aa/select/0",
+      "unit": "kestrel_aa",
+      "action": "select",
+      "variant": 0,
+      "text": "获准天空由我们维护。",
+      "path": "res://assets/audio/voices/kestrel_aa_select_01.wav",
+      "duration": 2.976,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "163b880130f4e48fc9f4e5fc2b5eb92f1ad7901a027d9fcedc471589ae1933a9",
+      "sha256": "4149b5471e22ca3d81fac10d2c97b37341e591a8cd8028a5aafd3fc9783d5a92",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_advanced/attack/0",
+      "unit": "kestrel_advanced",
+      "action": "attack",
+      "variant": 0,
+      "text": "执行最终校对。",
+      "path": "res://assets/audio/voices/kestrel_advanced_attack_01.wav",
+      "duration": 2.376,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "f193f22a0a3086cb1b55966f8645d10424e5238d0164a1d406a81f60f2b18ee4",
+      "sha256": "f2f919974fccea3168897655e222ead46743c5c8d20f09320b41bff417eb5161",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_advanced/move/0",
+      "unit": "kestrel_advanced",
+      "action": "move",
+      "variant": 0,
+      "text": "校对平台转移。",
+      "path": "res://assets/audio/voices/kestrel_advanced_move_01.wav",
+      "duration": 2.496,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "eb7b2aa59909c37317aeefe84ee89338c370b30ab6511e48a99a4a25c2426caa",
+      "sha256": "e59a3e29c58998c843838526c0496f8590669fd8c6726a99628f38efe3b80f7e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_advanced/ready/0",
+      "unit": "kestrel_advanced",
+      "action": "ready",
+      "variant": 0,
+      "text": "电磁导轨校准完成。",
+      "path": "res://assets/audio/voices/kestrel_advanced_ready_01.wav",
+      "duration": 2.832,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "d1fd6a63ac40ca2e40d3e835d02b38b7ca2a00d662a35f6b6c93fab5233b4238",
+      "sha256": "35915ac42a1f5d42952cf27275744b488d2b62f3f63a55aba67bcac1e38b0bed",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_advanced/select/0",
+      "unit": "kestrel_advanced",
+      "action": "select",
+      "variant": 0,
+      "text": "最终校对，等待原稿。",
+      "path": "res://assets/audio/voices/kestrel_advanced_select_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "58c4a9f6b18986dfed6da4144ea2c2482c59004b234918fff6600b108421105b",
+      "sha256": "4b5c1fda6d6d97a48248897b8147ce248bc52ec733647542d4f5ca66129cc9a9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_anti/attack/0",
+      "unit": "kestrel_anti",
+      "action": "attack",
+      "variant": 0,
+      "text": "装甲参数已核实。",
+      "path": "res://assets/audio/voices/kestrel_anti_attack_01.wav",
+      "duration": 2.784,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "d403de627cbba60ab991f0ef60325396d8cb8db71774b365273cbfe3a8ac8fe3",
+      "sha256": "a9ddcf3e68a11ee18db94d2509e00a36b1a84d4fc001483473cabd77aa6b79ee",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_anti/move/0",
+      "unit": "kestrel_anti",
+      "action": "move",
+      "variant": 0,
+      "text": "携装转移，保护侧翼。",
+      "path": "res://assets/audio/voices/kestrel_anti_move_01.wav",
+      "duration": 3.216,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "4837356693759f8e5b3d0ce43d6ddf2a69047380a1ffa56a66f5f6a5ccdfd6be",
+      "sha256": "cec2ee64f54e576dea4d5df4cbefd64f7161b148af5b41f4658176d036fc3fce",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_anti/ready/0",
+      "unit": "kestrel_anti",
+      "action": "ready",
+      "variant": 0,
+      "text": "穿甲作业组通过检验。",
+      "path": "res://assets/audio/voices/kestrel_anti_ready_01.wav",
+      "duration": 2.976,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "85a5a12e2d3cb3b728ba0ed72662841b08c069f4d55d905f52129c65aa8465e6",
+      "sha256": "1e5a55d50a62a72efae13cf17168f268d5e937b3d6f9c39cdb4a3994174c529d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_anti/select/0",
+      "unit": "kestrel_anti",
+      "action": "select",
+      "variant": 0,
+      "text": "穿甲作业组就位。",
+      "path": "res://assets/audio/voices/kestrel_anti_select_01.wav",
+      "duration": 2.616,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "fcdc1731c272fc4b97048129523c4f5ea9e334c109ae95317269555ca4283951",
+      "sha256": "34619bb5373136deee277901571666c1349bd1a6cd7585024fc14282ddbcead3",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_artillery/attack/0",
+      "unit": "kestrel_artillery",
+      "action": "attack",
+      "variant": 0,
+      "text": "准许修正目标。",
+      "path": "res://assets/audio/voices/kestrel_artillery_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "cbbd851c278836491e7e8395560169774d846712f6ee42139c620f5f69aebac1",
+      "sha256": "62e5d9fb17d88d85c9104a0960fa455670c24dc73caf443690f69850db4235e3",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_artillery/move/0",
+      "unit": "kestrel_artillery",
+      "action": "move",
+      "variant": 0,
+      "text": "校正炮转移阵位。",
+      "path": "res://assets/audio/voices/kestrel_artillery_move_01.wav",
+      "duration": 2.64,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "03e16a4f08b568723123989dc428c35ef47091813aa13f9b47e03f671a3300da",
+      "sha256": "ad4c752edf6e3ec60371763b28752607dd9559f1b961bdcfefef0278d8ebced0",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_artillery/ready/0",
+      "unit": "kestrel_artillery",
+      "action": "ready",
+      "variant": 0,
+      "text": "校正炮校准完成。",
+      "path": "res://assets/audio/voices/kestrel_artillery_ready_01.wav",
+      "duration": 2.784,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9a14d3e8debdf95d50e5b3b9a4cc3424e80ad6648a2443aff77582bbdd32a9ba",
+      "sha256": "4f1ddfbac3f1c24b08e035cd3087a2d52a39baee17bb58bbf01851f1e3177ae4",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_artillery/select/0",
+      "unit": "kestrel_artillery",
+      "action": "select",
+      "variant": 0,
+      "text": "已收到坐标。开始修正。",
+      "path": "res://assets/audio/voices/kestrel_artillery_select_01.wav",
+      "duration": 3.624,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "e211e9b8535cbaf32ae4459a995f54600de06fd1caeba5473124737a6efd6bdc",
+      "sha256": "627255dc1d440b4d54e27919410884596935d0f24d1de4f267ae020deab9ed89",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_attacker/attack/0",
+      "unit": "kestrel_attacker",
+      "action": "attack",
+      "variant": 0,
+      "text": "处置权限已经确认。",
+      "path": "res://assets/audio/voices/kestrel_attacker_attack_01.wav",
+      "duration": 2.712,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "1a04bd6e57792cfbadbea18b1728dcfe7f8e2946efdd68eb61e7424de1a7a3cc",
+      "sha256": "c993140dad42b08c9da860c68eb85a344d17d33c6a30d0e2b278277bd6a8d46f",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_attacker/move/0",
+      "unit": "kestrel_attacker",
+      "action": "move",
+      "variant": 0,
+      "text": "进入获准航线。",
+      "path": "res://assets/audio/voices/kestrel_attacker_move_01.wav",
+      "duration": 2.376,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "86b630321b181eb9ae4d4ad1185ab0afe10c254c7cc4d270bf3ecd77582b2af1",
+      "sha256": "db69760b39019112db1b350f639c54cab9c47e55a6cde64d062b5525a12c5359",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_attacker/ready/0",
+      "unit": "kestrel_attacker",
+      "action": "ready",
+      "variant": 0,
+      "text": "攻击机通过适航检定。",
+      "path": "res://assets/audio/voices/kestrel_attacker_ready_01.wav",
+      "duration": 2.736,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "a0937d410e8cb1be7d8a22648afdf5f693226b843b6d0a614a75004022f03240",
+      "sha256": "0ce1d4d48e0d488d0b8c179da63dea29ab689e8e411f9c256ea9373eb8f6c9d7",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_attacker/return/0",
+      "unit": "kestrel_attacker",
+      "action": "return",
+      "variant": 0,
+      "text": "弹药耗尽，申请返回补给。",
+      "path": "res://assets/audio/voices/kestrel_attacker_return_01.wav",
+      "duration": 3.576,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b805c9afc48f61db11bfe87ed3a99a41f75a56eeda313f5f728d322a72e6fba4",
+      "sha256": "2836da066593c7fe211d7ec3f19613e5e44d7343ade6429a6dcbefc0752271e6",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_attacker/select/0",
+      "unit": "kestrel_attacker",
+      "action": "select",
+      "variant": 0,
+      "text": "正式批准，支援待命。",
+      "path": "res://assets/audio/voices/kestrel_attacker_select_01.wav",
+      "duration": 3.312,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "8363d19388a2260ac89320dfcdaecd94f2df3e7cfe62597556784e597d789ff7",
+      "sha256": "b68e1e0d62120a9b9044c6dbf9e838e38c035faa6bddc28c017c7ec7e22769da",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_demolition/attack/0",
+      "unit": "kestrel_demolition",
+      "action": "attack",
+      "variant": 0,
+      "text": "安全界限已划定。",
+      "path": "res://assets/audio/voices/kestrel_demolition_attack_01.wav",
+      "duration": 2.568,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0c9576ec5d4ef620e6d88be695c2793505b307b275de67991ef15e29e53d787a",
+      "sha256": "e140343d7a169d54947f72ab49a5df807693fa30e791339421f46db28e172c49",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_demolition/move/0",
+      "unit": "kestrel_demolition",
+      "action": "move",
+      "variant": 0,
+      "text": "转移爆破器材。",
+      "path": "res://assets/audio/voices/kestrel_demolition_move_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "eacf841336c3161dc5b9256c19a8d9ba0c7906da36d3c8981b70b64308828d76",
+      "sha256": "7c8f05773cb1bda56ec1efd66f685140160fd29133992a8c0cbf1b23b5dfb689",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_demolition/ready/0",
+      "unit": "kestrel_demolition",
+      "action": "ready",
+      "variant": 0,
+      "text": "拆除作业组报到。",
+      "path": "res://assets/audio/voices/kestrel_demolition_ready_01.wav",
+      "duration": 2.52,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "67c8a2154a7792ee1beb1b8d8bc0925737e02f3d3d470529cc0a6b4cfdbe7307",
+      "sha256": "ad8305bb0bf6cc868e443e526d9b7686f99623563bc849633b278ed0124425d9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_demolition/select/0",
+      "unit": "kestrel_demolition",
+      "action": "select",
+      "variant": 0,
+      "text": "拆除范围已核定。",
+      "path": "res://assets/audio/voices/kestrel_demolition_select_01.wav",
+      "duration": 2.736,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "e2ef154fa0b355626aad25fe4a2a499561fcd2350f9630228e2889ca375fc831",
+      "sha256": "3c653ff8a5bf5c1247778c17525a1e62c7ef6f76f89fcd315e1732f2a4959636",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_engineer/attack/0",
+      "unit": "kestrel_engineer",
+      "action": "attack",
+      "variant": 0,
+      "text": "请提供作业掩护。",
+      "path": "res://assets/audio/voices/kestrel_engineer_attack_01.wav",
+      "duration": 2.544,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b4397129e7ba0dbff82ffadb9fa24c02e12cd8eaa72221fbfa77e44532162db7",
+      "sha256": "8ffac550a33933e8c7c1c56067cd4134c9361154a891438048e94fd11774d99c",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_engineer/move/0",
+      "unit": "kestrel_engineer",
+      "action": "move",
+      "variant": 0,
+      "text": "工程勤务组前往现场。",
+      "path": "res://assets/audio/voices/kestrel_engineer_move_01.wav",
+      "duration": 2.856,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9744187e52a98534c3260d8cba3207298e14031dba0fe889c8e560c39160d42a",
+      "sha256": "b68ed606b31f324839e74a9482815794bec6717e730adbf6286e274e132e1235",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_engineer/ready/0",
+      "unit": "kestrel_engineer",
+      "action": "ready",
+      "variant": 0,
+      "text": "工具校准完毕。",
+      "path": "res://assets/audio/voices/kestrel_engineer_ready_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "5e6517b656495277514760f0c632b572a57dad9f37012fc59b0e8c38d6f7bcbb",
+      "sha256": "6a6c78b67a7b5a0aad8018eac231a9151fb872e3c42b2beb91ef2ca149c2ffcd",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_engineer/select/0",
+      "unit": "kestrel_engineer",
+      "action": "select",
+      "variant": 0,
+      "text": "检验通过，可以承重。",
+      "path": "res://assets/audio/voices/kestrel_engineer_select_01.wav",
+      "duration": 2.952,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "86ca01b9a5ed9bffeab2590ef7c79c294d027f1e1a8b46bc5ba199a4f3c769ba",
+      "sha256": "c7ad5b7781a10ccf0dc8df33dbfb47780d7f7c94ceb55cbbaad0de08407480b9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_fighter/attack/0",
+      "unit": "kestrel_fighter",
+      "action": "attack",
+      "variant": 0,
+      "text": "截击许可已确认。",
+      "path": "res://assets/audio/voices/kestrel_fighter_attack_01.wav",
+      "duration": 2.4,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "34004731e1b2505436be1974964ff514e79b3ee1b70023ca1e600fa26ea76f1d",
+      "sha256": "0bb7c2eed505499b5542db35090b1fa1b7db83180b3b3b13f101f217656f2ff9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_fighter/move/0",
+      "unit": "kestrel_fighter",
+      "action": "move",
+      "variant": 0,
+      "text": "航向已核准。",
+      "path": "res://assets/audio/voices/kestrel_fighter_move_01.wav",
+      "duration": 2.328,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9006ddb1ffec4d06bb815dd284be1a52a42eef14887ff370a9a16c28766e9c15",
+      "sha256": "4f9d6b06956e01494a5eb08ff001e1884f5e0d376063c6f05caef8c1df86f5cc",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_fighter/ready/0",
+      "unit": "kestrel_fighter",
+      "action": "ready",
+      "variant": 0,
+      "text": "航向战机准备升空。",
+      "path": "res://assets/audio/voices/kestrel_fighter_ready_01.wav",
+      "duration": 2.76,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "c3d6e5a3b91a120c23899cc30b22f0b4ec73d8f9f88420f0b8d0195acac9545b",
+      "sha256": "14fa01523cee4278b525fa9ba3ec6cd179a2a1c236c9867ce849668b62c58ad2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_fighter/return/0",
+      "unit": "kestrel_fighter",
+      "action": "return",
+      "variant": 0,
+      "text": "弹药耗尽，申请返回补给。",
+      "path": "res://assets/audio/voices/kestrel_fighter_return_01.wav",
+      "duration": 3.576,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b805c9afc48f61db11bfe87ed3a99a41f75a56eeda313f5f728d322a72e6fba4",
+      "sha256": "fb4f797e5c48d6c35f319ff33f2113771cc5484dafa6f51d35987161f75a0878",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_fighter/select/0",
+      "unit": "kestrel_fighter",
+      "action": "select",
+      "variant": 0,
+      "text": "正确航向，等待许可。",
+      "path": "res://assets/audio/voices/kestrel_fighter_select_01.wav",
+      "duration": 3.168,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "df44efec78c9eb7ad692fb1f15cbfa7a8cde16df746a42fbde2bda1b42c7c34e",
+      "sha256": "1d7d3a6e53541fb10ba623e8956273e0bacbf252b18c940a0f2cd7f77b111606",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_harvester/attack/0",
+      "unit": "kestrel_harvester",
+      "action": "attack",
+      "variant": 0,
+      "text": "请求护送矿运。",
+      "path": "res://assets/audio/voices/kestrel_harvester_attack_01.wav",
+      "duration": 2.424,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "ea373953156f43d7f750e5270471d98b89bc68900caf3f71a7d45bac78db10e7",
+      "sha256": "b18f646703c52d2cbb68dd4228a06c4c5817dd269ad2414a9278a8724ac09f5d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_harvester/move/0",
+      "unit": "kestrel_harvester",
+      "action": "move",
+      "variant": 0,
+      "text": "运输路线已经核准。",
+      "path": "res://assets/audio/voices/kestrel_harvester_move_01.wav",
+      "duration": 2.712,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "ae986c9348cd637a33cd71a2a4c9d8b3d656c78f1b3d5147987e41b0ab003176",
+      "sha256": "64f951a7d2257f4d4e83391a78a35496105fe489908fd3a5cbc8c1e717e39275",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_harvester/ready/0",
+      "unit": "kestrel_harvester",
+      "action": "ready",
+      "variant": 0,
+      "text": "采集车验收完成。",
+      "path": "res://assets/audio/voices/kestrel_harvester_ready_01.wav",
+      "duration": 2.664,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "d0bf04f4164537f83f8eb31b5c2993ec392310d2af8d6740ab41181f393cdefe",
+      "sha256": "eafe4af8483251b5d09bd4fd6229ffc956aba4af6e0c48f8aed7479c9de6777d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_harvester/select/0",
+      "unit": "kestrel_harvester",
+      "action": "select",
+      "variant": 0,
+      "text": "军需采集车待命。",
+      "path": "res://assets/audio/voices/kestrel_harvester_select_01.wav",
+      "duration": 2.544,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "3b7b81ed4cab3eacde6c20927aedf4957259b11212c5a2d6d83176521ae677ce",
+      "sha256": "3fd6e89fd5c80b854fc73218c68dcff11f4dcaf21e3d857276fec390c36957f1",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_rifle/attack/0",
+      "unit": "kestrel_rifle",
+      "action": "attack",
+      "variant": 0,
+      "text": "目标已确认，开始处置。",
+      "path": "res://assets/audio/voices/kestrel_rifle_attack_01.wav",
+      "duration": 3.216,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "ca692cbd0b88010fa6b7e74b5aef544b06b2ead0cbf01f01023fb48dc3bcdf56",
+      "sha256": "db2085bbd4a9fc5f55b95a74606572f711451de62e4a142933c6418f9373a7dc",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_rifle/move/0",
+      "unit": "kestrel_rifle",
+      "action": "move",
+      "variant": 0,
+      "text": "按令前进，保持队形。",
+      "path": "res://assets/audio/voices/kestrel_rifle_move_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9c9955a2b5951651056e009659d9536f0fbc1620b956aa24c86bc0840e8c8baa",
+      "sha256": "f6d0bd53783dc6d1017c0f80f4cab95d9f0a61e1d2336e6c35ee2ee6949654e7",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_rifle/ready/0",
+      "unit": "kestrel_rifle",
+      "action": "ready",
+      "variant": 0,
+      "text": "合格步兵报到。",
+      "path": "res://assets/audio/voices/kestrel_rifle_ready_01.wav",
+      "duration": 2.256,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "eb9f6654bb3803af9dc6a5b5f116c6cbba5be89260f0d32aa15334b4e0f2c015",
+      "sha256": "dc9d96a542488dfcd1d26af9f212aefaa13b6f8f0a000342cc4fd5a23d44bde8",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_rifle/select/0",
+      "unit": "kestrel_rifle",
+      "action": "select",
+      "variant": 0,
+      "text": "检定合格，等待命令。",
+      "path": "res://assets/audio/voices/kestrel_rifle_select_01.wav",
+      "duration": 2.88,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "db9492aa505a6ca290332526ac8fb007e8cccaf2428db4a25f674e6ffd164608",
+      "sha256": "ece49873d4f0b368e6cfdf28a737717d9c428c46e7ad40f4c2d30e111f294c96",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_scout/attack/0",
+      "unit": "kestrel_scout",
+      "action": "attack",
+      "variant": 0,
+      "text": "发现偏差，立即报告。",
+      "path": "res://assets/audio/voices/kestrel_scout_attack_01.wav",
+      "duration": 2.976,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9d903a883e216ae67373dc46e306620e336724fed6115bda12cd736d664b95b6",
+      "sha256": "9bca2e778e01e61b067a8913532e73f53124a4a6ea2fc8673e19209b03b1826b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_scout/move/0",
+      "unit": "kestrel_scout",
+      "action": "move",
+      "variant": 0,
+      "text": "巡察车前出。",
+      "path": "res://assets/audio/voices/kestrel_scout_move_01.wav",
+      "duration": 2.256,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "47cd424015af251518e008178305447758b96ca044b4cce3049290c542a51e63",
+      "sha256": "61b53c9b2b2b9432ed1082a6deb74370d8e66017e40432510b989b7954df1027",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_scout/ready/0",
+      "unit": "kestrel_scout",
+      "action": "ready",
+      "variant": 0,
+      "text": "巡察车准备完毕。",
+      "path": "res://assets/audio/voices/kestrel_scout_ready_01.wav",
+      "duration": 2.616,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "c4a76fdd2440b5ee7ef24a08315f1710053332dfb4b8ee097de6cac60265e164",
+      "sha256": "911defd81f92f67bc0427bf8822d135c9b62d3093a4ccbb9efb9abc4237c44cb",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_scout/select/0",
+      "unit": "kestrel_scout",
+      "action": "select",
+      "variant": 0,
+      "text": "巡察路线等待批准。",
+      "path": "res://assets/audio/voices/kestrel_scout_select_01.wav",
+      "duration": 2.904,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "a490a5cbe45d037d5cd3b24806b9aab8b48b43cc68415d0af0a705e5de9e17ea",
+      "sha256": "1628277dc199a8d1dffa1d4e82e34fbbf591bdbeb25b3ee6f4f2bba7ab0cda04",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_frigate/attack/0",
+      "unit": "kestrel_ship_frigate",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/kestrel_ship_frigate_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "7baae20e53440810f89b8b50ad8a26339d741ddc3a32351ce94844b10a9d81f1",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_frigate/move/0",
+      "unit": "kestrel_ship_frigate",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/kestrel_ship_frigate_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "3d419d5f7e5bef0b336040c6602be276433f47db45d9d4d3fd86a839f677694f",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_frigate/ready/0",
+      "unit": "kestrel_ship_frigate",
+      "action": "ready",
+      "variant": 0,
+      "text": "协同护卫舰下水。",
+      "path": "res://assets/audio/voices/kestrel_ship_frigate_ready_01.wav",
+      "duration": 2.592,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "1599141add02d1fa2d277e2cbf36f5f79b824e9a01de15387479779bed43ed47",
+      "sha256": "b1a212fcab8ba3b1309b2c0fa1f585528a736784f8c12a9a5fd74ae8cdf5f5f1",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_frigate/select/0",
+      "unit": "kestrel_ship_frigate",
+      "action": "select",
+      "variant": 0,
+      "text": "协同护卫舰就位。",
+      "path": "res://assets/audio/voices/kestrel_ship_frigate_select_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "77a49e96a0b392003f19de07ae2f2ee3109b7ea37655f96ab247c5239b6b2223",
+      "sha256": "c5eb88e780437ab451b617656cba1157a8590164ebebc80c9bde6e01dde9ae7c",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_signature/attack/0",
+      "unit": "kestrel_ship_signature",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/kestrel_ship_signature_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "880dbd2a3766492aadaa6ed855bd58fdf94673f8fc2e91061bb78a79d2a953a2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_signature/move/0",
+      "unit": "kestrel_ship_signature",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/kestrel_ship_signature_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "6709a40d2077b99cf7d87f30d8aedfe323c1ce50c19ac31259d3f39d59dadb39",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_signature/ready/0",
+      "unit": "kestrel_ship_signature",
+      "action": "ready",
+      "variant": 0,
+      "text": "正典指挥舰下水。",
+      "path": "res://assets/audio/voices/kestrel_ship_signature_ready_01.wav",
+      "duration": 2.688,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "09969368b990921ffe90710100da4123fdcf661d81c0c5dd86309c001dba3145",
+      "sha256": "aa98ca8fc325bb559f2e1d8be53c6cf378c56638475503a81d71017896ac896f",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_signature/select/0",
+      "unit": "kestrel_ship_signature",
+      "action": "select",
+      "variant": 0,
+      "text": "正典指挥舰就位。",
+      "path": "res://assets/audio/voices/kestrel_ship_signature_select_01.wav",
+      "duration": 2.664,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "fdaa6dcba5c04c70aed10ed4397409aea4344e833dbc11b45117bfab7f2bcd29",
+      "sha256": "4b3a1d744632350ac42f24c198a97c4e242b7d9d10cfc328aceaaa004dfae426",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_transport/attack/0",
+      "unit": "kestrel_ship_transport",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/kestrel_ship_transport_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "f6d6876c07e4ae25613980d8a40099ec1071d327e02adae20a733f3a1bc7d91e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_transport/move/0",
+      "unit": "kestrel_ship_transport",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/kestrel_ship_transport_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "40787b3cc272d4c6644c53359927ba86f11eef2e9518b5d42633c955b5b0834b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_transport/ready/0",
+      "unit": "kestrel_ship_transport",
+      "action": "ready",
+      "variant": 0,
+      "text": "编队渡船下水。",
+      "path": "res://assets/audio/voices/kestrel_ship_transport_ready_01.wav",
+      "duration": 2.544,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "6c2bf3bf2b5a9f6eabef3d0b3c6c72f2d784f1dd6c38940a74927b6949871204",
+      "sha256": "f063477f9bed0cff4f7ad0692806aae99dfa95942431b82b0a7be4a1a5c3fae2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_ship_transport/select/0",
+      "unit": "kestrel_ship_transport",
+      "action": "select",
+      "variant": 0,
+      "text": "编队渡船就位。",
+      "path": "res://assets/audio/voices/kestrel_ship_transport_select_01.wav",
+      "duration": 2.52,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "19946ea4921b76f79cd0518ecbbf4a6e696993409dcbcae4bd5e575b729706e9",
+      "sha256": "4eb1cb23c7e805807da5ef890fb0612fa4b584b65d21e57c542f46028c1c31bc",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_tank/attack/0",
+      "unit": "kestrel_tank",
+      "action": "attack",
+      "variant": 0,
+      "text": "正在提交标准答案。",
+      "path": "res://assets/audio/voices/kestrel_tank_attack_01.wav",
+      "duration": 2.712,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "9e06e1ae65093e930cfe8aa8e3d637bde06338cda2fac3c9c1f3670b62f2fc2a",
+      "sha256": "c89eab9de8bd96b25e844899ed442e27b518cf6718284c27181fdec441935898",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_tank/move/0",
+      "unit": "kestrel_tank",
+      "action": "move",
+      "variant": 0,
+      "text": "按核准路线转场。",
+      "path": "res://assets/audio/voices/kestrel_tank_move_01.wav",
+      "duration": 2.688,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "cf3680e7e3dad4d821ff58c8e40ce1f08ece09e9c95ebf533cb662bb7fd65cbc",
+      "sha256": "28afb593c3a9032ebc29018cd115afe7464075b2aee8bb7bebc2186ff0c02200",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_tank/ready/0",
+      "unit": "kestrel_tank",
+      "action": "ready",
+      "variant": 0,
+      "text": "标准答案通过验收。",
+      "path": "res://assets/audio/voices/kestrel_tank_ready_01.wav",
+      "duration": 2.736,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "02c372d8fdfed41525e93b2255e213aedccfb93bb4b0998cfb2395eb6383a801",
+      "sha256": "5744d5cc36d512e49cb97b213743795a87fa7e5d8ccef5a34102d674d7e1f5b0",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "kestrel_tank/select/0",
+      "unit": "kestrel_tank",
+      "action": "select",
+      "variant": 0,
+      "text": "标准答案已就位，等待提出问题。",
+      "path": "res://assets/audio/voices/kestrel_tank_select_01.wav",
+      "duration": 3.912,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "db714008f0902a25158be2bcabfe330f60e262c18cce77e3097dcd608f082dbc",
+      "sha256": "c264d2168d16850df7dd75020b4df2508ad9a17d0ae9359b87722a87bfba9b8a",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_aa/attack/0",
+      "unit": "rivet_aa",
+      "action": "attack",
+      "variant": 0,
+      "text": "撤销目标通行资格。",
+      "path": "res://assets/audio/voices/rivet_aa_attack_01.wav",
+      "duration": 2.4,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f97fbd4bc9577a9af6249ad2427c02f9a99bd608bd7dbe24bf3135844015ca20",
+      "sha256": "530635ac49e55f407d07dfd8383bbabc82f6546b24c65647176a9445a60817b5",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_aa/move/0",
+      "unit": "rivet_aa",
+      "action": "move",
+      "variant": 0,
+      "text": "拒飞车随队推进。",
+      "path": "res://assets/audio/voices/rivet_aa_move_01.wav",
+      "duration": 2.184,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f8b7d86386f549f68203a7b3b104197d1d878cabddc63552ac70f268b5d465df",
+      "sha256": "5eee86993c8f45bf114f052072bed6646c4f7b0cbd67b581ecc436fa1e85c266",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_aa/ready/0",
+      "unit": "rivet_aa",
+      "action": "ready",
+      "variant": 0,
+      "text": "拒飞平台准备完成。",
+      "path": "res://assets/audio/voices/rivet_aa_ready_01.wav",
+      "duration": 2.352,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "0e041cf3d346e1596c6c43726548d7774c51173045fe4e3447b0e4eed2fdbc65",
+      "sha256": "121f6b39ba58abad898706d230a249d85a1d3e9ca67c63569905a3bc225d5e57",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_aa/select/0",
+      "unit": "rivet_aa",
+      "action": "select",
+      "variant": 0,
+      "text": "本空域拒绝通行。",
+      "path": "res://assets/audio/voices/rivet_aa_select_01.wav",
+      "duration": 2.136,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "1be1cc4f7a949bbdea3dbf632683288a8f03e4029c26f40e347c23aff102da93",
+      "sha256": "d7a71fa813bd5ba2e097056577755273d72f4149682747b7228d99edc795a624",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_advanced/attack/0",
+      "unit": "rivet_advanced",
+      "action": "attack",
+      "variant": 0,
+      "text": "争议到此为止。",
+      "path": "res://assets/audio/voices/rivet_advanced_attack_01.wav",
+      "duration": 1.992,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "1ad7e264700167c88dc6dd2afb679a414a42ac14f6d58a781db05bb8938218e0",
+      "sha256": "562e34cdfd95b03b3e91aaed88eb87b6cb5193333a45753b5148d1798f517047",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_advanced/move/0",
+      "unit": "rivet_advanced",
+      "action": "move",
+      "variant": 0,
+      "text": "终审平台进入阵位。",
+      "path": "res://assets/audio/voices/rivet_advanced_move_01.wav",
+      "duration": 2.304,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "b6bdd70a196efd8b1bfa4a529ae13ad85163f95a461f16d7e5dc7f3826b5b210",
+      "sha256": "9c61bdeae2ff43f4a632bcfe55bcac6ec0c6ac9695add376211b7b014899660a",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_advanced/ready/0",
+      "unit": "rivet_advanced",
+      "action": "ready",
+      "variant": 0,
+      "text": "重型助推炮验收完成。",
+      "path": "res://assets/audio/voices/rivet_advanced_ready_01.wav",
+      "duration": 2.736,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "b4f087f4d29abc38b4c93a9d9d55599ed7254003aca4bc2dae3b2a0d89302735",
+      "sha256": "3bb7998fa257f8eb0bf9e6bc17d1d88031902782c5288f1c4413ed2b9243b80b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_advanced/select/0",
+      "unit": "rivet_advanced",
+      "action": "select",
+      "variant": 0,
+      "text": "终审材料已经备齐。",
+      "path": "res://assets/audio/voices/rivet_advanced_select_01.wav",
+      "duration": 2.328,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "8d69a9efa21db5145baa40817c6397a3a75f4fb6b82318f8ec087bd92f1c4588",
+      "sha256": "56c1e6ddf840ee318b4366f9466f4a3ac1b61c8ec10159173b1ba94a2b32f26d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_anti/attack/0",
+      "unit": "rivet_anti",
+      "action": "attack",
+      "variant": 0,
+      "text": "击穿目标防护。",
+      "path": "res://assets/audio/voices/rivet_anti_attack_01.wav",
+      "duration": 1.968,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "e899b44a6409f2ac7617960d1b66e638d7de772f9998d5d08275ed9e9fc5425e",
+      "sha256": "4b08ff17272c0bd7b3f2399bd4dff1e6bdf2331325c6bfe2b8b3531e7ee15ff3",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_anti/move/0",
+      "unit": "rivet_anti",
+      "action": "move",
+      "variant": 0,
+      "text": "跟随装甲前进。",
+      "path": "res://assets/audio/voices/rivet_anti_move_01.wav",
+      "duration": 2.064,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f20d4e5ebf495f4946dd3334f851be08ff5da2dab886e334383687481963fe9e",
+      "sha256": "6a2c8f0495b10f3eb5355e794c5c0e41399533a5217a0368340910db10a0388e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_anti/ready/0",
+      "unit": "rivet_anti",
+      "action": "ready",
+      "variant": 0,
+      "text": "破甲器材验收完成。",
+      "path": "res://assets/audio/voices/rivet_anti_ready_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "8d685656abfae93f5a8ccb836a278d6acc52f8aaa634705898c8259140654b33",
+      "sha256": "695de4ff77e54261e96c6bf364d1c242d2a96de82693bbe9d388f440246161af",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_anti/select/0",
+      "unit": "rivet_anti",
+      "action": "select",
+      "variant": 0,
+      "text": "破甲作业组待命。",
+      "path": "res://assets/audio/voices/rivet_anti_select_01.wav",
+      "duration": 2.088,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "e6d058b971e7af985e17099adf242ad565193d75179fbda61efac49edf6d8c07",
+      "sha256": "a6c98a5307c1668642d73324566dbf4fcf8cea487b67657555c784a94f806e52",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_assault/attack/0",
+      "unit": "rivet_assault",
+      "action": "attack",
+      "variant": 0,
+      "text": "向目标提交充分理由。",
+      "path": "res://assets/audio/voices/rivet_assault_attack_01.wav",
+      "duration": 2.496,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "e85f692140a29e2e6395adbb6ec690b4977a4a7f413e3cd6aa4efda13b35fa60",
+      "sha256": "6b7eed07b53adcd790a46cb94a94a0194d0a4bfe2a4253c9567f14e892b041cd",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_assault/move/0",
+      "unit": "rivet_assault",
+      "action": "move",
+      "variant": 0,
+      "text": "理由炮进入阵位。",
+      "path": "res://assets/audio/voices/rivet_assault_move_01.wav",
+      "duration": 1.968,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "e0016d50a023b31c453858ad1c0b1a2b41046c26769b1fcfe7341ac91eb7ac24",
+      "sha256": "78bf2caef61526b8b7f649c6f4130cd57dd13b4ef0394baee8c21e728252a83b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_assault/ready/0",
+      "unit": "rivet_assault",
+      "action": "ready",
+      "variant": 0,
+      "text": "攻城理由准备完成。",
+      "path": "res://assets/audio/voices/rivet_assault_ready_01.wav",
+      "duration": 2.376,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "5e65b1abf0f04cc9ad10c54fe2514550fb62a0bf3e132170699d229533405695",
+      "sha256": "d429b9d9a218345c56d88ef5440dd5132c9e686810487aa16f584fd4c2167c02",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_assault/select/0",
+      "unit": "rivet_assault",
+      "action": "select",
+      "variant": 0,
+      "text": "理由已备齐，等待提交。",
+      "path": "res://assets/audio/voices/rivet_assault_select_01.wav",
+      "duration": 2.784,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "6a76b30945d497dc53afab801a29c21e1a89eb99704a1c8604f15d3105d5ef80",
+      "sha256": "2ce19c4f3b8ce2631d71ca8f8a56527bee44897ade209e2babe5bca2b9e91795",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_bomber/attack/0",
+      "unit": "rivet_bomber",
+      "action": "attack",
+      "variant": 0,
+      "text": "向目标再次说明。",
+      "path": "res://assets/audio/voices/rivet_bomber_attack_01.wav",
+      "duration": 2.184,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "6befe252d07f973c46f41e393aba1fa2a2cf36a3f0790748621a2a895968269f",
+      "sha256": "5fd2eb0caba7c252638d390870f586579c7ff011b7ca8c6121d0ba931ac4e50d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_bomber/move/0",
+      "unit": "rivet_bomber",
+      "action": "move",
+      "variant": 0,
+      "text": "重申航线已确认。",
+      "path": "res://assets/audio/voices/rivet_bomber_move_01.wav",
+      "duration": 2.16,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "91aa505cbd0b39abfab0652ba6f1ae3cb6d7ee000be60be6e99b93ece3b9ff2e",
+      "sha256": "be2fcdf6f4b7a1490ae398073137eb66caf140301526efcd7641ac1a1e66db64",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_bomber/ready/0",
+      "unit": "rivet_bomber",
+      "action": "ready",
+      "variant": 0,
+      "text": "重轰炸机准备升空。",
+      "path": "res://assets/audio/voices/rivet_bomber_ready_01.wav",
+      "duration": 2.352,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "b8064468647d1ad93fe91cc24ef433bc55935740a9515a9164e353e9810cd3b7",
+      "sha256": "a0159fa411889b057d1ee37dfa9e4bf67a4d04e479eab71e888da17422a08156",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_bomber/return/0",
+      "unit": "rivet_bomber",
+      "action": "return",
+      "variant": 0,
+      "text": "返回机场，准备再次出动。",
+      "path": "res://assets/audio/voices/rivet_bomber_return_01.wav",
+      "duration": 2.928,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "c4deec08e624e58826b0ffd20b0345eafe6c6ebcf1dc13063db243298e33de9d",
+      "sha256": "cb67ab198230dab1895339d965c69e548be4f8bf4e7e6d73f6176581983a1bc2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_bomber/select/0",
+      "unit": "rivet_bomber",
+      "action": "select",
+      "variant": 0,
+      "text": "目标尚未理解。申请再次说明。",
+      "path": "res://assets/audio/voices/rivet_bomber_select_01.wav",
+      "duration": 3.912,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "9adc18e890e403440184d7b9f983b81b9740c3011a466dce72c1099fe0d5dd2f",
+      "sha256": "4e159253b72444f104287a0a59b71a8b9e44c5e212b9b2ecba697320dc494b61",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_engineer/attack/0",
+      "unit": "rivet_engineer",
+      "action": "attack",
+      "variant": 0,
+      "text": "申请装甲掩护。",
+      "path": "res://assets/audio/voices/rivet_engineer_attack_01.wav",
+      "duration": 2.136,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f309264a74bec577fd9158a3066441198643e9099976c09711a0f9c2fa6f3bbf",
+      "sha256": "c254b35327358ec2912e0efb7d92d68835b2b123ef5429abe2e5da5759e9585c",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_engineer/move/0",
+      "unit": "rivet_engineer",
+      "action": "move",
+      "variant": 0,
+      "text": "作业命令有效。",
+      "path": "res://assets/audio/voices/rivet_engineer_move_01.wav",
+      "duration": 1.92,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "50804716df8ae01272ba90da3d513f72137044f0034b7fcf30f2cb9aab953885",
+      "sha256": "3b7065235b858108fb9df171e11d013699cd9e903654bbb432fc409022a7b551",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_engineer/ready/0",
+      "unit": "rivet_engineer",
+      "action": "ready",
+      "variant": 0,
+      "text": "军工勤务兵报到。",
+      "path": "res://assets/audio/voices/rivet_engineer_ready_01.wav",
+      "duration": 2.112,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "19a0f2d0c44df66374937fbfe389ba6472e866768514ae919f08f148f983ca9f",
+      "sha256": "e07b37fd434bfbb3df0fd925ad776af7ac515ad8c5ff1246569e58de910828f9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_engineer/select/0",
+      "unit": "rivet_engineer",
+      "action": "select",
+      "variant": 0,
+      "text": "军工勤务，检查完毕。",
+      "path": "res://assets/audio/voices/rivet_engineer_select_01.wav",
+      "duration": 2.52,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "c05560d4c575818bd9e2974d2fcaf196f596a53d7614c9c27d25c011d6140c02",
+      "sha256": "c264e5d1f5c6f58f7f536edf7a653aae680aeaeefa4e1a5ec83e368c18741460",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_fighter/attack/0",
+      "unit": "rivet_fighter",
+      "action": "attack",
+      "variant": 0,
+      "text": "目标通行到此结束。",
+      "path": "res://assets/audio/voices/rivet_fighter_attack_01.wav",
+      "duration": 2.28,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "d5134174dde32e1e0dac64e5e28b3eaf1a2de4d9b9fe2ee98fdcbbcb000471b3",
+      "sha256": "d69eef904dde14f6d63b457492fcb4d21c658b022f80dec39158f30505f376b1",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_fighter/move/0",
+      "unit": "rivet_fighter",
+      "action": "move",
+      "variant": 0,
+      "text": "拦截航线确认。",
+      "path": "res://assets/audio/voices/rivet_fighter_move_01.wav",
+      "duration": 1.992,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f6f729b9b5f94f80b7acfae23f7f0e25f452a5368cb302291d4b844ee0ebc14a",
+      "sha256": "83327ce87719ae61daf7c936457e26d6bd924d8d64fdaa77351b6cbbb3a0e5e2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_fighter/ready/0",
+      "unit": "rivet_fighter",
+      "action": "ready",
+      "variant": 0,
+      "text": "拦截战机交付。",
+      "path": "res://assets/audio/voices/rivet_fighter_ready_01.wav",
+      "duration": 2.112,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "0c98f3e2e22ec96ab173393db16bb8040fa29862eb91336f592e21e4209816bd",
+      "sha256": "5520ad35f06b69736783333fc5666bc130221ad651ad5d8b81231d7ba12ca75e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_fighter/return/0",
+      "unit": "rivet_fighter",
+      "action": "return",
+      "variant": 0,
+      "text": "返回机场，准备再次出动。",
+      "path": "res://assets/audio/voices/rivet_fighter_return_01.wav",
+      "duration": 2.928,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "c4deec08e624e58826b0ffd20b0345eafe6c6ebcf1dc13063db243298e33de9d",
+      "sha256": "e2668c285f90f9c79c9ae34345cfd34b903c459eeaaf10f214baafa23dd62cdf",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_fighter/select/0",
+      "unit": "rivet_fighter",
+      "action": "select",
+      "variant": 0,
+      "text": "终止通行，等待命令。",
+      "path": "res://assets/audio/voices/rivet_fighter_select_01.wav",
+      "duration": 2.592,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "da1e55dad498e3ce9364a19ea7584c7011f69edb99d802ca64016c64030e0dea",
+      "sha256": "a2029a9ee0ca9c740dfae67b23f488013f2acc54775b91d16b5be33435eaa5b1",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_harvester/attack/0",
+      "unit": "rivet_harvester",
+      "action": "attack",
+      "variant": 0,
+      "text": "矿运请求掩护。",
+      "path": "res://assets/audio/voices/rivet_harvester_attack_01.wav",
+      "duration": 2.016,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "7bbc3c14a8c76a2cc6cc8fd143a1b1fa94c14733709ab3de13a56b950d57331f",
+      "sha256": "9334ccdaba4643a0ede5a8a00c1574fe3e4b67cd6b7a279cf856eb3942369048",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_harvester/move/0",
+      "unit": "rivet_harvester",
+      "action": "move",
+      "variant": 0,
+      "text": "重载运输开始。",
+      "path": "res://assets/audio/voices/rivet_harvester_move_01.wav",
+      "duration": 2.016,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "d84a5a63592e7690eff0739e0106aacddbd4108371bd6570866046bf100b6bd5",
+      "sha256": "f725c975978e497ae779032de924bf35f94b04300587ac65205249c342775350",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_harvester/ready/0",
+      "unit": "rivet_harvester",
+      "action": "ready",
+      "variant": 0,
+      "text": "重载采集车交付。",
+      "path": "res://assets/audio/voices/rivet_harvester_ready_01.wav",
+      "duration": 2.232,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "bbf70d7765227e33447d34c23f18be0e308ca9c8b32fdf4308b37487215fb573",
+      "sha256": "6c507bfee1dbb0feba5d0f03e37c18c7057bec35e3da382062818d41eddab47e",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_harvester/select/0",
+      "unit": "rivet_harvester",
+      "action": "select",
+      "variant": 0,
+      "text": "信仰坚定。货舱已备。",
+      "path": "res://assets/audio/voices/rivet_harvester_select_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "38fcfbaec1e63e2e53aab5c2e0c7e6ed52d83847bbd6b4305a0d675caee9a66c",
+      "sha256": "e545db154f5b8750d4fc979b9ef05a68c3316cde147b316232cd28da6b33067b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_rifle/attack/0",
+      "unit": "rivet_rifle",
+      "action": "attack",
+      "variant": 0,
+      "text": "压制抵抗目标。",
+      "path": "res://assets/audio/voices/rivet_rifle_attack_01.wav",
+      "duration": 2.04,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "f86b2034e58c30c1344eced7a519f43476601644e7ede650f47d91213c03c6f9",
+      "sha256": "a6ad419299f1768a0eb7bfee8fa943c544ec95bd6ada1c3e7c6cb2e73a984ff5",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_rifle/move/0",
+      "unit": "rivet_rifle",
+      "action": "move",
+      "variant": 0,
+      "text": "推进命令有效。",
+      "path": "res://assets/audio/voices/rivet_rifle_move_01.wav",
+      "duration": 1.968,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "9ada989614b5fd9936a53167aff36292c27a6f60225e6cd6856048ff3a92ef19",
+      "sha256": "a72c5cda337042c8b947daedf9958d9a2d7072d05abdc7ba31ecd73496ac24b8",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_rifle/ready/0",
+      "unit": "rivet_rifle",
+      "action": "ready",
+      "variant": 0,
+      "text": "突击编制完成。",
+      "path": "res://assets/audio/voices/rivet_rifle_ready_01.wav",
+      "duration": 1.992,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "222131c077986c55c09e76cc19d5529a44126e7f4ed936bcd956ff7bbf81bc53",
+      "sha256": "e1accbe08fd47c1dbd6331c7af24569099316fc83e990200ee125a0f0ce739e9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_rifle/select/0",
+      "unit": "rivet_rifle",
+      "action": "select",
+      "variant": 0,
+      "text": "突击兵听候号令。",
+      "path": "res://assets/audio/voices/rivet_rifle_select_01.wav",
+      "duration": 2.04,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "bf296137bccfbfec07a6c6544241d798da6f299743fb5a366f54ff20b16fce07",
+      "sha256": "9375bc809c177daee4a1af531024db8b01b665ba445b3452ca57d591174a13eb",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_scout/attack/0",
+      "unit": "rivet_scout",
+      "action": "attack",
+      "variant": 0,
+      "text": "目标位置已经呈报。",
+      "path": "res://assets/audio/voices/rivet_scout_attack_01.wav",
+      "duration": 2.232,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "0f4b270ae5a0c73d34fad0b6d3cda0d96647910d7719f6c52858e47bb0d53fc5",
+      "sha256": "0be15021dcd240605fe6ca523d357441a45b9bddd601f16cf6c985ec73fd7aec",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_scout/move/0",
+      "unit": "rivet_scout",
+      "action": "move",
+      "variant": 0,
+      "text": "前导车确认道路。",
+      "path": "res://assets/audio/voices/rivet_scout_move_01.wav",
+      "duration": 2.088,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "953a0a2be7e2b0ac42133093349be8680149b97e0740fcc03abe78a4f15fdc43",
+      "sha256": "69463f70f0445ec459e4f0c581dda2e040f484736297dfaf2e1e7a44ef501339",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_scout/ready/0",
+      "unit": "rivet_scout",
+      "action": "ready",
+      "variant": 0,
+      "text": "前导侦察车出厂。",
+      "path": "res://assets/audio/voices/rivet_scout_ready_01.wav",
+      "duration": 2.184,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "d6a62a6be1dabd62ecbc0b13c059e3a82c2642de7efdef549d52a79600dc13ee",
+      "sha256": "df56ed1cfb5d5371b5e60b817d0a50cdc4be76febf6766f65bb69e4cd9965a51",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_scout/select/0",
+      "unit": "rivet_scout",
+      "action": "select",
+      "variant": 0,
+      "text": "前导侦察等待号令。",
+      "path": "res://assets/audio/voices/rivet_scout_select_01.wav",
+      "duration": 2.304,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "3dffd4bc821adeeb58e1fa06364d5ddbcb9250b0883cd1ca0bca9a4bb99e5115",
+      "sha256": "61fae7b9d96b5ec421b06aa6882082547ba9955a05949a9d3ed972ca9cfc72d5",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_frigate/attack/0",
+      "unit": "rivet_ship_frigate",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/rivet_ship_frigate_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "65e86b14d8baa107f19c356688bb89758a4f79414b3c01cf3c954364133de3ab",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_frigate/move/0",
+      "unit": "rivet_ship_frigate",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/rivet_ship_frigate_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "76bfc72701860768442fa14258047a6f1969b51d0814aed2ed3731c7711a6f8d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_frigate/ready/0",
+      "unit": "rivet_ship_frigate",
+      "action": "ready",
+      "variant": 0,
+      "text": "破浪炮舰下水。",
+      "path": "res://assets/audio/voices/rivet_ship_frigate_ready_01.wav",
+      "duration": 2.064,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "5322381aa53823a637858b4e86844795db411c2162bbc3058c6b1615f911208e",
+      "sha256": "a8f76676f25a655426f04a0a5c9f9fc1eb20e43271068315006c3bef509ef8ec",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_frigate/select/0",
+      "unit": "rivet_ship_frigate",
+      "action": "select",
+      "variant": 0,
+      "text": "破浪炮舰就位。",
+      "path": "res://assets/audio/voices/rivet_ship_frigate_select_01.wav",
+      "duration": 1.944,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "aeb0d979a5ce44ef83358ffe64a9fb8f291687cece8630eab6849650bd9695bc",
+      "sha256": "ccb703fac3ca6bf1b822d9b6abdf932d89fed74e39ab6416ffe715b7d16c4a4f",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_signature/attack/0",
+      "unit": "rivet_ship_signature",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/rivet_ship_signature_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "0000b8c36ee33a290ba82aab7732a3ea1c29a731ac1a1dc5f3584041546f577c",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_signature/move/0",
+      "unit": "rivet_ship_signature",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/rivet_ship_signature_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "cb0577ec7398e57c38a22cbc45c00f73a509c8544af9b625f6967dae1c977357",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_signature/ready/0",
+      "unit": "rivet_ship_signature",
+      "action": "ready",
+      "variant": 0,
+      "text": "重锤攻城舰下水。",
+      "path": "res://assets/audio/voices/rivet_ship_signature_ready_01.wav",
+      "duration": 2.376,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "2cf72d6ea9318958561564ea451521293b3f40705740e662dc46074a8897f307",
+      "sha256": "f551abbb4cea5d2c86e463606697434291e490688bba5799deea469bbcaa0841",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_signature/select/0",
+      "unit": "rivet_ship_signature",
+      "action": "select",
+      "variant": 0,
+      "text": "重锤攻城舰就位。",
+      "path": "res://assets/audio/voices/rivet_ship_signature_select_01.wav",
+      "duration": 2.28,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "846514e40ce74a0f43046e3ec6432040d679ed62186fd31ed8231b9327dd254b",
+      "sha256": "a488ad95f00ea9e316b26f58b592835c4dd8118463045acc12c78c0651dd491d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_transport/attack/0",
+      "unit": "rivet_ship_transport",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/rivet_ship_transport_attack_01.wav",
+      "duration": 2.448,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "52093e235192045b899dd28f58e813fa571a074a9b4eefeb7339d69faf980014",
+      "sha256": "90953510848a431b239538c39b4d7aa2f4ed835e44a79c924cfe5a623ba9f8fb",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_transport/move/0",
+      "unit": "rivet_ship_transport",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/rivet_ship_transport_move_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "719dc951e7d2006a3ea86c0b2fca4e1d37c1b84496919bc60d5a1aac4679be05",
+      "sha256": "6783129f0935cc55431074ac93848bd613aeaeead0fa19d394ad5f3f65793df5",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_transport/ready/0",
+      "unit": "rivet_ship_transport",
+      "action": "ready",
+      "variant": 0,
+      "text": "铁甲渡船下水。",
+      "path": "res://assets/audio/voices/rivet_ship_transport_ready_01.wav",
+      "duration": 2.136,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "71c60045f44697f422fda53109aff8676dd32b90d54769b02032ce85ae44f4fa",
+      "sha256": "e0622aca20cc414d80e439b49fd02258c11cfd5f6a1460bc97ce8affd881d777",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_ship_transport/select/0",
+      "unit": "rivet_ship_transport",
+      "action": "select",
+      "variant": 0,
+      "text": "铁甲渡船就位。",
+      "path": "res://assets/audio/voices/rivet_ship_transport_select_01.wav",
+      "duration": 1.992,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "b295bdcda4888e224d93243e2daf09123d405f7e04d4f0ec7a9d033c8fcc5680",
+      "sha256": "b66db43997df7fd7f9052f136dbcc99362d2005137210f9e62ed194f7b3ddea9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_tank/attack/0",
+      "unit": "rivet_tank",
+      "action": "attack",
+      "variant": 0,
+      "text": "以火力确认结果。",
+      "path": "res://assets/audio/voices/rivet_tank_attack_01.wav",
+      "duration": 2.088,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "28c7d74a3c00b5a16b32da1d0b8b3709366e9d6b45aea3724710b2cc6e2607a6",
+      "sha256": "8990304c54af05363c3fdbff6b4458189a2554566559f0a18bee329ea40d2c00",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_tank/move/0",
+      "unit": "rivet_tank",
+      "action": "move",
+      "variant": 0,
+      "text": "推进命令有效。",
+      "path": "res://assets/audio/voices/rivet_tank_move_01.wav",
+      "duration": 1.968,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "9ada989614b5fd9936a53167aff36292c27a6f60225e6cd6856048ff3a92ef19",
+      "sha256": "9a51aacbed865d7c8b2ad787fa319cba0d63556e08aed462756f557dedb431d2",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_tank/ready/0",
+      "unit": "rivet_tank",
+      "action": "ready",
+      "variant": 0,
+      "text": "锤头坦克验收完毕。",
+      "path": "res://assets/audio/voices/rivet_tank_ready_01.wav",
+      "duration": 2.4,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "e12fd695b5c117046a38adf661b7c2013e7ed62428539876b52a0b2a3a51db7d",
+      "sha256": "d0095e27e7c346300956f0d66b3698b1e8d301855108768a868e66dd880ea533",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "rivet_tank/select/0",
+      "unit": "rivet_tank",
+      "action": "select",
+      "variant": 0,
+      "text": "重型装甲等待号令。",
+      "path": "res://assets/audio/voices/rivet_tank_select_01.wav",
+      "duration": 2.328,
+      "speaker": "zh-CN-YunyangNeural",
+      "source_sha256": "85a283aec63018bd714f7070bd5df68b2f3f9cfa481b1657163baa4757717102",
+      "sha256": "4bbc7191d30c0bff91750bbda6d4d0ee0d9372f8f62e255e6bbf74bcebc07c61",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_creator_hand/attack/0",
+      "unit": "sky_creator_hand",
+      "action": "attack",
+      "variant": 0,
+      "text": "这一页，由我定稿。",
+      "path": "res://assets/audio/voices/sky_creator_hand_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "00529e86406c78a30c1aebbd348ef3122677056093e27d5a82ef935a98456500",
+      "sha256": "9a7fc91c2f154f2bfd60deff83f77f263370d6d2a59a14104173b5dcb2921030",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_creator_hand/move/0",
+      "unit": "sky_creator_hand",
+      "action": "move",
+      "variant": 0,
+      "text": "让想象向前。",
+      "path": "res://assets/audio/voices/sky_creator_hand_move_01.wav",
+      "duration": 2.184,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0d17b969fbb9b39d657f66531fb1aab4284dc866ea845dd0bc82803106efe17a",
+      "sha256": "7731d07f28b0b144583a6feb83db69fba377071cdb7b098e4cd513b8a6218ca9",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_creator_hand/ready/0",
+      "unit": "sky_creator_hand",
+      "action": "ready",
+      "variant": 0,
+      "text": "创世之手已完成。",
+      "path": "res://assets/audio/voices/sky_creator_hand_ready_01.wav",
+      "duration": 2.688,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "bc6b8e9bc098e1a73b52bc896cf9cdc5e8890c3849221417d663afce83e5ee13",
+      "sha256": "ebe21e9f3e10e96e2716918ce6bb9448daee1fd148f7f19ab25458033953ed51",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_creator_hand/select/0",
+      "unit": "sky_creator_hand",
+      "action": "select",
+      "variant": 0,
+      "text": "我看见每一张纸的去向。",
+      "path": "res://assets/audio/voices/sky_creator_hand_select_01.wav",
+      "duration": 2.76,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "561fbf13ef9c7e73ae1ac25db0e6feb37fe51882030334babca7851740f29de4",
+      "sha256": "78aa15b0a5a5285e0000123e4a7775ff1f8765ab7a2be5a016a29a95a1aaec6b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_frigate/attack/0",
+      "unit": "sky_ship_frigate",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/sky_ship_frigate_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "2c455cdbcb1dd7a835cc6bbb385445a2fc5ec57cd9f6377e9552cfd7cf8c9fba",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_frigate/move/0",
+      "unit": "sky_ship_frigate",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/sky_ship_frigate_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "25fbbfbc19df8d7caadc8938b6760ceebe68b9352bcec5d27ac3897e8e1ceac7",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_frigate/ready/0",
+      "unit": "sky_ship_frigate",
+      "action": "ready",
+      "variant": 0,
+      "text": "天翼护卫舰下水。",
+      "path": "res://assets/audio/voices/sky_ship_frigate_ready_01.wav",
+      "duration": 2.544,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "3b97f91d6b7eb36ada95af4c06adeeade5df60bcb2e39edb696c5493e11de419",
+      "sha256": "fc84e287eaab9a4985ce736f7a661fed299d4ca0f95c138b7a6fd80ce2f283b4",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_frigate/select/0",
+      "unit": "sky_ship_frigate",
+      "action": "select",
+      "variant": 0,
+      "text": "天翼护卫舰就位。",
+      "path": "res://assets/audio/voices/sky_ship_frigate_select_01.wav",
+      "duration": 2.472,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "372f2e1f14770a10c436a9998e8b28e3ae43a8ada3e887c4aa806f4bf9502380",
+      "sha256": "ab01d0fab8757ba5f347535270a444d8968c411ac01eee9d16dad2981c5e26eb",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_signature/attack/0",
+      "unit": "sky_ship_signature",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/sky_ship_signature_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "afa44eb8bfc16022e6cdd38a725975287cf61eb2ccd33f513a272230fb0342b7",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_signature/move/0",
+      "unit": "sky_ship_signature",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/sky_ship_signature_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "84bfe4e2bf92563a6cd0bb513aaa4840659aa774ac65970747b0591783c507d0",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_signature/ready/0",
+      "unit": "sky_ship_signature",
+      "action": "ready",
+      "variant": 0,
+      "text": "脉冲巡洋舰下水。",
+      "path": "res://assets/audio/voices/sky_ship_signature_ready_01.wav",
+      "duration": 2.688,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "08b2c915b8517ec0ed6b602b9bb8c940f1719243733508658dac29e4a87a039c",
+      "sha256": "4fc20b30089d08a661d7887550adc2fb33d2eed4679c4322cbcde42aeeff5a9d",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_signature/select/0",
+      "unit": "sky_ship_signature",
+      "action": "select",
+      "variant": 0,
+      "text": "脉冲巡洋舰就位。",
+      "path": "res://assets/audio/voices/sky_ship_signature_select_01.wav",
+      "duration": 2.568,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "beb1ec352ae9cd36cdaa035487c261ea562132555a91b09ac53bab2808bc7f3f",
+      "sha256": "828b94031beb10a20b7e4983c5074035d7ddeb3092796533f0f2eb2fbaca3b87",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_transport/attack/0",
+      "unit": "sky_ship_transport",
+      "action": "attack",
+      "variant": 0,
+      "text": "锁定目标，准备开火。",
+      "path": "res://assets/audio/voices/sky_ship_transport_attack_01.wav",
+      "duration": 3.072,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b183b95de4329b882893c0e32438871dc1f4769eea6a7ada4a4d32ef2d59efef",
+      "sha256": "7bfe621da53026d827d441eaf013e60b37b8a597a7e5bec15ad058e90d9dcb7b",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_transport/move/0",
+      "unit": "sky_ship_transport",
+      "action": "move",
+      "variant": 0,
+      "text": "航线确认，开始前进。",
+      "path": "res://assets/audio/voices/sky_ship_transport_move_01.wav",
+      "duration": 3.144,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "0425cb7e8acbe46db6ab30fec3ea95e0fb0547b33bb9f2f4cdea45ea1ee8ee2c",
+      "sha256": "30991ea697b35306f47ce20b6d6de24bb29c0fddbfd95454d1ae0e05cbcab0bd",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_transport/ready/0",
+      "unit": "sky_ship_transport",
+      "action": "ready",
+      "variant": 0,
+      "text": "折翼渡船下水。",
+      "path": "res://assets/audio/voices/sky_ship_transport_ready_01.wav",
+      "duration": 2.352,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "3193e538b73faff84cc0dfa00a148e0c31ef74709bbcfca8a85d41704cad3b57",
+      "sha256": "4933d76b97680b6a75ae762dcc0a82106cee12a6cd50ff253f58e7fe9ab2d211",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    },
+    {
+      "key": "sky_ship_transport/select/0",
+      "unit": "sky_ship_transport",
+      "action": "select",
+      "variant": 0,
+      "text": "折翼渡船就位。",
+      "path": "res://assets/audio/voices/sky_ship_transport_select_01.wav",
+      "duration": 2.376,
+      "speaker": "zh-CN-YunxiNeural",
+      "source_sha256": "b0936811810f3e80100c6b81171fb7df8031b323dc1f1a199c6157d1aa22fdf6",
+      "sha256": "b1c2e368f8b5c72c233e0be4874ade5d602e3b79111af10bec1f6c058102af07",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Microsoft Edge online text-to-speech",
+        "client": "edge-tts",
+        "client_version": "7.2.8",
+        "authored_dialogue": "data/rules.json units voices",
+        "human_recording": false
+      }
+    }
+  ],
+  "effects": [
+    {
+      "kind": "fire_air",
+      "path": "res://assets/audio/fire_air.wav",
+      "provenance": "Original deterministic PCM synthesis in tools/generate_unit_voices.py",
+      "license": "CC0-1.0",
+      "sample_rate": 22050
+    },
+    {
+      "kind": "bomb_release",
+      "path": "res://assets/audio/bomb_release.wav",
+      "provenance": "Original deterministic PCM synthesis in tools/generate_unit_voices.py",
+      "license": "CC0-1.0",
+      "sample_rate": 22050
+    },
+    {
+      "kind": "rearm",
+      "path": "res://assets/audio/rearm.wav",
+      "provenance": "Original deterministic PCM synthesis in tools/generate_unit_voices.py",
+      "license": "CC0-1.0",
+      "sample_rate": 22050
+    },
+    {
+      "kind": "aircraft_loop",
+      "path": "res://assets/audio/aircraft_loop.wav",
+      "provenance": "Original deterministic PCM synthesis in tools/generate_unit_voices.py",
+      "license": "CC0-1.0",
+      "sample_rate": 22050
+    }
+  ]
+}

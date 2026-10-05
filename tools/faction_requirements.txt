@@ -1,0 +1,2 @@
+edge-tts==7.2.8
+shapely==2.1.2

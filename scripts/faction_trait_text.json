@@ -1,0 +1,26 @@
+{
+  "iron": {
+    "short": "减伤{reduction}% / 脱战自愈",
+    "description": "铁钉单位受到的伤害减少{reduction}%；停止开火且未受伤{delay}秒后，每秒自动恢复最大生命的{regen}%，装载期间暂停恢复。",
+    "status": "坚固 −{reduction}%伤害",
+    "healing": "脱战自愈",
+    "waiting": "自愈等待{remaining}秒"
+  },
+  "kestrel": {
+    "short": "同域集群 +{bonus}%伤害",
+    "description": "正典作战单位在{radius}格内有至少{allies}个其他同域友方作战单位时，伤害提高{bonus}%；装载中的单位不计入。",
+    "active": "协同 +{bonus}%伤害",
+    "waiting": "协同待集结"
+  },
+  "rivet": {
+    "short": "推进突破 +{bonus}%首击",
+    "description": "重锤武装装甲车辆在攻击移动中累计推进{distance}米后，{window}秒内下一次开火伤害提高{bonus}%；开火后重新积累。",
+    "active": "突破 +{bonus}% · {remaining}秒",
+    "progress": "突破推进{progress}/{distance}米"
+  },
+  "emp": {
+    "short": "EMP压制 / 蓄能支援",
+    "description": "断流车命中装甲单位使其失控{vehicle}秒，命中建筑使其失控{building}秒；步兵不受EMP影响。失控期间单位停止移动、开火和航空服务，建筑停止生产、维修、开火与供电。",
+    "status": "EMP失控 {remaining}秒"
+  }
+}

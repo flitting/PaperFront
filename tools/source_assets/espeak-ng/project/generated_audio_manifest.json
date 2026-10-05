@@ -1,0 +1,717 @@
+{
+  "version": 3,
+  "license": "GPL-3.0-or-later",
+  "license_scope": "Generated Mandarin acknowledgement PCM and separate linked generator; authored phrase text is additionally CC0",
+  "generator_license": "GPL-3.0-or-later",
+  "generator": "tools/generate_demo_radio.py",
+  "generator_sha256": "08b857c8169ff8fa55038aa447881fdf4430c50bfec1253034e38458ad876aec",
+  "origin": "Project-authored short Mandarin phrases rendered by host eSpeak NG native formant synthesis",
+  "engine": {
+    "name": "eSpeak NG",
+    "version": "1.51",
+    "license": "GPL-3.0-or-later",
+    "library": "libespeak-ng.so.1",
+    "package_version": "1.51+dfsg-12build1",
+    "dictionary_sha256": "a89070f47954b46f2a33a9128a4a5c113dbd4effd52ef073e43ee2ae1ecff950",
+    "build_inputs": {
+      "cmn_dict": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/cmn_dict",
+        "bytes": 1649948,
+        "sha256": "a89070f47954b46f2a33a9128a4a5c113dbd4effd52ef073e43ee2ae1ecff950"
+      },
+      "phondata": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phondata",
+        "bytes": 551064,
+        "sha256": "8bd4842d46905ac3ad4e774ba901163e689ad1bdf1cdb419d1f134ed2646395a"
+      },
+      "phonindex": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phonindex",
+        "bytes": 39068,
+        "sha256": "642d5daa128c0d08828d4352b850b8c2f06d6274b8c46c157b3a635da988aa69"
+      },
+      "phontab": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phontab",
+        "bytes": 55900,
+        "sha256": "88799c9eedd188a63e63304b86b1abc2dc91a8ad29c19f34e3da4a3d22ab4401"
+      },
+      "intonations": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/intonations",
+        "bytes": 2040,
+        "sha256": "3f8af65fd3eda9759a10f021d61361c120871f463515229c925995c7f90918cc"
+      },
+      "lang/sit/cmn": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/lang/sit/cmn",
+        "bytes": 745,
+        "sha256": "b4424b6b0405216bc5d56183744a2b9824869d7c6b01b9919a8c1f55e537f60c"
+      },
+      "lang/sit/cmn-Latn-pinyin": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/lang/sit/cmn-Latn-pinyin",
+        "bytes": 161,
+        "sha256": "14c2fc097db280416b688c2bf97de2e5da532c279754020fde7bf6cd624cdd10"
+      },
+      "voices/!v/m3": {
+        "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/voices/!v/m3",
+        "bytes": 300,
+        "sha256": "7a4ac872387439814ddd65f5e1ff73017122975911df6b5dc62c5709e6fdb611"
+      },
+      "synthesis_library": {
+        "path": "/usr/lib/x86_64-linux-gnu/libespeak-ng.so.1.1.51",
+        "bytes": 495480,
+        "sha256": "a18be542512749ea11dcbb5799f0de86a4bcacc75b3a625198160f67bfd37508"
+      }
+    },
+    "source": "https://github.com/espeak-ng/espeak-ng/tree/1.51",
+    "runtime_bundled": false
+  },
+  "license_basis": {
+    "output": "Conservatively distribute generated PCM under GPLv3+ because native Mandarin also plays upstream GPL phoneme WAV resources; do not claim purely original CC0 speech",
+    "output_source": "https://raw.githubusercontent.com/espeak-ng/espeak-ng/1.51/COPYING",
+    "dictionary": "Mandarin pronunciations derive from Unicode Unihan; Unicode commercial data permission is retained",
+    "dictionary_source": "https://raw.githubusercontent.com/espeak-ng/espeak-ng/1.51/dictsource/cmn_list",
+    "unicode_license": "https://www.unicode.org/license.txt",
+    "corresponding_source": "tools/source_assets/espeak-ng/",
+    "source_version": "1.51+dfsg-12build1",
+    "source_dsc_sha256": "7d7e4f7606f1ddf3eb497a4848649eb72fc0acf70caccd9a61987f4d4444d688",
+    "distribution": "Ship the complete source kit, generator, dialogue parameters, manifests and license notices alongside the independent WAV assets"
+  },
+  "format": "mono 22050 Hz signed 16-bit PCM WAV",
+  "voice_quality": "mechanical formant Mandarin; human listening acceptance remains required",
+  "rate": 175,
+  "lowpass_hz": 4100,
+  "high_frequency_shelf": 0.52,
+  "clips": [
+    {
+      "faction": "kestrel",
+      "action": "select",
+      "text": "收到，等待命令。",
+      "path": "res://assets/audio/radio/kestrel_select.wav",
+      "duration_s": 1.829524,
+      "sha256": "f37d055a84f6c56829da92fd4cdcc3660323d4866606d9537b1c8f72d4f13992",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.463,
+      "energy_above_4khz_percent": 0.012134,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "t'@214N_| t'ai51_| m'i51N_| l'i51N_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "kestrel",
+      "action": "move",
+      "text": "按令前进。",
+      "path": "res://assets/audio/radio/kestrel_move.wav",
+      "duration_s": 1.407483,
+      "sha256": "8c16f3d07559053c9a33f8442f9562dad238d2fbffeacea7a3622535b301052c",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.172,
+      "energy_above_4khz_percent": 0.050916,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "'a51n_| l'i51N_| tS;h'iE35n_| tS;'i51n_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "kestrel",
+      "action": "attack",
+      "text": "目标确认，开始攻击。",
+      "path": "res://assets/audio/radio/kestrel_attack.wav",
+      "duration_s": 2.480499,
+      "sha256": "a516c36094e2edb6b968c23cac1b0a7b4aa69a93a5e13639c5fc24e718aefcab",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.576,
+      "energy_above_4khz_percent": 0.025194,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "kh'ai55_| s.'i.214_| k'ong55_| tS;'i55_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "kestrel",
+      "action": "ready",
+      "text": "准备完毕。",
+      "path": "res://assets/audio/radio/kestrel_ready.wav",
+      "duration_s": 1.253515,
+      "sha256": "5403755a220fa107fb81d4b533437ee02ea1e24afb4a509a10f33d520eb7027d",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.437,
+      "energy_above_4khz_percent": 0.048436,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "ts.'u@214n_| p'ei51_| w'A35n_| p'i51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "kestrel",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "path": "res://assets/audio/radio/kestrel_return.wav",
+      "duration_s": 2.180272,
+      "sha256": "2e2152775d21ba44f7df02a98d0aad3819fe3e9474947493c7e1a3421f57d473",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.337,
+      "energy_above_4khz_percent": 0.008841,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "rivet",
+      "action": "select",
+      "text": "收到，部队待命。",
+      "path": "res://assets/audio/radio/rivet_select.wav",
+      "duration_s": 1.72,
+      "sha256": "764b809896222190d0312ae93ff5e901bc88c9738d0d5454b784ab50f3987223",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.831,
+      "energy_above_4khz_percent": 0.012081,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "p'u51_| t'uei51_| t'ai51_| m'i51N_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "rivet",
+      "action": "move",
+      "text": "开始前进。",
+      "path": "res://assets/audio/radio/rivet_move.wav",
+      "duration_s": 1.392517,
+      "sha256": "1e1f981eca9b6490f9f2720d52f10e06f4b0605be6bb21f51729ac5ffc8773bd",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.714,
+      "energy_above_4khz_percent": 0.071676,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "kh'ai55_| s.'i.214_| tS;h'iE35n_| tS;'i51n_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "rivet",
+      "action": "attack",
+      "text": "目标锁定，开始攻击。",
+      "path": "res://assets/audio/radio/rivet_attack.wav",
+      "duration_s": 2.458776,
+      "sha256": "3d1468b3575f6532a5513c60dbd3a4488e3581ffb33a1a7eae4446ed344bb339",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.586,
+      "energy_above_4khz_percent": 0.019439,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| s'uo214_| t'i51N_|",
+        "kh'ai55_| s.'i.214_| k'ong55_| tS;'i55_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "rivet",
+      "action": "ready",
+      "text": "单位准备完毕。",
+      "path": "res://assets/audio/radio/rivet_ready.wav",
+      "duration_s": 1.718503,
+      "sha256": "a3924c8623a97e4b937fee0685e858de996f8490f17d5bdaace16b7d073e5964",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.028,
+      "energy_above_4khz_percent": 0.033716,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "t'a55n_| w'ei51_| ts.'u@214n_| p'ei51_| w'A35n_| p'i51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "rivet",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "path": "res://assets/audio/radio/rivet_return.wav",
+      "duration_s": 2.18127,
+      "sha256": "eaf557eb263bb09902d27c88f9ea4cec367845ed90e25f3d43bc9ebadd326988",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.554,
+      "energy_above_4khz_percent": 0.009492,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "iron",
+      "action": "select",
+      "text": "检查完毕，等待命令。",
+      "path": "res://assets/audio/radio/iron_select.wav",
+      "duration_s": 2.493016,
+      "sha256": "1fc0e2b443a339294fb98adbe3e702f1b8bf24caa86c6d75b1c6c197f8ce0bba",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.262,
+      "energy_above_4khz_percent": 0.021964,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;'iE214n_| ts.h'A35_| w'A35n_| p'i51_|",
+        "t'@214N_| t'ai51_| m'i51N_| l'i51N_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "iron",
+      "action": "move",
+      "text": "稳步前进。",
+      "path": "res://assets/audio/radio/iron_move.wav",
+      "duration_s": 1.39483,
+      "sha256": "0d0952201e78d305458a92fa8f2e547809e705599c67265fd381b569eac86059",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.722,
+      "energy_above_4khz_percent": 0.069318,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "w'u@214n_| p'u51_| tS;h'iE35n_| tS;'i51n_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "iron",
+      "action": "attack",
+      "text": "目标确认，准备开火。",
+      "path": "res://assets/audio/radio/iron_attack.wav",
+      "duration_s": 2.519637,
+      "sha256": "6a6b64359ed689a4d621d622262e0d0b3452850e763dd6016bae33dba43d73e1",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.689,
+      "energy_above_4khz_percent": 0.048582,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "ts.'u@214n_| p'ei51_| kh'ai55_| X'uo214_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "iron",
+      "action": "ready",
+      "text": "检查完成，可以出发。",
+      "path": "res://assets/audio/radio/iron_ready.wav",
+      "duration_s": 2.633424,
+      "sha256": "663735389f03272a820b81c21d2ee3c1d279fe5a39b75c7243cbddf376846c68",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.496,
+      "energy_above_4khz_percent": 0.033237,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;'iE214n_| ts.h'A35_| w'A35n_| ts.h'@35N_|",
+        "kh'o-214_| j'i214_| ts.h'u55_| f'A55_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "iron",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "path": "res://assets/audio/radio/iron_return.wav",
+      "duration_s": 2.178141,
+      "sha256": "f556cf6bb5745a27dfb6159a3092798c0563e96a56da81e9ff79e348ed403a5a",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.594,
+      "energy_above_4khz_percent": 0.009468,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "sky",
+      "action": "select",
+      "text": "收到，等待指令。",
+      "path": "res://assets/audio/radio/sky_select.wav",
+      "duration_s": 1.836145,
+      "sha256": "b60dcd3822b9c4c5112ab5fa2c6c445b02244972c6ee3753ebece3ed3d58aa17",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.539,
+      "energy_above_4khz_percent": 0.02646,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "t'@214N_| t'ai51_| ts.'i.214_| l'i51N_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "sky",
+      "action": "move",
+      "text": "前往目标位置。",
+      "path": "res://assets/audio/radio/sky_move.wav",
+      "duration_s": 1.82449,
+      "sha256": "f7700cdb72b4d5e837ddefd57a584291a8f36cdf295d717c51cbcafc0a5e31ba",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.434,
+      "energy_above_4khz_percent": 0.04908,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;h'iE35n_| w'A214N_| m'u51_| pj'Au55_| w'ei51_| ts.'i.51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "sky",
+      "action": "attack",
+      "text": "目标确认，执行攻击。",
+      "path": "res://assets/audio/radio/sky_attack.wav",
+      "duration_s": 2.611156,
+      "sha256": "aa1e203c6ae21df9be8224366f818e3457d664b1235d6004173d08d90bf4bf3f",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.721,
+      "energy_above_4khz_percent": 0.048529,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "ts.'i.35_| S;'i35N_| k'ong55_| tS;'i55_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "sky",
+      "action": "ready",
+      "text": "准备完成。",
+      "path": "res://assets/audio/radio/sky_ready.wav",
+      "duration_s": 1.419456,
+      "sha256": "c3c7181765275c60b58a8e29915c0ac97b45b1a16a7297e9937a32b2636bce88",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.655,
+      "energy_above_4khz_percent": 0.057506,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "ts.'u@214n_| p'ei51_| w'A35n_| ts.h'@35N_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    },
+    {
+      "faction": "sky",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "path": "res://assets/audio/radio/sky_return.wav",
+      "duration_s": 2.173379,
+      "sha256": "a04711de16455364849c59a9ffcbe0d526d498ac965e1f1fb2ef0b0901b62e83",
+      "peak_dbfs": -11.057,
+      "rms_dbfs": -23.413,
+      "energy_above_4khz_percent": 0.008617,
+      "spoken_words": true,
+      "language": "cmn",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ],
+      "provenance": {
+        "type": "offline_formant_synthesized_speech",
+        "human_recording": false,
+        "human_recording_scope": "No newly recorded unit dialogue; upstream eSpeak consonants use GPL phoneme WAV resources",
+        "upstream_phoneme_waveforms": true,
+        "provider": "eSpeak NG native Mandarin",
+        "engine_version": "1.51",
+        "online_service": false,
+        "neural_model": false
+      }
+    }
+  ]
+}

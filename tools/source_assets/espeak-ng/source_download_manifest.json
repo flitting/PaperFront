@@ -1,0 +1,30 @@
+{
+  "package": "espeak-ng",
+  "installed_binary_version": "1.51+dfsg-12build1",
+  "installed_data_version": "1.51+dfsg-12build1",
+  "source_version": "1.51+dfsg-12build1",
+  "official_origin": "https://archive.ubuntu.com/ubuntu/pool/main/e/espeak-ng/",
+  "dsc": {
+    "file": "espeak-ng_1.51+dfsg-12build1.dsc",
+    "sha256": "7d7e4f7606f1ddf3eb497a4848649eb72fc0acf70caccd9a61987f4d4444d688",
+    "bytes": 2731,
+    "url": "https://archive.ubuntu.com/ubuntu/pool/main/e/espeak-ng/espeak-ng_1.51+dfsg-12build1.dsc"
+  },
+  "verification": "Official Ubuntu HTTPS DSC; both source tarballs match every DSC SHA-256 and byte count. DSC signature is retained, not asserted locally verified.",
+  "archives": [
+    {
+      "file": "espeak-ng_1.51+dfsg.orig.tar.gz",
+      "bytes": 12985129,
+      "sha256": "72242d7c06a4d80f5056335977c5be1ff79ff27bb502d4d054be1803ff787fa9",
+      "dsc_verified": true,
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/e/espeak-ng/espeak-ng_1.51+dfsg.orig.tar.gz"
+    },
+    {
+      "file": "espeak-ng_1.51+dfsg-12build1.debian.tar.xz",
+      "bytes": 51348,
+      "sha256": "ccd4411d9efe0604030c604bd7369ec19598bc4d2b6435a0782398e174c0ee54",
+      "dsc_verified": true,
+      "url": "https://archive.ubuntu.com/ubuntu/pool/main/e/espeak-ng/espeak-ng_1.51+dfsg-12build1.debian.tar.xz"
+    }
+  ]
+}

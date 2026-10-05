@@ -1,0 +1,97 @@
+{
+	"config": {
+		"bone_transforms": [],
+		"generator": "ImporterMesh.generate_lods",
+		"godot_version": "4.6.2-stable (official)",
+		"normal_merge_angle": 60.0,
+		"normal_split_angle": 25.0,
+		"shadow_weld": "exact Vector3 positions; remapped LOD indices"
+	},
+	"failures": [],
+	"format": 1,
+	"source_hashes": {
+		"res://scripts/landscape.gd": "4077cb6363c9d712cbb973757c7295dbb5a0a6fc211cc8b639b4ff2ebebd3907",
+		"res://scripts/pine_model.gd": "3c75b0a9c94bd97c6e41b8fc4cb3e91911f2722b977b3b057fa83b6722b59a0c",
+		"res://tools/bake_pine_meshes.gd": "138b11b4902aeb981d83606f7f2f894c08bd83fefc327465beaf4dce07d212d5"
+	},
+	"variants": [
+		{
+			"base_geometry_unchanged": true,
+			"base_triangles": 3192,
+			"base_vertices": 3482,
+			"exact_shadow_positions": true,
+			"lods": [
+				{
+					"level": 1,
+					"size": 0.110372617840767,
+					"triangles": 1596
+				},
+				{
+					"level": 2,
+					"size": 1.65144157409668,
+					"triangles": 630
+				}
+			],
+			"material_cleared": true,
+			"raw_triangles": 3192,
+			"resource": "res://assets/models/pine_0.res",
+			"resource_sha256": "33a048b604be40587237784ee0b62de1cba65df0e0534064a4a39167211bc00a",
+			"serialized_lod_count": 2,
+			"shadow_triangles": 3192,
+			"shadow_vertices": 1658,
+			"variant": 0
+		},
+		{
+			"base_geometry_unchanged": true,
+			"base_triangles": 3192,
+			"base_vertices": 3372,
+			"exact_shadow_positions": true,
+			"lods": [
+				{
+					"level": 1,
+					"size": 0.0922527462244034,
+					"triangles": 1596
+				},
+				{
+					"level": 2,
+					"size": 1.69293081760406,
+					"triangles": 498
+				}
+			],
+			"material_cleared": true,
+			"raw_triangles": 3192,
+			"resource": "res://assets/models/pine_1.res",
+			"resource_sha256": "948edd2c635d9c581222c945faf141c6ff4c73aa11037f08bae090c431943fb6",
+			"serialized_lod_count": 2,
+			"shadow_triangles": 3192,
+			"shadow_vertices": 1658,
+			"variant": 1
+		},
+		{
+			"base_geometry_unchanged": true,
+			"base_triangles": 3192,
+			"base_vertices": 3505,
+			"exact_shadow_positions": true,
+			"lods": [
+				{
+					"level": 1,
+					"size": 0.128142446279526,
+					"triangles": 1596
+				},
+				{
+					"level": 2,
+					"size": 1.44971787929535,
+					"triangles": 416
+				}
+			],
+			"material_cleared": true,
+			"raw_triangles": 3192,
+			"resource": "res://assets/models/pine_2.res",
+			"resource_sha256": "1f3a8a3c7b0ac6f298c0cdcd319006ce4d67034ed760b532fce3bc803760436a",
+			"serialized_lod_count": 2,
+			"shadow_triangles": 3192,
+			"shadow_vertices": 1658,
+			"variant": 2
+		}
+	]
+}

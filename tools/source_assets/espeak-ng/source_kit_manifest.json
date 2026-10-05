@@ -1,0 +1,240 @@
+{
+  "source_version": "1.51+dfsg-12build1",
+  "strategy": "Conservative GPLv3+ Chinese audio plus complete corresponding source; no CC0 PCM claim and no whole-game GPL inference",
+  "generator": {
+    "file": "project/generate_demo_radio.py",
+    "sha256": "08b857c8169ff8fa55038aa447881fdf4430c50bfec1253034e38458ad876aec"
+  },
+  "generated_audio_manifest": {
+    "file": "project/generated_audio_manifest.json",
+    "sha256": "ec51ea280724720fc375cf1132543d85dca919b064ee52c656efe3353e72d001"
+  },
+  "native_cmn_phoneme_waveforms": [
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ufric/f.wav",
+      "bytes": 4094,
+      "sha256": "4a8a27e4900a45080d9a4e17db3f7635490afb59be4d070231356f09ab251b4d"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ufric/sh_pzd2.wav",
+      "bytes": 5828,
+      "sha256": "9b86a8c0ab388d5f663a036a5169107805e584f56bad48df9652a5ee0c8b4eea"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ufric/sh_rfx.wav",
+      "bytes": 4956,
+      "sha256": "4f76afd0864ee6924d3acda6404f5818a6e2265b7b2fe9e01391f0f5987f3589"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/k_asp.wav",
+      "bytes": 3624,
+      "sha256": "32d3dd1a793001c410001525c88783ecbe7cdcd3f0bd27614fe4da14f8b3deb8"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/k_unasp_.wav",
+      "bytes": 1430,
+      "sha256": "ef300ea2ab78a0f9b92ca3deb0395e070e5decf641e27c473fbed12e84f67dbc"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/p_asp.wav",
+      "bytes": 2598,
+      "sha256": "cd07a01d691ef1baae8cb6291ba539641437e9e8e96747ede9af2e26b35c9ee6"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/p_unasp.wav",
+      "bytes": 1660,
+      "sha256": "fe0a16844b2cedf19adfc8483a3ff5bdd320ecb10f698582254c9b12b4c28e6b"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/t_.wav",
+      "bytes": 2468,
+      "sha256": "0465d69e3b98585a92d6ba08149be7f5be1cbe96bbdfbda7c4feb2f051a2f38c"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/t_unasp2.wav",
+      "bytes": 572,
+      "sha256": "f0fe63bfd6ac19cd6eae92b63aee89bac7b0495ec7edba85ffedf24de07b9342"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/ts.wav",
+      "bytes": 5336,
+      "sha256": "137b780584961f824419777c3a2e97b57355fd627da88226357789f93d8d8951"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/ts_rfx.wav",
+      "bytes": 6624,
+      "sha256": "9af962402938fbb408c169cdc7f00696070cc92da6a2ac280ac65b38f7f2930c"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/ts_rfx_unasp.wav",
+      "bytes": 6140,
+      "sha256": "86b6d43996b84c800e8f75c43665ba27b2c66985489b51b234b2291d0ffe8e03"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/ts_unasp.wav",
+      "bytes": 4372,
+      "sha256": "3a2654bf3d34226a72f2f6aba094d99e37861a6c065efbb9ebd9a64de79d58b6"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/tsh_pzd.wav",
+      "bytes": 5794,
+      "sha256": "fe736fbce8f1e876ee9054f820c4c6869b0307bf564750f5ae59c1e4d8ebe4a7"
+    },
+    {
+      "source_path": "espeak-ng-1.51+dfsg/phsource/ustop/tsh_pzd_unasp.wav",
+      "bytes": 4290,
+      "sha256": "72a2bc44dabecc85fb2c2af59b7e76862affb1fbf27dd70cd9205599a940ca7c"
+    }
+  ],
+  "host_build_inputs": {
+    "cmn_dict": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/cmn_dict",
+      "bytes": 1649948,
+      "sha256": "a89070f47954b46f2a33a9128a4a5c113dbd4effd52ef073e43ee2ae1ecff950"
+    },
+    "phondata": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phondata",
+      "bytes": 551064,
+      "sha256": "8bd4842d46905ac3ad4e774ba901163e689ad1bdf1cdb419d1f134ed2646395a"
+    },
+    "phonindex": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phonindex",
+      "bytes": 39068,
+      "sha256": "642d5daa128c0d08828d4352b850b8c2f06d6274b8c46c157b3a635da988aa69"
+    },
+    "phontab": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/phontab",
+      "bytes": 55900,
+      "sha256": "88799c9eedd188a63e63304b86b1abc2dc91a8ad29c19f34e3da4a3d22ab4401"
+    },
+    "intonations": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/intonations",
+      "bytes": 2040,
+      "sha256": "3f8af65fd3eda9759a10f021d61361c120871f463515229c925995c7f90918cc"
+    },
+    "lang/sit/cmn": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/lang/sit/cmn",
+      "bytes": 745,
+      "sha256": "b4424b6b0405216bc5d56183744a2b9824869d7c6b01b9919a8c1f55e537f60c"
+    },
+    "lang/sit/cmn-Latn-pinyin": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/lang/sit/cmn-Latn-pinyin",
+      "bytes": 161,
+      "sha256": "14c2fc097db280416b688c2bf97de2e5da532c279754020fde7bf6cd624cdd10"
+    },
+    "voices/!v/m3": {
+      "path": "/usr/lib/x86_64-linux-gnu/espeak-ng-data/voices/!v/m3",
+      "bytes": 300,
+      "sha256": "7a4ac872387439814ddd65f5e1ff73017122975911df6b5dc62c5709e6fdb611"
+    },
+    "synthesis_library": {
+      "path": "/usr/lib/x86_64-linux-gnu/libespeak-ng.so.1.1.51",
+      "bytes": 495480,
+      "sha256": "a18be542512749ea11dcbb5799f0de86a4bcacc75b3a625198160f67bfd37508"
+    }
+  },
+  "distribution_instructions": "Ship this whole directory and assets/audio/licenses together with the generated radio WAVs; keep original notices and archives intact. No synthesis engine is loaded by the game.",
+  "voice_mode": "cmn-latn-pinyin+m3",
+  "waveform_outputs": [
+    {
+      "file": "project/radio/kestrel_select.wav",
+      "sha256": "f37d055a84f6c56829da92fd4cdcc3660323d4866606d9537b1c8f72d4f13992",
+      "bytes": 80726
+    },
+    {
+      "file": "project/radio/kestrel_move.wav",
+      "sha256": "8c16f3d07559053c9a33f8442f9562dad238d2fbffeacea7a3622535b301052c",
+      "bytes": 62114
+    },
+    {
+      "file": "project/radio/kestrel_attack.wav",
+      "sha256": "a516c36094e2edb6b968c23cac1b0a7b4aa69a93a5e13639c5fc24e718aefcab",
+      "bytes": 109434
+    },
+    {
+      "file": "project/radio/kestrel_ready.wav",
+      "sha256": "5403755a220fa107fb81d4b533437ee02ea1e24afb4a509a10f33d520eb7027d",
+      "bytes": 55324
+    },
+    {
+      "file": "project/radio/kestrel_return.wav",
+      "sha256": "2e2152775d21ba44f7df02a98d0aad3819fe3e9474947493c7e1a3421f57d473",
+      "bytes": 96194
+    },
+    {
+      "file": "project/radio/rivet_select.wav",
+      "sha256": "764b809896222190d0312ae93ff5e901bc88c9738d0d5454b784ab50f3987223",
+      "bytes": 75896
+    },
+    {
+      "file": "project/radio/rivet_move.wav",
+      "sha256": "1e1f981eca9b6490f9f2720d52f10e06f4b0605be6bb21f51729ac5ffc8773bd",
+      "bytes": 61454
+    },
+    {
+      "file": "project/radio/rivet_attack.wav",
+      "sha256": "3d1468b3575f6532a5513c60dbd3a4488e3581ffb33a1a7eae4446ed344bb339",
+      "bytes": 108476
+    },
+    {
+      "file": "project/radio/rivet_ready.wav",
+      "sha256": "a3924c8623a97e4b937fee0685e858de996f8490f17d5bdaace16b7d073e5964",
+      "bytes": 75830
+    },
+    {
+      "file": "project/radio/rivet_return.wav",
+      "sha256": "eaf557eb263bb09902d27c88f9ea4cec367845ed90e25f3d43bc9ebadd326988",
+      "bytes": 96238
+    },
+    {
+      "file": "project/radio/iron_select.wav",
+      "sha256": "1fc0e2b443a339294fb98adbe3e702f1b8bf24caa86c6d75b1c6c197f8ce0bba",
+      "bytes": 109986
+    },
+    {
+      "file": "project/radio/iron_move.wav",
+      "sha256": "0d0952201e78d305458a92fa8f2e547809e705599c67265fd381b569eac86059",
+      "bytes": 61556
+    },
+    {
+      "file": "project/radio/iron_attack.wav",
+      "sha256": "6a6b64359ed689a4d621d622262e0d0b3452850e763dd6016bae33dba43d73e1",
+      "bytes": 111160
+    },
+    {
+      "file": "project/radio/iron_ready.wav",
+      "sha256": "663735389f03272a820b81c21d2ee3c1d279fe5a39b75c7243cbddf376846c68",
+      "bytes": 116178
+    },
+    {
+      "file": "project/radio/iron_return.wav",
+      "sha256": "f556cf6bb5745a27dfb6159a3092798c0563e96a56da81e9ff79e348ed403a5a",
+      "bytes": 96100
+    },
+    {
+      "file": "project/radio/sky_select.wav",
+      "sha256": "b60dcd3822b9c4c5112ab5fa2c6c445b02244972c6ee3753ebece3ed3d58aa17",
+      "bytes": 81018
+    },
+    {
+      "file": "project/radio/sky_move.wav",
+      "sha256": "f7700cdb72b4d5e837ddefd57a584291a8f36cdf295d717c51cbcafc0a5e31ba",
+      "bytes": 80504
+    },
+    {
+      "file": "project/radio/sky_attack.wav",
+      "sha256": "aa1e203c6ae21df9be8224366f818e3457d664b1235d6004173d08d90bf4bf3f",
+      "bytes": 115196
+    },
+    {
+      "file": "project/radio/sky_ready.wav",
+      "sha256": "c3c7181765275c60b58a8e29915c0ac97b45b1a16a7297e9937a32b2636bce88",
+      "bytes": 62642
+    },
+    {
+      "file": "project/radio/sky_return.wav",
+      "sha256": "a04711de16455364849c59a9ffcbe0d526d498ac965e1f1fb2ef0b0901b62e83",
+      "bytes": 95890
+    }
+  ]
+}

@@ -1,0 +1,2126 @@
+{
+	"changes": [
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				101
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				101
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				101
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				52,
+				101
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				52,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				53,
+				102
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				52,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				53,
+				103
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				52,
+				104
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				52,
+				105
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				45,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				51,
+				106
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				45,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				46,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				50,
+				107
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				45,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				46,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				48,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				49,
+				108
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				45,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				46,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				109
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				44,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				2.0
+			],
+			"before": [
+				0,
+				4.0
+			],
+			"cell": [
+				47,
+				110
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				111
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				111
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				111
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				43,
+				111
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				39,
+				112
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				112
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				112
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				42,
+				112
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				39,
+				113
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				113
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				41,
+				113
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				39,
+				114
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				114
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				39,
+				115
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				115
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				39,
+				116
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				116
+			]
+		},
+		{
+			"after": [
+				0,
+				0.0
+			],
+			"before": [
+				0,
+				2.0
+			],
+			"cell": [
+				40,
+				117
+			]
+		}
+	],
+	"output": "data/golden_visual_shape_v8.json",
+	"report": {
+		"changed_cells": [
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					101
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					101
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					101
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					52,
+					101
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					52,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					53,
+					102
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					52,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					53,
+					103
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					52,
+					104
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					52,
+					105
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					106
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					106
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					106
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					106
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					51,
+					106
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					107
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					107
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					107
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					50,
+					107
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					46,
+					108
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					108
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					48,
+					108
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					49,
+					108
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					46,
+					109
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					109
+				]
+			},
+			{
+				"after_height": 2.0,
+				"before_height": 4.0,
+				"cell": [
+					47,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					104
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					104
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					105
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					105
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					105
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					105
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					106
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					106
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					106
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					106
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					45,
+					106
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					45,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					46,
+					107
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					45,
+					108
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					45,
+					109
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					44,
+					110
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					111
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					111
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					111
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					43,
+					111
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					39,
+					112
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					112
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					112
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					42,
+					112
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					39,
+					113
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					113
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					41,
+					113
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					39,
+					114
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					114
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					39,
+					115
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					115
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					39,
+					116
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					116
+				]
+			},
+			{
+				"after_height": 0.0,
+				"before_height": 2.0,
+				"cell": [
+					40,
+					117
+				]
+			}
+		],
+		"outer_cells": 52,
+		"protected_cells": 9825,
+		"upper_cells": 44
+	},
+	"source": "data/golden_visual_northforest_v7.json",
+	"validation_errors": []
+}

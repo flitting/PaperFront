@@ -1,0 +1,83 @@
+{
+	"presets": [
+		{
+			"build_ms": 31676.353,
+			"key": "b9f2234c3c152d1f0661aab0916aea61ae2795bb41a81a7bf29186c58c080aad",
+			"path": "res://assets/terrain_cache/b9f2234c3c152d1f0661aab0916aea61ae2795bb41a81a7bf29186c58c080aad.res",
+			"preset": "normal",
+			"stats": {
+				"forest_shader_lod_distance": 90.0,
+				"forest_visual_lod_distance": 90.0,
+				"ground_chunks": 398.0,
+				"prop_draws": 2312.0,
+				"prop_instances": 72724.0,
+				"resource_full_scans": 1.0,
+				"resource_updates": 24758.0,
+				"scenery_quality": "native",
+				"shadow_cap_triangles": 78430.0,
+				"terrain_cache_hit": false,
+				"terrain_cache_read_ms": 0.0,
+				"terrain_cache_write_ms": 0.0,
+				"terrain_disk_cache_hit": false,
+				"terrain_shadow_triangles": 676380.0,
+				"terrain_triangles": 1986163.0,
+				"tree_far_shadow_triangles": 12461376.0,
+				"tree_shadow_batches": 2720.0,
+				"trunk_ink_lod_distance": 140.0
+			}
+		},
+		{
+			"build_ms": 31441.329,
+			"key": "ac47219c56f26e434307e13e2cdfd2229bb0589716f158bce374b0d654bf4542",
+			"path": "res://assets/terrain_cache/ac47219c56f26e434307e13e2cdfd2229bb0589716f158bce374b0d654bf4542.res",
+			"preset": "large_hq",
+			"stats": {
+				"forest_shader_lod_distance": 90.0,
+				"forest_visual_lod_distance": 90.0,
+				"ground_chunks": 398.0,
+				"prop_draws": 2312.0,
+				"prop_instances": 72724.0,
+				"resource_full_scans": 1.0,
+				"resource_updates": 24758.0,
+				"scenery_quality": "native",
+				"shadow_cap_triangles": 78430.0,
+				"terrain_cache_hit": false,
+				"terrain_cache_read_ms": 0.0,
+				"terrain_cache_write_ms": 0.0,
+				"terrain_disk_cache_hit": false,
+				"terrain_shadow_triangles": 676380.0,
+				"terrain_triangles": 1986163.0,
+				"tree_far_shadow_triangles": 12461376.0,
+				"tree_shadow_batches": 2720.0,
+				"trunk_ink_lod_distance": 140.0
+			}
+		},
+		{
+			"build_ms": 31387.975,
+			"key": "3fda6d8699925e79fe0be086331af0dbf7565e19f6da40e9579c64f11014fae8",
+			"path": "res://assets/terrain_cache/3fda6d8699925e79fe0be086331af0dbf7565e19f6da40e9579c64f11014fae8.res",
+			"preset": "eight_owners",
+			"stats": {
+				"forest_shader_lod_distance": 90.0,
+				"forest_visual_lod_distance": 90.0,
+				"ground_chunks": 398.0,
+				"prop_draws": 2312.0,
+				"prop_instances": 72724.0,
+				"resource_full_scans": 1.0,
+				"resource_updates": 24758.0,
+				"scenery_quality": "native",
+				"shadow_cap_triangles": 78430.0,
+				"terrain_cache_hit": false,
+				"terrain_cache_read_ms": 0.0,
+				"terrain_cache_write_ms": 0.0,
+				"terrain_disk_cache_hit": false,
+				"terrain_shadow_triangles": 676380.0,
+				"terrain_triangles": 1986027.0,
+				"tree_far_shadow_triangles": 12461376.0,
+				"tree_shadow_batches": 2720.0,
+				"trunk_ink_lod_distance": 140.0
+			}
+		}
+	],
+	"schema": 1.0
+}

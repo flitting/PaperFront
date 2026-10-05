@@ -1,0 +1,21 @@
+--- a/binding_generator.py
++++ b/binding_generator.py
+@@ -1276,6 +1276,7 @@
+     # Copy assignment.
+     if copy_constructor_index >= 0:
+         result.append(f"{class_name} &{class_name}::operator=(const {class_name} &p_other) {{")
++        result.append("\tif (this == &p_other) { return *this; }")
+         if builtin_api["has_destructor"]:
+             result.append("\t_method_bindings.destructor(&opaque);")
+         (encode, arg_name) = get_encoded_arg(
+@@ -1293,7 +1294,10 @@
+ 
+     # Move assignment.
+     result.append(f"{class_name} &{class_name}::operator=({class_name} &&p_other) {{")
++    result.append("\tif (this == &p_other) { return *this; }")
+     if needs_copy_instead_of_move(class_name) and copy_constructor_index >= 0:
++        if builtin_api["has_destructor"]:
++            result.append("\t_method_bindings.destructor(&opaque);")
+         result.append(
+             f"\tinternal::_call_builtin_constructor(_method_bindings.constructor_{copy_constructor_index}, &opaque, &p_other);"
+         )

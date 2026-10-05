@@ -1,0 +1,346 @@
+{
+  "version": 2,
+  "license": "CC0-1.0",
+  "origin": "project-authored mathematical synthesis",
+  "generator": "tools/generate_demo_music.py",
+  "generator_sha256": "bb13f4f17fe0b128b821038023c03db29a64596097a9f24c1994c9274b5790cd",
+  "seed": 73027,
+  "format": "mono 22050 Hz signed 16-bit PCM WAV",
+  "external_samples": false,
+  "melody": "Original independent battlefield themes, spacious phrasing and low-register sine timbres",
+  "map_tracks": {
+    "forest": "battle_forest",
+    "desert": "battle_desert",
+    "snow": "battle_snow",
+    "city": "battle_city",
+    "random_city": "battle_random_city",
+    "islands": "battle_islands",
+    "campaign": "battle_campaign"
+  },
+  "tracks": [
+    {
+      "scene": "menu",
+      "title": "折纸灯下",
+      "map_id": "",
+      "path": "res://assets/audio/music/menu.wav",
+      "bpm": 76,
+      "bars": 16,
+      "frames": 1114105,
+      "duration_s": 50.526304,
+      "events": 148,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.53,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 99.653,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "1de9096f56590e0076297ce1a03dc5255bc3ee48447f3d90309409e216946e4b"
+    },
+    {
+      "scene": "battle",
+      "title": "桌面行军",
+      "map_id": "",
+      "path": "res://assets/audio/music/battle.wav",
+      "bpm": 78,
+      "bars": 16,
+      "frames": 1085538,
+      "duration_s": 49.230748,
+      "events": 148,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.723,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 104.349,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "1f491d6eda21301979afc89d401ce9890272c8592b129ddffde03ab2953f50a0"
+    },
+    {
+      "scene": "battle_forest",
+      "title": "溪谷慢行",
+      "map_id": "forest",
+      "path": "res://assets/audio/music/battle_forest.wav",
+      "bpm": 76,
+      "bars": 24,
+      "frames": 1671158,
+      "duration_s": 75.789478,
+      "events": 222,
+      "melody_midi_range": [
+        36,
+        64
+      ],
+      "melody_hz_range": [
+        65.406,
+        329.628
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.61,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 106.702,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "df933241d065207db70f7dff4b3690a0630387a8e02c4fd6939eb4f9b9cebf65"
+    },
+    {
+      "scene": "battle_desert",
+      "title": "砂岸微风",
+      "map_id": "desert",
+      "path": "res://assets/audio/music/battle_desert.wav",
+      "bpm": 72,
+      "bars": 24,
+      "frames": 1764000,
+      "duration_s": 80.0,
+      "events": 222,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -14.805,
+      "rms_dbfs": -26.02,
+      "spectral_centroid_hz": 107.424,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "848765e4702c93e7c82fa62d53d0ec0bf5e7f11a69dff8e68a5f98ef66bcc73f"
+    },
+    {
+      "scene": "battle_snow",
+      "title": "雪河缓流",
+      "map_id": "snow",
+      "path": "res://assets/audio/music/battle_snow.wav",
+      "bpm": 68,
+      "bars": 24,
+      "frames": 1867765,
+      "duration_s": 84.705896,
+      "events": 174,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.218,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 119.401,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "0723f5f5d75af4b4d6655db90e570147fe2cb53800c1ce2d8c58fbbdeaa37b3d"
+    },
+    {
+      "scene": "battle_city",
+      "title": "纸城夜灯",
+      "map_id": "city",
+      "path": "res://assets/audio/music/battle_city.wav",
+      "bpm": 80,
+      "bars": 24,
+      "frames": 1587600,
+      "duration_s": 72.0,
+      "events": 222,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.311,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 107.591,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "6c1d25f2baab5125ed286b209c5b464ec0d2cbb1297defaff37e4124ec5efc5b"
+    },
+    {
+      "scene": "battle_random_city",
+      "title": "街角新页",
+      "map_id": "random_city",
+      "path": "res://assets/audio/music/battle_random_city.wav",
+      "bpm": 78,
+      "bars": 24,
+      "frames": 1628308,
+      "duration_s": 73.846168,
+      "events": 222,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.194,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 104.517,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "5f13c60018c4e67bc951e4c9bfb07615fb39cbcf9efd2cd4efe56d9eba28d98c"
+    },
+    {
+      "scene": "battle_islands",
+      "title": "远海轻舟",
+      "map_id": "islands",
+      "path": "res://assets/audio/music/battle_islands.wav",
+      "bpm": 74,
+      "bars": 24,
+      "frames": 1716324,
+      "duration_s": 77.837823,
+      "events": 222,
+      "melody_midi_range": [
+        36,
+        64
+      ],
+      "melody_hz_range": [
+        65.406,
+        329.628
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.487,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 103.393,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "1f45f0d4f048234b442e3031c94b9d14a502f42e7d8d0ec071ff5d56a1897ecd"
+    },
+    {
+      "scene": "battle_campaign",
+      "title": "第一张蓝图",
+      "map_id": "campaign",
+      "path": "res://assets/audio/music/battle_campaign.wav",
+      "bpm": 72,
+      "bars": 16,
+      "frames": 1176000,
+      "duration_s": 53.333333,
+      "events": 148,
+      "melody_midi_range": [
+        36,
+        62
+      ],
+      "melody_hz_range": [
+        65.406,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.938,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 99.739,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "890b9782d1a3b217db2c3007735709d67a2c70f0066f3b87dc32cd52682ebd1b"
+    },
+    {
+      "scene": "win",
+      "title": "归队灯火",
+      "map_id": "",
+      "path": "res://assets/audio/music/win.wav",
+      "bpm": 80,
+      "bars": 8,
+      "frames": 529200,
+      "duration_s": 24.0,
+      "events": 74,
+      "melody_midi_range": [
+        48,
+        64
+      ],
+      "melody_hz_range": [
+        130.813,
+        329.628
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.863,
+      "rms_dbfs": -26.02,
+      "spectral_centroid_hz": 120.384,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "31406788848f3922c62de46dd1ff42d8684133bb63a5747f8091e13116488a63"
+    },
+    {
+      "scene": "lose",
+      "title": "合上这一页",
+      "map_id": "",
+      "path": "res://assets/audio/music/lose.wav",
+      "bpm": 64,
+      "bars": 8,
+      "frames": 661500,
+      "duration_s": 30.0,
+      "events": 58,
+      "melody_midi_range": [
+        48,
+        59
+      ],
+      "melody_hz_range": [
+        130.813,
+        246.942
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.762,
+      "rms_dbfs": -26.021,
+      "spectral_centroid_hz": 126.128,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "1c8db07c8fa15326708e5142e82262ff756cfa23d5c33d851ab20d4c6bddf64e"
+    },
+    {
+      "scene": "draw",
+      "title": "等候下一页",
+      "map_id": "",
+      "path": "res://assets/audio/music/draw.wav",
+      "bpm": 70,
+      "bars": 8,
+      "frames": 604800,
+      "duration_s": 27.428571,
+      "events": 74,
+      "melody_midi_range": [
+        48,
+        62
+      ],
+      "melody_hz_range": [
+        130.813,
+        293.665
+      ],
+      "minimum_attack_ms": 45,
+      "lowpass_hz": 1300,
+      "peak_dbfs": -15.801,
+      "rms_dbfs": -26.02,
+      "spectral_centroid_hz": 108.346,
+      "energy_above_4khz_percent": 2e-06,
+      "seam_delta_pcm": 0,
+      "sha256": "f66fc18a869bd93b3d72f88b2e5a6fd0360a380caef957e83b3bc740bc7d5b1e"
+    }
+  ]
+}

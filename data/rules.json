@@ -1,0 +1,5456 @@
+{
+  "version": 2,
+  "economy": {
+    "initial_money": 4000,
+    "ore_capacity": 3000,
+    "ore_regen": 0,
+    "harvester_capacity": 500,
+    "harvest_rate": 25,
+    "ore_value": 1,
+    "low_power_multiplier": 0.5,
+    "construction_animation": 1.5,
+    "sell_ratio": 0.5,
+    "repair_rate": 0.02,
+    "repair_cost": 0.2,
+    "bridge_hp": 1200,
+    "bridge_cost": 400,
+    "bridge_time": 10,
+    "build_radius": 12,
+    "construction_radii": {
+      "hq": 24,
+      "outpost": 20,
+      "default": 6,
+      "wall": 3,
+      "barricade": 3
+    },
+    "fire_angle": 15,
+    "cell_size": 1,
+    "minimum_shell_time": 0.2
+  },
+  "factions": {
+    "kestrel": {
+      "name": "正典军团",
+      "mark": "wing",
+      "color": "2865a5",
+      "motto": "按图建造，按令前进。",
+      "description": "均衡协同、工程保障与机动支援。",
+      "legacy_id": "kestrel",
+      "traits": {
+        "cohesion_radius": 5.0,
+        "cohesion_min_allies": 2,
+        "cohesion_damage_bonus": 0.08
+      }
+    },
+    "rivet": {
+      "name": "重锤军团",
+      "mark": "hammer",
+      "color": "bb4034",
+      "motto": "让胜利作证。",
+      "description": "厚重推进、炮火压制与强行突破。",
+      "legacy_id": "rivet",
+      "traits": {
+        "breakthrough_distance": 5.0,
+        "breakthrough_window": 4.0,
+        "breakthrough_damage_bonus": 0.2
+      }
+    },
+    "iron": {
+      "name": "铁钉同盟",
+      "mark": "nail",
+      "color": "bb963e",
+      "motto": "放心，不会散架的。",
+      "description": "像认真工匠一样可靠的工业军团；厚实结构、标准备件和野战保障支撑稳步推进，装备与战友都值得认真维护。",
+      "legacy_id": "iron",
+      "traits": {
+        "damage_reduction": 0.1,
+        "regen_delay": 6.0,
+        "regen_fraction_per_second": 0.012
+      }
+    },
+    "sky": {
+      "name": "天翼教团",
+      "mark": "skywing",
+      "color": "67578b",
+      "motto": "想象即是现实。",
+      "description": "掌握先进技术的纸模军团；纸盒、粗纸筒与歪折板构成朴素外壳，通过目标标定、局部蓄能和航空机动取得战斗优势。",
+      "legacy_id": "sky"
+    }
+  },
+  "units": {
+    "rivet_rifle": {
+      "name": "突击兵",
+      "faction": "rivet",
+      "cost": 120,
+      "hp": 100,
+      "speed": 2.4,
+      "build_time": 5,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "rivet_rifle",
+      "crush": false,
+      "crushable": true,
+      "art": "rifle",
+      "animations": {
+        "idle": "res://assets/cards/rivet_rifle_idle.svg",
+        "move": "res://assets/cards/rivet_rifle_move.svg",
+        "attack": "res://assets/cards/rivet_rifle_attack.svg",
+        "hit": "res://assets/cards/rivet_rifle_hit.svg",
+        "death": "res://assets/cards/rivet_rifle_death.svg"
+      },
+      "formal_name": "不容置疑式突击兵",
+      "description": "耐用基础步兵，伴随重装推进并保护侧翼；不适合单独迎击装甲。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "突击兵听候号令。"
+        ],
+        "move": [
+          "推进命令有效。"
+        ],
+        "attack": [
+          "压制抵抗目标。"
+        ],
+        "ready": [
+          "突击编制完成。"
+        ]
+      }
+    },
+    "rivet_anti": {
+      "name": "破甲兵",
+      "faction": "rivet",
+      "cost": 220,
+      "hp": 95,
+      "speed": 2.2,
+      "build_time": 8,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "rivet_anti",
+      "crush": false,
+      "crushable": true,
+      "art": "anti",
+      "animations": {
+        "idle": "res://assets/cards/rivet_anti_idle.svg",
+        "move": "res://assets/cards/rivet_anti_move.svg",
+        "attack": "res://assets/cards/rivet_anti_attack.svg",
+        "hit": "res://assets/cards/rivet_anti_hit.svg",
+        "death": "res://assets/cards/rivet_anti_death.svg"
+      },
+      "formal_name": "破甲作业组",
+      "description": "低成本反装甲步兵，保护重坦免遭侧袭；装填慢，需突击兵掩护。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "破甲作业组待命。"
+        ],
+        "move": [
+          "跟随装甲前进。"
+        ],
+        "attack": [
+          "击穿目标防护。"
+        ],
+        "ready": [
+          "破甲器材验收完成。"
+        ]
+      }
+    },
+    "rivet_tank": {
+      "name": "锤头坦克",
+      "faction": "rivet",
+      "cost": 1100,
+      "hp": 650,
+      "speed": 2.8,
+      "build_time": 18,
+      "radius": 0.75,
+      "turn_speed": 90,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "rivet_tank",
+      "crush": true,
+      "crushable": false,
+      "art": "tank",
+      "animations": {
+        "idle": "res://assets/cards/rivet_tank_portrait.png",
+        "move": "res://assets/cards/rivet_tank_move.svg",
+        "attack": "res://assets/cards/rivet_tank_attack.svg",
+        "hit": "res://assets/cards/rivet_tank_hit.svg",
+        "death": "res://assets/cards/rivet_tank_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 150,
+      "formal_name": "无可辩驳式重型坦克",
+      "description": "高耐久主力突破载具，独立炮塔可移动开火；成本和转场速度限制持续推进。",
+      "domain": "ground",
+      "armor_class": "armored",
+      "voices": {
+        "select": [
+          "重型装甲等待号令。"
+        ],
+        "move": [
+          "推进命令有效。"
+        ],
+        "attack": [
+          "以火力确认结果。"
+        ],
+        "ready": [
+          "锤头坦克验收完毕。"
+        ]
+      }
+    },
+    "rivet_harvester": {
+      "name": "矿车",
+      "faction": "rivet",
+      "cost": 700,
+      "hp": 550,
+      "speed": 3.0,
+      "build_time": 14,
+      "radius": 0.75,
+      "turn_speed": 120,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "art": "harvester",
+      "animations": {
+        "idle": "res://assets/cards/rivet_harvester_portrait.png",
+        "move": "res://assets/cards/rivet_harvester_move.svg",
+        "attack": "res://assets/cards/rivet_harvester_attack.svg",
+        "hit": "res://assets/cards/rivet_harvester_hit.svg",
+        "death": "res://assets/cards/rivet_harvester_death.svg"
+      },
+      "formal_name": "重载采集车",
+      "description": "从无限水晶柱采矿并向精炼厂交付；每柱同一时刻只有一辆矿车开采，敌我双方共用采矿位。",
+      "domain": "ground",
+      "armor_class": "armored",
+      "voices": {
+        "select": [
+          "信仰坚定。货舱已备。"
+        ],
+        "move": [
+          "重载运输开始。"
+        ],
+        "attack": [
+          "矿运请求掩护。"
+        ],
+        "ready": [
+          "重载采集车交付。"
+        ]
+      }
+    },
+    "rivet_engineer": {
+      "name": "工兵",
+      "faction": "rivet",
+      "cost": 180,
+      "hp": 75,
+      "speed": 2.3,
+      "build_time": 7,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": true,
+      "art": "engineer",
+      "animations": {
+        "idle": "res://assets/cards/rivet_engineer_idle.svg",
+        "move": "res://assets/cards/rivet_engineer_move.svg",
+        "attack": "res://assets/cards/rivet_engineer_attack.svg",
+        "hit": "res://assets/cards/rivet_engineer_hit.svg",
+        "death": "res://assets/cards/rivet_engineer_death.svg"
+      },
+      "formal_name": "军工勤务兵",
+      "description": "抵达后立即修满友方建筑、占领敌方建筑（含防御塔，排除围墙和拒马）；可搭建、修建和接手分基地脚手架，并维修桥梁与友方地面单位。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "军工勤务，检查完毕。"
+        ],
+        "move": [
+          "作业命令有效。"
+        ],
+        "attack": [
+          "申请装甲掩护。"
+        ],
+        "ready": [
+          "军工勤务兵报到。"
+        ]
+      },
+      "repair_rate": 8,
+      "repair_radius": 1.8
+    },
+    "rivet_assault": {
+      "name": "理由炮",
+      "faction": "rivet",
+      "cost": 1500,
+      "hp": 1200,
+      "speed": 1.8,
+      "build_time": 28,
+      "radius": 0.95,
+      "turn_speed": 90,
+      "producer": "factory",
+      "requires": [
+        "rivet_tech"
+      ],
+      "weapon": "rivet_assault",
+      "crush": true,
+      "crushable": false,
+      "art": "assault",
+      "animations": {
+        "idle": "res://assets/cards/rivet_assault_portrait.png",
+        "move": "res://assets/cards/rivet_assault_move.svg",
+        "attack": "res://assets/cards/rivet_assault_attack.svg",
+        "hit": "res://assets/cards/rivet_assault_hit.svg",
+        "death": "res://assets/cards/rivet_assault_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 105,
+      "formal_name": "充分理由式攻城炮",
+      "description": "厚装甲范围火力，针对建筑与密集阵地；需要防空保护，转场缓慢。",
+      "domain": "ground",
+      "armor_class": "armored",
+      "voices": {
+        "select": [
+          "理由已备齐，等待提交。"
+        ],
+        "move": [
+          "理由炮进入阵位。"
+        ],
+        "attack": [
+          "向目标提交充分理由。"
+        ],
+        "ready": [
+          "攻城理由准备完成。"
+        ]
+      }
+    },
+    "kestrel_rifle": {
+      "name": "步枪兵",
+      "faction": "kestrel",
+      "cost": 90,
+      "hp": 80,
+      "speed": 2.8,
+      "build_time": 4.5,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "kestrel_rifle",
+      "crush": false,
+      "crushable": true,
+      "art": "rifle",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_rifle_idle.svg",
+        "move": "res://assets/cards/kestrel_rifle_move.svg",
+        "attack": "res://assets/cards/kestrel_rifle_attack.svg",
+        "hit": "res://assets/cards/kestrel_rifle_hit.svg",
+        "death": "res://assets/cards/kestrel_rifle_death.svg"
+      },
+      "formal_name": "合格步兵",
+      "description": "可靠的基础步兵，支援工程与装甲；适合对付步兵，避开坦克与范围炮火。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "检定合格，等待命令。"
+        ],
+        "move": [
+          "按令前进，保持队形。"
+        ],
+        "attack": [
+          "目标已确认，开始处置。"
+        ],
+        "ready": [
+          "合格步兵报到。"
+        ]
+      }
+    },
+    "kestrel_anti": {
+      "name": "穿甲兵",
+      "faction": "kestrel",
+      "cost": 210,
+      "hp": 80,
+      "speed": 2.6,
+      "build_time": 7,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "kestrel_anti",
+      "crush": false,
+      "crushable": true,
+      "art": "anti",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_anti_idle.svg",
+        "move": "res://assets/cards/kestrel_anti_move.svg",
+        "attack": "res://assets/cards/kestrel_anti_attack.svg",
+        "hit": "res://assets/cards/kestrel_anti_hit.svg",
+        "death": "res://assets/cards/kestrel_anti_death.svg"
+      },
+      "formal_name": "穿甲作业组",
+      "description": "远程反装甲步兵；以慢速穿甲弹打击车辆，单独面对大量步兵时脆弱。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "穿甲作业组就位。"
+        ],
+        "move": [
+          "携装转移，保护侧翼。"
+        ],
+        "attack": [
+          "装甲参数已核实。"
+        ],
+        "ready": [
+          "穿甲作业组通过检验。"
+        ]
+      }
+    },
+    "kestrel_tank": {
+      "name": "答案坦克",
+      "faction": "kestrel",
+      "cost": 760,
+      "hp": 480,
+      "speed": 3.5,
+      "build_time": 16,
+      "radius": 0.75,
+      "turn_speed": 120,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "kestrel_tank",
+      "crush": true,
+      "crushable": false,
+      "art": "tank",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_tank_portrait.png",
+        "move": "res://assets/cards/kestrel_tank_move.svg",
+        "attack": "res://assets/cards/kestrel_tank_attack.svg",
+        "hit": "res://assets/cards/kestrel_tank_hit.svg",
+        "death": "res://assets/cards/kestrel_tank_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 180,
+      "formal_name": "标准答案式主战坦克",
+      "description": "均衡主战装甲，独立炮塔可在移动中射击；通过转场和工程维修对抗重型坦克。",
+      "domain": "ground",
+      "armor_class": "armored",
+      "voices": {
+        "select": [
+          "标准答案已就位，等待提出问题。"
+        ],
+        "move": [
+          "按核准路线转场。"
+        ],
+        "attack": [
+          "正在提交标准答案。"
+        ],
+        "ready": [
+          "标准答案通过验收。"
+        ]
+      }
+    },
+    "kestrel_harvester": {
+      "name": "矿车",
+      "faction": "kestrel",
+      "cost": 600,
+      "hp": 420,
+      "speed": 3.0,
+      "build_time": 13,
+      "radius": 0.75,
+      "turn_speed": 120,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "art": "harvester",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_harvester_portrait.png",
+        "move": "res://assets/cards/kestrel_harvester_move.svg",
+        "attack": "res://assets/cards/kestrel_harvester_attack.svg",
+        "hit": "res://assets/cards/kestrel_harvester_hit.svg",
+        "death": "res://assets/cards/kestrel_harvester_death.svg"
+      },
+      "formal_name": "军需采集车",
+      "description": "从无限水晶柱采矿并向精炼厂交付；每柱同一时刻只有一辆矿车开采，敌我双方共用采矿位。",
+      "domain": "ground",
+      "armor_class": "armored",
+      "voices": {
+        "select": [
+          "军需采集车待命。"
+        ],
+        "move": [
+          "运输路线已经核准。"
+        ],
+        "attack": [
+          "请求护送矿运。"
+        ],
+        "ready": [
+          "采集车验收完成。"
+        ]
+      }
+    },
+    "kestrel_engineer": {
+      "name": "工兵",
+      "faction": "kestrel",
+      "cost": 160,
+      "hp": 65,
+      "speed": 2.7,
+      "build_time": 6,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": true,
+      "art": "engineer",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_engineer_idle.svg",
+        "move": "res://assets/cards/kestrel_engineer_move.svg",
+        "attack": "res://assets/cards/kestrel_engineer_attack.svg",
+        "hit": "res://assets/cards/kestrel_engineer_hit.svg",
+        "death": "res://assets/cards/kestrel_engineer_death.svg"
+      },
+      "formal_name": "工程勤务兵",
+      "description": "抵达后立即修满友方建筑、占领敌方建筑（含防御塔，排除围墙和拒马）；可搭建、修建和接手分基地脚手架，并维修桥梁与友方地面单位。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "检验通过，可以承重。"
+        ],
+        "move": [
+          "工程勤务组前往现场。"
+        ],
+        "attack": [
+          "请提供作业掩护。"
+        ],
+        "ready": [
+          "工具校准完毕。"
+        ]
+      },
+      "repair_rate": 10,
+      "repair_radius": 1.8
+    },
+    "kestrel_demolition": {
+      "name": "爆破兵",
+      "faction": "kestrel",
+      "cost": 300,
+      "hp": 90,
+      "speed": 2.8,
+      "build_time": 9,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [
+        "kestrel_tech"
+      ],
+      "weapon": "kestrel_demolition",
+      "crush": false,
+      "crushable": true,
+      "art": "demolition",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_demolition_idle.svg",
+        "move": "res://assets/cards/kestrel_demolition_move.svg",
+        "attack": "res://assets/cards/kestrel_demolition_attack.svg",
+        "hit": "res://assets/cards/kestrel_demolition_hit.svg",
+        "death": "res://assets/cards/kestrel_demolition_death.svg"
+      },
+      "formal_name": "定点拆除作业组",
+      "description": "研究所解锁的近程范围步兵，清除密集步兵和障碍；无法攻击空军。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "拆除范围已核定。"
+        ],
+        "move": [
+          "转移爆破器材。"
+        ],
+        "attack": [
+          "安全界限已划定。"
+        ],
+        "ready": [
+          "拆除作业组报到。"
+        ]
+      }
+    },
+    "kestrel_scout": {
+      "name": "巡逻车",
+      "faction": "kestrel",
+      "cost": 300,
+      "hp": 180,
+      "speed": 5.6,
+      "build_time": 9,
+      "radius": 0.65,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "kestrel_scout",
+      "crush": false,
+      "crushable": false,
+      "art": "scout",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_scout_portrait.png",
+        "move": "res://assets/cards/kestrel_scout_move.svg",
+        "attack": "res://assets/cards/kestrel_scout_attack.svg",
+        "hit": "res://assets/cards/kestrel_scout_hit.svg",
+        "death": "res://assets/cards/kestrel_scout_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 180,
+      "formal_name": "巡察式装甲车",
+      "description": "高速侦察与轻型反步兵支援；装甲薄，避免与主战坦克正面对射；可搭载1名地面步兵（含工兵和反甲兵）。",
+      "voices": {
+        "select": [
+          "巡察路线等待批准。"
+        ],
+        "move": [
+          "巡察车前出。"
+        ],
+        "attack": [
+          "发现偏差，立即报告。"
+        ],
+        "ready": [
+          "巡察车准备完毕。"
+        ]
+      },
+      "transport_capacity": 1
+    },
+    "kestrel_aa": {
+      "name": "护空车",
+      "faction": "kestrel",
+      "cost": 600,
+      "hp": 320,
+      "speed": 3.6,
+      "build_time": 15,
+      "radius": 0.85,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "kestrel_aa",
+      "crush": false,
+      "crushable": false,
+      "art": "aa",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_aa_portrait.png",
+        "move": "res://assets/cards/kestrel_aa_move.svg",
+        "attack": "res://assets/cards/kestrel_aa_attack.svg",
+        "hit": "res://assets/cards/kestrel_aa_hit.svg",
+        "death": "res://assets/cards/kestrel_aa_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 180,
+      "formal_name": "护空式防空车",
+      "description": "机动防空导弹平台，只能攻击空中目标；随队掩护，不能代替地面坦克。",
+      "voices": {
+        "select": [
+          "获准天空由我们维护。"
+        ],
+        "move": [
+          "护空车跟随主队。"
+        ],
+        "attack": [
+          "空中目标偏离许可。"
+        ],
+        "ready": [
+          "护空系统上线。"
+        ]
+      }
+    },
+    "kestrel_fighter": {
+      "name": "航向战机",
+      "faction": "kestrel",
+      "cost": 950,
+      "hp": 300,
+      "speed": 9.5,
+      "build_time": 22,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "kestrel_command"
+      ],
+      "weapon": "kestrel_fighter",
+      "crush": false,
+      "crushable": false,
+      "art": "fighter",
+      "domain": "air",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_fighter_portrait.png",
+        "move": "res://assets/cards/kestrel_fighter_move.svg",
+        "attack": "res://assets/cards/kestrel_fighter_attack.svg",
+        "hit": "res://assets/cards/kestrel_fighter_hit.svg",
+        "death": "res://assets/cards/kestrel_fighter_death.svg"
+      },
+      "has_turret": false,
+      "fire_while_moving": false,
+      "flight_height": 4,
+      "ammo_capacity": 8,
+      "rearm_time": 6,
+      "formal_name": "正确航向式截击机",
+      "description": "高速制空截击机，只攻击空军；八发弹药耗尽后自动返航，机场补给受电力影响。",
+      "voices": {
+        "select": [
+          "正确航向，等待许可。"
+        ],
+        "move": [
+          "航向已核准。"
+        ],
+        "attack": [
+          "截击许可已确认。"
+        ],
+        "ready": [
+          "航向战机准备升空。"
+        ],
+        "return": [
+          "弹药耗尽，申请返回补给。"
+        ]
+      }
+    },
+    "kestrel_advanced": {
+      "name": "校对炮",
+      "faction": "kestrel",
+      "cost": 2000,
+      "hp": 620,
+      "speed": 2.1,
+      "build_time": 36,
+      "radius": 0.85,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [
+        "kestrel_tech",
+        "kestrel_command"
+      ],
+      "weapon": "kestrel_advanced",
+      "crush": false,
+      "crushable": false,
+      "art": "advanced",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_advanced_portrait.png",
+        "move": "res://assets/cards/kestrel_advanced_move.svg",
+        "attack": "res://assets/cards/kestrel_advanced_attack.svg",
+        "hit": "res://assets/cards/kestrel_advanced_hit.svg",
+        "death": "res://assets/cards/kestrel_advanced_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": false,
+      "turret_turn_speed": 180,
+      "formal_name": "最终校对电磁炮",
+      "description": "指挥中心与研究所解锁的重型电磁平台；长射程穿甲，无对空能力，造价高且移动缓慢。",
+      "voices": {
+        "select": [
+          "最终校对，等待原稿。"
+        ],
+        "move": [
+          "校对平台转移。"
+        ],
+        "attack": [
+          "执行最终校对。"
+        ],
+        "ready": [
+          "电磁导轨校准完成。"
+        ]
+      }
+    },
+    "rivet_scout": {
+      "name": "侦察车",
+      "faction": "rivet",
+      "cost": 360,
+      "hp": 240,
+      "speed": 4.6,
+      "build_time": 9,
+      "radius": 0.65,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "rivet_scout",
+      "crush": false,
+      "crushable": false,
+      "art": "scout",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/rivet_scout_portrait.png",
+        "move": "res://assets/cards/rivet_scout_move.svg",
+        "attack": "res://assets/cards/rivet_scout_attack.svg",
+        "hit": "res://assets/cards/rivet_scout_hit.svg",
+        "death": "res://assets/cards/rivet_scout_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 180,
+      "formal_name": "前导侦察车",
+      "description": "为装甲集团探路的轻型支援车辆；擅长侦察和反步兵，无法承受主战火力；可搭载1名地面步兵（含工兵和反甲兵）。",
+      "voices": {
+        "select": [
+          "前导侦察等待号令。"
+        ],
+        "move": [
+          "前导车确认道路。"
+        ],
+        "attack": [
+          "目标位置已经呈报。"
+        ],
+        "ready": [
+          "前导侦察车出厂。"
+        ]
+      },
+      "transport_capacity": 1
+    },
+    "rivet_aa": {
+      "name": "拒飞车",
+      "faction": "rivet",
+      "cost": 720,
+      "hp": 420,
+      "speed": 2.8,
+      "build_time": 15,
+      "radius": 0.85,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "rivet_aa",
+      "crush": false,
+      "crushable": false,
+      "art": "aa",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/rivet_aa_portrait.png",
+        "move": "res://assets/cards/rivet_aa_move.svg",
+        "attack": "res://assets/cards/rivet_aa_attack.svg",
+        "hit": "res://assets/cards/rivet_aa_hit.svg",
+        "death": "res://assets/cards/rivet_aa_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": true,
+      "turret_turn_speed": 180,
+      "formal_name": "拒绝通行式防空车",
+      "description": "厚重防空导弹平台，只攻击空军；覆盖推进集团，面对地面兵力需队友保护。",
+      "voices": {
+        "select": [
+          "本空域拒绝通行。"
+        ],
+        "move": [
+          "拒飞车随队推进。"
+        ],
+        "attack": [
+          "撤销目标通行资格。"
+        ],
+        "ready": [
+          "拒飞平台准备完成。"
+        ]
+      }
+    },
+    "rivet_fighter": {
+      "name": "拦截战机",
+      "faction": "rivet",
+      "cost": 1100,
+      "hp": 400,
+      "speed": 8,
+      "build_time": 22,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "rivet_command"
+      ],
+      "weapon": "rivet_fighter",
+      "crush": false,
+      "crushable": false,
+      "art": "fighter",
+      "domain": "air",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/rivet_fighter_portrait.png",
+        "move": "res://assets/cards/rivet_fighter_move.svg",
+        "attack": "res://assets/cards/rivet_fighter_attack.svg",
+        "hit": "res://assets/cards/rivet_fighter_hit.svg",
+        "death": "res://assets/cards/rivet_fighter_death.svg"
+      },
+      "has_turret": false,
+      "fire_while_moving": false,
+      "flight_height": 4,
+      "ammo_capacity": 8,
+      "rearm_time": 6,
+      "formal_name": "终止通行式截击机",
+      "description": "耐久制空战机，只攻击空军；八发弹药后自动返航，机场被毁需转降其他机场。",
+      "voices": {
+        "select": [
+          "终止通行，等待命令。"
+        ],
+        "move": [
+          "拦截航线确认。"
+        ],
+        "attack": [
+          "目标通行到此结束。"
+        ],
+        "ready": [
+          "拦截战机交付。"
+        ],
+        "return": [
+          "返回机场，准备再次出动。"
+        ]
+      }
+    },
+    "rivet_advanced": {
+      "name": "终审炮",
+      "faction": "rivet",
+      "cost": 2300,
+      "hp": 950,
+      "speed": 1.6,
+      "build_time": 36,
+      "radius": 0.85,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [
+        "rivet_tech",
+        "rivet_command"
+      ],
+      "weapon": "rivet_advanced",
+      "crush": false,
+      "crushable": false,
+      "art": "advanced",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/rivet_advanced_portrait.png",
+        "move": "res://assets/cards/rivet_advanced_move.svg",
+        "attack": "res://assets/cards/rivet_advanced_attack.svg",
+        "hit": "res://assets/cards/rivet_advanced_hit.svg",
+        "death": "res://assets/cards/rivet_advanced_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": false,
+      "turret_turn_speed": 180,
+      "formal_name": "到此为止式重型助推炮",
+      "description": "指挥中心与研究所解锁的顶级攻城平台；射程长、建筑伤害高，成本高且需侧翼保护。",
+      "voices": {
+        "select": [
+          "终审材料已经备齐。"
+        ],
+        "move": [
+          "终审平台进入阵位。"
+        ],
+        "attack": [
+          "争议到此为止。"
+        ],
+        "ready": [
+          "重型助推炮验收完成。"
+        ]
+      }
+    },
+    "kestrel_artillery": {
+      "name": "校正炮",
+      "faction": "kestrel",
+      "cost": 1050,
+      "hp": 360,
+      "speed": 2.6,
+      "build_time": 22,
+      "radius": 0.85,
+      "turn_speed": 110,
+      "producer": "factory",
+      "requires": [
+        "kestrel_tech"
+      ],
+      "weapon": "kestrel_artillery",
+      "crush": false,
+      "crushable": false,
+      "art": "artillery",
+      "domain": "ground",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_artillery_portrait.png",
+        "move": "res://assets/cards/kestrel_artillery_move.svg",
+        "attack": "res://assets/cards/kestrel_artillery_attack.svg",
+        "hit": "res://assets/cards/kestrel_artillery_hit.svg",
+        "death": "res://assets/cards/kestrel_artillery_death.svg"
+      },
+      "has_turret": true,
+      "fire_while_moving": false,
+      "turret_turn_speed": 180,
+      "formal_name": "稍作更正式自行炮",
+      "description": "远程范围火力，移动时停止射击；适合支援和拆除阵地，近战与空袭是主要威胁。",
+      "voices": {
+        "select": [
+          "已收到坐标。开始修正。"
+        ],
+        "move": [
+          "校正炮转移阵位。"
+        ],
+        "attack": [
+          "准许修正目标。"
+        ],
+        "ready": [
+          "校正炮校准完成。"
+        ]
+      }
+    },
+    "kestrel_attacker": {
+      "name": "批准攻击机",
+      "faction": "kestrel",
+      "cost": 1250,
+      "hp": 340,
+      "speed": 7.5,
+      "build_time": 26,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "kestrel_command"
+      ],
+      "weapon": "kestrel_attacker",
+      "crush": false,
+      "crushable": false,
+      "art": "attacker",
+      "domain": "air",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_attacker_portrait.png",
+        "move": "res://assets/cards/kestrel_attacker_move.svg",
+        "attack": "res://assets/cards/kestrel_attacker_attack.svg",
+        "hit": "res://assets/cards/kestrel_attacker_hit.svg",
+        "death": "res://assets/cards/kestrel_attacker_death.svg"
+      },
+      "has_turret": false,
+      "fire_while_moving": false,
+      "flight_height": 4,
+      "ammo_capacity": 4,
+      "rearm_time": 8,
+      "formal_name": "正式批准式对地攻击机",
+      "description": "对地精确支援，擅长打击装甲；四次出击弹药，无法还击截击机，需要护航。",
+      "voices": {
+        "select": [
+          "正式批准，支援待命。"
+        ],
+        "move": [
+          "进入获准航线。"
+        ],
+        "attack": [
+          "处置权限已经确认。"
+        ],
+        "ready": [
+          "攻击机通过适航检定。"
+        ],
+        "return": [
+          "弹药耗尽，申请返回补给。"
+        ]
+      }
+    },
+    "rivet_bomber": {
+      "name": "重申轰炸机",
+      "faction": "rivet",
+      "cost": 1700,
+      "hp": 560,
+      "speed": 5.8,
+      "build_time": 32,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "rivet_command",
+        "rivet_tech"
+      ],
+      "weapon": "rivet_bomber",
+      "crush": false,
+      "crushable": false,
+      "art": "bomber",
+      "domain": "air",
+      "armor_class": "armored",
+      "animations": {
+        "idle": "res://assets/cards/rivet_bomber_portrait.png",
+        "move": "res://assets/cards/rivet_bomber_move.svg",
+        "attack": "res://assets/cards/rivet_bomber_attack.svg",
+        "hit": "res://assets/cards/rivet_bomber_hit.svg",
+        "death": "res://assets/cards/rivet_bomber_death.svg"
+      },
+      "has_turret": false,
+      "fire_while_moving": false,
+      "flight_height": 5,
+      "ammo_capacity": 2,
+      "rearm_time": 10,
+      "formal_name": "再说一遍式重轰炸机",
+      "description": "慢速对地范围轰炸机，擅长攻坚与集群打击；两轮投弹后返航，怕截击与防空。",
+      "voices": {
+        "select": [
+          "目标尚未理解。申请再次说明。"
+        ],
+        "move": [
+          "重申航线已确认。"
+        ],
+        "attack": [
+          "向目标再次说明。"
+        ],
+        "ready": [
+          "重轰炸机准备升空。"
+        ],
+        "return": [
+          "返回机场，准备再次出动。"
+        ]
+      }
+    },
+    "iron_engineer": {
+      "name": "工兵",
+      "formal_name": "工务工程勤务兵",
+      "faction": "iron",
+      "art": "engineer",
+      "cost": 165,
+      "hp": 65,
+      "speed": 2.3,
+      "build_time": 7,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_engineer_idle.svg",
+        "move": "res://assets/cards/iron_engineer_move.svg",
+        "attack": "res://assets/cards/iron_engineer_attack.svg",
+        "hit": "res://assets/cards/iron_engineer_hit.svg",
+        "death": "res://assets/cards/iron_engineer_death.svg"
+      },
+      "description": "厚工具包、护目镜和普通工业防护服；负责建筑施工、基础修复与桥梁作业，统一备件便利现场维护。",
+      "voices": {
+        "select": [
+          "工兵检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "现场条件确认，准备施工。"
+        ],
+        "ready": [
+          "工兵质量验收通过。"
+        ]
+      },
+      "repair_radius": 1.8,
+      "repair_rate": 12
+    },
+    "iron_rifle": {
+      "name": "护甲步兵",
+      "formal_name": "结实护甲式战斗步兵",
+      "faction": "iron",
+      "art": "rifle",
+      "cost": 105,
+      "hp": 85,
+      "speed": 2.4,
+      "build_time": 5,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "iron_rifle",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_rifle_idle.svg",
+        "move": "res://assets/cards/iron_rifle_move.svg",
+        "attack": "res://assets/cards/iron_rifle_attack.svg",
+        "hit": "res://assets/cards/iron_rifle_hit.svg",
+        "death": "res://assets/cards/iron_rifle_death.svg"
+      },
+      "description": "宽厚护胸、结实护肩与普通方沿头盔；以短盒体步枪稳定交战，依靠护具与战友配合保持阵线。",
+      "voices": {
+        "select": [
+          "护甲步兵检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "护甲步兵质量验收通过。"
+        ]
+      }
+    },
+    "iron_anti": {
+      "name": "反甲兵",
+      "formal_name": "稳托反装甲兵",
+      "faction": "iron",
+      "art": "anti",
+      "cost": 215,
+      "hp": 82,
+      "speed": 2.15,
+      "build_time": 8,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "iron_anti",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_anti_idle.svg",
+        "move": "res://assets/cards/iron_anti_move.svg",
+        "attack": "res://assets/cards/iron_anti_attack.svg",
+        "hit": "res://assets/cards/iron_anti_hit.svg",
+        "death": "res://assets/cards/iron_anti_death.svg"
+      },
+      "description": "粗短发射器、稳固肩托和大弹箱；从受掩护位置发射穿甲弹，宽肩护具保护普通士兵。",
+      "voices": {
+        "select": [
+          "反甲兵检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "反甲兵质量验收通过。"
+        ]
+      }
+    },
+    "iron_harvester": {
+      "name": "矿车",
+      "formal_name": "加固军需采集车",
+      "faction": "iron",
+      "art": "harvester",
+      "cost": 625,
+      "hp": 480,
+      "speed": 3.0,
+      "build_time": 15,
+      "radius": 0.75,
+      "turn_speed": 120,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_harvester_portrait.png",
+        "move": "res://assets/cards/rivet_harvester_move.svg",
+        "attack": "res://assets/cards/rivet_harvester_attack.svg",
+        "hit": "res://assets/cards/rivet_harvester_hit.svg",
+        "death": "res://assets/cards/rivet_harvester_death.svg"
+      },
+      "description": "宽轮距、结实驾驶室与加固货斗；使用统一采矿容量和辉晶交付规则，可靠底盘承担日常矿运。",
+      "voices": {
+        "select": [
+          "矿车检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "保持采集，保护货舱。"
+        ],
+        "ready": [
+          "矿车质量验收通过。"
+        ]
+      }
+    },
+    "iron_scout": {
+      "name": "巡检车",
+      "formal_name": "工务巡检式装甲车",
+      "faction": "iron",
+      "art": "scout",
+      "cost": 330,
+      "hp": 210,
+      "speed": 4.8,
+      "build_time": 9,
+      "radius": 0.65,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "iron_scout",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/iron_scout_portrait.png",
+        "move": "res://assets/cards/rivet_scout_move.svg",
+        "attack": "res://assets/cards/rivet_scout_attack.svg",
+        "hit": "res://assets/cards/rivet_scout_hit.svg",
+        "death": "res://assets/cards/rivet_scout_death.svg"
+      },
+      "description": "小型轮式底盘、明显防滚架和紧凑机枪座；快速巡检道路、护卫矿运与压制轻步兵。",
+      "voices": {
+        "select": [
+          "巡检车检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "巡检车质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145,
+      "transport_capacity": 1
+    },
+    "iron_tank": {
+      "name": "磐石坦克",
+      "formal_name": "可靠保证式主战坦克",
+      "faction": "iron",
+      "art": "tank",
+      "cost": 850,
+      "hp": 540,
+      "speed": 2.75,
+      "build_time": 18,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "iron_tank",
+      "crush": true,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/iron_tank_portrait.png",
+        "move": "res://assets/cards/rivet_tank_move.svg",
+        "attack": "res://assets/cards/rivet_tank_attack.svg",
+        "hit": "res://assets/cards/rivet_tank_hit.svg",
+        "death": "res://assets/cards/rivet_tank_death.svg"
+      },
+      "description": "短宽车体、宽履带和牢固炮塔座；结构耐久与维修保障适合稳步推进，主炮可在行进中射击。",
+      "voices": {
+        "select": [
+          "磐石坦克检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "磐石坦克质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145
+    },
+    "iron_assault": {
+      "name": "护路支援车",
+      "formal_name": "护路近程支援车",
+      "faction": "iron",
+      "art": "assault",
+      "cost": 1150,
+      "hp": 850,
+      "speed": 2.1,
+      "build_time": 25,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [
+        "iron_tech"
+      ],
+      "weapon": "iron_assault",
+      "crush": true,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/iron_assault_portrait.png",
+        "move": "res://assets/cards/rivet_assault_move.svg",
+        "attack": "res://assets/cards/rivet_assault_attack.svg",
+        "hit": "res://assets/cards/rivet_assault_hit.svg",
+        "death": "res://assets/cards/rivet_assault_death.svg"
+      },
+      "description": "短管支援炮、厚防护盾与低稳履带底盘；以近中程范围炮弹压制步兵，保障主力通行。",
+      "voices": {
+        "select": [
+          "护路支援车检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "护路支援车质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145
+    },
+    "iron_aa": {
+      "name": "护队防空车",
+      "formal_name": "护队机动防空车",
+      "faction": "iron",
+      "art": "aa",
+      "cost": 660,
+      "hp": 360,
+      "speed": 3.15,
+      "build_time": 16,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "iron_aa",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/iron_aa_portrait.png",
+        "move": "res://assets/cards/rivet_aa_move.svg",
+        "attack": "res://assets/cards/rivet_aa_attack.svg",
+        "hit": "res://assets/cards/rivet_aa_hit.svg",
+        "death": "res://assets/cards/rivet_aa_death.svg"
+      },
+      "description": "宽底盘、高仰角炮架与稳固支腿；专用防空火力护卫矿车、维修车辆与推进中的装甲部队。",
+      "voices": {
+        "select": [
+          "护队防空车检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "护队防空车质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145
+    },
+    "iron_rig": {
+      "name": "吊装工程车",
+      "formal_name": "稳架吊装工程车",
+      "faction": "iron",
+      "art": "rig",
+      "cost": 575,
+      "hp": 400,
+      "speed": 2.4,
+      "build_time": 14,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_rig_portrait.png",
+        "move": "res://assets/cards/rivet_harvester_move.svg",
+        "attack": "res://assets/cards/rivet_harvester_attack.svg",
+        "hit": "res://assets/cards/rivet_harvester_hit.svg",
+        "death": "res://assets/cards/rivet_harvester_death.svg"
+      },
+      "description": "高位吊臂、加固支柱与履带底座；以短范围低速付费维修辅助吊装检修，需靠近受损友方地面载具。",
+      "voices": {
+        "select": [
+          "这个交给我，保证能修好。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "修好还要加固，按标准检修。"
+        ],
+        "ready": [
+          "吊装工程车质量验收通过。"
+        ]
+      },
+      "repair_radius": 3,
+      "repair_rate": 6
+    },
+    "iron_artillery": {
+      "name": "稳座榴弹炮",
+      "formal_name": "稳座自行榴弹炮",
+      "faction": "iron",
+      "art": "artillery",
+      "cost": 925,
+      "hp": 400,
+      "speed": 2.25,
+      "build_time": 23,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [
+        "iron_tech"
+      ],
+      "weapon": "iron_artillery",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_artillery_portrait.png",
+        "move": "res://assets/cards/kestrel_artillery_move.svg",
+        "attack": "res://assets/cards/kestrel_artillery_attack.svg",
+        "hit": "res://assets/cards/kestrel_artillery_hit.svg",
+        "death": "res://assets/cards/kestrel_artillery_death.svg"
+      },
+      "description": "大炮架、后部驻锄与厚实承重结构；停稳后提供远程曲射范围支援，需要近身与防空保护。",
+      "voices": {
+        "select": [
+          "稳座榴弹炮检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "稳座榴弹炮质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145
+    },
+    "iron_repair_vehicle": {
+      "name": "扳手维修车",
+      "formal_name": "保证能修式工程维修车",
+      "faction": "iron",
+      "art": "repair_vehicle",
+      "cost": 550,
+      "hp": 330,
+      "speed": 3.0,
+      "build_time": 14,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_repair_vehicle_portrait.png",
+        "move": "res://assets/cards/rivet_harvester_move.svg",
+        "attack": "res://assets/cards/rivet_harvester_attack.svg",
+        "hit": "res://assets/cards/rivet_harvester_hit.svg",
+        "death": "res://assets/cards/rivet_harvester_death.svg"
+      },
+      "description": "折叠工作台、工具柜与短维修臂；右键受损友方地面载具实施野战维修，按恢复生命消耗现有资金。",
+      "voices": {
+        "select": [
+          "这个交给我，保证能修好。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "修好还要加固，按标准检修。"
+        ],
+        "ready": [
+          "扳手维修车质量验收通过。"
+        ]
+      },
+      "repair_radius": 4.5,
+      "repair_rate": 14
+    },
+    "iron_recycler": {
+      "name": "拖救车",
+      "formal_name": "稳拖战场救援车",
+      "faction": "iron",
+      "art": "recycler",
+      "cost": 625,
+      "hp": 450,
+      "speed": 2.5,
+      "build_time": 17,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [
+        "iron_tech"
+      ],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_recycler_portrait.png",
+        "move": "res://assets/cards/rivet_harvester_move.svg",
+        "attack": "res://assets/cards/rivet_harvester_attack.svg",
+        "hit": "res://assets/cards/rivet_harvester_hit.svg",
+        "death": "res://assets/cards/rivet_harvester_death.svg"
+      },
+      "description": "粗绞盘、拖臂和加固车尾；右键护送低生命友方地面载具，保持近距离时帮助其加速撤离并交给维修。",
+      "voices": {
+        "select": [
+          "拖救车到位，把战友带回来。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "保持靠近，先撤到安全位置。"
+        ],
+        "ready": [
+          "拖救车质量验收通过。"
+        ]
+      },
+      "rescue_radius": 4,
+      "rescue_speed_bonus": 0.25
+    },
+    "iron_fighter": {
+      "name": "守望战机",
+      "formal_name": "守望护航式截击机",
+      "faction": "iron",
+      "art": "fighter",
+      "cost": 1025,
+      "hp": 340,
+      "speed": 8.5,
+      "build_time": 23,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "iron_command"
+      ],
+      "weapon": "iron_fighter",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_fighter_portrait.png",
+        "move": "res://assets/cards/rivet_fighter_move.svg",
+        "attack": "res://assets/cards/rivet_fighter_attack.svg",
+        "hit": "res://assets/cards/rivet_fighter_hit.svg",
+        "death": "res://assets/cards/rivet_fighter_death.svg"
+      },
+      "description": "厚实机身、坚固翼根与清楚的动力结构；八发对空弹药执行制空护航，耗尽后返回机场补给。",
+      "voices": {
+        "select": [
+          "守望战机检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "守望战机质量验收通过。"
+        ],
+        "return": [
+          "返回机场，申请补给。"
+        ]
+      },
+      "flight_height": 4,
+      "ammo_capacity": 8,
+      "rearm_time": 7
+    },
+    "iron_attacker": {
+      "name": "石隼攻击机",
+      "formal_name": "石隼对地攻击机",
+      "faction": "iron",
+      "art": "attacker",
+      "cost": 1100,
+      "hp": 390,
+      "speed": 6.8,
+      "build_time": 28,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "iron_command"
+      ],
+      "weapon": "iron_attacker",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_attacker_portrait.png",
+        "move": "res://assets/cards/kestrel_attacker_move.svg",
+        "attack": "res://assets/cards/kestrel_attacker_attack.svg",
+        "hit": "res://assets/cards/kestrel_attacker_hit.svg",
+        "death": "res://assets/cards/kestrel_attacker_death.svg"
+      },
+      "description": "宽翼、明显挂载与加厚驾驶舱周边；四发范围对地弹支援稳步推进，机场提供弹药和维护。",
+      "voices": {
+        "select": [
+          "石隼攻击机检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "石隼攻击机质量验收通过。"
+        ],
+        "return": [
+          "返回机场，申请补给。"
+        ]
+      },
+      "flight_height": 4,
+      "ammo_capacity": 4,
+      "rearm_time": 9
+    },
+    "iron_air_transport": {
+      "name": "稳翼运输机",
+      "formal_name": "稳翼勤务运输机",
+      "faction": "iron",
+      "art": "air_transport",
+      "cost": 1150,
+      "hp": 500,
+      "speed": 6.5,
+      "build_time": 30,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "iron_command"
+      ],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_air_transport_portrait.png",
+        "move": "res://assets/cards/rivet_bomber_move.svg",
+        "attack": "res://assets/cards/rivet_bomber_attack.svg",
+        "hit": "res://assets/cards/rivet_bomber_hit.svg",
+        "death": "res://assets/cards/rivet_bomber_death.svg"
+      },
+      "description": "方正货舱、大尾门与结实起落架；可在任意合法空地降落并装卸4名地面步兵（含工兵和反甲兵）；机场负责维修与弹药补给，机位有限。",
+      "voices": {
+        "select": [
+          "稳翼运输机检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "稳翼运输机质量验收通过。"
+        ],
+        "return": [
+          "返回机场，接受维护。"
+        ]
+      },
+      "flight_height": 4,
+      "ammo_capacity": 1,
+      "rearm_time": 8,
+      "transport_capacity": 4
+    },
+    "iron_advanced": {
+      "name": "定心炮",
+      "formal_name": "十分稳妥式电磁炮",
+      "faction": "iron",
+      "art": "advanced",
+      "cost": 2150,
+      "hp": 760,
+      "speed": 1.9,
+      "build_time": 38,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [
+        "iron_command",
+        "iron_tech"
+      ],
+      "weapon": "iron_advanced",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_advanced_portrait.png",
+        "move": "res://assets/cards/rivet_advanced_move.svg",
+        "attack": "res://assets/cards/rivet_advanced_attack.svg",
+        "hit": "res://assets/cards/rivet_advanced_hit.svg",
+        "death": "res://assets/cards/rivet_advanced_death.svg"
+      },
+      "description": "成熟履带底盘、重型导轨与粗支撑架；停稳后发射后期电磁反重甲火力，长射击间隔要求掩护。",
+      "voices": {
+        "select": [
+          "定心炮检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "定心炮质量验收通过。"
+        ]
+      },
+      "turret_turn_speed": 145
+    },
+    "sky_engineer": {
+      "name": "工兵",
+      "formal_name": "现行版工程勤务兵",
+      "faction": "sky",
+      "art": "engineer",
+      "cost": 195,
+      "hp": 55,
+      "speed": 3.0,
+      "build_time": 6,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_engineer_idle.svg",
+        "move": "res://assets/cards/sky_engineer_move.svg",
+        "attack": "res://assets/cards/sky_engineer_attack.svg",
+        "hit": "res://assets/cards/sky_engineer_hit.svg",
+        "death": "res://assets/cards/sky_engineer_death.svg"
+      },
+      "description": "普通纸片士兵背着方工具盒，携带手绘测量板；负责工程施工、基础修理与桥梁作业。",
+      "voices": {
+        "select": [
+          "工兵现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "现场条件确认，准备施工。"
+        ],
+        "ready": [
+          "工兵获准投入编制。"
+        ]
+      },
+      "repair_radius": 1.8,
+      "repair_rate": 9
+    },
+    "sky_rifle": {
+      "name": "勤务兵",
+      "formal_name": "新版勤务兵",
+      "faction": "sky",
+      "art": "rifle",
+      "cost": 115,
+      "hp": 70,
+      "speed": 3.0,
+      "build_time": 5,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "sky_rifle",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_rifle_idle.svg",
+        "move": "res://assets/cards/sky_rifle_move.svg",
+        "attack": "res://assets/cards/sky_rifle_attack.svg",
+        "hit": "res://assets/cards/sky_rifle_hit.svg",
+        "death": "res://assets/cards/sky_rifle_death.svg"
+      },
+      "description": "简单护甲和普通头盔，短盒体枪械连接清楚的枪管；灵活的基础战斗编制，避免装甲正面对射。",
+      "voices": {
+        "select": [
+          "勤务兵现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "勤务兵获准投入编制。"
+        ]
+      }
+    },
+    "sky_anti": {
+      "name": "导引兵",
+      "formal_name": "现行导引作业兵",
+      "faction": "sky",
+      "art": "anti",
+      "cost": 235,
+      "hp": 75,
+      "speed": 2.75,
+      "build_time": 8,
+      "radius": 0.35,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "sky_anti",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_anti_idle.svg",
+        "move": "res://assets/cards/sky_anti_move.svg",
+        "attack": "res://assets/cards/sky_anti_attack.svg",
+        "hit": "res://assets/cards/sky_anti_hit.svg",
+        "death": "res://assets/cards/sky_anti_death.svg"
+      },
+      "description": "肩扛方形发射盒，外接大折板瞄准片；朴素外壳提供先进导引功能，较远距离反甲需要步兵掩护。",
+      "voices": {
+        "select": [
+          "导引兵现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "导引兵获准投入编制。"
+        ]
+      }
+    },
+    "sky_harvester": {
+      "name": "矿车",
+      "formal_name": "辉晶分离勤务采集车",
+      "faction": "sky",
+      "art": "harvester",
+      "cost": 725,
+      "hp": 390,
+      "speed": 3.0,
+      "build_time": 14,
+      "radius": 0.75,
+      "turn_speed": 120,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_harvester_portrait.png",
+        "move": "res://assets/cards/kestrel_harvester_move.svg",
+        "attack": "res://assets/cards/kestrel_harvester_attack.svg",
+        "hit": "res://assets/cards/kestrel_harvester_hit.svg",
+        "death": "res://assets/cards/kestrel_harvester_death.svg"
+      },
+      "description": "普通轮式纸盒卡车，驾驶室与货斗分明；真实轮组承担矿运，使用统一采矿容量和辉晶交付规则。",
+      "voices": {
+        "select": [
+          "矿车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "保持采集，保护货舱。"
+        ],
+        "ready": [
+          "矿车获准投入编制。"
+        ]
+      }
+    },
+    "sky_scout": {
+      "name": "测绘车",
+      "formal_name": "新界测绘车",
+      "faction": "sky",
+      "art": "scout",
+      "cost": 390,
+      "hp": 170,
+      "speed": 6.1,
+      "build_time": 9,
+      "radius": 0.65,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "sky_scout",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/sky_scout_portrait.png",
+        "move": "res://assets/cards/kestrel_scout_move.svg",
+        "attack": "res://assets/cards/kestrel_scout_attack.svg",
+        "hit": "res://assets/cards/kestrel_scout_hit.svg",
+        "death": "res://assets/cards/kestrel_scout_death.svg"
+      },
+      "description": "小方车竖起展开的纸板观测盘；轻巧轮廓适合高速侦察道路，车载轻机枪提供基础自卫。",
+      "voices": {
+        "select": [
+          "测绘车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "测绘车获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200,
+      "transport_capacity": 1
+    },
+    "sky_tank": {
+      "name": "试验坦克",
+      "formal_name": "按理必胜式试验坦克",
+      "faction": "sky",
+      "art": "tank",
+      "cost": 1150,
+      "hp": 450,
+      "speed": 3.9,
+      "build_time": 20,
+      "radius": 0.85,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "sky_tank",
+      "crush": true,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/sky_tank_portrait.png",
+        "move": "res://assets/cards/kestrel_tank_move.svg",
+        "attack": "res://assets/cards/kestrel_tank_attack.svg",
+        "hit": "res://assets/cards/kestrel_tank_hit.svg",
+        "death": "res://assets/cards/kestrel_tank_death.svg"
+      },
+      "description": "厚纸盒车体、两条履带盒、方炮塔与粗纸筒；少量手画设备线遮着先进电磁系统，可在移动中精确反甲。",
+      "voices": {
+        "select": [
+          "试验坦克现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "试验坦克获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200
+    },
+    "sky_artillery": {
+      "name": "修订炮",
+      "formal_name": "局部修订式自行炮",
+      "faction": "sky",
+      "art": "artillery",
+      "cost": 1200,
+      "hp": 315,
+      "speed": 2.8,
+      "build_time": 25,
+      "radius": 0.85,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [
+        "sky_tech"
+      ],
+      "weapon": "sky_artillery",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_artillery_portrait.png",
+        "move": "res://assets/cards/kestrel_artillery_move.svg",
+        "attack": "res://assets/cards/kestrel_artillery_attack.svg",
+        "hit": "res://assets/cards/kestrel_artillery_hit.svg",
+        "death": "res://assets/cards/kestrel_artillery_death.svg"
+      },
+      "description": "履带底盘托住打开的长发射槽，粗折板驻锄承担支撑；停稳后提供远程范围火力。",
+      "voices": {
+        "select": [
+          "修订炮现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "修订炮获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200
+    },
+    "sky_aa": {
+      "name": "拦空车",
+      "formal_name": "现行拦空式防空车",
+      "faction": "sky",
+      "art": "aa",
+      "cost": 780,
+      "hp": 290,
+      "speed": 4.0,
+      "build_time": 17,
+      "radius": 0.85,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "sky_aa",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": true,
+      "animations": {
+        "idle": "res://assets/cards/sky_aa_portrait.png",
+        "move": "res://assets/cards/kestrel_aa_move.svg",
+        "attack": "res://assets/cards/kestrel_aa_attack.svg",
+        "hit": "res://assets/cards/kestrel_aa_hit.svg",
+        "death": "res://assets/cards/kestrel_aa_death.svg"
+      },
+      "description": "顶部打开的发射箱内排列少量粗短纸筒；先进对空导引火力保护机动地面部队。",
+      "voices": {
+        "select": [
+          "拦空车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "拦空车获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200
+    },
+    "sky_inspection": {
+      "name": "检验车",
+      "formal_name": "现场检验车",
+      "faction": "sky",
+      "art": "inspection",
+      "cost": 550,
+      "hp": 250,
+      "speed": 4.4,
+      "build_time": 13,
+      "radius": 0.65,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_inspection_portrait.png",
+        "move": "res://assets/cards/kestrel_scout_move.svg",
+        "attack": "res://assets/cards/kestrel_scout_attack.svg",
+        "hit": "res://assets/cards/kestrel_scout_hit.svg",
+        "death": "res://assets/cards/kestrel_scout_death.svg"
+      },
+      "description": "方工具柜、折条检验臂与手绘刻度板；右键受损友方地面载具开展付费现场维修，需时间与安全位置。",
+      "voices": {
+        "select": [
+          "检验车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "手绘刻度核对，准备现场维修。"
+        ],
+        "ready": [
+          "检验车获准投入编制。"
+        ]
+      },
+      "repair_radius": 4,
+      "repair_rate": 9
+    },
+    "sky_designation": {
+      "name": "标定车",
+      "formal_name": "现场标定式勤务车",
+      "faction": "sky",
+      "art": "designation",
+      "cost": 625,
+      "hp": 220,
+      "speed": 4.8,
+      "build_time": 15,
+      "radius": 0.65,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [
+        "sky_command"
+      ],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_designation_portrait.png",
+        "move": "res://assets/cards/kestrel_scout_move.svg",
+        "attack": "res://assets/cards/kestrel_scout_attack.svg",
+        "hit": "res://assets/cards/kestrel_scout_hit.svg",
+        "death": "res://assets/cards/kestrel_scout_death.svg"
+      },
+      "description": "两片大纸板夹成V形观测架，中间固定粗镜筒；在距离与视线内持续跟踪敌方载具，为友军提供目标伤害加成。",
+      "voices": {
+        "select": [
+          "观测板展开，维持目标跟踪。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "标定完成，火控条件成立。"
+        ],
+        "ready": [
+          "标定车获准投入编制。"
+        ]
+      },
+      "designation_radius": 12,
+      "designation_track_time": 1.5,
+      "damage_bonus": 0.15
+    },
+    "sky_disruptor": {
+      "name": "断流车",
+      "formal_name": "局部断流式试验车",
+      "faction": "sky",
+      "art": "disruptor",
+      "cost": 975,
+      "hp": 285,
+      "speed": 3.7,
+      "build_time": 23,
+      "radius": 0.65,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [
+        "sky_tech"
+      ],
+      "weapon": "sky_disruptor",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_disruptor_portrait.png",
+        "move": "res://assets/cards/kestrel_scout_move.svg",
+        "attack": "res://assets/cards/kestrel_scout_attack.svg",
+        "hit": "res://assets/cards/kestrel_scout_hit.svg",
+        "death": "res://assets/cards/kestrel_scout_death.svg"
+      },
+      "description": "短方车身前部的两根粗棒与横向连接板构成脉冲发射器；对地范围能量打击，命中装甲单位或建筑时短暂干扰其行动。",
+      "voices": {
+        "select": [
+          "断流车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "断流车获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200
+    },
+    "sky_pulse": {
+      "name": "脉冲阵列车",
+      "formal_name": "暂定永恒脉冲阵列",
+      "faction": "sky",
+      "art": "pulse",
+      "cost": 2100,
+      "hp": 525,
+      "speed": 2.3,
+      "build_time": 38,
+      "radius": 0.85,
+      "turn_speed": 140,
+      "producer": "factory",
+      "requires": [
+        "sky_tech",
+        "sky_command"
+      ],
+      "weapon": "sky_pulse",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": true,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_pulse_portrait.png",
+        "move": "res://assets/cards/kestrel_advanced_move.svg",
+        "attack": "res://assets/cards/kestrel_advanced_attack.svg",
+        "hit": "res://assets/cards/kestrel_advanced_hit.svg",
+        "death": "res://assets/cards/kestrel_advanced_death.svg"
+      },
+      "description": "大纸盒底盘托起厚折板阵列，展开后露出完整发射面；长间隔对地范围打击，蓄能窗口辅助集中火力。",
+      "voices": {
+        "select": [
+          "脉冲阵列车现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "脉冲阵列车获准投入编制。"
+        ]
+      },
+      "turret_turn_speed": 200
+    },
+    "sky_fighter": {
+      "name": "越界战机",
+      "formal_name": "超出范围式截击机",
+      "faction": "sky",
+      "art": "fighter",
+      "cost": 1125,
+      "hp": 275,
+      "speed": 10.7,
+      "build_time": 23,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "sky_command"
+      ],
+      "weapon": "sky_fighter",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_fighter_portrait.png",
+        "move": "res://assets/cards/kestrel_fighter_move.svg",
+        "attack": "res://assets/cards/kestrel_fighter_attack.svg",
+        "hit": "res://assets/cards/kestrel_fighter_hit.svg",
+        "death": "res://assets/cards/kestrel_fighter_death.svg"
+      },
+      "description": "整张厚板机翼、短盒机身与纸筒发动机；少量手绘检修线之下是真实制空系统，八发对空弹药后返航补给。",
+      "voices": {
+        "select": [
+          "越界战机现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "越界战机获准投入编制。"
+        ],
+        "return": [
+          "进入机场补给航线。"
+        ]
+      },
+      "flight_height": 4.5,
+      "ammo_capacity": 8,
+      "rearm_time": 5.5
+    },
+    "sky_attacker": {
+      "name": "终版攻击机",
+      "formal_name": "最新最终版攻击机",
+      "faction": "sky",
+      "art": "attacker",
+      "cost": 1450,
+      "hp": 320,
+      "speed": 8.4,
+      "build_time": 27,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "sky_command",
+        "sky_tech"
+      ],
+      "weapon": "sky_attacker",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_attacker_portrait.png",
+        "move": "res://assets/cards/kestrel_attacker_move.svg",
+        "attack": "res://assets/cards/kestrel_attacker_attack.svg",
+        "hit": "res://assets/cards/kestrel_attacker_hit.svg",
+        "death": "res://assets/cards/kestrel_attacker_death.svg"
+      },
+      "description": "更宽机翼与粗大的机腹武器盒区别于战机；四发先进对地弹药集中反甲，受防空与出动周期约束。",
+      "voices": {
+        "select": [
+          "终版攻击机现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "现行最终版，准备升空。"
+        ],
+        "return": [
+          "进入机场补给航线。"
+        ]
+      },
+      "flight_height": 4.5,
+      "ammo_capacity": 4,
+      "rearm_time": 6.5
+    },
+    "sky_air_transport": {
+      "name": "翼桥运输机",
+      "formal_name": "翼桥勤务运输机",
+      "faction": "sky",
+      "art": "air_transport",
+      "cost": 1300,
+      "hp": 390,
+      "speed": 8.0,
+      "build_time": 29,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "sky_command"
+      ],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_air_transport_portrait.png",
+        "move": "res://assets/cards/kestrel_attacker_move.svg",
+        "attack": "res://assets/cards/kestrel_attacker_attack.svg",
+        "hit": "res://assets/cards/kestrel_attacker_hit.svg",
+        "death": "res://assets/cards/kestrel_attacker_death.svg"
+      },
+      "description": "大方货舱、厚直翼与结实尾梁；可在任意合法空地降落并装卸4名地面步兵（含工兵和反甲兵）；机场负责维修与弹药补给，机位有限。",
+      "voices": {
+        "select": [
+          "翼桥运输机现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "翼桥运输机获准投入编制。"
+        ],
+        "return": [
+          "进入机场补给航线。"
+        ]
+      },
+      "flight_height": 4.5,
+      "ammo_capacity": 1,
+      "rearm_time": 6,
+      "transport_capacity": 4
+    },
+    "sky_recon": {
+      "name": "巡测机",
+      "formal_name": "现行巡测式侦察机",
+      "faction": "sky",
+      "art": "recon",
+      "cost": 775,
+      "hp": 205,
+      "speed": 11.3,
+      "build_time": 18,
+      "radius": 0.65,
+      "turn_speed": 180,
+      "producer": "airfield",
+      "requires": [
+        "sky_command"
+      ],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "air",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/sky_recon_portrait.png",
+        "move": "res://assets/cards/kestrel_fighter_move.svg",
+        "attack": "res://assets/cards/kestrel_fighter_attack.svg",
+        "hit": "res://assets/cards/kestrel_fighter_hit.svg",
+        "death": "res://assets/cards/kestrel_fighter_death.svg"
+      },
+      "description": "小型十字折翼与短观测筒；极简纸模构成无武装高速航空平台，遵守正常机场机位与飞行调度。",
+      "voices": {
+        "select": [
+          "巡测机现行版本，等待指令。"
+        ],
+        "move": [
+          "进入新的工作坐标。"
+        ],
+        "attack": [
+          "试验条件确认，开始执行。"
+        ],
+        "ready": [
+          "巡测机获准投入编制。"
+        ],
+        "return": [
+          "进入机场补给航线。"
+        ]
+      },
+      "flight_height": 4.5,
+      "ammo_capacity": 1,
+      "rearm_time": 5
+    },
+    "iron_transport": {
+      "name": "护送装甲车",
+      "formal_name": "护送装甲人员输送车",
+      "faction": "iron",
+      "art": "transport",
+      "cost": 475,
+      "hp": 440,
+      "speed": 3.45,
+      "build_time": 13,
+      "radius": 0.85,
+      "turn_speed": 100,
+      "producer": "factory",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "ground",
+      "armor_class": "armored",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_transport_portrait.png",
+        "move": "res://assets/cards/rivet_scout_move.svg",
+        "attack": "res://assets/cards/rivet_scout_attack.svg",
+        "hit": "res://assets/cards/rivet_scout_hit.svg",
+        "death": "res://assets/cards/rivet_scout_death.svg"
+      },
+      "description": "宽载员舱、尾门与朴素装甲；搭载4名地面步兵（含工兵和反甲兵），以可靠底盘将战友送往前线或接回安全位置。",
+      "voices": {
+        "select": [
+          "护送装甲车检查完毕，等候调度。"
+        ],
+        "move": [
+          "稳稳前进，连接都已检查。"
+        ],
+        "attack": [
+          "阵线稳住，准备开火。"
+        ],
+        "ready": [
+          "护送装甲车质量验收通过。"
+        ]
+      },
+      "transport_capacity": 4
+    },
+    "rivet_ship_transport": {
+      "name": "铁甲渡船",
+      "formal_name": "铁甲渡船",
+      "faction": "rivet",
+      "art": "naval_transport",
+      "cost": 850,
+      "hp": 690,
+      "speed": 3.4,
+      "build_time": 24,
+      "radius": 2.2,
+      "turn_speed": 95,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": false,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 7,
+      "naval_air_draft": 1.35,
+      "animations": {
+        "idle": "res://assets/cards/rivet_ship_transport_portrait.png",
+        "move": "res://assets/cards/rivet_ship_transport_move.svg",
+        "attack": "res://assets/cards/rivet_ship_transport_attack.svg",
+        "hit": "res://assets/cards/rivet_ship_transport_hit.svg",
+        "death": "res://assets/cards/rivet_ship_transport_death.svg"
+      },
+      "description": "加厚舷板和双登船坡道，跨岛转运全部地面步兵。",
+      "voices": {
+        "select": [
+          "铁甲渡船就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "铁甲渡船下水。"
+        ]
+      }
+    },
+    "rivet_ship_frigate": {
+      "name": "破浪炮舰",
+      "formal_name": "破浪炮舰",
+      "faction": "rivet",
+      "art": "naval_frigate",
+      "cost": 1550,
+      "hp": 1150,
+      "speed": 3.0,
+      "build_time": 34,
+      "radius": 2.65,
+      "turn_speed": 80,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "rivet_ship_frigate",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": true,
+      "transport_capacity": 0,
+      "naval_air_draft": 1.8,
+      "animations": {
+        "idle": "res://assets/cards/rivet_ship_frigate_portrait.png",
+        "move": "res://assets/cards/rivet_ship_frigate_move.svg",
+        "attack": "res://assets/cards/rivet_ship_frigate_attack.svg",
+        "hit": "res://assets/cards/rivet_ship_frigate_hit.svg",
+        "death": "res://assets/cards/rivet_ship_frigate_death.svg"
+      },
+      "description": "低矮重装船壳与前后炮座，压制敌舰并支援岸线。",
+      "voices": {
+        "select": [
+          "破浪炮舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "破浪炮舰下水。"
+        ]
+      }
+    },
+    "rivet_ship_signature": {
+      "name": "重锤攻城舰",
+      "formal_name": "重锤攻城舰",
+      "faction": "rivet",
+      "art": "naval_signature",
+      "cost": 2700,
+      "hp": 1800,
+      "speed": 2.5,
+      "build_time": 49,
+      "radius": 3.25,
+      "turn_speed": 65,
+      "producer": "shipyard",
+      "requires": [
+        "rivet_tech"
+      ],
+      "weapon": "rivet_ship_signature",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 0,
+      "naval_air_draft": 2.25,
+      "animations": {
+        "idle": "res://assets/cards/rivet_ship_signature_portrait.png",
+        "move": "res://assets/cards/rivet_ship_signature_move.svg",
+        "attack": "res://assets/cards/rivet_ship_signature_attack.svg",
+        "hit": "res://assets/cards/rivet_ship_signature_hit.svg",
+        "death": "res://assets/cards/rivet_ship_signature_death.svg"
+      },
+      "description": "装甲楔艏、双层重炮座与宽舷板；沿攻击移动推进后首击更强。",
+      "voices": {
+        "select": [
+          "重锤攻城舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "重锤攻城舰下水。"
+        ]
+      }
+    },
+    "kestrel_ship_transport": {
+      "name": "编队渡船",
+      "formal_name": "编队渡船",
+      "faction": "kestrel",
+      "art": "naval_transport",
+      "cost": 780,
+      "hp": 610,
+      "speed": 3.8,
+      "build_time": 24,
+      "radius": 2.2,
+      "turn_speed": 95,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": false,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 7,
+      "naval_air_draft": 1.35,
+      "animations": {
+        "idle": "res://assets/cards/kestrel_ship_transport_portrait.png",
+        "move": "res://assets/cards/kestrel_ship_transport_move.svg",
+        "attack": "res://assets/cards/kestrel_ship_transport_attack.svg",
+        "hit": "res://assets/cards/kestrel_ship_transport_hit.svg",
+        "death": "res://assets/cards/kestrel_ship_transport_death.svg"
+      },
+      "description": "清晰甲板分区和编号登船口，跨岛转运全部地面步兵。",
+      "voices": {
+        "select": [
+          "编队渡船就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "编队渡船下水。"
+        ]
+      }
+    },
+    "kestrel_ship_frigate": {
+      "name": "协同护卫舰",
+      "formal_name": "协同护卫舰",
+      "faction": "kestrel",
+      "art": "naval_frigate",
+      "cost": 1490,
+      "hp": 980,
+      "speed": 3.5,
+      "build_time": 34,
+      "radius": 2.65,
+      "turn_speed": 80,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "kestrel_ship_frigate",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": true,
+      "transport_capacity": 0,
+      "naval_air_draft": 1.8,
+      "animations": {
+        "idle": "res://assets/cards/kestrel_ship_frigate_portrait.png",
+        "move": "res://assets/cards/kestrel_ship_frigate_move.svg",
+        "attack": "res://assets/cards/kestrel_ship_frigate_attack.svg",
+        "hit": "res://assets/cards/kestrel_ship_frigate_hit.svg",
+        "death": "res://assets/cards/kestrel_ship_frigate_death.svg"
+      },
+      "description": "轻快护卫舰，兼顾防空、反舰与岸边掩护。",
+      "voices": {
+        "select": [
+          "协同护卫舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "协同护卫舰下水。"
+        ]
+      }
+    },
+    "kestrel_ship_signature": {
+      "name": "正典指挥舰",
+      "formal_name": "正典指挥舰",
+      "faction": "kestrel",
+      "art": "naval_signature",
+      "cost": 2450,
+      "hp": 1470,
+      "speed": 3.1,
+      "build_time": 49,
+      "radius": 3.25,
+      "turn_speed": 65,
+      "producer": "shipyard",
+      "requires": [
+        "kestrel_tech"
+      ],
+      "weapon": "kestrel_ship_signature",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 0,
+      "naval_air_draft": 2.25,
+      "animations": {
+        "idle": "res://assets/cards/kestrel_ship_signature_portrait.png",
+        "move": "res://assets/cards/kestrel_ship_signature_move.svg",
+        "attack": "res://assets/cards/kestrel_ship_signature_attack.svg",
+        "hit": "res://assets/cards/kestrel_ship_signature_hit.svg",
+        "death": "res://assets/cards/kestrel_ship_signature_death.svg"
+      },
+      "description": "双舰桥和独立指挥炮座；与两艘同域战舰协同增伤。",
+      "voices": {
+        "select": [
+          "正典指挥舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "正典指挥舰下水。"
+        ]
+      }
+    },
+    "iron_ship_transport": {
+      "name": "补给渡船",
+      "formal_name": "补给渡船",
+      "faction": "iron",
+      "art": "naval_transport",
+      "cost": 800,
+      "hp": 760,
+      "speed": 3.2,
+      "build_time": 24,
+      "radius": 2.2,
+      "turn_speed": 95,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": false,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 8,
+      "naval_air_draft": 1.35,
+      "animations": {
+        "idle": "res://assets/cards/iron_ship_transport_portrait.png",
+        "move": "res://assets/cards/iron_ship_transport_move.svg",
+        "attack": "res://assets/cards/iron_ship_transport_attack.svg",
+        "hit": "res://assets/cards/iron_ship_transport_hit.svg",
+        "death": "res://assets/cards/iron_ship_transport_death.svg"
+      },
+      "description": "结实货舱与修理坡道，跨岛转运全部地面步兵。",
+      "voices": {
+        "select": [
+          "补给渡船就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "补给渡船下水。"
+        ]
+      }
+    },
+    "iron_ship_frigate": {
+      "name": "铆钉护卫舰",
+      "formal_name": "铆钉护卫舰",
+      "faction": "iron",
+      "art": "naval_frigate",
+      "cost": 1510,
+      "hp": 1200,
+      "speed": 3.0,
+      "build_time": 34,
+      "radius": 2.65,
+      "turn_speed": 80,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "iron_ship_frigate",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": true,
+      "transport_capacity": 0,
+      "naval_air_draft": 1.8,
+      "animations": {
+        "idle": "res://assets/cards/iron_ship_frigate_portrait.png",
+        "move": "res://assets/cards/iron_ship_frigate_move.svg",
+        "attack": "res://assets/cards/iron_ship_frigate_attack.svg",
+        "hit": "res://assets/cards/iron_ship_frigate_hit.svg",
+        "death": "res://assets/cards/iron_ship_frigate_death.svg"
+      },
+      "description": "铆接船壳及检修甲板；受击减伤，脱离战斗后缓慢修复。",
+      "voices": {
+        "select": [
+          "铆钉护卫舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "铆钉护卫舰下水。"
+        ]
+      }
+    },
+    "iron_ship_signature": {
+      "name": "铁钉工坊舰",
+      "formal_name": "铁钉工坊舰",
+      "faction": "iron",
+      "art": "naval_signature",
+      "cost": 2550,
+      "hp": 1700,
+      "speed": 2.7,
+      "build_time": 49,
+      "radius": 3.25,
+      "turn_speed": 65,
+      "producer": "shipyard",
+      "requires": [
+        "iron_tech"
+      ],
+      "weapon": "iron_ship_signature",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 0,
+      "naval_air_draft": 2.25,
+      "animations": {
+        "idle": "res://assets/cards/iron_ship_signature_portrait.png",
+        "move": "res://assets/cards/iron_ship_signature_move.svg",
+        "attack": "res://assets/cards/iron_ship_signature_attack.svg",
+        "hit": "res://assets/cards/iron_ship_signature_hit.svg",
+        "death": "res://assets/cards/iron_ship_signature_death.svg"
+      },
+      "description": "移动工坊和分层炮座，舰队维修线上的持久火力核心。",
+      "voices": {
+        "select": [
+          "铁钉工坊舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "铁钉工坊舰下水。"
+        ]
+      }
+    },
+    "sky_ship_transport": {
+      "name": "折翼渡船",
+      "formal_name": "折翼渡船",
+      "faction": "sky",
+      "art": "naval_transport",
+      "cost": 900,
+      "hp": 580,
+      "speed": 4.1,
+      "build_time": 24,
+      "radius": 2.2,
+      "turn_speed": 95,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": false,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 7,
+      "naval_air_draft": 1.35,
+      "animations": {
+        "idle": "res://assets/cards/sky_ship_transport_portrait.png",
+        "move": "res://assets/cards/sky_ship_transport_move.svg",
+        "attack": "res://assets/cards/sky_ship_transport_attack.svg",
+        "hit": "res://assets/cards/sky_ship_transport_hit.svg",
+        "death": "res://assets/cards/sky_ship_transport_death.svg"
+      },
+      "description": "折板外壳、光环吊架与登船口，跨岛转运全部地面步兵。",
+      "voices": {
+        "select": [
+          "折翼渡船就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "折翼渡船下水。"
+        ]
+      }
+    },
+    "sky_ship_frigate": {
+      "name": "天翼护卫舰",
+      "formal_name": "天翼护卫舰",
+      "faction": "sky",
+      "art": "naval_frigate",
+      "cost": 1620,
+      "hp": 900,
+      "speed": 3.8,
+      "build_time": 34,
+      "radius": 2.65,
+      "turn_speed": 80,
+      "producer": "shipyard",
+      "requires": [],
+      "weapon": "sky_ship_frigate",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": true,
+      "transport_capacity": 0,
+      "naval_air_draft": 1.8,
+      "animations": {
+        "idle": "res://assets/cards/sky_ship_frigate_portrait.png",
+        "move": "res://assets/cards/sky_ship_frigate_move.svg",
+        "attack": "res://assets/cards/sky_ship_frigate_attack.svg",
+        "hit": "res://assets/cards/sky_ship_frigate_hit.svg",
+        "death": "res://assets/cards/sky_ship_frigate_death.svg"
+      },
+      "description": "纸板翼形舰桥与高射炮座，快速制空护航。",
+      "voices": {
+        "select": [
+          "天翼护卫舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "天翼护卫舰下水。"
+        ]
+      }
+    },
+    "sky_ship_signature": {
+      "name": "脉冲巡洋舰",
+      "formal_name": "脉冲巡洋舰",
+      "faction": "sky",
+      "art": "naval_signature",
+      "cost": 2750,
+      "hp": 1380,
+      "speed": 3.5,
+      "build_time": 49,
+      "radius": 3.25,
+      "turn_speed": 65,
+      "producer": "shipyard",
+      "requires": [
+        "sky_tech"
+      ],
+      "weapon": "sky_ship_signature",
+      "crush": false,
+      "crushable": false,
+      "domain": "naval",
+      "armor_class": "armored",
+      "has_turret": true,
+      "turret_turn_speed": 95,
+      "fire_while_moving": false,
+      "transport_capacity": 0,
+      "naval_air_draft": 2.25,
+      "animations": {
+        "idle": "res://assets/cards/sky_ship_signature_portrait.png",
+        "move": "res://assets/cards/sky_ship_signature_move.svg",
+        "attack": "res://assets/cards/sky_ship_signature_attack.svg",
+        "hit": "res://assets/cards/sky_ship_signature_hit.svg",
+        "death": "res://assets/cards/sky_ship_signature_death.svg"
+      },
+      "description": "双环蓄能塔与脉冲炮座；冲击敌舰、岸防与空中目标。",
+      "voices": {
+        "select": [
+          "脉冲巡洋舰就位。"
+        ],
+        "move": [
+          "航线确认，开始前进。"
+        ],
+        "attack": [
+          "锁定目标，准备开火。"
+        ],
+        "ready": [
+          "脉冲巡洋舰下水。"
+        ]
+      }
+    },
+    "sky_creator_hand": {
+      "name": "创世之手",
+      "formal_name": "天翼创世之手",
+      "description": "天翼教团唯一的巨型手掌，拥有有别于本阵营常规脆弱装备的两万生命。近距离拍击单位，并一次摧毁任意建筑；每名玩家同一时间只能拥有或生产一只。",
+      "faction": "sky",
+      "cost": 15000,
+      "hp": 20000,
+      "speed": 2.2,
+      "build_time": 110,
+      "radius": 1.45,
+      "turn_speed": 115,
+      "producer": "factory",
+      "requires": [
+        "sky_tech",
+        "sky_command"
+      ],
+      "weapon": "sky_creator_hand",
+      "crush": false,
+      "crushable": false,
+      "art": "creator_hand",
+      "domain": "ground",
+      "armor_class": "armored",
+      "max_active": 1,
+      "hero": true,
+      "attack_windup": 0.5,
+      "attack_recovery": 0.35,
+      "animations": {
+        "idle": "res://assets/cards/sky_creator_hand_idle.png",
+        "move": "res://assets/cards/sky_creator_hand_idle.png",
+        "attack": "res://assets/cards/sky_creator_hand_idle.png",
+        "hit": "res://assets/cards/sky_creator_hand_idle.png",
+        "death": "res://assets/cards/sky_creator_hand_death.png"
+      },
+      "portrait": "res://assets/cards/sky_creator_hand_portrait.png",
+      "voices": {
+        "select": [
+          "我看见每一张纸的去向。"
+        ],
+        "move": [
+          "让想象向前。"
+        ],
+        "attack": [
+          "这一页，由我定稿。"
+        ],
+        "ready": [
+          "创世之手已完成。"
+        ]
+      }
+    }
+  },
+  "buildings": {
+    "rivet_hq": {
+      "name": "压印总部",
+      "faction": "rivet",
+      "cost": 2800,
+      "hp": 3500,
+      "build_time": 60,
+      "power": 100,
+      "size": 4,
+      "requires": [],
+      "role": "hq",
+      "expands": true,
+      "weapon": "",
+      "art": "hq",
+      "animations": {
+        "idle": "res://assets/cards/rivet_hq_portrait.png",
+        "death": "res://assets/cards/rivet_hq_death.svg"
+      },
+      "formal_name": "压印总部",
+      "description": "每个势力一场游戏最多拥有一个总部，不能建造额外总部；总部和前线分基地共同维持基地存续。"
+    },
+    "rivet_power": {
+      "name": "重型发电站",
+      "faction": "rivet",
+      "cost": 600,
+      "hp": 1100,
+      "build_time": 15,
+      "power": 300,
+      "size": 3,
+      "requires": [
+        "rivet_hq"
+      ],
+      "role": "power",
+      "expands": false,
+      "weapon": "",
+      "art": "power",
+      "animations": {
+        "idle": "res://assets/cards/rivet_power_portrait.png",
+        "death": "res://assets/cards/rivet_power_death.svg"
+      },
+      "formal_name": "重型发电站",
+      "description": "供应电力；低电会拖慢建造、生产与航空补给，停用防御设施。"
+    },
+    "rivet_refinery": {
+      "name": "辉晶压炼厂",
+      "faction": "rivet",
+      "cost": 1600,
+      "hp": 1600,
+      "build_time": 25,
+      "power": -60,
+      "size": 4,
+      "requires": [
+        "rivet_power"
+      ],
+      "role": "refinery",
+      "expands": true,
+      "weapon": "",
+      "art": "refinery",
+      "animations": {
+        "idle": "res://assets/cards/rivet_refinery_portrait.png",
+        "death": "res://assets/cards/rivet_refinery_death.svg"
+      },
+      "formal_name": "辉晶压炼厂",
+      "description": "处理矿车运来的辉晶；建成附带一辆矿车，并扩展基地建设范围。"
+    },
+    "rivet_barracks": {
+      "name": "重锤兵营",
+      "faction": "rivet",
+      "cost": 500,
+      "hp": 1400,
+      "build_time": 15,
+      "power": -20,
+      "size": 3,
+      "requires": [
+        "rivet_power"
+      ],
+      "role": "barracks",
+      "expands": true,
+      "weapon": "",
+      "art": "barracks",
+      "animations": {
+        "idle": "res://assets/cards/rivet_barracks_portrait.png",
+        "death": "res://assets/cards/rivet_barracks_death.svg"
+      },
+      "formal_name": "重锤兵营",
+      "description": "训练基础步兵、反装甲兵与工兵；使用独立生产队列。"
+    },
+    "rivet_factory": {
+      "name": "横向冲压厂",
+      "faction": "rivet",
+      "cost": 1400,
+      "hp": 2500,
+      "build_time": 30,
+      "power": -100,
+      "size": 4,
+      "requires": [
+        "rivet_refinery",
+        "rivet_barracks"
+      ],
+      "role": "factory",
+      "expands": true,
+      "weapon": "",
+      "art": "factory",
+      "animations": {
+        "idle": "res://assets/cards/rivet_factory_portrait.png",
+        "death": "res://assets/cards/rivet_factory_death.svg"
+      },
+      "formal_name": "横向冲压厂",
+      "description": "统一生产普通与重型载具；研究所解锁高级火炮。"
+    },
+    "rivet_tower": {
+      "name": "炮击守备塔",
+      "faction": "rivet",
+      "cost": 700,
+      "hp": 1000,
+      "build_time": 15,
+      "power": -50,
+      "size": 2,
+      "requires": [
+        "rivet_barracks"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "rivet_tower",
+      "art": "tower",
+      "animations": {
+        "idle": "res://assets/cards/rivet_tower_portrait.png",
+        "death": "res://assets/cards/rivet_tower_death.svg"
+      },
+      "formal_name": "炮击守备塔",
+      "description": "通电后自动攻击地面目标；不能替代防空单位。"
+    },
+    "rivet_tech": {
+      "name": "压力试验所",
+      "faction": "rivet",
+      "cost": 1000,
+      "hp": 1800,
+      "build_time": 25,
+      "power": -60,
+      "size": 3,
+      "requires": [
+        "rivet_factory"
+      ],
+      "role": "tech",
+      "expands": true,
+      "weapon": "",
+      "art": "tech",
+      "animations": {
+        "idle": "res://assets/cards/rivet_tech_portrait.png",
+        "death": "res://assets/cards/rivet_tech_death.svg"
+      },
+      "formal_name": "压力试验所",
+      "description": "解锁阵营火炮与试验装备；与指挥中心共同解锁顶级火炮。"
+    },
+    "kestrel_hq": {
+      "name": "原图总部",
+      "faction": "kestrel",
+      "cost": 2400,
+      "hp": 2800,
+      "build_time": 60,
+      "power": 100,
+      "size": 4,
+      "requires": [],
+      "role": "hq",
+      "expands": true,
+      "weapon": "",
+      "art": "hq",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_hq_portrait.png",
+        "death": "res://assets/cards/kestrel_hq_death.svg"
+      },
+      "formal_name": "原图总部",
+      "description": "每个势力一场游戏最多拥有一个总部，不能建造额外总部；总部和前线分基地共同维持基地存续。"
+    },
+    "kestrel_power": {
+      "name": "标准发电站",
+      "faction": "kestrel",
+      "cost": 450,
+      "hp": 750,
+      "build_time": 15,
+      "power": 220,
+      "size": 3,
+      "requires": [
+        "kestrel_hq"
+      ],
+      "role": "power",
+      "expands": false,
+      "weapon": "",
+      "art": "power",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_power_portrait.png",
+        "death": "res://assets/cards/kestrel_power_death.svg"
+      },
+      "formal_name": "标准发电站",
+      "description": "供应电力；低电会拖慢建造、生产与航空补给，停用防御设施。"
+    },
+    "kestrel_refinery": {
+      "name": "辉晶精炼厂",
+      "faction": "kestrel",
+      "cost": 1450,
+      "hp": 1600,
+      "build_time": 25,
+      "power": -60,
+      "size": 4,
+      "requires": [
+        "kestrel_power"
+      ],
+      "role": "refinery",
+      "expands": true,
+      "weapon": "",
+      "art": "refinery",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_refinery_portrait.png",
+        "death": "res://assets/cards/kestrel_refinery_death.svg"
+      },
+      "formal_name": "辉晶精炼厂",
+      "description": "处理矿车运来的辉晶；建成附带一辆矿车，并扩展基地建设范围。"
+    },
+    "kestrel_barracks": {
+      "name": "正典兵营",
+      "faction": "kestrel",
+      "cost": 450,
+      "hp": 1100,
+      "build_time": 15,
+      "power": -20,
+      "size": 3,
+      "requires": [
+        "kestrel_power"
+      ],
+      "role": "barracks",
+      "expands": true,
+      "weapon": "",
+      "art": "barracks",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_barracks_portrait.png",
+        "death": "res://assets/cards/kestrel_barracks_death.svg"
+      },
+      "formal_name": "正典兵营",
+      "description": "训练基础步兵、反装甲兵与工兵；使用独立生产队列。"
+    },
+    "kestrel_factory": {
+      "name": "拱架装配厂",
+      "faction": "kestrel",
+      "cost": 1250,
+      "hp": 2000,
+      "build_time": 30,
+      "power": -100,
+      "size": 4,
+      "requires": [
+        "kestrel_refinery",
+        "kestrel_barracks"
+      ],
+      "role": "factory",
+      "expands": true,
+      "weapon": "",
+      "art": "factory",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_factory_portrait.png",
+        "death": "res://assets/cards/kestrel_factory_death.svg"
+      },
+      "formal_name": "拱架装配厂",
+      "description": "统一生产普通与重型载具；研究所解锁高级火炮。"
+    },
+    "kestrel_tower": {
+      "name": "连射守备塔",
+      "faction": "kestrel",
+      "cost": 550,
+      "hp": 750,
+      "build_time": 12,
+      "power": -35,
+      "size": 2,
+      "requires": [
+        "kestrel_barracks"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "kestrel_tower",
+      "art": "tower",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_tower_portrait.png",
+        "death": "res://assets/cards/kestrel_tower_death.svg"
+      },
+      "formal_name": "连射守备塔",
+      "description": "通电后自动攻击地面目标；不能替代防空单位。"
+    },
+    "kestrel_tech": {
+      "name": "开放校准所",
+      "faction": "kestrel",
+      "cost": 700,
+      "hp": 1000,
+      "build_time": 20,
+      "power": -40,
+      "size": 3,
+      "requires": [
+        "kestrel_barracks",
+        "kestrel_refinery"
+      ],
+      "role": "tech",
+      "expands": true,
+      "weapon": "",
+      "art": "tech",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_tech_portrait.png",
+        "death": "res://assets/cards/kestrel_tech_death.svg"
+      },
+      "formal_name": "开放校准所",
+      "description": "解锁阵营火炮与试验装备；与指挥中心共同解锁顶级火炮。"
+    },
+    "rivet_wall": {
+      "name": "防御围墙",
+      "faction": "rivet",
+      "cost": 60,
+      "hp": 700,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "rivet_hq"
+      ],
+      "role": "wall",
+      "expands": false,
+      "weapon": "",
+      "art": "wall",
+      "animations": {
+        "idle": "res://assets/cards/rivet_wall_portrait.png",
+        "death": "res://assets/cards/rivet_wall.svg"
+      },
+      "formal_name": "防御围墙",
+      "description": "每格独立计费，阻挡所有地面单位；飞机可越过。"
+    },
+    "rivet_barricade": {
+      "name": "反坦克拒马",
+      "faction": "rivet",
+      "cost": 40,
+      "hp": 400,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "rivet_hq"
+      ],
+      "role": "barricade",
+      "expands": false,
+      "weapon": "",
+      "art": "barricade",
+      "animations": {
+        "idle": "res://assets/cards/rivet_barricade_portrait.png",
+        "death": "res://assets/cards/rivet_barricade.svg"
+      },
+      "formal_name": "反坦克拒马",
+      "description": "阻挡车辆，步兵缓慢穿越；飞机不受影响。"
+    },
+    "kestrel_wall": {
+      "name": "防御围墙",
+      "faction": "kestrel",
+      "cost": 60,
+      "hp": 700,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "kestrel_hq"
+      ],
+      "role": "wall",
+      "expands": false,
+      "weapon": "",
+      "art": "wall",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_wall_portrait.png",
+        "death": "res://assets/cards/kestrel_wall.svg"
+      },
+      "formal_name": "防御围墙",
+      "description": "每格独立计费，阻挡所有地面单位；飞机可越过。"
+    },
+    "kestrel_barricade": {
+      "name": "反坦克拒马",
+      "faction": "kestrel",
+      "cost": 40,
+      "hp": 400,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "kestrel_hq"
+      ],
+      "role": "barricade",
+      "expands": false,
+      "weapon": "",
+      "art": "barricade",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_barricade_portrait.png",
+        "death": "res://assets/cards/kestrel_barricade.svg"
+      },
+      "formal_name": "反坦克拒马",
+      "description": "阻挡车辆，步兵缓慢穿越；飞机不受影响。"
+    },
+    "kestrel_outpost": {
+      "name": "前线图台",
+      "faction": "kestrel",
+      "cost": 900,
+      "hp": 1350,
+      "build_time": 60,
+      "power": -20,
+      "size": 3,
+      "requires": [
+        "kestrel_power"
+      ],
+      "role": "outpost",
+      "expands": true,
+      "weapon": "",
+      "art": "outpost",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_outpost_portrait.png",
+        "death": "res://assets/cards/kestrel_outpost_death.svg"
+      },
+      "formal_name": "前线图台",
+      "description": "工程兵选址并抵达后搭建低生命脚手架；现场施工逐步付款，受伤先维修、工兵阵亡后可接手或拆除，完工后授权前线建设。"
+    },
+    "kestrel_repair": {
+      "name": "工程维修站",
+      "faction": "kestrel",
+      "cost": 700,
+      "hp": 1100,
+      "build_time": 20,
+      "power": -45,
+      "size": 3,
+      "requires": [
+        "kestrel_factory"
+      ],
+      "role": "repair",
+      "expands": false,
+      "weapon": "",
+      "art": "repair",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_repair_portrait.png",
+        "death": "res://assets/cards/kestrel_repair_death.svg"
+      },
+      "repair_radius": 6,
+      "repair_rate": 18,
+      "formal_name": "工程维修站",
+      "description": "通电后付费修复范围内受损地面载具；露天检修平台，需前线保护。"
+    },
+    "kestrel_command": {
+      "name": "战术审定台",
+      "faction": "kestrel",
+      "cost": 800,
+      "hp": 950,
+      "build_time": 22,
+      "power": -40,
+      "size": 3,
+      "requires": [
+        "kestrel_factory"
+      ],
+      "role": "command",
+      "expands": false,
+      "weapon": "",
+      "art": "command",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_command_portrait.png",
+        "death": "res://assets/cards/kestrel_command_death.svg"
+      },
+      "vision_bonus": 3,
+      "formal_name": "战术审定台",
+      "description": "扩大友军自动索敌范围，解锁航空与顶级试验装备；不提供任意神力。"
+    },
+    "kestrel_airfield": {
+      "name": "航向航空站",
+      "faction": "kestrel",
+      "cost": 1300,
+      "hp": 1650,
+      "build_time": 30,
+      "power": -90,
+      "size": 5,
+      "requires": [
+        "kestrel_factory",
+        "kestrel_command"
+      ],
+      "role": "airfield",
+      "expands": false,
+      "weapon": "",
+      "art": "airfield",
+      "animations": {
+        "idle": "res://assets/cards/kestrel_airfield_portrait.png",
+        "death": "res://assets/cards/kestrel_airfield_death.svg"
+      },
+      "aircraft_capacity": 4,
+      "formal_name": "航向航空站",
+      "description": "生产、接收与补给最多四架所属飞机；失去机场后飞机寻找备用机场。",
+      "aircraft_repair_rate": 16
+    },
+    "rivet_outpost": {
+      "name": "前线压梁台",
+      "faction": "rivet",
+      "cost": 1100,
+      "hp": 1700,
+      "build_time": 60,
+      "power": -20,
+      "size": 3,
+      "requires": [
+        "rivet_power"
+      ],
+      "role": "outpost",
+      "expands": true,
+      "weapon": "",
+      "art": "outpost",
+      "animations": {
+        "idle": "res://assets/cards/rivet_outpost_portrait.png",
+        "death": "res://assets/cards/rivet_outpost_death.svg"
+      },
+      "formal_name": "前线压梁台",
+      "description": "工程兵选址并抵达后搭建低生命脚手架；现场施工逐步付款，受伤先维修、工兵阵亡后可接手或拆除，完工后授权前线建设。"
+    },
+    "rivet_repair": {
+      "name": "夹臂检修站",
+      "faction": "rivet",
+      "cost": 850,
+      "hp": 1400,
+      "build_time": 20,
+      "power": -45,
+      "size": 3,
+      "requires": [
+        "rivet_factory"
+      ],
+      "role": "repair",
+      "expands": false,
+      "weapon": "",
+      "art": "repair",
+      "animations": {
+        "idle": "res://assets/cards/rivet_repair_portrait.png",
+        "death": "res://assets/cards/rivet_repair_death.svg"
+      },
+      "repair_radius": 6,
+      "repair_rate": 14,
+      "formal_name": "夹臂检修站",
+      "description": "通电后付费修复范围内受损地面载具；露天检修平台，需前线保护。"
+    },
+    "rivet_command": {
+      "name": "号令广播塔",
+      "faction": "rivet",
+      "cost": 950,
+      "hp": 1200,
+      "build_time": 22,
+      "power": -40,
+      "size": 3,
+      "requires": [
+        "rivet_factory"
+      ],
+      "role": "command",
+      "expands": false,
+      "weapon": "",
+      "art": "command",
+      "animations": {
+        "idle": "res://assets/cards/rivet_command_portrait.png",
+        "death": "res://assets/cards/rivet_command_death.svg"
+      },
+      "vision_bonus": 3,
+      "formal_name": "号令广播塔",
+      "description": "扩大友军自动索敌范围，解锁航空与顶级试验装备；不提供任意神力。"
+    },
+    "rivet_airfield": {
+      "name": "重载航空站",
+      "faction": "rivet",
+      "cost": 1500,
+      "hp": 2000,
+      "build_time": 30,
+      "power": -90,
+      "size": 5,
+      "requires": [
+        "rivet_factory",
+        "rivet_command"
+      ],
+      "role": "airfield",
+      "expands": false,
+      "weapon": "",
+      "art": "airfield",
+      "animations": {
+        "idle": "res://assets/cards/rivet_airfield_portrait.png",
+        "death": "res://assets/cards/rivet_airfield_death.svg"
+      },
+      "aircraft_capacity": 4,
+      "formal_name": "重载航空站",
+      "description": "生产、接收与补给最多四架所属飞机；失去机场后飞机寻找备用机场。",
+      "aircraft_repair_rate": 16
+    },
+    "iron_hq": {
+      "name": "总工坊",
+      "formal_name": "总工坊",
+      "faction": "iron",
+      "art": "hq",
+      "cost": 2400,
+      "hp": 3200,
+      "build_time": 60,
+      "power": 100,
+      "size": 5,
+      "requires": [],
+      "role": "hq",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_hq_portrait.png",
+        "death": "res://assets/cards/rivet_hq_death.svg"
+      },
+      "description": "调度与建设授权中心；总部和前线分基地共同维持基地存续，低调设备台或手绘星图板标明阵营职能。"
+    },
+    "iron_power": {
+      "name": "锅炉发电站",
+      "formal_name": "锅炉发电站",
+      "faction": "iron",
+      "art": "power",
+      "cost": 475,
+      "hp": 1000,
+      "build_time": 16,
+      "power": 250,
+      "size": 5,
+      "requires": [
+        "iron_hq"
+      ],
+      "role": "power",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_power_portrait.png",
+        "death": "res://assets/cards/rivet_power_death.svg"
+      },
+      "description": "供电设备与显露的能源构件；提供基地电力，低电会拖慢生产与航空补给。"
+    },
+    "iron_refinery": {
+      "name": "筛选精炼厂",
+      "formal_name": "筛选精炼厂",
+      "faction": "iron",
+      "art": "refinery",
+      "cost": 1350,
+      "hp": 1600,
+      "build_time": 26,
+      "power": -55,
+      "size": 5,
+      "requires": [
+        "iron_power"
+      ],
+      "role": "refinery",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_refinery_portrait.png",
+        "death": "res://assets/cards/rivet_refinery_death.svg"
+      },
+      "description": "分离、处理矿车运回的辉晶；建成赠送一辆矿车，并扩展建设范围。"
+    },
+    "iron_barracks": {
+      "name": "守备兵营",
+      "formal_name": "守备兵营",
+      "faction": "iron",
+      "art": "barracks",
+      "cost": 425,
+      "hp": 1400,
+      "build_time": 16,
+      "power": -20,
+      "size": 5,
+      "requires": [
+        "iron_power"
+      ],
+      "role": "barracks",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_barracks_portrait.png",
+        "death": "res://assets/cards/rivet_barracks_death.svg"
+      },
+      "description": "训练本阵营基础步兵、反装甲兵和工兵；保留独立步兵生产队列。"
+    },
+    "iron_factory": {
+      "name": "装配工厂",
+      "formal_name": "装配工厂",
+      "faction": "iron",
+      "art": "factory",
+      "cost": 1200,
+      "hp": 2300,
+      "build_time": 30,
+      "power": -90,
+      "size": 6,
+      "requires": [
+        "iron_refinery",
+        "iron_barracks"
+      ],
+      "role": "factory",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_factory_portrait.png",
+        "death": "res://assets/cards/rivet_factory_death.svg"
+      },
+      "description": "生产地面载具与勤务平台；研究设施解锁后期火炮和试验装备。"
+    },
+    "iron_repair": {
+      "name": "露天检修站",
+      "formal_name": "露天检修站",
+      "faction": "iron",
+      "art": "repair",
+      "cost": 650,
+      "hp": 1250,
+      "build_time": 20,
+      "power": -40,
+      "size": 5,
+      "requires": [
+        "iron_factory"
+      ],
+      "role": "repair",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_repair_portrait.png",
+        "death": "res://assets/cards/rivet_repair_death.svg"
+      },
+      "description": "开放检修平台，通电后付费修复范围内己方地面装甲；多个维修来源不叠加。",
+      "repair_radius": 6,
+      "repair_rate": 24
+    },
+    "iron_command": {
+      "name": "工务指挥台",
+      "formal_name": "工务指挥台",
+      "faction": "iron",
+      "art": "command",
+      "cost": 750,
+      "hp": 1100,
+      "build_time": 22,
+      "power": -35,
+      "size": 5,
+      "requires": [
+        "iron_factory"
+      ],
+      "role": "command",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_command_portrait.png",
+        "death": "res://assets/cards/rivet_command_death.svg"
+      },
+      "description": "工务或航务调度设备，通电时扩大友军自动索敌范围，解锁航空；不提高武器射程。",
+      "vision_bonus": 3
+    },
+    "iron_tech": {
+      "name": "耐久试验所",
+      "formal_name": "耐久试验所",
+      "faction": "iron",
+      "art": "tech",
+      "cost": 850,
+      "hp": 1400,
+      "build_time": 26,
+      "power": -55,
+      "size": 5,
+      "requires": [
+        "iron_factory"
+      ],
+      "role": "tech",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_tech_portrait.png",
+        "death": "res://assets/cards/rivet_tech_death.svg"
+      },
+      "description": "载荷试验架或纸板试验环组成技术设施；解锁高级平台，投入正常生产时间、资金与电力。"
+    },
+    "iron_airfield": {
+      "name": "野战机场",
+      "formal_name": "野战机场",
+      "faction": "iron",
+      "art": "airfield",
+      "cost": 1200,
+      "hp": 1850,
+      "build_time": 32,
+      "power": -85,
+      "size": 6,
+      "requires": [
+        "iron_factory",
+        "iron_command"
+      ],
+      "role": "airfield",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_airfield_portrait.png",
+        "death": "res://assets/cards/rivet_airfield_death.svg"
+      },
+      "description": "飞机生产、接收与补给设施；有限机位包含待造飞机，补给遵循共用机场规则。",
+      "aircraft_capacity": 4,
+      "aircraft_repair_rate": 18
+    },
+    "iron_outpost": {
+      "name": "前线工坊",
+      "formal_name": "前线工坊",
+      "faction": "iron",
+      "art": "outpost",
+      "cost": 850,
+      "hp": 1450,
+      "build_time": 28,
+      "power": -20,
+      "size": 4,
+      "requires": [
+        "iron_power"
+      ],
+      "role": "outpost",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_outpost_portrait.png",
+        "death": "res://assets/cards/rivet_outpost_death.svg"
+      },
+      "description": "工兵搭建的前线建设节点，完工后扩展基地授权与建设范围；仍遵守现有现场施工规则。"
+    },
+    "iron_tower": {
+      "name": "机枪堡",
+      "formal_name": "机枪堡",
+      "faction": "iron",
+      "art": "tower",
+      "cost": 500,
+      "hp": 850,
+      "build_time": 12,
+      "power": -30,
+      "size": 3,
+      "requires": [
+        "iron_barracks"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "iron_tower",
+      "animations": {
+        "idle": "res://assets/cards/iron_tower_portrait.png",
+        "death": "res://assets/cards/rivet_tower_death.svg"
+      },
+      "description": "通电后自动射击地面目标的近程守备设施；不具备防空能力。",
+      "has_turret": true,
+      "turret_turn_speed": 150,
+      "fire_while_moving": false
+    },
+    "iron_aa_tower": {
+      "name": "护场防空台",
+      "formal_name": "护场防空台",
+      "faction": "iron",
+      "art": "aa_tower",
+      "cost": 650,
+      "hp": 950,
+      "build_time": 16,
+      "power": -45,
+      "size": 3,
+      "requires": [
+        "iron_factory"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "iron_aa_tower",
+      "animations": {
+        "idle": "res://assets/cards/iron_aa_tower_portrait.png",
+        "death": "res://assets/cards/rivet_tower_death.svg"
+      },
+      "description": "独立旋转的防空炮座，通电后只攻击空中目标，保护机场与检修区。",
+      "has_turret": true,
+      "turret_turn_speed": 150,
+      "fire_while_moving": false
+    },
+    "iron_anti_tower": {
+      "name": "守门炮座",
+      "formal_name": "守门炮座",
+      "faction": "iron",
+      "art": "anti_tower",
+      "cost": 750,
+      "hp": 1100,
+      "build_time": 18,
+      "power": -55,
+      "size": 3,
+      "requires": [
+        "iron_factory",
+        "iron_tech"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "iron_anti_tower",
+      "animations": {
+        "idle": "res://assets/cards/iron_anti_tower_portrait.png",
+        "death": "res://assets/cards/rivet_tower_death.svg"
+      },
+      "description": "独立旋转的反装甲炮座；擅长对地装甲射击，需要步兵与防空掩护。",
+      "has_turret": true,
+      "turret_turn_speed": 150,
+      "fire_while_moving": false
+    },
+    "iron_wall": {
+      "name": "铆接围墙",
+      "formal_name": "铆接围墙",
+      "faction": "iron",
+      "art": "wall",
+      "cost": 60,
+      "hp": 800,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "iron_hq"
+      ],
+      "role": "wall",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_wall_portrait.png",
+        "death": "res://assets/cards/rivet_wall.svg"
+      },
+      "description": "模块围墙与闸门构型，沿用地面阻挡与逐格计费；闸门开闭机制尚未接入。"
+    },
+    "iron_recycling_yard": {
+      "name": "备件仓",
+      "formal_name": "备件仓",
+      "faction": "iron",
+      "art": "recycling_yard",
+      "cost": 825,
+      "hp": 1500,
+      "build_time": 24,
+      "power": -35,
+      "size": 5,
+      "requires": [
+        "iron_factory",
+        "iron_tech"
+      ],
+      "role": "repair",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/iron_recycling_yard_portrait.png",
+        "death": "res://assets/cards/rivet_repair_death.svg"
+      },
+      "repair_radius": 7,
+      "repair_rate": 12,
+      "description": "标准构件架与分类工具仓，供应统一接口备件；通电后付费修复范围内友方地面载具，与其他维修来源取最高效率。"
+    },
+    "sky_hq": {
+      "name": "展翼总部",
+      "formal_name": "展翼总部",
+      "faction": "sky",
+      "art": "hq",
+      "cost": 2550,
+      "hp": 2500,
+      "build_time": 60,
+      "power": 100,
+      "size": 5,
+      "requires": [],
+      "role": "hq",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_hq_portrait.png",
+        "death": "res://assets/cards/kestrel_hq_death.svg"
+      },
+      "description": "调度与建设授权中心；总部和前线分基地共同维持基地存续，低调设备台或手绘星图板标明阵营职能。"
+    },
+    "sky_power": {
+      "name": "励磁发电站",
+      "formal_name": "励磁发电站",
+      "faction": "sky",
+      "art": "power",
+      "cost": 575,
+      "hp": 850,
+      "build_time": 17,
+      "power": 300,
+      "size": 4,
+      "requires": [
+        "sky_hq"
+      ],
+      "role": "power",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_power_portrait.png",
+        "death": "res://assets/cards/kestrel_power_death.svg"
+      },
+      "description": "供电设备与显露的能源构件；提供基地电力，低电会拖慢生产与航空补给。"
+    },
+    "sky_refinery": {
+      "name": "辉晶分离站",
+      "formal_name": "辉晶分离站",
+      "faction": "sky",
+      "art": "refinery",
+      "cost": 1550,
+      "hp": 1600,
+      "build_time": 24,
+      "power": -65,
+      "size": 5,
+      "requires": [
+        "sky_power"
+      ],
+      "role": "refinery",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_refinery_portrait.png",
+        "death": "res://assets/cards/kestrel_refinery_death.svg"
+      },
+      "description": "分离、处理矿车运回的辉晶；建成赠送一辆矿车，并扩展建设范围。"
+    },
+    "sky_barracks": {
+      "name": "勤务兵营",
+      "formal_name": "勤务兵营",
+      "faction": "sky",
+      "art": "barracks",
+      "cost": 475,
+      "hp": 1000,
+      "build_time": 14,
+      "power": -20,
+      "size": 4,
+      "requires": [
+        "sky_power"
+      ],
+      "role": "barracks",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_barracks_portrait.png",
+        "death": "res://assets/cards/kestrel_barracks_death.svg"
+      },
+      "description": "训练本阵营基础步兵、反装甲兵和工兵；保留独立步兵生产队列。"
+    },
+    "sky_factory": {
+      "name": "试制工厂",
+      "formal_name": "试制工厂",
+      "faction": "sky",
+      "art": "factory",
+      "cost": 1350,
+      "hp": 1850,
+      "build_time": 27,
+      "power": -105,
+      "size": 6,
+      "requires": [
+        "sky_refinery",
+        "sky_barracks"
+      ],
+      "role": "factory",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_factory_portrait.png",
+        "death": "res://assets/cards/kestrel_factory_death.svg"
+      },
+      "description": "生产地面载具与勤务平台；研究设施解锁后期火炮和试验装备。"
+    },
+    "sky_repair": {
+      "name": "校准维修台",
+      "formal_name": "校准维修台",
+      "faction": "sky",
+      "art": "repair",
+      "cost": 775,
+      "hp": 950,
+      "build_time": 19,
+      "power": -50,
+      "size": 4,
+      "requires": [
+        "sky_factory"
+      ],
+      "role": "repair",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_repair_portrait.png",
+        "death": "res://assets/cards/kestrel_repair_death.svg"
+      },
+      "description": "开放检修平台，通电后付费修复范围内己方地面装甲；多个维修来源不叠加。",
+      "repair_radius": 6,
+      "repair_rate": 16
+    },
+    "sky_command": {
+      "name": "航务指挥台",
+      "formal_name": "航务指挥台",
+      "faction": "sky",
+      "art": "command",
+      "cost": 900,
+      "hp": 900,
+      "build_time": 20,
+      "power": -50,
+      "size": 4,
+      "requires": [
+        "sky_factory"
+      ],
+      "role": "command",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_command_portrait.png",
+        "death": "res://assets/cards/kestrel_command_death.svg"
+      },
+      "description": "工务或航务调度设备，通电时扩大友军自动索敌范围，解锁航空；不提高武器射程。",
+      "vision_bonus": 4
+    },
+    "sky_tech": {
+      "name": "续稿研究所",
+      "formal_name": "续稿研究所",
+      "faction": "sky",
+      "art": "tech",
+      "cost": 1000,
+      "hp": 1100,
+      "build_time": 25,
+      "power": -75,
+      "size": 4,
+      "requires": [
+        "sky_factory"
+      ],
+      "role": "tech",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_tech_portrait.png",
+        "death": "res://assets/cards/kestrel_tech_death.svg"
+      },
+      "description": "载荷试验架或纸板试验环组成技术设施；解锁高级平台，投入正常生产时间、资金与电力。"
+    },
+    "sky_airfield": {
+      "name": "展翼机场",
+      "formal_name": "展翼机场",
+      "faction": "sky",
+      "art": "airfield",
+      "cost": 1450,
+      "hp": 1500,
+      "build_time": 28,
+      "power": -110,
+      "size": 6,
+      "requires": [
+        "sky_factory",
+        "sky_command"
+      ],
+      "role": "airfield",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_airfield_portrait.png",
+        "death": "res://assets/cards/kestrel_airfield_death.svg"
+      },
+      "description": "飞机生产、接收与补给设施；有限机位包含待造飞机，补给遵循共用机场规则。",
+      "aircraft_capacity": 6,
+      "aircraft_repair_rate": 12
+    },
+    "sky_outpost": {
+      "name": "前线翼站",
+      "formal_name": "前线翼站",
+      "faction": "sky",
+      "art": "outpost",
+      "cost": 950,
+      "hp": 1150,
+      "build_time": 23,
+      "power": -25,
+      "size": 4,
+      "requires": [
+        "sky_power"
+      ],
+      "role": "outpost",
+      "expands": true,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_outpost_portrait.png",
+        "death": "res://assets/cards/kestrel_outpost_death.svg"
+      },
+      "description": "工兵搭建的前线建设节点，完工后扩展基地授权与建设范围；仍遵守现有现场施工规则。"
+    },
+    "sky_tower": {
+      "name": "哨戒枪座",
+      "formal_name": "哨戒枪座",
+      "faction": "sky",
+      "art": "tower",
+      "cost": 575,
+      "hp": 650,
+      "build_time": 11,
+      "power": -40,
+      "size": 3,
+      "requires": [
+        "sky_barracks"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "sky_tower",
+      "animations": {
+        "idle": "res://assets/cards/sky_tower_portrait.png",
+        "death": "res://assets/cards/kestrel_tower_death.svg"
+      },
+      "description": "通电后自动射击地面目标的近程守备设施；不具备防空能力。",
+      "has_turret": true,
+      "turret_turn_speed": 210,
+      "fire_while_moving": false
+    },
+    "sky_aa_tower": {
+      "name": "截空炮台",
+      "formal_name": "截空炮台",
+      "faction": "sky",
+      "art": "aa_tower",
+      "cost": 750,
+      "hp": 750,
+      "build_time": 15,
+      "power": -65,
+      "size": 3,
+      "requires": [
+        "sky_factory"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "sky_aa_tower",
+      "animations": {
+        "idle": "res://assets/cards/sky_aa_tower_portrait.png",
+        "death": "res://assets/cards/kestrel_tower_death.svg"
+      },
+      "description": "独立旋转的防空炮座，通电后只攻击空中目标，保护机场与检修区。",
+      "has_turret": true,
+      "turret_turn_speed": 210,
+      "fire_while_moving": false
+    },
+    "sky_anti_tower": {
+      "name": "聚焦炮座",
+      "formal_name": "聚焦炮座",
+      "faction": "sky",
+      "art": "anti_tower",
+      "cost": 900,
+      "hp": 800,
+      "build_time": 18,
+      "power": -80,
+      "size": 3,
+      "requires": [
+        "sky_factory",
+        "sky_tech"
+      ],
+      "role": "tower",
+      "expands": false,
+      "weapon": "sky_anti_tower",
+      "animations": {
+        "idle": "res://assets/cards/sky_anti_tower_portrait.png",
+        "death": "res://assets/cards/kestrel_tower_death.svg"
+      },
+      "description": "独立旋转的反装甲炮座；擅长对地装甲射击，需要步兵与防空掩护。",
+      "has_turret": true,
+      "turret_turn_speed": 210,
+      "fire_while_moving": false
+    },
+    "sky_wall": {
+      "name": "折板围墙",
+      "formal_name": "折板围墙",
+      "faction": "sky",
+      "art": "wall",
+      "cost": 65,
+      "hp": 650,
+      "build_time": 3,
+      "power": 0,
+      "size": 1,
+      "requires": [
+        "sky_hq"
+      ],
+      "role": "wall",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_wall_portrait.png",
+        "death": "res://assets/cards/kestrel_wall.svg"
+      },
+      "description": "模块围墙与闸门构型，沿用地面阻挡与逐格计费；闸门开闭机制尚未接入。"
+    },
+    "sky_accumulator": {
+      "name": "蓄能站",
+      "formal_name": "蓄能站",
+      "faction": "sky",
+      "art": "accumulator",
+      "cost": 850,
+      "hp": 1000,
+      "build_time": 25,
+      "power": 350,
+      "size": 4,
+      "requires": [
+        "sky_tech"
+      ],
+      "role": "power",
+      "expands": false,
+      "weapon": "",
+      "animations": {
+        "idle": "res://assets/cards/sky_accumulator_portrait.png",
+        "death": "res://assets/cards/kestrel_power_death.svg"
+      },
+      "overcharge_radius": 8,
+      "overcharge_window": 5,
+      "overcharge_recharge": 25,
+      "damage_bonus": 0.2,
+      "overcharge_cost": 60,
+      "overcharge_power": 80,
+      "description": "粗纸筒捆成电容组，下面连接低方盒；为基地供电，有电力余量与资金时自动在交战中开启短时局部增压，随后重新蓄能。"
+    },
+    "rivet_shipyard": {
+      "name": "钢铆船坞",
+      "formal_name": "钢铆船坞",
+      "faction": "rivet",
+      "cost": 1450,
+      "hp": 2150,
+      "build_time": 34,
+      "power": -95,
+      "size": 4,
+      "requires": [
+        "rivet_factory"
+      ],
+      "role": "shipyard",
+      "art": "shipyard",
+      "expands": false,
+      "weapon": "",
+      "harbor_depth": 2.0,
+      "animations": {
+        "idle": "res://assets/cards/rivet_shipyard_portrait.png",
+        "death": "res://assets/cards/rivet_shipyard_death.svg"
+      },
+      "description": "全部占地建在水面，保留己方港湾或基地扩建范围；舰艇从合法水面出口出航，步兵仍在岸边登卸。",
+      "domain": "naval"
+    },
+    "kestrel_shipyard": {
+      "name": "标准船坞",
+      "formal_name": "标准船坞",
+      "faction": "kestrel",
+      "cost": 1450,
+      "hp": 2150,
+      "build_time": 34,
+      "power": -95,
+      "size": 4,
+      "requires": [
+        "kestrel_factory"
+      ],
+      "role": "shipyard",
+      "art": "shipyard",
+      "expands": false,
+      "weapon": "",
+      "harbor_depth": 2.0,
+      "animations": {
+        "idle": "res://assets/cards/kestrel_shipyard_portrait.png",
+        "death": "res://assets/cards/kestrel_shipyard_death.svg"
+      },
+      "description": "全部占地建在水面，保留己方港湾或基地扩建范围；舰艇从合法水面出口出航，步兵仍在岸边登卸。",
+      "domain": "naval"
+    },
+    "iron_shipyard": {
+      "name": "工匠船坞",
+      "formal_name": "工匠船坞",
+      "faction": "iron",
+      "cost": 1450,
+      "hp": 2400,
+      "build_time": 34,
+      "power": -95,
+      "size": 4,
+      "requires": [
+        "iron_factory"
+      ],
+      "role": "shipyard",
+      "art": "shipyard",
+      "expands": false,
+      "weapon": "",
+      "harbor_depth": 2.0,
+      "animations": {
+        "idle": "res://assets/cards/iron_shipyard_portrait.png",
+        "death": "res://assets/cards/iron_shipyard_death.svg"
+      },
+      "description": "全部占地建在水面，保留己方港湾或基地扩建范围；舰艇从合法水面出口出航，步兵仍在岸边登卸。",
+      "domain": "naval"
+    },
+    "sky_shipyard": {
+      "name": "观测船坞",
+      "formal_name": "观测船坞",
+      "faction": "sky",
+      "cost": 1600,
+      "hp": 2150,
+      "build_time": 34,
+      "power": -95,
+      "size": 4,
+      "requires": [
+        "sky_factory"
+      ],
+      "role": "shipyard",
+      "art": "shipyard",
+      "expands": false,
+      "weapon": "",
+      "harbor_depth": 2.0,
+      "animations": {
+        "idle": "res://assets/cards/sky_shipyard_portrait.png",
+        "death": "res://assets/cards/sky_shipyard_death.svg"
+      },
+      "description": "全部占地建在水面，保留己方港湾或基地扩建范围；舰艇从合法水面出口出航，步兵仍在岸边登卸。",
+      "domain": "naval"
+    }
+  },
+  "weapons": {
+    "rivet_rifle": {
+      "damage": 12,
+      "interval": 0.8,
+      "range": 5,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ]
+    },
+    "kestrel_rifle": {
+      "damage": 9,
+      "interval": 0.65,
+      "range": 5.5,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ]
+    },
+    "rivet_anti": {
+      "damage": 100,
+      "interval": 3,
+      "range": 8,
+      "kind": "shell",
+      "blast": 0.35,
+      "speed": 18,
+      "targets": [
+        "ground",
+        "naval"
+      ]
+    },
+    "kestrel_anti": {
+      "damage": 90,
+      "interval": 2.8,
+      "range": 8.5,
+      "kind": "shell",
+      "blast": 0.35,
+      "speed": 18,
+      "targets": [
+        "ground",
+        "naval"
+      ]
+    },
+    "rivet_tank": {
+      "damage": 90,
+      "interval": 2,
+      "range": 9,
+      "kind": "shell",
+      "blast": 1.2,
+      "speed": 18,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.3
+      }
+    },
+    "kestrel_tank": {
+      "damage": 70,
+      "interval": 2,
+      "range": 9.5,
+      "kind": "shell",
+      "blast": 1,
+      "speed": 18,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.3
+      }
+    },
+    "rivet_assault": {
+      "damage": 150,
+      "interval": 3.8,
+      "range": 10,
+      "kind": "shell",
+      "blast": 2,
+      "speed": 18,
+      "targets": [
+        "ground"
+      ]
+    },
+    "kestrel_demolition": {
+      "damage": 90,
+      "interval": 2.8,
+      "range": 7,
+      "kind": "shell",
+      "blast": 1.8,
+      "speed": 10,
+      "targets": [
+        "ground"
+      ]
+    },
+    "rivet_tower": {
+      "damage": 75,
+      "interval": 2,
+      "range": 12,
+      "kind": "shell",
+      "blast": 1.2,
+      "speed": 18,
+      "targets": [
+        "ground"
+      ]
+    },
+    "kestrel_tower": {
+      "damage": 18,
+      "interval": 0.5,
+      "range": 12,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ]
+    },
+    "kestrel_scout": {
+      "damage": 12,
+      "interval": 0.55,
+      "range": 7,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.6,
+        "armored": 0.35,
+        "building": 0.4
+      }
+    },
+    "kestrel_aa": {
+      "damage": 58,
+      "interval": 1.2,
+      "range": 13,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 32,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "kestrel_fighter": {
+      "damage": 75,
+      "interval": 0.8,
+      "range": 10,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 38,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "kestrel_advanced": {
+      "damage": 180,
+      "interval": 4.2,
+      "range": 16,
+      "kind": "shell",
+      "blast": 0.4,
+      "speed": 30,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "building": 1.2,
+        "armored": 1.5,
+        "infantry": 0.65
+      }
+    },
+    "rivet_scout": {
+      "damage": 15,
+      "interval": 0.55,
+      "range": 7,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.6,
+        "armored": 0.35,
+        "building": 0.4
+      }
+    },
+    "rivet_aa": {
+      "damage": 72,
+      "interval": 1.5,
+      "range": 13,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 32,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "rivet_fighter": {
+      "damage": 85,
+      "interval": 0.9,
+      "range": 10,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 38,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "rivet_advanced": {
+      "damage": 210,
+      "interval": 4.8,
+      "range": 18,
+      "kind": "shell",
+      "blast": 1.5,
+      "speed": 30,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "building": 1.7,
+        "armored": 1.15,
+        "infantry": 0.65
+      }
+    },
+    "kestrel_artillery": {
+      "damage": 95,
+      "interval": 3.4,
+      "range": 15,
+      "kind": "shell",
+      "blast": 1.7,
+      "speed": 16,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {}
+    },
+    "kestrel_attacker": {
+      "damage": 110,
+      "interval": 1.8,
+      "range": 8,
+      "kind": "shell",
+      "blast": 0.6,
+      "speed": 26,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "armored": 1.4,
+        "infantry": 0.65
+      }
+    },
+    "rivet_bomber": {
+      "damage": 160,
+      "interval": 3,
+      "range": 7,
+      "kind": "shell",
+      "blast": 2.2,
+      "speed": 14,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "building": 1.4,
+        "armored": 0.85
+      }
+    },
+    "iron_rifle": {
+      "damage": 10,
+      "interval": 0.8,
+      "range": 5.2,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.15,
+        "armored": 0.6,
+        "building": 0.55
+      }
+    },
+    "iron_anti": {
+      "damage": 90,
+      "interval": 3.1,
+      "range": 8,
+      "kind": "shell",
+      "blast": 0.3,
+      "speed": 17,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.55,
+        "armored": 1.2,
+        "building": 0.85
+      }
+    },
+    "iron_scout": {
+      "damage": 13,
+      "interval": 0.65,
+      "range": 6.8,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.5,
+        "armored": 0.35,
+        "building": 0.4
+      }
+    },
+    "iron_tank": {
+      "damage": 65,
+      "interval": 2.1,
+      "range": 9,
+      "kind": "shell",
+      "blast": 0.8,
+      "speed": 18,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.3
+      }
+    },
+    "iron_assault": {
+      "damage": 78,
+      "interval": 1.7,
+      "range": 6.5,
+      "kind": "shell",
+      "blast": 2.1,
+      "speed": 12,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.5,
+        "armored": 0.6,
+        "building": 0.85
+      }
+    },
+    "iron_aa": {
+      "damage": 65,
+      "interval": 1.45,
+      "range": 12.5,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "iron_artillery": {
+      "damage": 100,
+      "interval": 3.8,
+      "range": 15,
+      "kind": "shell",
+      "blast": 1.8,
+      "speed": 15,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {}
+    },
+    "iron_fighter": {
+      "damage": 75,
+      "interval": 0.95,
+      "range": 10,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 34,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "iron_attacker": {
+      "damage": 100,
+      "interval": 2.0,
+      "range": 8,
+      "kind": "shell",
+      "blast": 1.1,
+      "speed": 24,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.0,
+        "armored": 1.15,
+        "building": 1.15
+      }
+    },
+    "iron_advanced": {
+      "damage": 175,
+      "interval": 4.6,
+      "range": 17,
+      "kind": "shell",
+      "blast": 1.4,
+      "speed": 25,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.7,
+        "armored": 1.2,
+        "building": 1.5
+      }
+    },
+    "iron_tower": {
+      "damage": 16,
+      "interval": 0.5,
+      "range": 11,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.25,
+        "armored": 0.65,
+        "building": 0.65
+      }
+    },
+    "iron_aa_tower": {
+      "damage": 75,
+      "interval": 1.5,
+      "range": 14,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 32,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "iron_anti_tower": {
+      "damage": 95,
+      "interval": 2.6,
+      "range": 12,
+      "kind": "shell",
+      "blast": 0.45,
+      "speed": 22,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "armored": 1.4,
+        "building": 1.0
+      }
+    },
+    "sky_rifle": {
+      "damage": 10,
+      "interval": 0.65,
+      "range": 5.8,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.1,
+        "armored": 0.6,
+        "building": 0.55
+      }
+    },
+    "sky_anti": {
+      "damage": 95,
+      "interval": 2.8,
+      "range": 9,
+      "kind": "shell",
+      "blast": 0.25,
+      "speed": 22,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.5,
+        "armored": 1.2,
+        "building": 0.8
+      }
+    },
+    "sky_scout": {
+      "damage": 11,
+      "interval": 0.5,
+      "range": 7.5,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.55,
+        "armored": 0.35,
+        "building": 0.4
+      }
+    },
+    "sky_tank": {
+      "damage": 75,
+      "interval": 2.3,
+      "range": 10,
+      "kind": "shell",
+      "blast": 0.35,
+      "speed": 30,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.3,
+        "armored": 1.2,
+        "building": 1.0
+      }
+    },
+    "sky_artillery": {
+      "damage": 90,
+      "interval": 3.1,
+      "range": 16,
+      "kind": "shell",
+      "blast": 1.5,
+      "speed": 24,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {}
+    },
+    "sky_aa": {
+      "damage": 64,
+      "interval": 1.2,
+      "range": 13.5,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 38,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "sky_disruptor": {
+      "damage": 70,
+      "interval": 2.4,
+      "range": 10,
+      "kind": "shell",
+      "blast": 1.7,
+      "speed": 22,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.1,
+        "armored": 0.9,
+        "building": 0.7
+      },
+      "emp_vehicle_duration": 2.0,
+      "emp_building_duration": 1.0
+    },
+    "sky_pulse": {
+      "damage": 165,
+      "interval": 4.2,
+      "range": 15,
+      "kind": "shell",
+      "blast": 2.0,
+      "speed": 28,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 0.8,
+        "armored": 1.3,
+        "building": 1.2
+      }
+    },
+    "sky_fighter": {
+      "damage": 80,
+      "interval": 0.8,
+      "range": 11,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 42,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "sky_attacker": {
+      "damage": 120,
+      "interval": 1.7,
+      "range": 8.8,
+      "kind": "shell",
+      "blast": 0.55,
+      "speed": 32,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 0.6,
+        "armored": 1.45,
+        "building": 1.05
+      }
+    },
+    "sky_tower": {
+      "damage": 18,
+      "interval": 0.55,
+      "range": 12,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 0,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.2,
+        "armored": 0.65,
+        "building": 0.6
+      }
+    },
+    "sky_aa_tower": {
+      "damage": 65,
+      "interval": 1.15,
+      "range": 15,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 40,
+      "targets": [
+        "air"
+      ],
+      "multipliers": {}
+    },
+    "sky_anti_tower": {
+      "damage": 110,
+      "interval": 2.7,
+      "range": 13,
+      "kind": "shell",
+      "blast": 0.25,
+      "speed": 34,
+      "targets": [
+        "ground",
+        "naval"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "armored": 1.5,
+        "building": 1.1
+      }
+    },
+    "rivet_ship_frigate": {
+      "damage": 83,
+      "interval": 1.7,
+      "range": 12.0,
+      "kind": "shell",
+      "blast": 1.0,
+      "speed": 22,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "building": 0.9
+      }
+    },
+    "rivet_ship_signature": {
+      "damage": 205,
+      "interval": 3.5,
+      "range": 15.0,
+      "kind": "shell",
+      "blast": 2.0,
+      "speed": 19,
+      "targets": [
+        "naval",
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 0.65,
+        "building": 1.3
+      }
+    },
+    "kestrel_ship_frigate": {
+      "damage": 67,
+      "interval": 1.35,
+      "range": 13.0,
+      "kind": "shell",
+      "blast": 0.5,
+      "speed": 28,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "building": 0.9
+      }
+    },
+    "kestrel_ship_signature": {
+      "damage": 150,
+      "interval": 2.65,
+      "range": 16.0,
+      "kind": "shell",
+      "blast": 1.1,
+      "speed": 26,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.65,
+        "building": 1.3
+      }
+    },
+    "iron_ship_frigate": {
+      "damage": 75,
+      "interval": 1.65,
+      "range": 12.0,
+      "kind": "shell",
+      "blast": 0.6,
+      "speed": 22,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "building": 0.9
+      }
+    },
+    "iron_ship_signature": {
+      "damage": 175,
+      "interval": 3.2,
+      "range": 15.5,
+      "kind": "shell",
+      "blast": 1.5,
+      "speed": 21,
+      "targets": [
+        "naval",
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 0.65,
+        "building": 1.3
+      }
+    },
+    "sky_ship_frigate": {
+      "damage": 64,
+      "interval": 1.15,
+      "range": 13.5,
+      "kind": "shell",
+      "blast": 0.35,
+      "speed": 32,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.45,
+        "building": 0.9
+      }
+    },
+    "sky_ship_signature": {
+      "damage": 165,
+      "interval": 3.0,
+      "range": 16.0,
+      "kind": "shell",
+      "blast": 1.9,
+      "speed": 30,
+      "targets": [
+        "naval",
+        "ground",
+        "air"
+      ],
+      "multipliers": {
+        "infantry": 0.65,
+        "building": 1.3
+      },
+      "emp_vehicle_duration": 2.0,
+      "emp_building_duration": 1.0
+    },
+    "sky_creator_hand": {
+      "damage": 900,
+      "interval": 7.0,
+      "range": 6.5,
+      "kind": "instant",
+      "blast": 0.0,
+      "speed": 0.0,
+      "targets": [
+        "ground",
+        "air",
+        "naval"
+      ],
+      "multipliers": {},
+      "execute_building": true
+    }
+  },
+  "setting_source": "docs/派系设定/paper_front_world_setting_four_factions.md · v4",
+  "player_colors": [
+    "e7ad42",
+    "41c7c6"
+  ]
+}

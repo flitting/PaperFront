@@ -1,0 +1,7 @@
+[configuration]
+entry_symbol = "paper_front_kernels_init"
+compatibility_minimum = "4.5"
+reloadable = false
+
+[libraries]
+linux.x86_64 = "res://assets/native/libpaper_front_kernels.so"

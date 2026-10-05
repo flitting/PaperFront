@@ -1,0 +1,40 @@
+{
+	"failures": [],
+	"format": 1,
+	"purpose": "distant shadow-only pine casters",
+	"variants": [
+		{
+			"caster": "res://assets/models/pine_shadow_0.res",
+			"normal_repairs": 40,
+			"selected_lod": 2,
+			"source": "res://assets/models/pine_0.res",
+			"source_sha256": "33a048b604be40587237784ee0b62de1cba65df0e0534064a4a39167211bc00a",
+			"triangle_positions_and_bounds_unchanged": true,
+			"triangles": 630,
+			"variant": 0,
+			"winding_repairs": 28
+		},
+		{
+			"caster": "res://assets/models/pine_shadow_1.res",
+			"normal_repairs": 36,
+			"selected_lod": 2,
+			"source": "res://assets/models/pine_1.res",
+			"source_sha256": "948edd2c635d9c581222c945faf141c6ff4c73aa11037f08bae090c431943fb6",
+			"triangle_positions_and_bounds_unchanged": true,
+			"triangles": 498,
+			"variant": 1,
+			"winding_repairs": 28
+		},
+		{
+			"caster": "res://assets/models/pine_shadow_2.res",
+			"normal_repairs": 26,
+			"selected_lod": 2,
+			"source": "res://assets/models/pine_2.res",
+			"source_sha256": "1f3a8a3c7b0ac6f298c0cdcd319006ce4d67034ed760b532fce3bc803760436a",
+			"triangle_positions_and_bounds_unchanged": true,
+			"triangles": 416,
+			"variant": 2,
+			"winding_repairs": 15
+		}
+	]
+}

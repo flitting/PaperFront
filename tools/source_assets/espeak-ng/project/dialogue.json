@@ -1,0 +1,278 @@
+{
+  "format": "Mandarin acknowledgement text, faction voice parameters and audited pronunciation mnemonics",
+  "clips": [
+    {
+      "faction": "kestrel",
+      "action": "select",
+      "text": "收到，等待命令。",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "t'@214N_| t'ai51_| m'i51N_| l'i51N_|"
+      ]
+    },
+    {
+      "faction": "kestrel",
+      "action": "move",
+      "text": "按令前进。",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "'a51n_| l'i51N_| tS;h'iE35n_| tS;'i51n_|"
+      ]
+    },
+    {
+      "faction": "kestrel",
+      "action": "attack",
+      "text": "目标确认，开始攻击。",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "kh'ai55_| s.'i.214_| k'ong55_| tS;'i55_|"
+      ]
+    },
+    {
+      "faction": "kestrel",
+      "action": "ready",
+      "text": "准备完毕。",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "ts.'u@214n_| p'ei51_| w'A35n_| p'i51_|"
+      ]
+    },
+    {
+      "faction": "kestrel",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "voice_settings": {
+        "pitch": 44,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ]
+    },
+    {
+      "faction": "rivet",
+      "action": "select",
+      "text": "收到，部队待命。",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "p'u51_| t'uei51_| t'ai51_| m'i51N_|"
+      ]
+    },
+    {
+      "faction": "rivet",
+      "action": "move",
+      "text": "开始前进。",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "kh'ai55_| s.'i.214_| tS;h'iE35n_| tS;'i51n_|"
+      ]
+    },
+    {
+      "faction": "rivet",
+      "action": "attack",
+      "text": "目标锁定，开始攻击。",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| s'uo214_| t'i51N_|",
+        "kh'ai55_| s.'i.214_| k'ong55_| tS;'i55_|"
+      ]
+    },
+    {
+      "faction": "rivet",
+      "action": "ready",
+      "text": "单位准备完毕。",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "t'a55n_| w'ei51_| ts.'u@214n_| p'ei51_| w'A35n_| p'i51_|"
+      ]
+    },
+    {
+      "faction": "rivet",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "voice_settings": {
+        "pitch": 37,
+        "range": 34,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ]
+    },
+    {
+      "faction": "iron",
+      "action": "select",
+      "text": "检查完毕，等待命令。",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;'iE214n_| ts.h'A35_| w'A35n_| p'i51_|",
+        "t'@214N_| t'ai51_| m'i51N_| l'i51N_|"
+      ]
+    },
+    {
+      "faction": "iron",
+      "action": "move",
+      "text": "稳步前进。",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "w'u@214n_| p'u51_| tS;h'iE35n_| tS;'i51n_|"
+      ]
+    },
+    {
+      "faction": "iron",
+      "action": "attack",
+      "text": "目标确认，准备开火。",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "ts.'u@214n_| p'ei51_| kh'ai55_| X'uo214_|"
+      ]
+    },
+    {
+      "faction": "iron",
+      "action": "ready",
+      "text": "检查完成，可以出发。",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;'iE214n_| ts.h'A35_| w'A35n_| ts.h'@35N_|",
+        "kh'o-214_| j'i214_| ts.h'u55_| f'A55_|"
+      ]
+    },
+    {
+      "faction": "iron",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "voice_settings": {
+        "pitch": 40,
+        "range": 32,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ]
+    },
+    {
+      "faction": "sky",
+      "action": "select",
+      "text": "收到，等待指令。",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "s.'ou55_| t'Au51_|",
+        "t'@214N_| t'ai51_| ts.'i.214_| l'i51N_|"
+      ]
+    },
+    {
+      "faction": "sky",
+      "action": "move",
+      "text": "前往目标位置。",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "tS;h'iE35n_| w'A214N_| m'u51_| pj'Au55_| w'ei51_| ts.'i.51_|"
+      ]
+    },
+    {
+      "faction": "sky",
+      "action": "attack",
+      "text": "目标确认，执行攻击。",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "m'u51_| pj'Au55_| tS;h'yE51_| z.'@51n_|",
+        "ts.'i.35_| S;'i35N_| k'ong55_| tS;'i55_|"
+      ]
+    },
+    {
+      "faction": "sky",
+      "action": "ready",
+      "text": "准备完成。",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "ts.'u@214n_| p'ei51_| w'A35n_| ts.h'@35N_|"
+      ]
+    },
+    {
+      "faction": "sky",
+      "action": "return",
+      "text": "返航，补充弹药。",
+      "voice_settings": {
+        "pitch": 48,
+        "range": 38,
+        "voice": "cmn-latn-pinyin+m3"
+      },
+      "phoneme_rendering": [
+        "f'a214n_| X'a35N_|",
+        "p'u214_| ts.h'ong55_| t'a51n_| j'Au51_|"
+      ]
+    }
+  ]
+}

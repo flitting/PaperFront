@@ -1,0 +1,24 @@
+{
+  "source": "MakeHuman Community core graphical basemesh",
+  "commit": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+  "license": "CC0 1.0 Universal for bundled graphical assets",
+  "license_url": "https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md",
+  "files": {
+    "base.obj": {
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/3dobjs/base.obj",
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+      "bytes": 1749303
+    },
+    "LICENSE.ASSETS.md": {
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/LICENSE.ASSETS.md",
+      "sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c",
+      "bytes": 6962
+    },
+    "LICENSE.md": {
+      "url": "https://raw.githubusercontent.com/makehumancommunity/makehuman/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/LICENSE.md",
+      "sha256": "edd99571ca62698f78c943fd4fffb159a413c315fa0d4819d3cec5cadaf8b4f1",
+      "bytes": 3598
+    }
+  },
+  "use": "extract one anatomical hand, close wrist boundary and re-rig to game reference poses; application code not incorporated"
+}

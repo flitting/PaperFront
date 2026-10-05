@@ -1,0 +1,2 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="320" viewBox="0 0 384 320"><defs xmlns="http://www.w3.org/2000/svg"><clipPath id="cut"><polygon points="22.0,269.0 85.0,280.0 148.0,287.0 198.0,270.0 242.0,291.0 317.0,285.0 348.0,266.0 310.0,230.0 259.0,218.0 206.0,242.0 169.0,220.0 127.0,209.0 93.0,229.0 38.0,234.0" /></clipPath></defs>
+<g xmlns="http://www.w3.org/2000/svg" id="player-identification" clip-path="url(#cut)"><polygon points="78,239 98,235 119,245 110,257 85,251" fill="#ffffff" stroke="#000000" stroke-width="3" stroke-linejoin="round" /></g></svg>

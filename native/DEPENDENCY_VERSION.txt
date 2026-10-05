@@ -1,0 +1,2 @@
+godot-cpp: e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77 (godot-4.5-stable, compatible with Godot 4.6.2)
+Local patch: patches/container-assignment.patch (release overwritten Array/Dictionary references and guard self-assignment).
