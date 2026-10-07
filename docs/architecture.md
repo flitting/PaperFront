@@ -1,5 +1,11 @@
 # 工程接口（开发约定）
 
+## 当前技术方案与迁移决定（2026-10-07）
+
+继续采用 Godot + GDScript + 项目自写 C++ GDExtension：GDScript 管理游戏状态，`native/src` 中的 `PaperFrontKernels` 加速单位更新、移动、碰撞和空间查询等高频计算。这里的 C++ 是项目自己的代码；Godot 引擎内置的 A* 等功能另行使用。
+
+Rust / Bevy ECS 迁移暂缓，保留为未来遇到明确模拟 CPU 瓶颈时的备选。目前优先优化现有实现，不启动移植或换引擎。迁移收益尚未实测，不能按估算倍数承诺 FPS；剖析和同场景原型验证后再决定。具体估算、历史数据边界及重新评估条件统一见 [Rust / Bevy ECS 迁移评估](bevy_ecs_migration_assessment.md)。
+
 ## 入口与 Wiki 接口（2026-10-02）
 
 `PaperHUD.entry_menu` 与 `PaperHUD.wiki` 为遮挡战场输入的全屏纸板Control；入口打开原有战局设置，设置菜单也提供Wiki与返回入口动作。`main` 保存Wiki前的暂停状态，局内查阅暂停，关闭恢复；入口/Wiki在显示期间停止隐藏战场视口的渲染。
@@ -38,7 +44,7 @@ units 增加 `formal_name`, `description`, `voices:{select,move,attack,ready,ret
 
 buildings 的新增 role 为 `outpost` / `repair` / `command` / `airfield`。机场 `aircraft_capacity` 为正整数，机位由现有归属飞机与全部待生产订单共同预留，取消/死亡/转场释放。维修站 `repair_radius` / `repair_rate`，正常电力下付费修复范围内装甲地面单位，效果不叠加。指挥中心 `vision_bonus` 增加自动索敌范围，属于侦察协调参数；本工程没有因此新增战争迷雾系统。
 
-空军实体另有 `flight_state:"airborne"|"returning"|"rearming"|"stranded"`, `ammo:int`, `home_airfield:int`, `rearm_remaining:float`, `flight_height:float`, `airborne:bool`。空军直接移动，不参与地面编队、碰撞、碾压、桥梁占道或桥断伤亡。空弹药触发自动返航，降落补给后恢复保留的任务；机场毁坏时重新寻找有容量的友方机场，无保障时等待。`issue(...,"return",...)` 主动返航，`repair` 对友方实体路由为 `repair_unit` / `repair_building`，桥梁沿用 `repair_bridge`。只有工兵执行维修。
+空军实体另有 `flight_state:"airborne"|"returning"|"rearming"|"stranded"`, `ammo:int`, `home_airfield:int`, `rearm_remaining:float`, `flight_height:float`, `airborne:bool`。空军按任意角度直接移动，使用独立的圆形碰撞层避让所有阵营的空中单位，并检查同一帧的相对运动；飞行不受建筑、地形、地面单位或桥梁影响。空中编队目标和生产出口按单位半径分开，起飞前检查空域占用；降落与补给中的飞机参与地面空间占用。空弹药触发自动返航，降落补给后恢复保留的任务；机场毁坏时重新寻找有容量的友方机场，无保障时等待。`issue(...,"return",...)` 主动返航，`repair` 对友方实体路由为 `repair_unit` / `repair_building`，桥梁沿用 `repair_bridge`。只有工兵执行维修。
 
 空地武器在索敌、发射、弹丸影响三个阶段检查攻击域。对空弹丸记录 `target` 并更新追踪目标位置；projectile 另含 `targets`, `multipliers`, `source_height`, `target_height`，视觉表现保留高度与发射朝向。RulesLoader 与 SaveValidator 校验这些字段，旧地面规则快照仍可加载。
 
@@ -67,7 +73,11 @@ projectile: {pos:Vector2,start:Vector2,landing:Vector2,elapsed,duration,damage,b
 Node3D class_name PaperWorld。setup(sim:WarSimulation,camera:Camera3D)；sync(delta,selection:Array,placement:Dictionary={})。组合 PaperLandscape、VolumeModels、步兵剪纸、地面选择圈、血条、真实炮口弹丸和效果。实体体积 mesh 使用开启阴影的 MultiMesh，步兵单独保留纸片状态。只读 Simulation，镜头旋转不改变 sim。placement={pos:Vector2,spec:String,valid:bool}。assets/cards/{faction}_{art}_{state}.svg 用于步兵动作与UI图标；车辆/建筑由VolumeModels几何绘制，不用原SVG作实体立面。步兵 state idle/move/attack/hit/death；实体车体/炮管动画与死亡残骸独立更新。MapData 高度用于接地。
 
 ## 主工程
-scripts/main.gd 是 root：相机、HUD、小地图、输入与播放自制音效。Control 阻挡 UI 命令。模拟固定 physics tick 实时，不暂停下令。菜单：阵营、320×320 mountains 山地大图、160×160 handmade/random、48×48 dev、种子、新局/读档。地图选项使用稳定mode元数据，旧设置索引迁移至mode。测试通过同一 Simulation。
+scripts/main.gd 是 root：相机、HUD、小地图、输入与音频路由。Control 阻挡 UI 命令。模拟固定 physics tick 实时，不暂停下令。新战局面板使用四阵营选择卡、六张320×320地图、相邻地图预览及对手配置；布局种子折叠显示。`map_thumbnail.gd` 在工作线程使用相同 MapData 生成地形预览，纹理在主线程建立；地图选项使用稳定mode元数据，历史存档仍可读取。
+
+`match_statistics.gd` 由 Simulation 记录真实伤害、击杀/损失、建造/生产及收入。伤害结算保留首次累计致命一击的来源，按其爆炸标记选择步兵倒地或碎纸动画；原生和脚本单位分派共用此结算路径。新统计随普通存档保存，旧档从读取时开始统计并显示提示。结果出现后，main 收回工作线程、停止模拟并禁用战场 SubViewport 更新，再打开 `match_scoreboard.gd` 独立 Window；返回菜单、新局或退出使用原 HUD action 流程。
+
+相机以局部焦点地形为目标，`camera_local_clearance.gd` 缓存静态景物的8格空间桶，只检查眼点附近地形和建筑净空。地图全局最高点仅保留给光标射线边界与诊断。音频焦点在选中时立即更新；无选择时每100毫秒获取鼠标地面位置，避免每帧增加地形拾取。
 
 ## VolumeModels / PaperLandscape
 

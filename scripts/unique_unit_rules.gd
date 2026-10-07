@@ -13,6 +13,7 @@ static func occupied(sim, team: int, spec_id: String) -> int:
 
 static func reason(sim, team: int, spec_id: String) -> String:
 	var info: Dictionary = sim.rules.get("units", {}).get(spec_id, {})
+	if bool(info.get("roster_hidden",false)):return "该单位不在本阵营现行编制中"
 	var limit: int = int(info.get("max_active", 0))
 	if limit > 0 and occupied(sim, team, spec_id) >= limit:
 		return "此英雄单位每名玩家同时最多拥有一只（含生产与待出厂队列）"

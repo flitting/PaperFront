@@ -11,12 +11,12 @@ func _initialize()->void:
 	var config:Dictionary=Rules.load_rules()
 	var sim=SlowSim.new();sim.setup(config,"dev",7,"rivet",false)
 	var ids:Array=[]
-	for i in range(24):ids.append(sim.debug_spawn(0,"rivet_engineer",Vector2(4+(i%8)*1.05,40+(i/8)*1.05)))
+	for i in range(Sim.PATH_IN_FLIGHT+16):ids.append(sim.debug_spawn(0,"rivet_engineer",Vector2(4+(i%8)*1.05,40+(i/8)*1.05)))
 	sim.issue(ids,"move",Vector2(17,42))
 	check(ids.all(func(id):return not sim.entities[id].commands[0].has("formation")),"group reservations are no longer created")
-	sim.build(0,"rivet_power")
+	sim.build(1,"kestrel_power") # Rivet buildings use engineer placement; test a real paid classic order.
 	var time_before:float=sim.time
-	var build_before:float=sim.building_orders[0].remaining
+	var build_before:float=sim.building_orders[1].remaining
 	var worst:int=0
 	var collect_max:int=0
 	for i in range(60):
@@ -28,7 +28,7 @@ func _initialize()->void:
 		sim.events.clear()
 	check(worst<30000,"a 200ms background search cannot block a simulation tick")
 	check(collect_max<5000,"main thread only exchanges bounded path messages")
-	check(absf(sim.time-time_before-2)<.001 and absf(build_before-sim.building_orders[0].remaining-2)<.001,"simulation and construction advance while paths wait")
+	check(absf(sim.time-time_before-2)<.001 and absf(build_before-sim.building_orders[1].remaining-2)<.001,"simulation and construction advance while paths wait")
 	check(not sim._planning_queue.is_empty(),"excess path requests wait instead of running synchronously")
 	var first:int=ids[0]
 	sim.issue([first],"stop",Vector2.ZERO)

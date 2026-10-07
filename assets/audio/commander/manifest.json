@@ -1,0 +1,193 @@
+{
+  "version": 2,
+  "language": "zh-CN",
+  "speaker_gender": "female",
+  "speaker": "zh-CN-XiaoxiaoNeural",
+  "delivery": "Concise neutral tactical sentences; news-capable adult female actor, slowed10%, pitch-10Hz and voiced F0 deviation reduced40% for restrained deadpan delivery. Human listening audit not performed.",
+  "provenance": "Microsoft Edge online speech via edge-tts, locally processed with WORLD; no paid request or API key. Provider-generated audio; no CC0 claim.",
+  "sample_rate": 22050,
+  "clips": [
+    {
+      "action": "building_ready",
+      "text": "建筑准备就绪。",
+      "file": "res://assets/audio/commander/building_ready.wav",
+      "duration_s": 2.185,
+      "sha256": "f020b045f0b14f342265c696161e08310afcf38765f5670366ca09875961fe62",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 233.0,
+        "voiced_std_hz_before": 47.07,
+        "voiced_std_hz_after": 28.24
+      }
+    },
+    {
+      "action": "building_complete",
+      "text": "建筑已完成。",
+      "file": "res://assets/audio/commander/building_complete.wav",
+      "duration_s": 1.97,
+      "sha256": "e47433029fdd4c256aacac95e0ed76a354954acfbc69d1d0fbbc3b7912ebf0c3",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 199.1,
+        "voiced_std_hz_before": 43.21,
+        "voiced_std_hz_after": 25.93
+      }
+    },
+    {
+      "action": "unit_ready",
+      "text": "单位生产完成。",
+      "file": "res://assets/audio/commander/unit_ready.wav",
+      "duration_s": 2.235,
+      "sha256": "dfb5248c1516ae2dd56245dcd54005e053bd148a35a07c13e15da0b91f70d371",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 211.54,
+        "voiced_std_hz_before": 52.5,
+        "voiced_std_hz_after": 31.5
+      }
+    },
+    {
+      "action": "enemy_seen",
+      "text": "发现敌军。",
+      "file": "res://assets/audio/commander/enemy_seen.wav",
+      "duration_s": 1.875,
+      "sha256": "48b315d285fed77d190b7f30178e8b2f69f8cdf5bc255c4908a7da89179bc65b",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 277.93,
+        "voiced_std_hz_before": 47.57,
+        "voiced_std_hz_after": 28.54
+      }
+    },
+    {
+      "action": "enemy_mass",
+      "text": "发现大批敌军。",
+      "file": "res://assets/audio/commander/enemy_mass.wav",
+      "duration_s": 2.285,
+      "sha256": "da196bc1b93c95c481befad91e01ac73362198eba3e4aa88e90dd0cc9d72f8b5",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 268.7,
+        "voiced_std_hz_before": 39.18,
+        "voiced_std_hz_after": 23.51
+      }
+    },
+    {
+      "action": "enemy_base",
+      "text": "发现敌方基地。",
+      "file": "res://assets/audio/commander/enemy_base.wav",
+      "duration_s": 2.26,
+      "sha256": "26247558d190335b650d74acb056488ae522a630c0ff5ddd1bce836ae9274dad",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 259.16,
+        "voiced_std_hz_before": 40.5,
+        "voiced_std_hz_after": 24.3
+      }
+    },
+    {
+      "action": "infantry_attacked",
+      "text": "我方步兵受到攻击。",
+      "file": "res://assets/audio/commander/infantry_attacked.wav",
+      "duration_s": 2.545,
+      "sha256": "8e09f2c6c078c56e1efffe6d8aa323f0848adbf3a424b1376f33befb9fe8fd36",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 264.01,
+        "voiced_std_hz_before": 38.56,
+        "voiced_std_hz_after": 23.14
+      }
+    },
+    {
+      "action": "vehicle_attacked",
+      "text": "我方车辆受到攻击。",
+      "file": "res://assets/audio/commander/vehicle_attacked.wav",
+      "duration_s": 2.595,
+      "sha256": "6c89d85ab70815f2398d413bd6ffcc16ef91136e70397f4062e18ae6632357c5",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 259.03,
+        "voiced_std_hz_before": 37.78,
+        "voiced_std_hz_after": 22.67
+      }
+    },
+    {
+      "action": "harvester_attacked",
+      "text": "矿车受到攻击。",
+      "file": "res://assets/audio/commander/harvester_attacked.wav",
+      "duration_s": 2.26,
+      "sha256": "d96c3cacd9c2dc55bc8374ed68fbed62fd47db04a20741d95c398fb0307c7827",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 259.14,
+        "voiced_std_hz_before": 33.45,
+        "voiced_std_hz_after": 20.07
+      }
+    },
+    {
+      "action": "building_attacked",
+      "text": "我方建筑受到攻击。",
+      "file": "res://assets/audio/commander/building_attacked.wav",
+      "duration_s": 2.595,
+      "sha256": "f1aa1750b6f87332794c237af5e90595fbe16d7e218d788e6772b88f2a0309d2",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 248.18,
+        "voiced_std_hz_before": 41.73,
+        "voiced_std_hz_after": 25.04
+      }
+    },
+    {
+      "action": "base_attacked",
+      "text": "基地受到攻击。",
+      "file": "res://assets/audio/commander/base_attacked.wav",
+      "duration_s": 2.165,
+      "sha256": "ae5b2f97f5b8042203d603c3e3e2598dd93906c67d8a45480d41719f2b7b8e79",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 253.08,
+        "voiced_std_hz_before": 35.58,
+        "voiced_std_hz_after": 21.35
+      }
+    },
+    {
+      "action": "combat",
+      "text": "我方部队正在交火。",
+      "file": "res://assets/audio/commander/combat.wav",
+      "duration_s": 2.595,
+      "sha256": "def49dcd47623696b742d11837a800f313f4569b5775ea2104b383cbeaa04533",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 234.95,
+        "voiced_std_hz_before": 48.33,
+        "voiced_std_hz_after": 29.0
+      }
+    },
+    {
+      "action": "unit_lost",
+      "text": "我方单位阵亡。",
+      "file": "res://assets/audio/commander/unit_lost.wav",
+      "duration_s": 2.14,
+      "sha256": "a3ec31c4d7c2b12e2ae817c9fa329d8600ae25ff5ad6c6e205ccb845c91b6dec",
+      "post_processing": {
+        "algorithm": "WORLD analysis/synthesis with preserved spectral envelope and timing",
+        "f0_deviation_scale": 0.6,
+        "median_voiced_hz": 247.23,
+        "voiced_std_hz_before": 53.41,
+        "voiced_std_hz_after": 32.04
+      }
+    }
+  ]
+}

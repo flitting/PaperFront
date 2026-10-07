@@ -1,5 +1,6 @@
 extends SceneTree
 
+const Sim = preload("res://tests/rule_test_simulation.gd")
 var failures: Array[String] = []
 var checks := 0
 
@@ -15,11 +16,18 @@ func _initialize() -> void:
 		return
 	check(rules.factions.kestrel.name == "正典军团" and rules.factions.rivet.name == "重锤军团", "Current public faction names")
 	check(rules.player_colors == ["e7ad42", "41c7c6"], "Player colors are independent of faction livery")
+	var catalog_sim = Sim.new()
+	catalog_sim.rules = rules
+	catalog_sim.factions.assign(["kestrel", "rivet"])
 	for faction in ["kestrel", "rivet"]:
 		for art in ["rifle", "anti", "engineer", "harvester", "scout", "tank", "aa", "fighter", "advanced"]:
 			check(rules.units.has(faction + "_" + art), "Required unit: " + faction + "_" + art)
 		for art in ["hq", "outpost", "power", "refinery", "barracks", "factory", "repair", "command", "tech", "airfield"]:
-			check(rules.buildings.has(faction + "_" + art), "Required infrastructure: " + faction + "_" + art)
+			if faction == "rivet" and art == "outpost": continue
+			var spec_id: String = catalog_sim.building_spec(0 if faction == "kestrel" else 1, art)
+			check(not spec_id.is_empty() and rules.buildings.has(spec_id), "Required infrastructure role: " + faction + "/" + art)
+	check(catalog_sim.building_spec(1, "hq") == "rivet_hq" and catalog_sim.building_spec(1, "barracks") == "rivet_hq", "Rivet base and infantry production resolve to one blueprint")
+	check(not rules.buildings.has("rivet_barracks") and not rules.buildings.has("rivet_outpost") and rules.buildings.rivet_hq.name == "基地兵营", "Rivet catalog contains only its unified base barracks")
 	for category in ["units", "buildings"]:
 		for id in rules[category]:
 			var spec: Dictionary = rules[category][id]

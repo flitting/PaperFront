@@ -39,7 +39,7 @@ func _initialize() -> void:
 	sim._spawn(0, "kestrel_refinery", Vector2(97, 158), true)
 	check(sim.build(0, "kestrel_refinery").is_empty(), "refinery unlocks after power")
 	sim.building_orders[0].ready = true
-	check(sim.placement_error(0, Vector2(104, 157)).is_empty(), "refinery has a clear working pad")
+	check(sim.placement_error(0, Vector2(102, 157)).is_empty(), "refinery has a clear working pad within completed building coverage")
 	sim.building_orders[0] = {}
 	controller.step(sim, 0.1)
 	check(controller.stage == 1, "refinery alone does not fake a delivery")
@@ -102,10 +102,26 @@ func _initialize() -> void:
 			if e.spec == "rivet_hq": enemy_hq = int(e.id)
 		check(enemy_hq > 0, "enemy command facility still exists")
 		if enemy_hq > 0:
+			var extra_base: int = restored._spawn(1, "rivet_hq", MAP.ENEMY_START + Vector2(-8, 0), true)
 			restored.entities.erase(enemy_hq)
 			restored.events.append({"kind":"death", "team":1, "spec":"rivet_hq", "id":enemy_hq})
 			restored.campaign_controller.step(restored, 28.0)
-			check(restored.campaign_controller.finished, "defend then destroy enemy command completes mission")
+			check(not restored.campaign_controller.finished and not restored.campaign_controller.flags.enemy_hq_destroyed, "destroying the starting base does not complete the mission while another base barracks survives")
+			restored.entities.erase(extra_base)
+			restored.events.clear()
+			restored.campaign_controller.step(restored, 0.0)
+			check(restored.campaign_controller.finished, "defend then destroy all enemy base barracks completes mission even without the final death event")
+	var rebuilt_enemy = Sim.new()
+	rebuilt_enemy.setup(config, "campaign", 1, "kestrel", true)
+	var rebuilt_controller = rebuilt_enemy.campaign_controller
+	rebuilt_controller.stage = 6
+	for e: Dictionary in rebuilt_enemy.entities.values():
+		if e.spec == "rivet_hq": rebuilt_enemy.entities.erase(e.id)
+	rebuilt_controller.step(rebuilt_enemy, 1.0)
+	check(rebuilt_controller.flags.enemy_hq_destroyed and not rebuilt_controller.finished, "all bases can be destroyed before the defense timer finishes")
+	rebuilt_enemy._spawn(1, "rivet_hq", MAP.ENEMY_START, true)
+	rebuilt_controller.step(rebuilt_enemy, 60.0)
+	check(not rebuilt_controller.flags.enemy_hq_destroyed and not rebuilt_controller.finished, "a rebuilt enemy base barracks restores the live mission objective")
 	var ordinary = Sim.new()
 	ordinary.setup(config, "dev", 1, "kestrel", false)
 	check(ordinary.campaign_controller == null and not ordinary.availability(0, "kestrel_shipyard").contains("本关不开放"), "skirmish is free of mission gates")

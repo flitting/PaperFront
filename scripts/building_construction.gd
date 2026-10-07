@@ -1,6 +1,6 @@
 extends RefCounted
 
-const DEFENSE_ROLES := ["tower", "wall", "barricade"]
+const DEFENSE_ROLES := ["tower", "wall", "barricade", "rail", "rail_junction"]
 
 static func channel_for(info: Dictionary) -> String:
 	return "defense" if str(info.get("role", "")) in DEFENSE_ROLES else "normal"
@@ -11,6 +11,8 @@ static func radius_for(sim: RefCounted, info: Dictionary) -> float:
 	return radius_in_rules(sim.rules, info)
 
 static func radius_in_rules(rules: Dictionary, info: Dictionary) -> float:
+	if rules.factions.get(str(info.get("faction", "")), {}).get("building_method", "") == "engineer" and info.get("role", "") not in ["hq", "barracks"]: return 0.0
+	if info.has("construction_radius"): return float(info.construction_radius)
 	var radii: Dictionary = rules.economy.get("construction_radii", {})
 	if radii.is_empty():
 		return float(rules.economy.get("build_radius", 12)) if bool(info.get("expands", false)) else 0.0
@@ -23,6 +25,7 @@ static func zones(sim: RefCounted, team: int) -> Array[Dictionary]:
 	var answer: Array[Dictionary] = []
 	for building: Dictionary in sim._building_entities:
 		if not is_range_source(building, team): continue
+		if sim.rules.factions.get(sim.factions[team], {}).get("building_method", "") == "engineer" and sim.data_for(building.spec).get("role", "") not in ["hq", "barracks"]: continue
 		var info: Dictionary = sim.data_for(building.spec)
 		var radius: float = radius_for(sim, info)
 		if radius > 0.0:
@@ -32,6 +35,7 @@ static func zones(sim: RefCounted, team: int) -> Array[Dictionary]:
 static func covers(sim: RefCounted, team: int, pos: Vector2) -> bool:
 	for building: Dictionary in sim._building_entities:
 		if not is_range_source(building, team): continue
+		if sim.rules.factions.get(sim.factions[team], {}).get("building_method", "") == "engineer" and sim.data_for(building.spec).get("role", "") not in ["hq", "barracks"]: continue
 		var radius: float = radius_for(sim, sim.data_for(building.spec))
 		if radius > 0.0 and (building.pos as Vector2).distance_squared_to(pos) <= radius * radius:
 			return true
@@ -54,6 +58,7 @@ static func advance(sim: RefCounted, team: int, channel: String, delta: float, m
 	if float(order.remaining) <= 0.0:
 		order.ready = true
 		if team == 0: sim._notice("建筑就绪：" + str(sim.data_for(order.spec).name))
+		sim.events.append({"kind":"building_ready", "team":team, "spec":order.spec, "pos":sim._team_start(team)})
 
 static func refund(order: Dictionary) -> float:
 	return float(order.get("cost", 0.0)) * float(order.get("remaining", 0.0)) / maxf(float(order.get("total", 0.0)), 0.001)

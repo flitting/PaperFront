@@ -1,0 +1,135 @@
+{
+  "version": 8,
+  "scope": "Only current active UI effects not replaced by the v8 SFX bank",
+  "license": "CC0-1.0",
+  "effects": [
+    {
+      "family": "select",
+      "title": "选中操作",
+      "file": "res://assets/audio/select.wav",
+      "duration_s": 0.095011,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "2cdd5aa6b7eaff362f8ff6dff6805b4091c0581b9820464354bbb0fd8399ec22",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "command",
+      "title": "指令确认",
+      "file": "res://assets/audio/command.wav",
+      "duration_s": 0.17,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "02cf5d51df4c18083b16c75b233aa7a84444ce830f3f74c8a9a11484a554a623",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "produce",
+      "title": "生产完成",
+      "file": "res://assets/audio/produce.wav",
+      "duration_s": 0.57,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "0b23869f5dab2a26438bf4d8b179d0381749bbdfa6c623196cb4adb9238706c6",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "delivery",
+      "title": "矿物交付",
+      "file": "res://assets/audio/delivery.wav",
+      "duration_s": 0.53,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "ce7150757a88dd62cc20a11477f21c456e632879591f793807a123445e9d9fb9",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "sell",
+      "title": "建筑出售",
+      "file": "res://assets/audio/sell.wav",
+      "duration_s": 0.4,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "a64c41170ce6abba471008c07346424c5e1c797caf6fbfb7688cff3a20eeea04",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "low_power",
+      "title": "低电量提示",
+      "file": "res://assets/audio/low_power.wav",
+      "duration_s": 0.83,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "6e562fc471d7ce86fa91e6a0430ccf8d1a8396ffe0d3b5bb376e840f347379aa",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "result",
+      "title": "战局结果",
+      "file": "res://assets/audio/result.wav",
+      "duration_s": 1.65,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "88605cf908a4e2d883dea9999263da1a509278bac3530136de3c47d9a1e48b43",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "error",
+      "title": "操作失败",
+      "file": "res://assets/audio/error.wav",
+      "duration_s": 0.27,
+      "sample_rate": 44100,
+      "variant": 1,
+      "sha256": "7216b5934bcc45c746a92c8acf5148927d15b6d3090483160fa523851e71fdb8",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original layered DSP synthesis",
+        "model": "",
+        "source": "tools/generate_audio.py",
+        "license": "CC0-1.0"
+      }
+    }
+  ]
+}

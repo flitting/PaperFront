@@ -1,0 +1,2013 @@
+{
+  "version": 11,
+  "sample_rate": 44100,
+  "format": "PCM signed 16-bit mono WAV",
+  "effects": [
+    {
+      "family": "aircraft_loop",
+      "kind": "aircraft_loop",
+      "variant": 1,
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/sfx/aircraft_loop.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "c0945f376309a19e9118ff0685ed5aee40cc4d0289a471db9746db927a90f736",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local deterministic NumPy synthesis",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0"
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "ae20ed96577cd25110683e388abea7f64c6f9e3ec0010a66b2d920c70c360eb7",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "bomb_release",
+      "kind": "bomb_release",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/bomb_release_1.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "8efb4aa4ea140d550a57fa54b00ef3e79b311313cb39d4670bde5fa89ccf3436",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One aircraft bomb release mechanism: short heavy rack latch click, quiet servo release and a brief airy falling whoosh. No explosion, no aircraft engine. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273560-gK7m2RXuGglLKoqEharM",
+        "request_sha256": "42d308687deda362899115ac44d486cfe777b5ea8fd2484949bb7190ac44f7e8",
+        "raw_sha256": "e1cd4cf472100122b09fd832a6dcfa47ea4c71a30ae21f89da52252af6254ab3",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "378e9acdf2dc06ae8ca0b3c2ee6ac7fa4e82911971d342db0b20306e07714679",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "bomb_release",
+      "kind": "bomb_release",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/bomb_release_2.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d07b31f52e1a788270b17d8970037d940acc218a409564255fe8c9d1a5a2ad21",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One aircraft bomb release mechanism: short heavy rack latch click, quiet servo release and a brief airy falling whoosh. No explosion, no aircraft engine. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273563-Svn0hpUWbYaJ7E7KZ1lh",
+        "request_sha256": "1a9f98a99f808f1cce7a5d270e4132f215f7dc4ac1a83647ea14557a1f8b428c",
+        "raw_sha256": "f6fd38713f60915b066cc8cf83ae333b09f3eb4b14c15adedeae19f234d1c1b7",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "ee197735f2ef3bf8d6a5261abe157cc14be472049cca2ed492711a4009401ba8",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "bomb_release",
+      "kind": "bomb_release",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/bomb_release_3.wav",
+      "duration_s": 0.7721,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "80bdb54aae09a3c8dd726298467f9c78bb9f9f5b754bfb38176041c782a08f86",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One aircraft bomb release mechanism: short heavy rack latch click, quiet servo release and a brief airy falling whoosh. No explosion, no aircraft engine. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273567-BLRWwdKerQdST9l77bfu",
+        "request_sha256": "cac87f5868d338197c6053715a1e9ecb0460f30b8c57343a3a822666010ab752",
+        "raw_sha256": "c90ad7cdf082771fd8cf8f547fb857a2a0597df181de70617db788ee02abd930",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "9bb9034263b1241691d97ac6a78dbe2a2b27580265ccc5c42f26cbea78d1f424",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "command",
+      "kind": "command",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/command.wav",
+      "duration_s": 0.17,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d6be832ce609f8d7d43e35dbf7bc0f9be6c9b3ab12aae4391808b4b8f81a8265",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120711,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "construct_building",
+      "kind": "construct_building",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/construct_building_1.wav",
+      "duration_s": 1.38,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "e0717696a204b487a485c611c72e7cd0648d5594683ad8ac8ea59473b05ea252",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A short practical workshop construction sequence: a few hammer impacts, heavy support fitting into its socket, bolts ratcheting tight, brief low mechanical settling. No chime. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.4 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273543-RUHceZ0Z6gq5mjEI7oPh",
+        "request_sha256": "d6b4b239278f93e6611c1bffaea4e87c03df515719e7e4355edce8292a540193",
+        "raw_sha256": "f6c1f87e5dded2e701f07a49ed2eafc176127e62a8286a85bf8f69c612f29673",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "7c8c8ec35012c511ad33732aee87d53a954dc3f1d5e1fb8146345d005fd393ee",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "construct_building",
+      "kind": "construct_building",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/construct_building_2.wav",
+      "duration_s": 1.38,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "968d127c86a4fea11e22c953a7733684f6338c4ceaf0ecb515b2a95efa1f98bb",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A short practical workshop construction sequence: a few hammer impacts, heavy support fitting into its socket, bolts ratcheting tight, brief low mechanical settling. No chime. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.4 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273549-eFqpk2rdtABQaXwNlxxD",
+        "request_sha256": "6b2949bc7bf48c4eb126303b37054944c3757711ee990baa37433659b9cb0c69",
+        "raw_sha256": "14de7447a4aa693e84497c78ec5a9c4d8f6a3624b879af57c611e448a94f05e6",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "3ac94125432f86c23fc2fa7c1ba538783c65633f542f1c6ec08afd600bac5ed5",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "construct_building",
+      "kind": "construct_building",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/construct_building_3.wav",
+      "duration_s": 1.38,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "2d84a820162a55f9f94f0344629dcf7302642dc12ddf0446ff7717c5ad50e276",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A short practical workshop construction sequence: a few hammer impacts, heavy support fitting into its socket, bolts ratcheting tight, brief low mechanical settling. No chime. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.4 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273555-WrhXoFJbBCB2n6NbMnVX",
+        "request_sha256": "2aaa13f259a080279224c5c8d0ec797c70581f382942358e12ecda62a0f22bed",
+        "raw_sha256": "455ee517a26b26a8db5a1f25827836c00d07c2947d30ddff651c4cb42e75ed94",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "735bd0ff036f7e6a33ff3531a66c31d8d268d5b4cd0f28bffd2eb71404f3481a",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "creator_hand_attack",
+      "kind": "creator_hand_attack",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_attack_1.wav",
+      "duration_s": 0.9259,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "b4d43e2d27265d0e3afac899f71b4d49c71ef935862feb21eea50f457e505535",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One enormous supernatural living hand slaps downward: weighty palm pressure thump, broad low air displacement, soft skin contact and strange deep energy resonance spreading. Powerful grounded tactile impact, no cannon, no mechanical gun or voice. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294220-hZV2yi5zYP5NP4qcJhLe",
+        "request_sha256": "ffded8e0800c375f953c7fe478f318f8eb4f623ada3518f8fc96f2ff9a5257bf",
+        "raw_sha256": "324d8969a41824530018c3b32c45bd9ab0080e81523e7fe6dfb07420073b29a8",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "creator_hand_attack",
+      "kind": "creator_hand_attack",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_attack_2.wav",
+      "duration_s": 0.9253,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "c077b107a5090e97fd638ef2eb68fd8475d98b60e20a26c3870660be09e44647",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One enormous supernatural living hand slaps downward: weighty palm pressure thump, broad low air displacement, soft skin contact and strange deep energy resonance spreading. Powerful grounded tactile impact, no cannon, no mechanical gun or voice. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294224-XlyHGCeV77gWwQkbjtTO",
+        "request_sha256": "d8f7cfa00fd4c4ab52520cd63f41a4e7010980250bff111ce422e8d1c1c2435a",
+        "raw_sha256": "3371450189dd8d3f135e61a63cfe317469d67fcb235ce7d56e35e48e9c1cf5ef",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "creator_hand_attack",
+      "kind": "creator_hand_attack",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_attack_3.wav",
+      "duration_s": 0.88,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "edfd3793b387e8f71c646be804fc198082ba5d0fea8025a79a7ea3d0b83cc610",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One enormous supernatural living hand slaps downward: weighty palm pressure thump, broad low air displacement, soft skin contact and strange deep energy resonance spreading. Powerful grounded tactile impact, no cannon, no mechanical gun or voice. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294233-xKEeViirVU5qcz47FmKY",
+        "request_sha256": "6f8f632c74433c77fef35fbc94c59a6c232b4d165f2b45f6402a9f3111e04896",
+        "raw_sha256": "e106f9bb89285bb186b48d2efe2c29da2e8bcfeb95566b08778697eae0ba8b9a",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "creator_hand_impact",
+      "kind": "creator_hand_impact",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_impact_1.wav",
+      "duration_s": 1.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "3f7ee045db8ac47b78659273f279beba8c9235f0de594a108a927872f4e65df9",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One giant mystical palm strike hits earth: broad deep compact ground shock, papery surface crumple, a rippling alien resonant energy wave dispersing into a low soft tail. No conventional shell explosion, no gunshot, no voices or music. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294235-5WuJYeS5Rv9GbAb86lpq",
+        "request_sha256": "acbda0ce7cf80aeb57d30de9c94ed7021628104c6c6f27f1ed34e58692461015",
+        "raw_sha256": "29291b8bf158f27543794bb951532e084dfd851b1fd21052b3f6ef624b5e1c07",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "creator_hand_impact",
+      "kind": "creator_hand_impact",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_impact_2.wav",
+      "duration_s": 1.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "096a43b07143d722eeb3a9cc131d886a65704ca1827b0ea6cf53b70d55b09f3b",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One giant mystical palm strike hits earth: broad deep compact ground shock, papery surface crumple, a rippling alien resonant energy wave dispersing into a low soft tail. No conventional shell explosion, no gunshot, no voices or music. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294237-gpzeJ0WjIdFQD7umEtUS",
+        "request_sha256": "088cb868a08eda7e91cfedbfbf685e03e832dc8704fec3b74c9c80f40ee761ec",
+        "raw_sha256": "2d9a22e9248233249e748207ca62081bdec60d32fe05a516c0d30389ccc9c13a",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "creator_hand_impact",
+      "kind": "creator_hand_impact",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/creator_hand_impact_3.wav",
+      "duration_s": 1.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "f68bbc07147e48e74b0f93e6974dd1d72db7427171721d2abd846ad128e7e106",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One giant mystical palm strike hits earth: broad deep compact ground shock, papery surface crumple, a rippling alien resonant energy wave dispersing into a low soft tail. No conventional shell explosion, no gunshot, no voices or music. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294239-bt3kT768hlahNRdYyrJt",
+        "request_sha256": "d1dc28d4441ea9efdeecb3679a5ce9f22263cf4e536cdf8708fdc9d02501d4e9",
+        "raw_sha256": "724ba3e3e11ca6e88128e12872620a4818e9d9f96959eb67ccb3491db0a939bc",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "death_building",
+      "kind": "death_building",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_building_1.wav",
+      "duration_s": 3.0593,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "9a2a2b36a62484ec3e5291301ae43db80e0a738708457dee7102cf9784c3925b",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A medium industrial battlefield building is destroyed in one explosion: a big low blast, cracking structure and roof supports, uneven masonry collapse, long soft gritty falling rubble tail. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 3.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273491-W1CKFSNkaxp2zYFJ9kJG",
+        "request_sha256": "23d3dfa56109247a90089ec79a031d7fe02cfbf0bb2767cc3ccda818729ed79d",
+        "raw_sha256": "ff355dcce21c0ff14e8cdf9e855e66adb923169171fe9d023b52b052fa02b27e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5bbebfdbfa0e3d568f26f00b4bc69c71117c66480c5f1b0e8033416953428511",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_building",
+      "kind": "death_building",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_building_2.wav",
+      "duration_s": 3.2,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "8fc3165d2db49f664f30fabab4b658e431cc4dc51e07f0c16475acae0743f3ee",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A medium industrial battlefield building is destroyed in one explosion: a big low blast, cracking structure and roof supports, uneven masonry collapse, long soft gritty falling rubble tail. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 3.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273497-rqS6Vn5j1rWOysLC65dN",
+        "request_sha256": "d9487954b3756d123730d2831b760b9b4ba5098169c9837a7f5b083a5e5b69d6",
+        "raw_sha256": "f3ad4130cdda1054a6a548ed75f066623d4c346404026bd738d55bb9273c041e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "e08a76e5f5efd00b259f3717991ec84bf9dbdda13b41e95e321f71701820c71e",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_building",
+      "kind": "death_building",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_building_3.wav",
+      "duration_s": 3.1235,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "f7591bf36a3a67f12f6b091577cdee13c80397f56392170e7bb3a5198be1f1c7",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A medium industrial battlefield building is destroyed in one explosion: a big low blast, cracking structure and roof supports, uneven masonry collapse, long soft gritty falling rubble tail. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 3.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273506-ztDckGwFCV22LHjAAHsi",
+        "request_sha256": "68adcb4d5ba401a59370eeb65f6ec086bc2eed1b8f7ab05451e537a11c34b9e0",
+        "raw_sha256": "b98632f2d67fef97c289fa62490249a735ade79c4e1e2b063b69b050826f31d2",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "6f80e5a69daa95d672737999414d9d8bc1e2997db5f3140bf1f7b4941528f7fd",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_infantry",
+      "kind": "death_infantry",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_infantry_1.wav",
+      "duration_s": 0.6,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "fe2c5efd236dd92711ca9491275946571993606c0a866a8714badd07ab94f32d",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A brief cloth and field equipment collapse onto soil: soft heavy body thud, a small metallic gear clatter. No voice, no breathing, no gunshot, no gore. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.55 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273518-vihWFkdyxrOdDEaFWxAt",
+        "request_sha256": "5a570af1209f2bf90c75481ae96ff6ce801fa61ccb61179afbaf141e24c614bb",
+        "raw_sha256": "294d1b9e48271762a6ad638b923ab4ebb3ca1910d19e2e4d6cdc0afd357f10c6",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "b0a5f8094709530e1a0b810f7773ad99b6025d2e4f0b961cc51dfead69c18bc3",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_infantry",
+      "kind": "death_infantry",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_infantry_2.wav",
+      "duration_s": 0.5238,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "637d361b508276d7c4dab72306e3848e9ae962611757e2420ea0a102e73a9acc",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A brief cloth and field equipment collapse onto soil: soft heavy body thud, a small metallic gear clatter. No voice, no breathing, no gunshot, no gore. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.55 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273523-SVriS9H7U2PSS7CM7Yh1",
+        "request_sha256": "8b13c4c8f1e355b2cd3920084e15d13fc9a3b67a638b2ceda3fad38a8e3d79ee",
+        "raw_sha256": "b312e50c0ca8ff157e00dd3baeec36a30b8309cccb9b4059c4d6bfd83bec8f9e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "bfffd8367f8bd6fa9bd42099992c115762aa0b1ca72ee6dd260c4baabd54f631",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_infantry",
+      "kind": "death_infantry",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_infantry_3.wav",
+      "duration_s": 0.6,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "93f9d7266bbda1968297bf29293ca582f5da6573b2e633ece363d5d7a663bcc8",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A brief cloth and field equipment collapse onto soil: soft heavy body thud, a small metallic gear clatter. No voice, no breathing, no gunshot, no gore. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.55 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273529-pGCclcAQ7hfhUL4zknhb",
+        "request_sha256": "a105162569df2c7bad91599390f4eb7488bfbfa99559fad4f43e7cc17808b514",
+        "raw_sha256": "6193cf407f54a6136e9e806d22c4768d47a41292e98a2387b13ef5032aa8551b",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "f3825392667eb9fd3619fee0ba018f93b49462d2c32f58d0d2239a1fa869abf5",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_vehicle",
+      "kind": "death_vehicle",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_vehicle_1.wav",
+      "duration_s": 2.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "5321267eadb7af721c1a6ffd34671106529bfe8d6f00e0e787752b934fb2d740",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A tank destroyed in one ammo detonation: dense low blast, sharp armor plate fracture and metal panels flying, irregular rattling chunks falling to the ground and a dying mechanical groan. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273506-llVXNn3IZ5lzJH6Pi7As",
+        "request_sha256": "1e25983061d49c3a2c98be85add010f90757c52e6648fd5a8cfeaa9697c56de7",
+        "raw_sha256": "b5e5c600ecd6e626c753b3da7da8f17e425d04eab4433b0b091adc1a2841d146",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "9c5b2c6855317a3bd47f2f2a1eb352cfa8c0c8f34e1f55322417ef54ef7cd55d",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_vehicle",
+      "kind": "death_vehicle",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_vehicle_2.wav",
+      "duration_s": 2.3753,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "a0d93e7df5e67a4aaf6eae9d97b7a39f00b425f753235c73a01b1f336720e3f2",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A tank destroyed in one ammo detonation: dense low blast, sharp armor plate fracture and metal panels flying, irregular rattling chunks falling to the ground and a dying mechanical groan. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273515-qBIAj1nrPc7mksZ0wwon",
+        "request_sha256": "38d0ce29fc2c3f0a12505719c3606c2a5b185e62340ac1d188a62481c3732fdf",
+        "raw_sha256": "19b5f0674b1e1e27c82252ceb9e900575c4f9b9f44f00637286a1b1d346a735d",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5cc153b39d9ea8b62ea9316ff3b922f037338ce6e5863ea195425e7dec3b524d",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "death_vehicle",
+      "kind": "death_vehicle",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/death_vehicle_3.wav",
+      "duration_s": 2.5,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "26254e45bfda7d034f1d539a4b0f984ff6fa003d28135d9ba046885262c21c5f",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A tank destroyed in one ammo detonation: dense low blast, sharp armor plate fracture and metal panels flying, irregular rattling chunks falling to the ground and a dying mechanical groan. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.5 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273516-GpDTx1EcYul1k4NBhA0s",
+        "request_sha256": "d5cad812fbd77f9825d89edb7e39231ae030838d9cbaff0e929d58b2acd122f4",
+        "raw_sha256": "e4cbb19c96ee0de25008ef5d33672f5de9e401b1ff49a33ffebbce10eddb1023",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "6e30e0fcefaee17719573a46ba42e83e62964789e7c5e9bf03210ced6b21ca21",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "delivery",
+      "kind": "delivery",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/delivery.wav",
+      "duration_s": 0.36,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "83cba183c9b4e8013c3b6e08de4d729f379ebca8d004169d21e411727b71f5f8",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120713,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "deploy_building",
+      "kind": "deploy_building",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/deploy_building_1.wav",
+      "duration_s": 2.2121,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "539f7bd8624de2212ed2d414d25ec3bffa0bfbe8614e3ff3efeb0b6415eb726f",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A compact battlefield building unfolds and locks in place: several heavy panel hinges open in sequence, mechanical servo strain, thick metal latches engage, final solid settling clunk. No chime. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.3 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273077-8c7CMZj196QqZcEWOGae",
+        "request_sha256": "3ca6e8689d30e1b774180374c38d095675693d2140fab5db084ad9045776f638",
+        "raw_sha256": "8b2a744fb00b3a449fd3d411ba08c731263421930eb2543a34a837d209edac10",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "143254d8e311e653c4158aac86f5bce7430804bf2d811d48197bb1b6dc623761",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "deploy_building",
+      "kind": "deploy_building",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/deploy_building_2.wav",
+      "duration_s": 2.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "76b5b184b245b2ddfb3ee947ce0db231d7e29160323945d9d89a79083928ebc5",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A compact battlefield building unfolds and locks in place: several heavy panel hinges open in sequence, mechanical servo strain, thick metal latches engage, final solid settling clunk. No chime. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.3 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273531-L9pZnph2EpDxVN7Y1fNy",
+        "request_sha256": "aac7123b504e8c06d60f99cdfbe4d450b17fe6132b3ca3a43004c964e7d7205e",
+        "raw_sha256": "02979d278f392658aa3fe60b4df3e9e5d9e6c3f1da6facb2b419440f31004d8c",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5f83fbd126392be3708852f64cc9d826d5117b68e488f073b8fdd46295b42d18",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "deploy_building",
+      "kind": "deploy_building",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/deploy_building_3.wav",
+      "duration_s": 2.2058,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "3a9cd41869b6e61ff91ba5139a5c37481f92c62bb097b8e22ec7f0ef5702d40d",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A compact battlefield building unfolds and locks in place: several heavy panel hinges open in sequence, mechanical servo strain, thick metal latches engage, final solid settling clunk. No chime. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.3 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273536-kKLFPSOKB0u3hts0OJfx",
+        "request_sha256": "b03de84b1e4ca87d8a9707ca55e5c00993b349819c8579369d3079f841d37fe8",
+        "raw_sha256": "403d11536c017fcbbfcc648ef6312d2db00b6977c5f30dcf1452fdf316106737",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "779b69e787316bd66bc09838b7d9a607bc1a539052f74b03a7daaa9275d0b453",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "engine_loop",
+      "kind": "engine_loop",
+      "variant": 1,
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/sfx/engine_loop.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "6eeeacf35c67e7e0668c71c81cb38f6c14b02ecd9139c98e952499969a67a495",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local deterministic NumPy synthesis",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0"
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "77a1c34a0726bd78d6517de6a13a99087d8c82947ced546db55032cefeee0915",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "error",
+      "kind": "error",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/error.wav",
+      "duration_s": 0.21,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "e3a0d7503f9bc61156601c1d2d640c1c6a2aa1c97184c1a42e796ad456849253",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120717,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "fire_air",
+      "kind": "fire_air",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_air_1.wav",
+      "duration_s": 1.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "f8e79b62f27badf896fb2c78c9f7809433c48aa0a7fb4ea9e50bd934e441ebf4",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "An aircraft autocannon fires one short three-round burst: tight dry rapid cannon cracks with mechanical vibration and a short air tail, no airplane passby. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273436-oN6fMsBrmphcgAJCTpe1",
+        "request_sha256": "b45cac4f7c6681b50ed6fd2c050c93c1cd5e0802a59cfe181df5b3b40b644a1f",
+        "raw_sha256": "be0a863e72608faf5c2e3fa88031d5faaa2bcd6049ee067d4d51927e2e87c488",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "0019f073dd8824772ca0a2b86f8c0c548a5f063708163dc75590bc1e45133fe0",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_air",
+      "kind": "fire_air",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_air_2.wav",
+      "duration_s": 1.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d40945642e0453639883079a1f98107175a3dfcfd0f0d0ceb082dfce142147b7",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "An aircraft autocannon fires one short three-round burst: tight dry rapid cannon cracks with mechanical vibration and a short air tail, no airplane passby. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273445-E9pj7LXmBebyhNnoMuwo",
+        "request_sha256": "fb10be35bbd517368ded17c3ef439c309203390b6070d61474fef629de7541ad",
+        "raw_sha256": "22a25002a6c0cc1f1ceda27387d553a4ed0e379d3acdff07abfbda47cbc190b7",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "997976a1accb7442f48a1ca27c29536c73a7836561645b4ae6684e073be3af41",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_air",
+      "kind": "fire_air",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_air_3.wav",
+      "duration_s": 1.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "c9985c410cf54688f9c6a687bbc45e04c807f39b6b77189c9c6357274d10270b",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "An aircraft autocannon fires one short three-round burst: tight dry rapid cannon cracks with mechanical vibration and a short air tail, no airplane passby. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.95 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273446-njBELiAV4uKJlZdowmnW",
+        "request_sha256": "657666795fadacb9ba78a90cd38ed5cdf28deb77f39da46f297afcffeecb4a7a",
+        "raw_sha256": "4f2ec89cc9cdbb1c7875de18b6d2b8a6f31a98ab1f699496ca5b002268d25284",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "62f2684b2260730f00b1b15a5f9cc8b896f55b9e0ef1254991cbc8b5b7c75ffe",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_anti",
+      "kind": "fire_anti",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_anti_1.wav",
+      "duration_s": 1.1,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "78efab69ec506dafe9f6416f06481506d030db89914b32677eb3829a3f9a819d",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry anti-armor launcher firing: a strong compact pressure pop followed by rushing expelled gases and a low smoky tail. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.05 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273395-zivv969qegkpJgQHgWS9",
+        "request_sha256": "8dbaf23d7468c496915af43051dbf6ecc873e7ea624377fb73a4c3f66d4c0a32",
+        "raw_sha256": "d18b31906616b0c19b6a6f46caf264c14573a30ba50a1c47a71422bf1de7c670",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "63b820d5ad362de71224465a8fa13866e6d189ef7bfa885fe459e476678e8e72",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_anti",
+      "kind": "fire_anti",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_anti_2.wav",
+      "duration_s": 1.0616,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "f4c97f5d27a881cbd8bc7622f186091eea21c530f7f8934475d7126553965d5f",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry anti-armor launcher firing: a strong compact pressure pop followed by rushing expelled gases and a low smoky tail. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.05 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273403-wVYuwZtB4tJjcsjM58HX",
+        "request_sha256": "c9363202314580f7fc5d1cf0ae83e75949c433a5090988c6f252ced69600955a",
+        "raw_sha256": "61478770ec57ffae204905c46709a4b6c2b6f2db0ff99642c06c5d6e5c7e1bb8",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "669cc150f0af5c3e86562fdd05c232220722df7516b55fe939660faa6871fd4c",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_anti",
+      "kind": "fire_anti",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_anti_3.wav",
+      "duration_s": 1.1,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "1dd074a787e2b9a93d4b50dab141184f72380f97319519d6e4929db87ea7a3e8",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry anti-armor launcher firing: a strong compact pressure pop followed by rushing expelled gases and a low smoky tail. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.05 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273407-AoIMnxeZRXbL7JmwrlB7",
+        "request_sha256": "cd821e511bc7936cc885df119a740d633160e84017e7ce67201f9f841fb4f80b",
+        "raw_sha256": "30e2f5d8d1569b88405b66de9f6863df5aa93379a2e8e11243efb70c3fdbe4e5",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "4a8587242dd9635a803b55a526ef9a81703fb6b9cb3a3ab91ce48659db47510d",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_artillery",
+      "kind": "fire_artillery",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_artillery_1.wav",
+      "duration_s": 2.6,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "22f406a0230e7b70fab2a8fd147e3803514d9b11e3a7f9bfa09da97fdf8507ab",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local deterministic layered NumPy synthesis",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0",
+        "brief": "One isolated large field artillery gun firing: a weighty deep concussion, hard pressure crack, vibrating gun carriage and a rolling outdoor muzzle gas tail.",
+        "seed": 1503459587,
+        "fallback_reason": "Provider returned HTTP400: generated audio rejected; independently composed local effect used without retry."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "950d7fae6d68e4fae4be58564ace68b38675b0577127dd697370019a77084ac7",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_artillery",
+      "kind": "fire_artillery",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_artillery_2.wav",
+      "duration_s": 2.58,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "f2603f8d48b0280ea8fbb37cf01c8c5137ad43b4d073f4ae4876698b37e2402f",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated large field artillery gun firing: a weighty deep concussion, hard pressure crack, vibrating gun carriage and a rolling outdoor muzzle gas tail. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.6 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273428-8NqkrhofkKmcODaWiVf1",
+        "request_sha256": "d6e7eb178d5d0ff47cd0bb695476769636bc46fab5971b9fcbbb1fb981658a0a",
+        "raw_sha256": "106f1a856981771e8b1e67d2f19f5bf1133877c8255afb578acf18bbe2786957",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "3a656fdd3eaefb12984fb595f729264c6d90e458aef43e2205c4a9d095f79334",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_artillery",
+      "kind": "fire_artillery",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_artillery_3.wav",
+      "duration_s": 2.559,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d17f990eff83ca555a7c1b30ae6d3280970bb3d5ddc739c6e29a30519f9f7f8e",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated large field artillery gun firing: a weighty deep concussion, hard pressure crack, vibrating gun carriage and a rolling outdoor muzzle gas tail. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.6 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273428-A344MnXwmNblEmOZsbDQ",
+        "request_sha256": "8b85ce94624375318e390f9aed10237213c4c0f3182bf7883adef41660936fdf",
+        "raw_sha256": "11271f93f881db02d400badeda64218f7e7cc2e4229f1387cd04c6d9b5277f85",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "54161f75a00457387f115fac84970919c3817cb71e9dca0c2b4b2bb387f32037",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_cannon",
+      "kind": "fire_cannon",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated heavy tank cannon firing in an open field: an immediate sharp pressure crack, powerful deep muzzle thump and short outdoor gas and echo tail. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273076-095P2FQEQUMvshrb6CdY",
+        "request_sha256": "b2f1cf53644641ccfc547a5b3fb949d8e6a26a44eb9d30020a9d818a5ee61904",
+        "raw_sha256": "b723e90faccd16d1c5b9d05f678637e4a213163a07331952af3f76d9be093620",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "afceaf3d3fa5ebc05359fc472b5afa7a38a58486d25cf2970c83b3b91605c45d",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_cannon",
+      "kind": "fire_cannon",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_cannon_2.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "44b6423ac40018e20109c5aaadb404be77a20413823818864799b37607b7b460",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated heavy tank cannon firing in an open field: an immediate sharp pressure crack, powerful deep muzzle thump and short outdoor gas and echo tail. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273413-KDIn9GmEG9NKGm6ldXyF",
+        "request_sha256": "f92a4c8a042c3cc93ddd5e641a2e24079e710ad35c17f283c25387f433020f54",
+        "raw_sha256": "0c230291bbf75072da5bae488cb954011d06bf4ca33f2dc370d01349be9cf4b5",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "9e00e618ba80895a1f72aa7e2b7317512c82a2934c7e611955a88d50c63ccbab",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_cannon",
+      "kind": "fire_cannon",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_cannon_3.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "520202e89421ac63b39cd9e769d55904dc8290f0aed51d537cd71f61258ff857",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated heavy tank cannon firing in an open field: an immediate sharp pressure crack, powerful deep muzzle thump and short outdoor gas and echo tail. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273413-DCA8hCegf9yG7u2pHUCe",
+        "request_sha256": "ebceafe39738e83042c10c9f9dd7e75562d6f039e0bd308efd78d2ab1a68956b",
+        "raw_sha256": "03012c595d5424381cea6e3f12c4f126d3e09aa3caba412c8c74985673293f05",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5391d6ac3f19169e50f80963cd442c812c6b266360e3c1c19c01f33fd264f6ea",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_energy",
+      "kind": "fire_energy",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_energy_1.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "0bfcbdbcf215f10b526d7335e4136e0c55eed80dd72f37a8eb0edd58951d9978",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One original advanced energy weapon pulse launch: compact electrical pressure snap, coherent rising resonant plasma tone, charged capacitor discharge and a clean airy ion trail. Futuristic but tactile, no gunpowder cannon, no bullet crack, no beeps or melody. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294208-IGU0Grq9h6jO1mRMFv1D",
+        "request_sha256": "4372b14342091860f3257cae14d47f88a92b7c8bb80c5144cc8a973dbebce89a",
+        "raw_sha256": "1a272517290b45f7e68d6d275e3a7fc5d373216199251139dd25b9ae8f2fe529",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "fire_energy",
+      "kind": "fire_energy",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_energy_2.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d1086248540f01a9aff45ad8f1c8273751047b601c20612f811fc640efc90f3c",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One original advanced energy weapon pulse launch: compact electrical pressure snap, coherent rising resonant plasma tone, charged capacitor discharge and a clean airy ion trail. Futuristic but tactile, no gunpowder cannon, no bullet crack, no beeps or melody. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294207-U6IAThuFaFU0W4WZ63Vw",
+        "request_sha256": "117ae71f351b3de4c9ebb12009532b6373d1d3635b623f3ff7fe1a2e81682334",
+        "raw_sha256": "700dfdb65419497ee5a0f8693f472953354ba394548a20ea30cdea5eb2949e63",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "fire_energy",
+      "kind": "fire_energy",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_energy_3.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "2ed274f33863c908dc58157c4a23794ce96759d539fda3b7ff44cf60929e46d0",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One original advanced energy weapon pulse launch: compact electrical pressure snap, coherent rising resonant plasma tone, charged capacitor discharge and a clean airy ion trail. Futuristic but tactile, no gunpowder cannon, no bullet crack, no beeps or melody. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294207-8jHfnrsGoCUreKef7jBo",
+        "request_sha256": "f9f46f7b2134164c8d4647f889244d14aeec95cab39034b5850c813da523d07b",
+        "raw_sha256": "94668c19311a19d325acd41b2ba66fdf4338e66c2bd0a29be010585afaeee140",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "fire_machine_gun",
+      "kind": "fire_machine_gun",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_machine_gun_1.wav",
+      "duration_s": 1.2,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "54ccad3adb5f02582dd699097aea3ce45172ea42da593a3f84f0e12c51ae0c60",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A close military machine gun firing one tight four-round burst with rapid distinct dry cracks, lower mechanical cycling and short outdoor reflections. No ongoing firing after the burst. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.15 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273076-8FkSW4ZsfPWv6xDC4rFJ",
+        "request_sha256": "9e463e6e96276c818a4d195f5d99cda872f11b655757129aea3f0eb5c5e50446",
+        "raw_sha256": "44820abd000b2a84031d0d566055be1fcd04768e3fcd845f3e14745ef36dd10b",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5faa0503b7aeb2fa37a0e79dfdebabeb8de6f8fd9522ce7434c21aa1ce2f516e",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_machine_gun",
+      "kind": "fire_machine_gun",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_machine_gun_2.wav",
+      "duration_s": 1.2,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d1d393e5f53aa985883e333789ba33f7b7c2e372ac3286c54e684b98ab6af9fd",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A close military machine gun firing one tight four-round burst with rapid distinct dry cracks, lower mechanical cycling and short outdoor reflections. No ongoing firing after the burst. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.15 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273379-mQf1PC29jD7ZF69Gvptz",
+        "request_sha256": "fe527dea937f018feb1a53496589fd19e12a424f8359326e890578ce32f5da39",
+        "raw_sha256": "9e02872779ce52eb5c301299931f8731d5da1490b0aead40bc169f4026a1a8cc",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "fadca2b0653c704ded133071d3f29d8ac9e0948e4a59c7a291a6d6cf2d1928dc",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_machine_gun",
+      "kind": "fire_machine_gun",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_machine_gun_3.wav",
+      "duration_s": 1.2,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "b0d83376b0a524248f6566892897ceb88e7e5e54550e058bb82b3a5873e07c28",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "A close military machine gun firing one tight four-round burst with rapid distinct dry cracks, lower mechanical cycling and short outdoor reflections. No ongoing firing after the burst. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.15 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273379-LjJepAY5UzoeqiSqC8Ab",
+        "request_sha256": "13a70f78046786831249212a44648c6a4119afa4daea8a9ae31ac049e94da5fe",
+        "raw_sha256": "c4dd80fe0588d6f29c8741e04804c64eef9845f8c19f35c28694145624483618",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "7e37b2a73d7fe4b8a2eb5b7d30476e352b0b27feee840a60ee0e56dbee6e9d1c",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_rifle",
+      "kind": "fire_rifle",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_rifle_1.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "8b1d4505052aa8428d703abd564d86e1941d4408a9693d2866f5db3b2f621e48",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry rifle shot: a dry ballistic crack with a light low thud, quiet bolt action and tiny outdoor tail. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.75 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273380-p3fxXYLBbX90m94CtCIU",
+        "request_sha256": "572a184b3a928d975ae94f7520d6777d979dce5bd84ed2a0108f9ef6c1efcb2d",
+        "raw_sha256": "1a3556374c9844ab929f38b131877828c52dd12b0685f6d7bade1c5ecfb3d18e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "d3e36fa78ad8a1282dfa91767065a43cbf00379d13c46d4572fd031ad2a7cc33",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_rifle",
+      "kind": "fire_rifle",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_rifle_2.wav",
+      "duration_s": 0.8,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "60a41e3f9169a7effa84319471651f6599e1bb0323d0a9abbc76ea009ba13873",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry rifle shot: a dry ballistic crack with a light low thud, quiet bolt action and tiny outdoor tail. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.75 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273392-Ct3W6zB4Bf0GVS1RcfYf",
+        "request_sha256": "a9a4675fd61ddc72d59829a53ddf804cd08cdd2db1c2206c245ebfd816da0b0f",
+        "raw_sha256": "8e956b643bd4f293686d75cc68721265450d783fceb63238e664acd54852284b",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "8a10bda4a053b0491d04e29cce3e8b3f67891b20bee8a72f0e4b428e91fd5fc3",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "fire_rifle",
+      "kind": "fire_rifle",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/fire_rifle_3.wav",
+      "duration_s": 0.7669,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "fb73d5d53d95f76cd4f74bb57681e61bb148fa76213ba1a299e4ef4d91922d1c",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One isolated infantry rifle shot: a dry ballistic crack with a light low thud, quiet bolt action and tiny outdoor tail. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 0.75 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273395-pHdlGsyfwtnj4GKTrJDV",
+        "request_sha256": "e3faa29c4caa9966c5f929f4981b73588ba8afdfb441e9f6df792bcdee63bfb8",
+        "raw_sha256": "cf59349cd9e4b3d3576419d9dd8d986fdd9d91486490ac46170e899683774199",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "47cdf4ca0a3b0486202e240d85da465d71f74c49b5fbe2251afa5faf91718172",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_energy",
+      "kind": "impact_energy",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_energy_1.wav",
+      "duration_s": 1.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "dc6201446b5e6822eef4d9adbe6ef648fae7ebbcbbe546bfbdb39235fda1e8cf",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One coherent energy pulse striking a solid surface: dense electrical snap, a soft deep charged pressure wave, crackling ion filaments diffusing outward with an airy luminous tail. No conventional explosive shell, no rock debris, no music. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.25 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294207-MbkUwfZEJY8dT9lIImKc",
+        "request_sha256": "2cd3616c5b8b6ad318989dde92b70763fe927109e90572d205e920f2a11c1b71",
+        "raw_sha256": "c35258e5c4b1e444041c4a2a3008579c94b4b1a5c456f9c82678356a23112696",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "impact_energy",
+      "kind": "impact_energy",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_energy_2.wav",
+      "duration_s": 1.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "6beef5ab182025254b2fec8c66b08d8b81f751e738f1769cfb503246b55bcee3",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One coherent energy pulse striking a solid surface: dense electrical snap, a soft deep charged pressure wave, crackling ion filaments diffusing outward with an airy luminous tail. No conventional explosive shell, no rock debris, no music. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.25 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294219-A6i0SIdOMsFaKGRo2Akw",
+        "request_sha256": "0832e6c765f0b724a86e913e2110dec31e68f93583fa10e819cf3ff97fccd2ee",
+        "raw_sha256": "814fc76216f8937366df9266a7247549fb21a3c99020345644d74d6eba6a0137",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "impact_energy",
+      "kind": "impact_energy",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_energy_3.wav",
+      "duration_s": 1.28,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "ed3d7b16f2a17f206bb6901651942a228520eb5dd9fe5a2d0c60861e97c74127",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One coherent energy pulse striking a solid surface: dense electrical snap, a soft deep charged pressure wave, crackling ion filaments diffusing outward with an airy luminous tail. No conventional explosive shell, no rock debris, no music. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.25 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791294219-Yp5JUSNRvTGAQ36NWvnw",
+        "request_sha256": "ac4a471967c9061fe48e197043b1c2773a450c3866956a399ab0741241b83de7",
+        "raw_sha256": "e1e7f51a0ad1db565fdead69d05520071ef4f26627c1301970df496ae252f30e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "runtime_baseline": 0.765
+      }
+    },
+    {
+      "family": "impact_large",
+      "kind": "impact_large",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_large_1.wav",
+      "duration_s": 2.6614,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "7868424905a9d93d9db588f3466c46e4415aa623640d98cf9a93c2c6ecc5bea9",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One large artillery shell exploding in dirt: sudden broad low concussion, hard pressure snap, expanding dusty rumble and scattered falling soil and stone. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273475-Bmb4mr3ZKNYltL9UvLyd",
+        "request_sha256": "d93ac4a0cb525e262968935421b13e54bbc60cd2f0c400a33bbd0d5413f85b83",
+        "raw_sha256": "b99b89da1b295dba2cd7363139b94b2797a8cf881641846b69739d883d0fd193",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "82ea7e5fbad01610f27440e4b0dfb88eed236acc6a4ab836dd394ed67d617f84",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_large",
+      "kind": "impact_large",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_large_2.wav",
+      "duration_s": 2.7563,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "48747ccbc3e50875718f1c0f8c32da1a846029c07a91c498098d3a59d6878bca",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One large artillery shell exploding in dirt: sudden broad low concussion, hard pressure snap, expanding dusty rumble and scattered falling soil and stone. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273480-JkCLAzST91bZbaQhJqTR",
+        "request_sha256": "72b1466f3240dd7bee5ff4e5c07a7ef96e00d9d602f14bbea23e8668580b7a87",
+        "raw_sha256": "28648fa323e2d27378154cdc7161bb4a8981adc25ba2ee4db55b408cb870a428",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "134a53fcda85b119c4c082d5b120ea6082ba146e306066976d39ac8abbb17694",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_large",
+      "kind": "impact_large",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_large_3.wav",
+      "duration_s": 2.78,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "281a5592f8eeaa2894fc3531e4640ed39703065d988f7f4cb37eff4925d73bd5",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One large artillery shell exploding in dirt: sudden broad low concussion, hard pressure snap, expanding dusty rumble and scattered falling soil and stone. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.8 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273485-qdmbMh69nOXM3Tr0cpqE",
+        "request_sha256": "0f98ca287f79f75c85a858bf72d86acd848c6ddbe1e97d9373d009cfe29f7f26",
+        "raw_sha256": "bb1b6e610e97f16785115f198038faa656097d3555868e2986a68f9e466acdb1",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "0f6f64d13a77688511829563889fec9391641115b1369e2e55758607f5e129d8",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_medium",
+      "kind": "impact_medium",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_medium_1.wav",
+      "duration_s": 1.9193,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One tank shell exploding on earth: forceful sharp initial blast, a deep ground thump, gritty soil and rock fragments scattering with a decaying dusty rumble. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273462-jwc5Ri3mJF3bIwzo7ZXF",
+        "request_sha256": "bb9ebac2ae73015cf6d18016791dd57de813e59a832f0dc7a9180a70c2c5d752",
+        "raw_sha256": "ddcf439d13e409c326f24ea05aab2bcb1bc69e986116bbc8e813597976abb822",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "ffaa598b9732d259ef65703e4038b2a32c891db9b50d9a628d54342b9a17c357",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_medium",
+      "kind": "impact_medium",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_medium_2.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "8109585fbdb97ecb9f47f84eef2a34a84832bea951791e81ba12f43ef920ac73",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One tank shell exploding on earth: forceful sharp initial blast, a deep ground thump, gritty soil and rock fragments scattering with a decaying dusty rumble. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273469-35z7Nr2KPQP02y7zPUhG",
+        "request_sha256": "9748791ef8f9b8d217757a78548e68ce05a29c7f77328d7861ab7c004aedc598",
+        "raw_sha256": "3b2e64b14d8edccdc369ee2876778878ba5c90e56ad888f14a41f7301dce7da5",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "3e2fcf9e1e4d7f643f0f3bb2e83eee1c488941f2161c9bb822202604a3710426",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_medium",
+      "kind": "impact_medium",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_medium_3.wav",
+      "duration_s": 1.9002,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "3c054d9c9bf496f4294049fff12493d433f4465fa9ead7903589e88fdb93b5c4",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One tank shell exploding on earth: forceful sharp initial blast, a deep ground thump, gritty soil and rock fragments scattering with a decaying dusty rumble. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 2.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273470-MGES4hr92ON9F1XPpsJA",
+        "request_sha256": "3a38f88bcd3d87e7ede009c2c1ec0ff0f7f730185a7999e378962ff65ed47de8",
+        "raw_sha256": "fbc1e747331a2c9cbfc6bcf3de31b4f3794c70b3098b4579e26b1f1ddd70d8e4",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "0700bc74b2c89194fef5a4f305109b54c78aa5bbf139b6ec4d221ae0e179e5c0",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_small",
+      "kind": "impact_small",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_small_1.wav",
+      "duration_s": 1.1275,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "855e6b364479dfc11d061dbc519767ce3a680853d49f5b9026fe0fef4411410e",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One small shell hitting dry soil: a sharp close impact, compact low explosion puff, a few grains of earth scattering and settling. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273453-e42PE6yS6mTqGwDE1UAm",
+        "request_sha256": "a70aca39c9b07c30d55baa7126ccc81e3f6e706c0aea8e4dc759ef4ad9a1cc6a",
+        "raw_sha256": "877a68008f69ab01fd4cb504326f5b514c9215a42aaaa69f582d1fe690776292",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "9d26d22c38bc9052a4d74ea3fb925ba03e01cad316be4a45d6a891e94f4deefc",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_small",
+      "kind": "impact_small",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_small_2.wav",
+      "duration_s": 1.2,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "efec29a471c36ee5eb428bd2b7a89d6fc6e492d6e4193c15efa453c71383d552",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One small shell hitting dry soil: a sharp close impact, compact low explosion puff, a few grains of earth scattering and settling. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273456-oxtdoSlxP5bkkGXb1Fsy",
+        "request_sha256": "4ebcad8c3c53b38fd650dc6073c5cbcd4c044c48d3fc49ff13a9b35840f25e96",
+        "raw_sha256": "d8c278e1533578fc46e773852b7fe7bf82c68060c278545666a443aa22c4997e",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "09416ccac5f70f110b7b398f6f6239c4e77f125786dbbf43e2cbf811087e9d0d",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "impact_small",
+      "kind": "impact_small",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/impact_small_3.wav",
+      "duration_s": 1.1663,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "10c947c2d3d99b9f27242064ca3bb97cf11d5a3a98ed02770c5810d31f8d8c97",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "One small shell hitting dry soil: a sharp close impact, compact low explosion puff, a few grains of earth scattering and settling. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.2 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273457-TiGrNViswfGowCu30wnb",
+        "request_sha256": "f007d6dc5d1ed349c7f01e4652fb3cea80ff9855401155012447ced73edcce05",
+        "raw_sha256": "06d309449ef1909808a0069189807af1bd926e086573fa799869b9cad240822d",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "5511a565d03e84bbc3b5befd4820acdd77b590b6c772bd7ed3d2cdbc657b2add",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "low_power",
+      "kind": "low_power",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/low_power.wav",
+      "duration_s": 0.4,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "9ed076d26e9b8ae9aec186b113a6646b0a339ed136abc2ffc7794a2df04d7ccb",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120715,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "produce",
+      "kind": "produce",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/produce.wav",
+      "duration_s": 0.42,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "10e84a605a79d0ee42d8f0bcd57095dbffc95f86e5c3964cc9857cdba4acdf8f",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120712,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "rearm",
+      "kind": "rearm",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/rearm_1.wav",
+      "duration_s": 1.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "51069203fb7e958b59b0be0295f4381fb584a28def11be76d6b0c810eb60afc9",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "Short mechanical vehicle ammunition rearming: metal ammunition rack slides in, cartridge clips latch sequentially, one final solid loading clunk. No chime or voice. Dry close perspective with firm low body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273576-bQxdPWLf05VL3qzAL6aA",
+        "request_sha256": "29939c6ce483c64bcc79d2272108fe9db09e0142b2a1793972b3f74b8906960f",
+        "raw_sha256": "c4ca71370d4f4cde30e82e2a2a8ac9297d785de1092be3b22db87c4d89c1158d",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "edb99d31a600e2d2d4d9bdab8327b1142d6e5140693bad618a8282475d42c7db",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "rearm",
+      "kind": "rearm",
+      "variant": 2,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/rearm_2.wav",
+      "duration_s": 0.9253,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "b5a584d4528ab9141ae69fc06db860843eadf9bea493e1c41dc0df7f35504136",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "Short mechanical vehicle ammunition rearming: metal ammunition rack slides in, cartridge clips latch sequentially, one final solid loading clunk. No chime or voice. Slightly wider natural outdoor reflection with distinct textured body. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273578-FlDsU7T8wseZHlYK4My4",
+        "request_sha256": "89be5a19ba36670d150988fcb890b47d8174d98fa273cef5c1e44679b6350786",
+        "raw_sha256": "2f45f270e9d28400eb52151c4846fb2960fec9574330cb1b16de422d449945bb",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "815d3c0c10dc67d2c7619c8d6a3a02915474836e675fd7ce44d76885fab50c3a",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "rearm",
+      "kind": "rearm",
+      "variant": 3,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/rearm_3.wav",
+      "duration_s": 1.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "1c486d6d72179fd6529ae47d74498867fc58f92eb8118e3f4f2fa2d6e73960d7",
+      "provenance": {
+        "type": "generated_sound_effect",
+        "provider": "OpenRouter / ByteDance Seed Audio",
+        "model": "bytedance-seed/seed-audio-1-0",
+        "prompt": "Short mechanical vehicle ammunition rearming: metal ammunition rack slides in, cartridge clips latch sequentially, one final solid loading clunk. No chime or voice. Dense close perspective, a slightly different mechanical and debris texture. Produce exactly one isolated original game sound effect, beginning immediately, ending naturally, approximately 1.0 seconds total. No voices, no speech, no music, no unrelated ambience.",
+        "generation_id": "gen-tts-1791273578-hByMYNwDfezBslXNyu83",
+        "request_sha256": "bc99469f410ab6a4d8ffbafb9a5fb943d0df8ff5509bc03c49385e752e9e4661",
+        "raw_sha256": "ef4b5f68d96ef5c0f06c3ba27b26c90a9146680d5451c0651ffa55c341d98372",
+        "license_notice": "Provider-generated effect; not claimed as an original field recording or CC0."
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "ccb37a71a3d083643ff6384bd17f7319db2e3cbe60048ed93d150ea157085f2e",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "result",
+      "kind": "result",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/result.wav",
+      "duration_s": 0.55,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "6dfc843d12eef04cee2828a8bc99e6ea0748f85c82a9f776fafd4be837d8614d",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120716,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "select",
+      "kind": "select",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/select.wav",
+      "duration_s": 0.14,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "e15534883330e0cb9826f58c755be969bb587358a1640949fd27f3e0142be772",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120710,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "select_power",
+      "kind": "select_power",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/select_power.wav",
+      "duration_s": 0.36,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "0a23d049035edef4ef0f4dbf328e042a3897a7a3415b3af51875d3f6a46e4f79",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original electrical selection cue",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "family": "sell",
+      "kind": "sell",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/sell.wav",
+      "duration_s": 0.85,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "7a7a414e0d4271a2ea1ef585c589135ef358a20632bf27846d7f9e963777fba4",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120714,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "tracks_loop",
+      "kind": "tracks_loop",
+      "variant": 1,
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/sfx/tracks_loop.wav",
+      "duration_s": 2.0,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "0ead85247e54db2e0d9f34835679857c2f878d34f240ec91aefa5fbebe3ded7e",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local deterministic NumPy synthesis",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0"
+      },
+      "level_revision": {
+        "id": "20261007-combat-minus20",
+        "linear_gain": 0.8,
+        "source_sha256": "4cc2e331d97b5b4362aed3a908ed89d06dd35918efd1713e60b6d64ee1d28f7f",
+        "runtime_baseline": 0.765,
+        "effective_relative_to_old_default": 0.8
+      }
+    },
+    {
+      "family": "ui_click",
+      "kind": "ui_click",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/ui_click.wav",
+      "duration_s": 0.12,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "d0f0f38c7183a05ef8f5649c741546e28a754542bbc2380bb305cc72c439ba41",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original mechanical paper interface cue",
+        "source": "tools/revision_audio_20261007.py",
+        "license": "CC0-1.0",
+        "seed": 120718,
+        "design": "Layered paper friction, damped mechanical key/panel contact; no reused legacy beep."
+      }
+    },
+    {
+      "family": "ui_key",
+      "kind": "ui_key",
+      "variant": 1,
+      "loop": false,
+      "file": "res://assets/audio/revision_v8/sfx/ui_key.wav",
+      "duration_s": 0.09,
+      "sample_rate": 44100,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "9cd11defe7a8059ca1892e362efa6c738705b9cf4a03bf4fe2f48458fdd9b876",
+      "provenance": {
+        "type": "original_dsp",
+        "provider": "Local original short key tap",
+        "source": "tools/generate_revision_v8_audio.py",
+        "license": "CC0-1.0"
+      }
+    }
+  ]
+}

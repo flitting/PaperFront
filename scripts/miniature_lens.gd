@@ -32,15 +32,20 @@ static func update(camera: Camera3D, attributes: CameraAttributesPractical, targ
 	# including the closest supported zoom on elevated plateaus.
 	var subject_top: float = -(view * (target + Vector3.UP * 3.0)).z
 	var subject_ground: float = -(view * target).z
-	near_depth = minf(near_depth, subject_top - 0.4)
-	far_depth = maxf(far_depth, subject_ground + 0.4)
+	# The new 8m / 10-degree close view must keep its central figures sharp.
+	# At that pitch their view-depth spans very little of the old blur transition.
+	var close_margin: float = lerpf(1.8, 0.4, smoothstep(8.0, 20.0, distance))
+	near_depth = minf(near_depth, subject_top - close_margin)
+	far_depth = maxf(far_depth, subject_ground + close_margin)
 	attributes.dof_blur_near_distance = maxf(camera.near + 1.0, near_depth)
 	attributes.dof_blur_far_distance = far_depth
 	attributes.dof_blur_near_transition = maxf(1.0, (depth - near_depth) * 0.65)
 	attributes.dof_blur_far_transition = maxf(1.5, (far_depth - depth) * 0.60)
 	# Close views have a stronger miniature feel; the wide tactical overview
 	# keeps small silhouettes legible while retaining the same bokeh pipeline.
-	attributes.dof_blur_amount = lerpf(0.13, 0.07, smoothstep(54.0, 110.0, distance))
+	attributes.dof_blur_amount = lerpf(0.13, 0.07, smoothstep(54.0, 110.0, distance)) * smoothstep(8.0, 20.0, distance)
+	# Extreme low-angle magnification is for inspecting silhouettes: gradually
+	# release the miniature blur as it approaches 8m, keeping the user's toggle.
 
 
 static func _plane_depth(camera: Camera3D, view: Transform3D, plane: Plane, fraction: float, fallback: float) -> float:

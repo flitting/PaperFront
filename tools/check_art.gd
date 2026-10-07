@@ -14,7 +14,7 @@ func check() -> void:
 		if Geometry2D.triangulate_polygon(polygon).is_empty():
 			failures.append("Invalid cut contour: " + key)
 		var image := Image.new()
-		if image.load_svg_from_string(FileAccess.get_file_as_string("res://assets/cards/"+key+".svg")) != OK:
+		if image.load_svg_from_string(FileAccess.get_file_as_string(str(contours[key].get("path", "res://assets/cards/"+key+".svg")))) != OK:
 			failures.append("Invalid SVG: " + key)
 	var sim := WarSimulation.new()
 	sim.setup(RulesLoader.load_rules(),"dev",73026,"rivet",false)

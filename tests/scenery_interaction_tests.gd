@@ -55,10 +55,10 @@ func run() -> void:
 	# The renderer represents construction using its own open frame and progress,
 	# then atomically replaces it with the normal finished model.
 	var engineer: int = sim.debug_spawn(0, "rivet_engineer", Vector2(11.5, 40.5))
-	var outpost: int = sim.debug_spawn(0, "rivet_outpost", Vector2(16.5, 40.5))
+	var outpost: int = sim.debug_spawn(0, "rivet_hq", Vector2(16.5, 40.5))
 	var site: Dictionary = sim.entities[outpost]
 	site.construction = {"builder": engineer, "progress": 0.0, "spent": 0.0, "initial_hp": 50.0, "repair_spent": 0.0, "work_state": "working", "pause_reason": ""}
-	site.construct_remaining = float(rules.buildings.rivet_outpost.build_time)
+	site.construct_remaining = float(rules.buildings.rivet_hq.build_time)
 	site.hp = 50.0
 	world.sync(0.0, [])
 	var model: Dictionary = world.models[outpost]
@@ -66,14 +66,14 @@ func run() -> void:
 	_check(model.hp_fraction == 1.0 and model.progress_fill.scale.x == 0.0, "new construction shows its initial health and independent zero progress")
 	site.construction.progress = .5
 	site.construction.work_state = "paused"
-	site.hp = Scaffold.health_cap(site, rules.buildings.rivet_outpost) * .5
+	site.hp = Scaffold.health_cap(site, rules.buildings.rivet_hq) * .5
 	world.sync(0.0, [])
 	_check(model.hp_fraction == .5 and absf(model.progress_fill.scale.x - float(model.hp_width) * .5) < .001, "damaged paused construction displays health and structural progress separately")
 	_check(model.scaffold and absf(model.volume.meshes[1].scale.y - .5) < .001, "paused construction retains a scaffold with its actual built structure")
 	var scaffold_root: Node3D = model.root
 	site.erase("construction")
 	site.construct_remaining = 0.0
-	site.hp = float(rules.buildings.rivet_outpost.hp)
+	site.hp = float(rules.buildings.rivet_hq.hp)
 	world.sync(0.0, [])
 	_check(not world.models[outpost].scaffold and scaffold_root.is_queued_for_deletion(), "completed construction replaces the scaffold with the finished outpost")
 	world.queue_free()

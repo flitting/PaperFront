@@ -12,7 +12,10 @@ static func initialize(e: Dictionary) -> void:
 	e.passengers = e.get("passengers", [])
 
 static func is_loaded(e: Dictionary) -> bool:
-	return int(e.get("transport_id", -1)) > 0
+	return int(e.get("transport_id", -1)) > 0 or int(e.get("garrison_id", -1)) >= 0
+
+static func _water_carrier(sim, carrier: Dictionary) -> bool:
+	return NavalOperations.is_naval(sim, carrier) and not (bool(sim.data_for(carrier.spec).get("amphibious", false)) and sim._terrain(carrier.pos) != MapData.WATER)
 
 static func capacity(sim, carrier: Dictionary) -> int:
 	return int(sim.data_for(str(carrier.get("spec", ""))).get("transport_capacity", 0))
@@ -42,7 +45,16 @@ static func step_board(sim, passenger: Dictionary, command: Dictionary, delta: f
 		if int(passenger.team) == 0: sim._notice(error)
 		return
 	var carrier: Dictionary = sim.entities[carrier_id]
-	if NavalOperations.is_naval(sim, carrier):
+	if bool(sim.data_for(carrier.spec).get("amphibious", false)) and _water_carrier(sim,carrier):
+		if carrier.commands.is_empty():
+			var separation: float=sim._radius(carrier)+sim._radius(passenger)+.2
+			var direction: Vector2=((carrier.pos as Vector2)-(passenger.pos as Vector2)).normalized()
+			var pickup: Vector2=passenger.pos+direction*separation
+			if not preload("res://scripts/amphibious_navigation.gd").point_clear(sim,pickup,sim._radius(carrier),int(carrier.id),false): pickup=passenger.pos
+			sim.issue([int(carrier.id)],"move",pickup)
+		passenger.state="waiting"
+		return
+	if _water_carrier(sim, carrier):
 		_step_board_naval(sim, passenger, carrier, command, delta)
 		return
 	if sim._is_air(carrier) and bool(carrier.get("airborne", true)):
@@ -147,7 +159,7 @@ static func _step_board_naval(sim, passenger: Dictionary, carrier: Dictionary, c
 ## passenger's queue head; Shift duplicates belong to the same pickup. Keep
 ## embarked infantry, later movement and future boarding requests intact.
 static func cancel_naval_pickup(sim, carrier: Dictionary) -> void:
-	if not NavalOperations.is_naval(sim, carrier): return
+	if not _water_carrier(sim, carrier): return
 	carrier.erase("naval_board_passenger")
 	for passenger: Dictionary in sim.entities.values():
 		if passenger.get("kind", "") != "unit" or is_loaded(passenger) or passenger.get("commands", []).is_empty(): continue
@@ -205,7 +217,7 @@ static func unload(sim, carrier_id: int, preferred_pair: Dictionary = {}) -> Str
 	if sim._is_air(carrier) and bool(carrier.get("airborne", true)): return "运输机需要先降落才能卸载步兵"
 	if carrier.get("passengers", []).is_empty(): return "运输载具没有搭载步兵"
 	var naval_pair: Dictionary = {}
-	if NavalOperations.is_naval(sim, carrier):
+	if _water_carrier(sim, carrier):
 		naval_pair = preferred_pair if NavalOperations.pair_clear(sim, carrier, null, preferred_pair) else NavalOperations.coast_pair(sim, carrier)
 		if naval_pair.is_empty() or (carrier.pos as Vector2).distance_to(naval_pair.water) > maxf(0.5, sim._radius(carrier) * 0.55): return "舰船需驶近可通行海岸才能卸载"
 	var blocked: bool = false
@@ -214,7 +226,7 @@ static func unload(sim, carrier_id: int, preferred_pair: Dictionary = {}) -> Str
 			carrier.passengers.erase(id)
 			continue
 		var passenger: Dictionary = sim.entities[id]
-		var pos: Vector2 = _naval_unload_position(sim, carrier, passenger, naval_pair) if NavalOperations.is_naval(sim, carrier) else _unload_position(sim, carrier, passenger)
+		var pos: Vector2 = _naval_unload_position(sim, carrier, passenger, naval_pair) if _water_carrier(sim, carrier) else _unload_position(sim, carrier, passenger)
 		if not pos.is_finite():
 			blocked = true
 			continue
@@ -235,7 +247,9 @@ static func step_unload_move(sim, carrier: Dictionary, command: Dictionary, delt
 		return
 	if sim._is_air(carrier):
 		if not AircraftOperations.step_land(sim, carrier, command, delta, false): return
-	elif NavalOperations.is_naval(sim, carrier):
+	elif bool(sim.data_for(carrier.spec).get("amphibious", false)):
+		if not NavalOperations.move_to(sim, carrier, command.pos, delta): return
+	elif _water_carrier(sim, carrier):
 		var pair: Dictionary = command.get("naval_coast_pair", {})
 		var coast_target: Vector2 = command.get("naval_coast_target", Vector2.INF)
 		# The resolved beach is usually several metres from the clicked point.
@@ -254,7 +268,7 @@ static func step_unload_move(sim, carrier: Dictionary, command: Dictionary, delt
 		if not NavalOperations.move_to(sim, carrier, pair.water, delta): return
 	elif not sim._move_order(carrier, command, delta):
 		return
-	var error: String = unload(sim, int(carrier.id), command.get("naval_coast_pair", {}) if NavalOperations.is_naval(sim, carrier) else {})
+	var error: String = unload(sim, int(carrier.id), command.get("naval_coast_pair", {}) if _water_carrier(sim, carrier) else {})
 	if carrier.get("passengers", []).is_empty():
 		sim._finish_command(carrier)
 	elif not error.is_empty():
@@ -300,11 +314,19 @@ static func _at_legacy_airfield_center(sim, carrier: Dictionary) -> bool:
 	return not field.is_empty() and (carrier.pos as Vector2).distance_to(field.pos) < 0.5
 
 static func remove(sim, e: Dictionary, destroyed: bool) -> void:
+	if int(e.get("garrison_id", -1)) >= 0:
+		var ruin: Dictionary = sim.ruin_by_target(-100000-int(e.garrison_id))
+		if not ruin.is_empty():
+			ruin.get("garrison", []).erase(int(e.id))
+			if ruin.get("garrison", []).is_empty(): ruin.garrison_team = -1
+		e.garrison_id = -1
 	if is_loaded(e):
 		var carrier_id: int = int(e.transport_id)
 		if sim.entities.has(carrier_id): sim.entities[carrier_id].passengers.erase(int(e.id))
 	for id in e.get("passengers", []).duplicate():
-		if sim.entities.has(id): sim._kill_entity(int(id), destroyed)
+		if sim.entities.has(id):
+			if destroyed:sim.entities[id].last_damage_cause=e.get("last_damage_cause",{}).duplicate()
+			sim._kill_entity(int(id), destroyed)
 	e.passengers = []
 
 static func _clear_navigation(sim, passenger: Dictionary) -> void:

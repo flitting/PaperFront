@@ -3,6 +3,7 @@ extends RefCounted
 ## Original neutral cut-paper art. The mesh is a printed silhouette, never a
 ## volumetric body; existing landscape batches still own routes and ground pose.
 static var _meshes: Dictionary = {}
+static var _lod_meshes: Dictionary = {}
 static var _material: ShaderMaterial
 
 static func material() -> ShaderMaterial:
@@ -47,10 +48,44 @@ static func mesh(variant: int) -> ArrayMesh:
 	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	result.surface_set_material(0, material())
 	# Shader turns the paper about its foot, so allow its horizontal sweep.
-	result.custom_aabb = AABB(Vector3(-.36, 0, -.36), Vector3(.72, 1.40, .72))
+	result.custom_aabb = AABB(Vector3(-.216, 0, -.216), Vector3(.432, .84, .432))
 	result.set_meta("representation", "flat_cut_paper")
 	result.set_meta("paper_depth", .006)
 	_meshes[variant] = result
+	return result
+
+static func lod_meshes(variant: int) -> Array[Mesh]:
+	variant = posmod(variant,3)
+	if _lod_meshes.has(variant): return _lod_meshes[variant]
+	var source: ArrayMesh = mesh(variant)
+	var result: Array[Mesh] = [source]
+	var original: Array = source.surface_get_arrays(0)
+	var vertices: PackedVector3Array = original[Mesh.ARRAY_VERTEX]
+	var colors: PackedColorArray = original[Mesh.ARRAY_COLOR]
+	var ink := Color("514a41")
+	var paper := Color("efe0bd")
+	var cloth: Color = [Color("ab7767"),Color("648b8c"),Color("a89870")][variant]
+	for tier: int in [1,2]:
+		var indices := PackedInt32Array()
+		for offset in range(0,vertices.size(),3):
+			var depth: float = vertices[offset].z
+			var color: Color = colors[offset]
+			# Keep the original paper cut, clothing, face, hair and bag. Their
+			# printed eye, jacket seam, collar and strap are subpixel at these tiers.
+			if (is_equal_approx(depth,.005) and color.is_equal_approx(ink)) or is_equal_approx(depth,.006): continue
+			if is_equal_approx(depth,.004) and color.is_equal_approx(cloth.darkened(.24)): continue
+			if tier == 2 and is_equal_approx(depth,.004) and color.is_equal_approx(paper): continue
+			indices.append_array([offset,offset+1,offset+2])
+		var arrays: Array = original.duplicate()
+		arrays[Mesh.ARRAY_INDEX] = indices
+		var simplified := ArrayMesh.new()
+		simplified.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+		simplified.surface_set_material(0,material())
+		simplified.custom_aabb = source.custom_aabb
+		simplified.set_meta("representation","flat_cut_paper")
+		simplified.set_meta("paper_depth",.006)
+		result.append(simplified)
+	_lod_meshes[variant] = result
 	return result
 
 static func _polygon(points: Array, color: Color, depth: float, vertices: PackedVector3Array, normals: PackedVector3Array, colors: PackedColorArray) -> void:
@@ -58,6 +93,6 @@ static func _polygon(points: Array, color: Color, depth: float, vertices: Packed
 	var indices: PackedInt32Array = Geometry2D.triangulate_polygon(outline)
 	for index: int in indices:
 		var point: Vector2 = outline[index]
-		vertices.append(Vector3(point.x, point.y, depth))
+		vertices.append(Vector3(point.x*.6, point.y*.6, depth))
 		normals.append(Vector3.BACK)
 		colors.append(color)

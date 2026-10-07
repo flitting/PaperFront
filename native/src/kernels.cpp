@@ -53,6 +53,7 @@ protected:
         ClassDB::bind_method(D_METHOD("move_ground", "simulation", "entity", "goal", "delta"), &PaperFrontKernels::move_ground);
         ClassDB::bind_method(D_METHOD("movement_clear", "simulation", "entity", "start", "next", "request_yield"), &PaperFrontKernels::movement_clear);
         ClassDB::bind_method(D_METHOD("build_flat_terrain_mask", "map"), &PaperFrontKernels::build_flat_terrain_mask);
+        ClassDB::bind_method(D_METHOD("build_wide_flat_terrain_mask", "flat", "size"), &PaperFrontKernels::build_wide_flat_terrain_mask);
         ClassDB::bind_method(D_METHOD("refresh_sight_mask", "map", "observers", "changed_buckets", "pixels"), &PaperFrontKernels::refresh_sight_mask);
         ClassDB::bind_method(D_METHOD("verify_container_lifetimes"), &PaperFrontKernels::verify_container_lifetimes);
         ClassDB::bind_method(D_METHOD("set_world_profiling", "enabled"), &PaperFrontKernels::set_world_profiling);
@@ -82,6 +83,7 @@ public:
     bool move_ground(Object *sim, Dictionary entity, Vector2 goal, double delta) { return GroundMovement{sim, geometry, movement_keys}.move(entity, goal, delta); }
     bool movement_clear(Object *sim, Dictionary entity, Vector2 start, Vector2 next, bool request_yield) { return GroundMovement{sim, geometry, movement_keys}.clear(entity, start, next, request_yield); }
     PackedByteArray build_flat_terrain_mask(const Dictionary &map) const { return build_flat_terrain_mask_native(map); }
+    PackedByteArray build_wide_flat_terrain_mask(const PackedByteArray &flat, int64_t size) const { return build_wide_flat_terrain_mask_native(flat, size); }
     Dictionary refresh_sight_mask(const Dictionary &map, const Dictionary &observers, const Dictionary &changed_buckets, const PackedByteArray &pixels) { return sight_mask.refresh(map, observers, changed_buckets, pixels); }
     Dictionary verify_container_lifetimes() const {
         Ref<RefCounted> object; object.instantiate();

@@ -5,6 +5,7 @@ const DIRECTORY = "user://terrain_mesh_cache_v1"
 const SCHEMA = 2
 const DEPENDENCIES = [
 	"scripts/landscape.gd", "scripts/terrain_resource_cache.gd", "scripts/map_data.gd",
+	"scripts/camera_occlusion.gd",
 	"scripts/scenery_scale.gd", "scripts/cliff_craft.gd", "scripts/contextual_props.gd",
 	"scripts/north_context.gd", "scripts/foreground_grove.gd", "scripts/pine_model.gd",
 	"scripts/battlefield_catalog.gd", "scripts/competitive_layout.gd", "scripts/biome_scenery.gd",

@@ -10,6 +10,7 @@ const NORTH_CONTEXT = preload("res://scripts/north_context.gd")
 const FOREGROUND_GROVE = preload("res://scripts/foreground_grove.gd")
 const BATTLEFIELD_CATALOG = preload("res://scripts/battlefield_catalog.gd")
 const COMPETITIVE_LAYOUT = preload("res://scripts/competitive_layout.gd")
+const SYMMETRIC_LAYOUT = preload("res://scripts/symmetric_layout.gd")
 const NEIGHBOURS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 
 
@@ -18,6 +19,12 @@ const NEIGHBOURS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP,
 ## shelves. Four real levels and carved ramps are shared by art and navigation.
 static func generate(mode: String, seed: int, config: Dictionary = {}) -> Dictionary:
 	var normalized_mode: String = mode.to_lower()
+	if normalized_mode in ["symmetric", "balance", "symmetric_land"]:
+		var symmetric_map: Dictionary = SYMMETRIC_LAYOUT.generate(seed)
+		var symmetric_errors: Array[String] = SYMMETRIC_LAYOUT.validate(symmetric_map)
+		symmetric_map.valid = symmetric_errors.is_empty()
+		symmetric_map.validation_errors = symmetric_errors
+		return symmetric_map
 	if normalized_mode == "campaign":
 		return preload("res://scripts/campaign_map.gd").generate(seed)
 	if BATTLEFIELD_CATALOG.has_profile(normalized_mode):
@@ -36,6 +43,12 @@ static func generate(mode: String, seed: int, config: Dictionary = {}) -> Dictio
 		normalized_mode = "mountains640"
 	if normalized_mode not in ["dev", "handmade", "random", "mountains", "mountains640"]:
 		normalized_mode = "handmade"
+	if normalized_mode == "dev" and not bool(config.get("legacy_dev48", false)):
+		var developer_map: Dictionary = _developer_layout(seed)
+		var developer_errors: Array[String] = validate(developer_map)
+		developer_map.valid = developer_errors.is_empty()
+		developer_map.validation_errors = developer_errors
+		return developer_map
 	for attempt: int in range(8):
 		var map: Dictionary = _layout(normalized_mode, seed, attempt)
 		var problems: Array[String] = validate(map)
@@ -56,6 +69,49 @@ static func generate(mode: String, seed: int, config: Dictionary = {}) -> Dictio
 	fallback.valid = errors.is_empty()
 	fallback["validation_errors"] = errors
 	return fallback
+
+
+## Dedicated metre-grid test range. The open base aprons accommodate the real
+## eight-cell HQ / six-cell factory, with two-cell traffic lanes between models.
+## Legacy coordinate-based mechanics fixtures request legacy_dev48 explicitly.
+static func _developer_layout(seed: int) -> Dictionary:
+	var map: Dictionary = {"mode":"dev", "seed":seed, "size":100, "heights":[], "terrain":[], "starts":[[18.5,51.5],[81.5,51.5]], "mines":[], "bridges":[], "decorations":[], "valid":false, "developer_layout":2, "developer_water_depth":1.0}
+	for z: int in range(100):
+		var heights: Array[float] = []
+		var terrain: Array[int] = []
+		for x: int in range(100):
+			heights.append(6.0 if z < 9 else 4.0 if z < 19 else 2.0 if z < 29 else 0.0)
+			terrain.append(LAND)
+		map.heights.append(heights)
+		map.terrain.append(terrain)
+	for center: int in [20,50,80]:
+		for level: int in range(3):
+			_carve_ramp(map, center, 9 + level * 10, 6.0 - level * 2.0, 8, 8)
+	# A twelve-cell river opens into a thirty-six-cell naval test basin. Its
+	# bridge is five cells wide; the permanent southern road survives destruction.
+	for z: int in range(36,91):
+		for x: int in range(32 if z >= 68 else 44, 68 if z >= 68 else 56):
+			map.terrain[z][x] = WATER
+			# Preserve the level-zero bridge deck. This range's shallower water
+			# also lets real troop transports embark at its level-zero shore.
+			map.heights[z][x] = 0.0
+	map.bridges.append({"id":1,"bounds":[43,49,14,5],"heads":[[42.5,51.5],[57.5,51.5]],"naval_clearance":4.0})
+	_road(map, Rect2i(18,49,64,5))
+	_road(map, Rect2i(18,51,5,45))
+	_road(map, Rect2i(77,51,5,45))
+	_road(map, Rect2i(18,93,64,5))
+	for team: int in range(2):
+		for position: Vector2 in [Vector2(12.5,65.5),Vector2(29.5,41.5)]:
+			var point := Vector2(position.x if team == 0 else 100.0-position.x,position.y)
+			map.mines.append({"pos":[point.x,point.y],"capacity":3000})
+	map.harbors = [{"team":0,"role":"home","protected":true,"shore_pos":Vector2(31.5,71.5),"land_pos":Vector2(29.5,74.5),"water_pos":Vector2(35.5,74.5),"outward":Vector2.RIGHT,"radius":14.0},{"team":1,"role":"home","protected":true,"shore_pos":Vector2(68.5,71.5),"land_pos":Vector2(70.5,74.5),"water_pos":Vector2(64.5,74.5),"outward":Vector2.LEFT,"radius":14.0}]
+	map.developer_showcase_regions = [[3,31,38,36],[59,31,38,36]]
+	# Small symmetric obstacle groves stay outside every base and ramp apron.
+	for x: int in [5,7,92,94]:
+		for z: int in [4,6,22,24]:
+			map.terrain[z][x] = BLOCKED
+			map.decorations.append({"pos":[x+.5,z+.5],"kind":"tree" if z < 10 else "rock"})
+	return map
 
 
 ## The callback may yield; existing synchronous generation stays compatible.
@@ -530,14 +586,17 @@ static func height_at(map: Dictionary, pos: Vector2) -> float:
 
 
 static func water_surface_y(map: Dictionary, pos: Vector2) -> float:
-	return height_at(map, pos) - 2.65
+	var depth: float = float(map.get("developer_water_depth",2.65)) if str(map.get("mode","")) == "dev" else 2.65
+	return height_at(map, pos) - depth
 
 
 static func entity_surface_y(map: Dictionary, pos: Vector2, domain: String = "ground") -> float:
-	return water_surface_y(map, pos) if domain == "naval" else height_at(map, pos)
+	return water_surface_y(map, pos) if domain == "naval" and terrain_at(map,pos) == WATER else height_at(map, pos)
 
 
 static func validate(map: Dictionary) -> Array[String]:
+	if str(map.get("mode", "")) == "symmetric":
+		return SYMMETRIC_LAYOUT.validate(map)
 	if str(map.get("mode", "")) == "campaign":
 		return preload("res://scripts/campaign_map.gd").validate(map)
 	if map.has("profile") and not map.profile is Dictionary:

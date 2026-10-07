@@ -24,6 +24,7 @@ struct PoseKeys {
     const Variant kind{StringName{"kind"}};
     const Variant state{StringName{"state"}};
     const Variant alpha{StringName{"alpha"}};
+    const Variant rotation_quarters{StringName{"rotation_quarters"}};
     const Variant last_alpha{StringName{"last_alpha"}};
     const Variant turret{StringName{"turret"}};
     const Variant turret_alpha{StringName{"turret_alpha"}};
@@ -121,7 +122,7 @@ static PaperFrontRenderRecord *render_record(Dictionary model, const PoseKeys &k
 }
 int64_t update_volume_native(Dictionary model, const Dictionary &e, bool selected, double yaw,
     double elapsed, double capacity, double construction_time, const PoseKeys &k, PaperFrontRenderRecord *record=nullptr, bool record_submissions=true) {
-    bool embarked = int64_t(e.get(k.transport_id, -1)) > 0;
+    bool embarked = int64_t(e.get(k.transport_id, -1)) > 0 || int64_t(e.get(StringName("garrison_id"), -1)) >= 0;
     model[k.embarked] = embarked;
     if (embarked) return 0;
     if (!record) record=render_record(model,k);
@@ -165,9 +166,15 @@ int64_t update_volume_native(Dictionary model, const Dictionary &e, bool selecte
             }
         }
     } else {
-        if (pose.alpha!=0.0) { model[k.last_alpha] = 0.0; pose.alpha=0.0; }
+        Dictionary building_spec = model[k.spec];
+        String role = building_spec.get("role", "");
+        double building_angle = (role == "rail" || role == "rail_junction") ? 0.0 : double(int64_t(e.get(k.rotation_quarters, 0)) % 4) * 90.0;
+        if (pose.alpha != building_angle) {
+            Vector3 rotation = root->get_rotation(); rotation.y = -UtilityFunctions::deg_to_rad(building_angle); root->set_rotation(rotation);
+            model[k.last_alpha] = building_angle; pose.alpha = building_angle;
+        }
         if (turret) {
-            double angle = -UtilityFunctions::deg_to_rad(double(e.get(k.turret_alpha, 0.0)));
+            double angle = -UtilityFunctions::deg_to_rad(double(e.get(k.turret_alpha, 0.0)) - building_angle);
             if (pose.turret_angle != angle) {
                 Vector3 rotation = turret->get_rotation(); rotation.y = angle; turret->set_rotation(rotation);
                 model[k.last_turret_angle] = angle; pose.turret_angle=angle;

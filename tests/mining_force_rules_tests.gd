@@ -108,7 +108,7 @@ func _test_forced_movement() -> void:
 	_check(sim.entities.has(friend), "ordinary movement preserves friendly infantry")
 	sim.issue([tank], "force_move", sim.entities[friend].pos, friend)
 	_tick(sim, 4.0)
-	_check(not sim.entities.has(friend) and sim.entities[tank].pos.x > 7.0, "forced movement runs through the selected infantry instead of asking it to yield")
+	_check(sim.entities.has(friend) and sim.entities[tank].pos.distance_to(sim.entities[friend].pos) >= float(sim.entities[tank].radius) + float(sim.entities[friend].radius) - 0.001, "forced movement preserves selected friendly infantry and its collision clearance")
 	var crystal: Vector2 = sim.mines[1].pos
 	sim.issue([tank], "force_move", crystal)
 	_tick(sim, 8.0)

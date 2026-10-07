@@ -5,3 +5,4 @@ reloadable = false
 
 [libraries]
 linux.x86_64 = "res://assets/native/libpaper_front_kernels.so"
+windows.x86_64 = "res://assets/native/paper_front_kernels.dll"

@@ -57,6 +57,7 @@ func _run() -> void:
 		_report()
 		return
 	_check(sim._terrain(sim.entities[ship].pos) == 1 and sim._terrain(sim.entities[soldier].pos) != 1, "initial domain terrain is correct")
+	_check(is_equal_approx(sim._radius(sim.entities[ship]),1.0) and is_equal_approx(sim._radius(sim.entities[soldier]),.5), "live boarding uses2x2 ship and1x1 infantry body")
 	var initial: Vector2 = sim.entities[soldier].pos
 	sim.issue([soldier], "board", sim.entities[ship].pos, ship)
 	for i in range(500):

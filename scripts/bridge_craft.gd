@@ -7,6 +7,18 @@ const MORTAR := Color("514c40")
 const OFFSET: float = 0.003
 
 
+static func plank_segments(length: float) -> Array[Vector2]:
+	var result: Array[Vector2] = []
+	var count: int = maxi(1, ceili(length / 0.62))
+	var half: float = minf(0.58, length) * 0.5
+	for index: int in count:
+		var center: float = -length * 0.5 + 0.30 + float(index) * 0.62
+		var left: float = -length * 0.5 if index == 0 else center - half
+		var right: float = length * 0.5 if index == count - 1 else center + half
+		if right > left: result.append(Vector2(left, right))
+	return result
+
+
 static func arch(builder, data: Dictionary, length: float, breadth: float, turn: Basis, water_depth: float = 2.65) -> void:
 	var radius: float=maxf(1.0,length*.5-.67)
 	var inner: float=maxf(.5,radius-.42)
@@ -46,31 +58,42 @@ static func abutments(builder, data: Dictionary, length: float, breadth: float, 
 
 static func planks(builder, data: Dictionary, length: float, breadth: float, turn: Basis) -> void:
 	# Existing board tops are exactly y=0. Detail remains within each board.
-	for index: int in ceili(length/.62):
-		var x: float=-length*.5+.30+float(index)*.62
-		var half: float=minf(.58,length)*.5
+	var segments: Array[Vector2] = plank_segments(length)
+	for index: int in segments.size():
+		var segment: Vector2 = segments[index]
+		var x: float = (segment.x + segment.y) * 0.5
+		var half: float = (segment.y - segment.x) * 0.5
 		for side: float in [-1.0,1.0]:
 			var z: float=side*breadth*.40
-			_nail(builder,data,turn*Vector3(x+side*minf(.17,half*.60),OFFSET,z),turn)
+			_nail(builder,data,turn*Vector3(x+side*minf(.17,half*.60),OFFSET,z),turn,minf(.031,half*.25))
 		if index%3==1:continue
 		var grain_x: float=x+(.08 if index%2==0 else -.09)
 		var start: float=-breadth*(.28 if index%2==0 else .12)
 		var finish: float=start+breadth*(.26 if index%2==0 else .37)
-		var normal: Vector3=turn*Vector3.UP
-		var a: Vector3=turn*Vector3(grain_x,OFFSET,start)
-		var b: Vector3=turn*Vector3(grain_x+.018,OFFSET,finish)
-		var offset: Vector3=turn*Vector3(.018,0,0)
-		builder._quad(data,a-offset,b-offset*.50,b+offset*.50,a+offset,Color("75654b"),normal)
+		var a := Vector2(grain_x, start)
+		var b := Vector2(grain_x + .018, finish)
+		var offset := Vector2(.018, 0)
+		_top_patch(builder, data, [a-offset,b-offset*.50,b+offset*.50,a+offset], segment, breadth, turn, Color("75654b"))
 		if index%4==0:
-			var pale: Vector3=turn*Vector3(.085,0,0)
-			builder._quad(data,a+pale,b.lerp(a,.40)+pale,b.lerp(a,.40)+pale+offset*.70,a+pale+offset,Color("bba784"),normal)
+			var pale := Vector2(.085, 0)
+			_top_patch(builder, data, [a+pale,b.lerp(a,.40)+pale,b.lerp(a,.40)+pale+offset*.70,a+pale+offset], segment, breadth, turn, Color("bba784"))
 
 
-static func _nail(builder, data: Dictionary, centre: Vector3, turn: Basis) -> void:
+static func _nail(builder, data: Dictionary, centre: Vector3, turn: Basis, radius: float = .031) -> void:
 	for side: int in range(6):
 		var a: float=side*TAU/6.0
 		var b: float=(side+1)*TAU/6.0
-		builder._triangle(data,centre,centre+turn*Vector3(cos(a)*.031,0,sin(a)*.031),centre+turn*Vector3(cos(b)*.031,0,sin(b)*.031),Color("50493b"),turn*Vector3.UP)
+		builder._triangle(data,centre,centre+turn*Vector3(cos(a)*radius,0,sin(a)*radius),centre+turn*Vector3(cos(b)*radius,0,sin(b)*radius),Color("50493b"),turn*Vector3.UP)
+
+
+static func _top_patch(builder, data: Dictionary, polygon: Array[Vector2], segment: Vector2, breadth: float, turn: Basis, color: Color) -> void:
+	var boundary: Array[Vector2] = [Vector2(segment.x,-breadth*.5),Vector2(segment.y,-breadth*.5),Vector2(segment.y,breadth*.5),Vector2(segment.x,breadth*.5)]
+	var clipped: Array[Vector2] = polygon
+	for edge: int in boundary.size():
+		clipped = _clip(clipped, boundary[edge], boundary[(edge + 1) % boundary.size()], 1.0)
+		if clipped.size() < 3: return
+	for index: int in range(1, clipped.size() - 1):
+		builder._triangle(data, turn*Vector3(clipped[0].x,OFFSET,clipped[0].y), turn*Vector3(clipped[index].x,OFFSET,clipped[index].y), turn*Vector3(clipped[index+1].x,OFFSET,clipped[index+1].y), color, Vector3.UP)
 
 
 static func _masonry(builder, data: Dictionary, boundary: Array[Vector2], z: float, turn: Basis, variant: int) -> void:

@@ -8,7 +8,7 @@ static func begin(sim, e: Dictionary, target: int, landing: Vector2, force: bool
 	var info: Dictionary = sim.data_for(str(e.spec))
 	if not bool(info.get("hero", false)): return false
 	if float(e.get("hand_strike", 0.0)) > 0.0 or float(e.get("hand_recover", 0.0)) > 0.0 or float(e.cooldown) > 0.0: return true
-	var weapon: Dictionary = sim.rules.weapons.get(str(info.get("weapon", "")), {})
+	var weapon: Dictionary = sim.weapon_for(e,str(info.get("weapon", "")))
 	if weapon.is_empty(): return true
 	e.cooldown = float(weapon.interval)
 	e.hand_strike = float(info.get("attack_windup", 0.5))
@@ -62,7 +62,7 @@ static func step(sim, delta: float) -> void:
 			e.hand_landing = landing
 			e.hand_ground_height = _ground_height(sim,e,landing,target)
 			e.hand_contact_height = _contact_height(sim,e,landing,target)
-			var weapon: Dictionary = sim.rules.weapons.get(str(sim.data_for(str(e.spec)).get("weapon", "")), {})
+			var weapon: Dictionary = sim.weapon_for(e,str(sim.data_for(str(e.spec)).get("weapon", "")))
 			if weapon.is_empty() or (e.pos as Vector2).distance_to(landing) > float(weapon.get("range", 0.0)) + 0.001:
 				cancel(e)
 				continue

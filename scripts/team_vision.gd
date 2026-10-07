@@ -35,7 +35,7 @@ static func refresh(sim, force: bool = false) -> void:
 			var domain: String = str(sim.data_for(e.spec).get("domain", "ground"))
 			for team in range(sim.factions.size()):
 				if team == int(e.team): continue
-				if position_visible(sim, team, e.pos, domain):
+				if position_visible(sim, team, e.pos, domain) and preload("res://scripts/air_naval_expansion.gd").detected(sim,team,e):
 					bits |= 1 << team
 					known[team][int(e.id)] = {"pos": e.pos, "seen_at": sim.time, "spec": e.spec, "kind": e.kind, "domain": domain}
 		e.visible_to = bits
@@ -52,11 +52,13 @@ static func _build_observers(sim) -> void:
 	for team in range(sim.factions.size()): sim._vision_observers.append({})
 	if not sim.vision_enabled: return
 	for e in sim.entities.values():
-		if float(e.hp) <= 0.0 or sim.Transport.is_loaded(e): continue
+		if float(e.hp) <= 0.0 or (sim.Transport.is_loaded(e) and int(e.get("garrison_id", -1)) < 0): continue
 		var team: int = int(e.team)
 		var spec: Dictionary = sim.data_for(e.spec)
 		var domain: String = str(spec.get("domain", "ground"))
 		var radius: float = float(spec.get("vision_radius", 14.0 if domain == "air" else (12.0 if e.kind == "building" else (11.0 if domain == "naval" else 9.0))))
+		var weapon: Dictionary = sim.weapon_for(e,str(spec.get("weapon", "")))
+		if not weapon.is_empty(): radius = maxf(radius, float(weapon.range) * float(e.get("range_scale", 1.0)) + 2.0)
 		var surface: float=MapData.entity_surface_y(sim.map,e.pos,domain)
 		var record: Dictionary = {"pos":e.pos, "radius_sq":radius*radius, "air":domain=="air", "eye_height":surface+(2.5 if e.kind=="building" or domain=="naval" else 1.6)}
 		var first: Vector2i = Vector2i(floori((e.pos.x-radius)/16.0),floori((e.pos.y-radius)/16.0))

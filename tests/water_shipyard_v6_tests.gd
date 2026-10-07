@@ -2,6 +2,7 @@ extends SceneTree
 
 const Sim = preload("res://tests/rule_test_simulation.gd")
 const Operations = preload("res://scripts/naval_operations.gd")
+const FieldConstruction = preload("res://scripts/field_construction.gd")
 const Saves = preload("res://scripts/sim_save_validator.gd")
 var checks: int = 0
 var failures: Array[String] = []
@@ -19,7 +20,7 @@ func footprint_water(sim, point: Vector2, size: int = 4) -> bool:
 			if x<0 or z<0 or x>=sim.map.size or z>=sim.map.size or int(sim.map.terrain[z][x]) != MapData.WATER: return false
 	return true
 
-func find_site(sim, team: int, info: Dictionary, water: bool = true) -> Vector2:
+func find_site(sim, team: int, info: Dictionary, water: bool = true, builder: int = -1) -> Vector2:
 	for harbor: Dictionary in sim.map.get("harbors", []):
 		if int(harbor.get("team",-1)) != team or harbor.get("role") != "home": continue
 		var center: Vector2 = harbor.water_pos if water else harbor.shore_pos
@@ -27,7 +28,7 @@ func find_site(sim, team: int, info: Dictionary, water: bool = true) -> Vector2:
 			for step in range(1 if ring==0 else 24):
 				var wanted: Vector2 = center+Vector2.from_angle(TAU*float(step)/24.0)*float(ring)*.9
 				var point := Vector2(roundf(wanted.x),roundf(wanted.y))
-				if Operations.shipyard_site_error(sim,team,info,point).is_empty(): return point
+				if Operations.shipyard_site_error(sim,team,info,point,builder).is_empty(): return point
 	return Vector2.INF
 
 func snapshot(sim) -> Dictionary:
@@ -51,7 +52,9 @@ func run() -> void:
 		sim.setup(rules,"islands",17,faction,false)
 		var home: Dictionary = home_harbor(sim,0)
 		var enemy_home: Dictionary = home_harbor(sim,1)
-		var site: Vector2 = find_site(sim,0,info)
+		var builder: int = sim.debug_spawn(0,"rivet_engineer",home.land_pos) if faction=="rivet" else -1
+		if faction=="rivet": check(builder>0,"Rivet shipyard fixture has a real shore engineer")
+		var site: Vector2 = find_site(sim,0,info,true,builder)
 		check(site.is_finite(), faction+" protected home harbor admits all-water yard")
 		if not site.is_finite(): continue
 		check(footprint_water(sim,site), faction+" every footprint cell is independently verified water")
@@ -68,15 +71,18 @@ func run() -> void:
 		sim.map.harbors = harbors
 		var factory: int = sim.debug_spawn(0,faction+"_factory",sim._team_start(0)+Vector2(0,8))
 		check(factory>0, faction+" real prerequisite factory exists")
-		var before: float = sim.money[0]
-		check(sim.build(0,faction+"_shipyard").is_empty(), faction+" shipyard enters normal paid construction")
-		check(is_equal_approx(before-sim.money[0],float(info.cost)), faction+" normal shipyard price charged")
-		sim.step(80.0)
-		check(bool(sim.order_for_team(0).get("ready",false)), faction+" shipyard construction finishes normally")
-		check(sim.place_building(0,site).is_empty(), faction+" real water placement succeeds")
 		var yard_id: int = -1
-		for e in sim.entities.values():
-			if e.team==0 and e.spec==faction+"_shipyard": yard_id=int(e.id)
+		var before: float = sim.money[0]
+		if faction=="rivet":
+			yard_id=engineer_yard(sim,info,site,builder)
+		else:
+			check(sim.build(0,faction+"_shipyard").is_empty(), faction+" shipyard enters normal paid construction")
+			check(is_equal_approx(before-sim.money[0],float(info.cost)), faction+" normal shipyard price charged")
+			sim.step(80.0)
+			check(bool(sim.order_for_team(0).get("ready",false)), faction+" shipyard construction finishes normally")
+			check(sim.place_building(0,site).is_empty(), faction+" real water placement succeeds")
+			for e in sim.entities.values():
+				if e.team==0 and e.spec==faction+"_shipyard": yard_id=int(e.id)
 		check(yard_id>0, faction+" completed order creates a shipyard entity")
 		if yard_id<1: continue
 		var yard: Dictionary = sim.entities[yard_id]
@@ -130,6 +136,64 @@ func run() -> void:
 	contact_contract(rules)
 	legacy_snapshot(rules)
 	finish()
+
+func engineer_yard(sim, info: Dictionary, site: Vector2, builder: int) -> int:
+	var approach: Vector2 = FieldConstruction.approach(sim,sim.entities[builder],{"spec":"rivet_shipyard","pos":site})
+	check(approach.is_finite() and sim._standing(approach,sim._radius(sim.entities[builder]),builder,false),"Rivet water shipyard exposes a legal dry shore work point")
+	if not approach.is_finite(): return -1
+	var off_shore: Vector2 = site + (site-approach).normalized()*12.0
+	check(not FieldConstruction.approach(sim,sim.entities[builder],{"spec":"rivet_shipyard","pos":off_shore}).is_finite() and not Operations.shipyard_site_error(sim,0,info,off_shore,builder).is_empty(),"Rivet rejects offshore yards without a dry construction point")
+	var harbors: Array = sim.map.harbors
+	sim.map.harbors=[]
+	var headquarters: Dictionary = sim.entities[1]
+	headquarters.construct_remaining=1.0
+	check(not Operations._yard_authorized(sim,0,site,float(info.size)*.5,true,builder),"Rivet engineer alone cannot authorize a remote dock")
+	var expansion_site := Vector2.INF
+	var hq_info: Dictionary = sim.data_for("rivet_hq")
+	var minimum: float = float(hq_info.size) * sqrt(2.0) * .5 + sim._radius(sim.entities[builder]) + 1.0
+	for ring in range(ceili(minimum), 17):
+		for angle: float in [0.0, -.4, .4, -.8, .8, -1.2, 1.2]:
+			var wanted: Vector2 = approach + (approach-site).normalized().rotated(angle) * float(ring)
+			var half: float = float(hq_info.size) * .5
+			var point := Vector2(roundf(wanted.x-half)+half,roundf(wanted.y-half)+half)
+			if sim._building_site_error(0,hq_info,point,builder).is_empty(): expansion_site = point; break
+		if expansion_site.is_finite(): break
+	check(expansion_site.is_finite(),"expanded headquarters has a legal full footprint clear of the shore work point")
+	if not expansion_site.is_finite(): return -1
+	var expansion: int = sim._spawn(0,"rivet_hq",expansion_site,true)
+	check(Operations._yard_authorized(sim,0,site,float(info.size)*.5,true,builder),"a completed expansion barracks authorizes the dock's shore work point")
+	sim.entities[expansion].construct_remaining=1.0
+	check(not Operations._yard_authorized(sim,0,site,float(info.size)*.5,true,builder),"unfinished expansion barracks grants no remote dock authority")
+	sim._kill_entity(expansion,false)
+	headquarters.construct_remaining=0.0
+	sim.map.harbors=harbors
+	var before: float = sim.money[0]
+	check(not sim.build(0,"rivet_shipyard").is_empty(),"Rivet HQ cannot queue a shipyard")
+	check(sim.build(0,"rivet_shipyard",builder).is_empty() and is_equal_approx(sim.money[0],before),"Rivet engineer selects a shipyard without prepayment")
+	var count_before: int = sim.entities.size()
+	check(sim.place_building(0,site).is_empty() and sim.entities.size()==count_before and is_equal_approx(sim.money[0],before),"Rivet water placement sends the engineer before creating or paying a scaffold")
+	var yard_id: int = -1
+	for tick in range(900):
+		sim.step(.1)
+		for e: Dictionary in sim.entities.values():
+			if e.team==0 and e.spec=="rivet_shipyard": yard_id=int(e.id)
+		if yard_id>0: break
+	check(yard_id>0,"Rivet engineer physically reaches shore and creates the all-water scaffold")
+	if yard_id<0: return -1
+	var yard: Dictionary = sim.entities[yard_id]
+	check(yard.has("construction") and is_equal_approx(float(yard.construct_remaining),float(info.build_time)) and is_equal_approx(sim.money[0],before),"shipyard scaffold begins with the unchanged configured construction duration and no paid work")
+	sim.step(1.0)
+	check(is_equal_approx(float(yard.construction.progress),1.0/float(info.build_time)) and is_equal_approx(before-sim.money[0],float(info.cost)/float(info.build_time)),"one second of shore work uses the unchanged shipyard time and price")
+	var path: String="user://rivet_water_scaffold.save"
+	var restored=Sim.new()
+	var save_error: String=sim.save_game(path)
+	var load_error: String=restored.load_game(path)
+	check(save_error.is_empty() and load_error.is_empty() and restored.entities[yard_id]==yard,"partially paid water scaffold and shore engineer survive save/load: "+load_error)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	sim.step(float(info.build_time)-1.0+.1)
+	check(not yard.has("construction") and is_equal_approx(float(yard.construct_remaining),0.0) and is_equal_approx(before-sim.money[0],float(info.cost)),"engineer finishes the water yard after its configured work and pays exactly its configured cost")
+	check(sim.entities.has(builder) and sim.entities[builder].commands.is_empty(),"completed shipyard releases its surviving engineer")
+	return yard_id
 
 func legacy_snapshot(rules: Dictionary) -> void:
 	var legacy: Dictionary = rules.duplicate(true)

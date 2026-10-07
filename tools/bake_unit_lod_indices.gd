@@ -1,82 +1,78 @@
 extends SceneTree
 
-var bake_cache:Dictionary={}
+## Offline authoring only. All rigid entity parts, buildings, connected walls,
+## construction stages and the continuous skinned hand share the tier contract.
+const LOD = preload("res://scripts/offline_mesh_lod.gd")
+const SCAFFOLD = preload("res://scripts/construction_scaffold.gd")
+var bake_cache: Dictionary = {}
+var records: Dictionary = {"far": {}, "extreme": {}}
+var signatures: Dictionary = {}
+var statistics: Dictionary = {}
+var coverage: Dictionary = {}
 
 func _initialize() -> void:
-	var rules:Dictionary=RulesLoader.load_rules()
-	if rules.is_empty():push_error("LOD bake requires valid imported rules");quit(2);return
-	var records:Dictionary={}
-	var signatures:Dictionary={}
-	var reduced:int=0
-	for id in rules.units:
-		var spec:Dictionary=rules.units[id]
-		if not VolumeModels.supports(spec,"unit"):continue
-		var recipe:Dictionary=VolumeModels._recipe(spec,"unit",0)
-		for field in ["body_mesh","turret_mesh","body_border_mesh","turret_border_mesh"]:
-			if not recipe.has(field):continue
-			var source:Mesh=recipe[field]
-			var mesh:Mesh=bake_mesh(source,0)
-			var surfaces:Array=[]
-			if mesh!=source:
-				for surface in range(mesh.get_surface_count()):surfaces.append(mesh.surface_get_arrays(surface)[Mesh.ARRAY_INDEX])
-				reduced+=1
-			var template:String=VolumeModels.art_faction(spec)+"/"+str(spec.art)+"/"+field
-			records[template]=surfaces
-			signatures[template]=VolumeModels.lod_source_signature(source,0)
-	var resource:=Resource.new()
-	resource.set_meta("lod_indices",records)
-	resource.set_meta("source_signatures",signatures)
-	resource.set_meta("lod_schema",2)
-	resource.set_meta("source_note","Native meshoptimizer first LOD with protected owner/PAPER triangles and 6% silhouette bound guard; runtime uses original owner vertices.")
-	var error:int=ResourceSaver.save(resource,"res://assets/models/unit_lod_indices.res")
-	print("BAKED_UNIT_LOD ",JSON.stringify({"templates":records.size(),"reduced":reduced,"error":error}))
+	var rules: Dictionary = RulesLoader.load_rules()
+	if rules.is_empty(): push_error("LOD bake requires valid imported rules"); quit(2); return
+	for kind in ["unit", "building"]:
+		var catalog: Dictionary = rules.units if kind == "unit" else rules.buildings
+		for id in catalog:
+			var spec: Dictionary = catalog[id]
+			if not VolumeModels.supports(spec, kind):
+				coverage[id] = {"kind": kind, "faction": spec.faction, "representation": "illustrated cutout; authored card tiers", "templates": []}
+				continue
+			var variants: Array[Dictionary] = [spec]
+			if kind == "building" and spec.get("role", "") in ["wall", "barricade"]:
+				for mask in range(1, 16):
+					var connected: Dictionary = spec.duplicate()
+					connected.wall_mask = mask
+					variants.append(connected)
+			var templates: Array = []
+			for variant in variants:
+				var recipe: Dictionary = VolumeModels._recipe(variant, kind, 0)
+				var sources: Dictionary = VolumeModels.lod_recipe_meshes(recipe, variant, kind)
+				for template in sources:
+					_record(template, sources[template], {"kind": kind, "faction": spec.faction, "art": spec.art})
+					templates.append(template)
+			coverage[id] = {"kind": kind, "faction": spec.faction, "representation": "direct skin" if spec.art == "creator_hand" else "solid model", "templates": templates}
+			if spec.art == "harvester":
+				var model: Dictionary = VolumeModels.create_model(spec, kind, 0, true)
+				_record("shared/harvester/cargo_mesh", VolumeModels.cargo_mesh, {"kind": "shared", "faction": "shared", "art": "cargo"})
+				_record("shared/harvester/cutter_mesh", VolumeModels.cutter_mesh, {"kind": "shared", "faction": "shared", "art": "drill"})
+				model.root.free()
+	var sizes: Dictionary = {}
+	for spec in rules.buildings.values(): sizes[float(spec.get("size", 3.0))] = true
+	for size in sizes:
+		var scaffold: Dictionary = SCAFFOLD.create_model({"size": size}, 0)
+		for index in range(scaffold.meshes.size()):
+			var template: String = "shared/scaffold/" + str(size) + "/mesh:" + str(index)
+			_record(template, scaffold.meshes[index].mesh, {"kind": "scaffold", "faction": "shared", "art": str(size)})
+		scaffold.root.free()
+	var resource := Resource.new()
+	resource.set_meta("lod_tiers", records)
+	resource.set_meta("lod_indices", records.far)
+	resource.set_meta("source_signatures", signatures)
+	resource.set_meta("lod_schema", 3)
+	resource.set_meta("source_note", "Offline 30-degree meshoptimizer hierarchy; complete source major opaque wall/roof/deck/wing planes restored, reversed coarse faces rejected, original attributes/skin/materials, protected ownership/paper insignia and exact 26-direction support. No runtime simplifier.")
+	resource.set_meta("opaque_surface_guard", 1)
+	resource.set_meta("component_intermediate", 1)
+	resource.set_meta("template_statistics", statistics)
+	resource.set_meta("catalog_coverage", coverage)
+	var error: int = ResourceSaver.save(resource, "res://assets/models/unit_lod_indices.res")
+	var totals: Dictionary = {"full": 0, "far": 0, "extreme": 0, "reduced_far": 0, "reduced_extreme": 0, "distinct_tiers": 0}
+	for row in statistics.values():
+		for tier in ["full", "far", "extreme"]: totals[tier] += int(row[tier])
+		if row.far < row.full: totals.reduced_far += 1
+		if row.extreme < row.full: totals.reduced_extreme += 1
+		if row.extreme < row.far: totals.distinct_tiers += 1
+	print("BAKED_ENTITY_LOD ", JSON.stringify({"schema": 3, "templates": signatures.size(), "catalog_specs": coverage.size(), "triangles": totals, "error": error}))
 	quit(error)
 
-func bake_mesh(source:Mesh,team:int) -> Mesh:
-	if not source is ArrayMesh:return source
-	var key:int=source.get_instance_id()
-	if bake_cache.has(key):return bake_cache[key]
-	var importer:=ImporterMesh.new()
-	for surface in range(source.get_surface_count()):
-		var arrays:Array=source.surface_get_arrays(surface)
-		if arrays[Mesh.ARRAY_INDEX]==null or (arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).is_empty():
-			var indices:=PackedInt32Array()
-			indices.resize((arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).size())
-			for index in range(indices.size()):indices[index]=index
-			arrays[Mesh.ARRAY_INDEX]=indices
-		importer.add_surface(source.surface_get_primitive_type(surface),arrays,[],{},source.surface_get_material(surface))
-	importer.generate_lods(60.0,25.0,[])
-	var result:=ArrayMesh.new()
-	var simplified:bool=false
-	for surface in range(source.get_surface_count()):
-		var arrays:Array=importer.get_surface_arrays(surface)
-		var vertices:PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
-		var full:PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
-		var indices:PackedInt32Array=full
-		if importer.get_surface_lod_count(surface)>0:
-			indices=importer.get_surface_lod_indices(surface,0)
-			var colors:PackedColorArray=arrays[Mesh.ARRAY_COLOR] if arrays[Mesh.ARRAY_COLOR]!=null else PackedColorArray()
-			# Native simplification drops small detached badges. Keep the complete
-			# owner-colored plate and paper insignia/text triangles at every tier.
-			if not colors.is_empty():
-				var owner:Color=VolumeModels.player_color(team)
-				for offset in range(0,full.size(),3):
-					var protect:bool=false
-					for corner in range(3):
-						var color:Color=colors[full[offset+corner]]
-						if color.is_equal_approx(owner) or color.is_equal_approx(VolumeModels.PAPER):protect=true;break
-					if protect:
-						for corner in range(3):indices.append(full[offset+corner])
-			var original_bounds:=AABB(vertices[full[0]],Vector3.ZERO)
-			for id in full:original_bounds=original_bounds.expand(vertices[id])
-			var bounds:=AABB(vertices[indices[0]],Vector3.ZERO)
-			for id in indices:bounds=bounds.expand(vertices[id])
-			var margin:Vector3=original_bounds.size*.06+Vector3.ONE*.02
-			if not AABB(bounds.position-margin,bounds.size+margin*2.0).encloses(original_bounds):indices=full
-		if indices.size()<full.size():simplified=true
-		else:indices=full
-		arrays[Mesh.ARRAY_INDEX]=indices
-		result.add_surface_from_arrays(source.surface_get_primitive_type(surface),arrays)
-		result.surface_set_material(surface,source.surface_get_material(surface))
-	bake_cache[key]=result if simplified else source
-	return bake_cache[key]
+func _record(template: String, source: Mesh, description: Dictionary) -> void:
+	if signatures.has(template): return
+	var key: int = source.get_instance_id()
+	if not bake_cache.has(key): bake_cache[key] = LOD.bake(source, VolumeModels.player_color(0), VolumeModels.PAPER, {"preserve_opaque_planes": true, "decorative_color": VolumeModels.INK, "reject_reversed_faces": true, "distinct_component_intermediate": true})
+	var baked: Dictionary = bake_cache[key]
+	for tier in ["far", "extreme"]: records[tier][template] = baked[tier]
+	signatures[template] = VolumeModels.lod_source_signature(source, 0)
+	statistics[template] = description.duplicate()
+	statistics[template].merge(baked.counts)

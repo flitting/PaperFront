@@ -20,3 +20,22 @@ PackedByteArray build_flat_terrain_mask_native(const Dictionary &map) {
     }
     return result;
 }
+
+PackedByteArray build_wide_flat_terrain_mask_native(const PackedByteArray &flat, int64_t size) {
+    PackedByteArray result;
+    if (size <= 0 || flat.size() != size * size) return result;
+    result.resize(size * size); result.fill(0);
+    const uint8_t *narrow = flat.ptr();
+    uint8_t *wide = result.ptrw();
+    // Nine narrow-safe cells cover a 5x5 original terrain neighborhood. Leave
+    // two border cells clear; radii up to 1.99 stay inside the proven area even
+    // with the continuous collision kernel's small clearance tolerance.
+    for (int64_t z = 2; z < size - 2; ++z) for (int64_t x = 2; x < size - 2; ++x) {
+        bool good = true;
+        for (int dz = -1; dz <= 1 && good; ++dz) for (int dx = -1; dx <= 1; ++dx) {
+            if (narrow[(z + dz) * size + x + dx] != 1) { good = false; break; }
+        }
+        if (good) wide[z * size + x] = 1;
+    }
+    return result;
+}

@@ -23,8 +23,11 @@ func run() -> void:
 	var wiki: PaperWiki=game.hud.wiki
 	await process_frame
 	expect(wiki.visible and not game.hud.entry_menu.visible,"Entry menu opens the army Wiki")
-	var configured_entries:int=game.rules.units.size()+game.rules.buildings.size()
-	expect(wiki.current_entries.size()==configured_entries and wiki.entry_buttons.size()==configured_entries,"Every configured unit and building is browsable")
+	var configured_entries:int=game.rules.units.values().filter(func(info):return not bool(info.get("roster_hidden",false))).size()+game.rules.buildings.size()
+	expect(wiki.current_entries.size()==configured_entries and wiki.entry_buttons.size()==configured_entries,"Every current-roster unit and building is browsable")
+	for id:String in game.rules.units:
+		if bool(game.rules.units[id].get("roster_hidden",false)):
+			expect(not wiki.current_entries.any(func(entry):return entry.id==id),"Retired ship is absent from the actual Wiki: "+id)
 	expect(wiki.selected_id=="kestrel_hq" and wiki.preview.model_node!=null,"First Wiki page displays the canon HQ model")
 	var original_rules: Dictionary=game.rules.duplicate(true)
 	for entry in wiki.current_entries:
@@ -36,6 +39,7 @@ func run() -> void:
 			if not str(row.get("source_path","")).is_empty():shown[row.source_path]=true
 		var category: String="units" if entry.kind=="unit" else "buildings"
 		for key in entry.spec:
+			if key in preload("res://scripts/wiki_catalog.gd").TECHNICAL_FIELDS:continue
 			if entry.spec[key] is bool or entry.spec[key] is int or entry.spec[key] is float:
 				expect(shown.has(category+"."+entry.id+"."+str(key)),"Numeric row in actual UI: "+entry.id+"/"+str(key))
 		if not str(entry.spec.weapon).is_empty():

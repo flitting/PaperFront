@@ -2,6 +2,7 @@ extends SceneTree
 
 const Sim = preload("res://tests/rule_test_simulation.gd")
 const Rules = preload("res://scripts/rules_loader.gd")
+const LegacyRivet = preload("res://tests/legacy_rivet_construction.gd")
 const Construction = preload("res://scripts/outpost_construction.gd")
 var config: Dictionary
 var checks: int = 0
@@ -14,6 +15,8 @@ func _initialize() -> void:
 		push_error("Outpost rule fixture is invalid: " + str(Rules.errors))
 		quit(1)
 		return
+	# This suite deliberately preserves outpost-era snapshot behavior.
+	config = LegacyRivet.adapt(config)
 	_test_site_selection_and_travel()
 	_test_work_progress_and_cost()
 	_test_appended_commands()

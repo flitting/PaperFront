@@ -113,7 +113,7 @@ func _bridge_fixture(live_systems: bool = false, army_spec: String = "rivet_engi
 		fixture.harvester = harvester
 		fixture.attacker = attacker
 		fixture.target = target
-		fixture.build_error = sim.build(0, "rivet_power")
+		fixture.build_error = sim.build(1, "kestrel_power") # Real classic construction; rivet now uses paid engineer scaffolds.
 	var bridge: Dictionary = sim.bridges[0]
 	_damage(sim, Sim.BRIDGE_TARGET_BASE - int(bridge.id), float(config.economy.bridge_hp))
 	return fixture
@@ -150,7 +150,7 @@ func _route_until_arrival(sim, ids: Array, goals: Dictionary, limit: float = 120
 		sim.step(STEP)
 		elapsed += STEP
 		stayed_dry = stayed_dry and _army_on_land(sim, ids)
-		budget_bounded = budget_bounded and sim._path_plans_remaining >= 0 and sim._path_plans_remaining <= Sim.PATH_PLANS_PER_TICK
+		budget_bounded = budget_bounded and sim._path_plans_remaining >= 0 and sim._path_plans_remaining <= Sim.PATH_SYNC_PLANS_PER_TICK
 		# Completed units can subsequently yield to allies still arriving. Record
 		# each actual completion when it happens rather than requiring all nine
 		# units to remain on their original formation spots simultaneously.
@@ -166,7 +166,7 @@ func _test_bridge_batching_and_live_systems() -> void:
 	var sim = fixture.sim
 	var army: Array = fixture.army
 	var goals: Dictionary = _goals(sim, army)
-	_check(bool(fixture.paths_ready) and army.size() > Sim.PATH_PLANS_PER_TICK, "bridge fixture has more real crossing paths than one tick can replan")
+	_check(bool(fixture.paths_ready) and army.size() > Sim.PATH_SYNC_PLANS_PER_TICK, "bridge fixture has more real crossing paths than one tick can replan")
 	var deck_removed: bool = true
 	for id: int in fixture.deck:
 		deck_removed = deck_removed and not sim.entities.has(id)
@@ -177,7 +177,7 @@ func _test_bridge_batching_and_live_systems() -> void:
 		all_affected = all_affected and sim._path_crosses_changed_region(sim.entities[id])
 	_check(all_affected, "every pre-destruction route actually crosses the changed bridge region")
 	_check(str(fixture.build_error) == "", "a real paid building order is active while navigation is queued")
-	var remaining: float = sim.building_orders[0].remaining
+	var remaining: float = sim.building_orders[1].remaining
 	var hp: float = sim.entities[fixture.target].hp
 	sim.step(STEP)
 	_check(sim._path_plans_remaining == 0 and not sim._planning_deferred_ids.is_empty(), "the first refresh tick bounds planning work and defers excess units")
@@ -186,7 +186,7 @@ func _test_bridge_batching_and_live_systems() -> void:
 		commands_preserved = commands_preserved and not sim.entities[id].commands.is_empty() and sim.entities[id].commands[0].pos == goals[id]
 	_check(commands_preserved and _army_on_land(sim, army), "deferred shore units keep their move goals and do not enter water")
 	_check(is_equal_approx(float(sim.time), STEP), "simulation time advances while units await navigation")
-	_check(is_equal_approx(float(sim.building_orders[0].remaining), remaining - STEP), "paid construction advances during deferred planning")
+	_check(is_equal_approx(float(sim.building_orders[1].remaining), remaining - STEP), "paid construction advances during deferred planning")
 	_check(float(sim.entities[fixture.harvester].cargo) > 0.0, "real ore harvesting continues during deferred planning")
 	_check(float(sim.entities[fixture.target].hp) < hp, "real weapon fire and damage continue during deferred planning")
 	var route: Dictionary = _route_until_arrival(sim, army, goals)
@@ -259,7 +259,7 @@ func _test_pending_navigation_save() -> void:
 	# Use a fully refreshed snapshot, as the older simulator cleared obsolete
 	# crossing paths immediately when the bridge was destroyed.
 	var legacy: Dictionary = _snapshot(sim)
-	for field: String in ["nav_dirty", "nav_regions", "planning_max_wait", "planning_queue"]:
+	for field: String in ["nav_dirty", "nav_regions", "planning_max_wait", "planning_queue", "navigation_command_until", "static_geometry_revision"]:
 		legacy.erase(field)
 	for e: Dictionary in legacy.entities.values():
 		e.erase("planning_wait")
@@ -353,7 +353,7 @@ func _test_candidate_search_progress() -> void:
 	_check(sim._resource_candidates(e, false).back() == 4, "the reachable mine ranks after all four inaccessible candidates")
 	sim.step(STEP)
 	var search: Dictionary = e.get("mine_search", {})
-	_check(not search.is_empty() and int(search.next) == Sim.PATH_PLANS_PER_TICK and sim._planning_queue.has(id), "candidate search retains its cursor and queue position after exhausting the first tick budget")
+	_check(not search.is_empty() and int(search.next) == Sim.PATH_SYNC_PLANS_PER_TICK and sim._planning_queue.has(id), "candidate search retains its cursor and queue position after exhausting the first tick budget")
 	var path: String = "/tmp/paper_war_navigation_search.save"
 	_check(sim.save_game(path) == "", "a resource search interrupted by the planning budget can be saved")
 	var restored = Sim.new()

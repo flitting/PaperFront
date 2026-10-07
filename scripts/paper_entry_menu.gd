@@ -30,27 +30,27 @@ func _ready() -> void:
 	deck.offset_left=-560;deck.offset_right=560;deck.offset_top=-330;deck.offset_bottom=330
 	add_child(deck)
 	var columns:=HBoxContainer.new()
-	columns.add_theme_constant_override("separation",34)
+	columns.add_theme_constant_override("separation",24)
 	deck.add_child(columns)
 	var left:=VBoxContainer.new()
-	left.custom_minimum_size.x=525
-	left.add_theme_constant_override("separation",12)
+	left.custom_minimum_size.x=435
+	left.add_theme_constant_override("separation",9)
 	columns.add_child(left)
-	left.add_child(_label("可玩 Demo  ·  手工微缩战场",17,Color("866142")))
-	left.add_child(_label("纸境战线",60))
+	left.add_child(_label("手工微缩  ·  即时战略",17,Color("866142")))
+	left.add_child(_label("纸境战线",54))
 	left.add_child(_label("P A P E R   F R O N T",25,Color("38627b")))
-	left.add_child(_label("在手工微缩世界，建立你的工业军团。",18))
+	left.add_child(_label("从一张纸板，建立你的军团。",18))
 	var spacer:=Control.new();spacer.custom_minimum_size.y=8;left.add_child(spacer)
-	play_button=_button("开始战局",func():action.emit("entry_play",null))
+	play_button=_button("新建战局",func():action.emit("entry_play",null),46)
 	left.add_child(play_button)
-	campaign_button=_button("战役  ·  无字桥补给线",func():action.emit("entry_campaign",null))
+	campaign_button=_button("战役  ·  无字桥补给线",func():action.emit("entry_campaign",null),46)
 	campaign_button.tooltip_text="正典单关教程 · 基地建设、采矿、修桥、运输与反攻"
 	left.add_child(campaign_button)
-	wiki_button=_button("军团档案  /  Wiki",func():action.emit("wiki",null))
+	wiki_button=_button("军团档案  /  Wiki",func():action.emit("wiki",null),46)
 	wiki_button.tooltip_text="查阅全部单位与建筑 · 旋转模型 · 完整数值"
 	left.add_child(wiki_button)
-	left.add_child(_button("读取存档",func():action.emit("load",null)))
-	resume_button=_button("继续战局",func():action.emit("entry_resume",null))
+	left.add_child(_button("读取存档",func():action.emit("load",null),46))
+	resume_button=_button("继续战局",func():action.emit("entry_resume",null),46)
 	resume_button.hide()
 	left.add_child(resume_button)
 	var options:=HBoxContainer.new()
@@ -67,7 +67,7 @@ func _ready() -> void:
 	right.add_theme_constant_override("h_separation",12)
 	right.add_theme_constant_override("v_separation",14)
 	columns.add_child(right)
-	for info in [["kestrel","正典军团","2865a5","按图建造，按令前进。"],["rivet","重锤军团","bb4034","让胜利作证。"],["iron","铁钉同盟","bb963e","放心，不会散架的。"],["sky","天翼教团","67578b","这就是先进科技。"]]:
+	for info in [["kestrel","正典军团","2865a5","按图建造，按令前进。"],["rivet","重锤军团","bb4034","让胜利作证。"],["iron","长钉军团","39847b","放心，不会散架的。"],["sky","天翼教团","67578b","这就是先进科技。"]]:
 		var faction: String=info[0]
 		var card:=_panel(Color("e4cda7"))
 		card.tooltip_text="\n".join(TraitText.faction_lines(TraitText.menu_rules(), faction))
@@ -80,12 +80,12 @@ func _ready() -> void:
 		var portraits:=VBoxContainer.new()
 		portraits.size_flags_vertical=Control.SIZE_EXPAND_FILL
 		inner.add_child(portraits)
-		for art in ["hq","tank"]:
+		for art in ["current_force"]:
 			var picture:=TextureRect.new()
-			picture.texture=load("res://assets/cards/%s_%s_portrait.png"%[faction,art])
+			picture.texture=load("res://assets/cards/faction_covers_current/%s.png"%faction)
 			picture.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
 			picture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			picture.custom_minimum_size=Vector2(150,93)
+			picture.custom_minimum_size=Vector2(150,204)
 			picture.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 			picture.size_flags_vertical=Control.SIZE_EXPAND_FILL
 			picture.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -110,9 +110,9 @@ func show_notice(text: String) -> void:
 func _fit() -> void:
 	if get_child_count()<3:return
 	var deck: Control=get_child(2)
-	var width:=minf(1120,maxf(1015,size.x-72))
+	var width:=minf(1080,maxf(940,size.x-64))
 	deck.offset_left=-width*.5;deck.offset_right=width*.5
-	var height: float=minf(778.0 if resume_button!=null and resume_button.visible else 715.0,size.y-48)
+	var height: float=minf(706.0 if resume_button!=null and resume_button.visible else 660.0,size.y-40)
 	deck.offset_top=-height*.5;deck.offset_bottom=height*.5
 
 func _panel(color: Color) -> PanelContainer:

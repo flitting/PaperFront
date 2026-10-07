@@ -88,8 +88,8 @@ func run() -> void:
 	root.add_child(landscape)
 	var scans: int = int(landscape.stats.resource_full_scans)
 	var updates: int = int(landscape.stats.resource_updates)
-	check(not landscape._forest_lods.is_empty(), "verified distant pine assets provide visual and shadow LOD groups")
-	check(not landscape._trunk_lods.is_empty() and landscape._trunk_lods.all(func(lod): return lod.near.visibility_range_end == lod.far.visibility_range_begin and lod.near.multimesh.instance_count == lod.far.multimesh.instance_count), "trunk LOD retains every tree with contiguous near/far ranges")
+	check(not landscape._forest_lods.is_empty(), "pine draws register complete near/far/extreme mesh tiers")
+	check(not landscape._trunk_lods.is_empty() and landscape._trunk_lods.all(func(lod): return lod.meshes.size() == 3 and lod.meshes[0] == lod.source and lod.near == lod.node), "trunk tiers retain one original draw and destruction slots")
 	var full_trunk: Mesh = landscape._prop_mesh("trunk")
 	var far_trunk: Mesh = landscape._prop_mesh("trunk_far")
 	check(far_trunk.surface_get_array_len(0) < full_trunk.surface_get_array_len(0) * .25, "subpixel root decorations use less than a quarter of the original distant geometry")
@@ -111,15 +111,11 @@ func run() -> void:
 		if int(triangles.get(key,0))==0:exact_subset=false
 		else:triangles[key]-=1
 	check(exact_subset,"remaining distant trunk/root triangles preserve exact positions, normals, paint and winding")
-	landscape.configure_quality("performance")
-	check(landscape._trunk_lods.all(func(lod):return lod.far.visibility_range_end==90.0 and lod.distant.visibility_range_begin==90.0 and lod.distant.multimesh.instance_count==lod.far.multimesh.instance_count),"performance bark has contiguous 45/90 metre transitions and retains every instance")
-	check(landscape._forest_lods.all(func(lod): return lod.near.visibility_range_end == 60.0 and lod.mid.visibility_range_begin == 60.0 and lod.mid.visibility_range_end == 90.0 and lod.far.visibility_range_begin == 90.0 and lod.mid.multimesh == lod.far.multimesh), "performance quality retains near art and shares distance crown buffers across the shader transition")
-	landscape.configure_quality("native")
-	check(landscape._trunk_lods.all(func(lod):return lod.far.visibility_range_end==140.0 and lod.distant.visibility_range_begin==140.0),"native quality retains geometric bark to 140 metres")
-	landscape.full_trunk_ink=true;landscape.configure_quality("performance")
-	check(landscape._trunk_lods.all(func(lod):return lod.far.visibility_range_end==0.0 and not lod.distant.visible),"reference switch restores the original distant bark")
-	landscape.full_trunk_ink=false;landscape.configure_quality("native")
-	check(landscape._forest_lods.all(func(lod): return lod.near.visibility_range_end == 90.0 and not lod.mid.visible and lod.far.material_override == landscape._material("foliage")), "native quality keeps the original pigment shader and later visual LOD switch")
+	for policy: String in ["native", "balanced", "performance"]:
+		landscape.configure_quality(policy)
+		check(landscape._forest_lods.all(func(lod): return lod.meshes[0] == lod.source and lod.near.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON), "near pine paint/geometry/shadow preserved " + policy)
+		check(landscape._trunk_lods.all(func(lod): return lod.meshes[1] == far_trunk and lod.meshes[2] == distant_trunk), "two authored distant bark tiers preserved " + policy)
+
 	for i in range(100): landscape.sync_resources(sim)
 	check(scans == 1 and landscape.stats.resource_full_scans == scans and landscape.stats.resource_updates == updates, "idle scenery frames do no whole-forest scans or transform updates")
 	var tree: Dictionary = sim.ruins.filter(func(e): return e.kind == "tree")[0]

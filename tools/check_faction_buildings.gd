@@ -125,12 +125,15 @@ func _initialize() -> void:
 	var report: Dictionary = {"pairs": {}, "failures": failures, "source_sha256": builder.source_code.sha256_text(), "method": "72x72 vertical ray union of real triangles above y=.35; useful column >=.45 world units; includes turret; no per-model normalization"}
 	var paper := PaperWorld.new()
 	var tank_dimensions: Dictionary = {}
+	var validated_buildings: int = 0
 	for faction: String in ["kestrel", "rivet"]:
 		tank_dimensions[faction] = Models._recipe(rules.units[faction + "_tank"], "unit", 0).dimensions
 	for art: String in Buildings.ARTS:
 		var pair: Dictionary = {}
 		for faction: String in ["kestrel", "rivet"]:
 			var id: String = faction + "_" + art
+			if not rules.buildings.has(id): continue
+			validated_buildings += 1
 			var mesh = Models.CraftMesh.new()
 			var recipe: Dictionary = builder.make(mesh, faction, art, 0)
 			var spec: Dictionary = rules.buildings[id]
@@ -197,13 +200,14 @@ func _initialize() -> void:
 					actual.turret_swept_radius = swept_radius
 					var pivot: Vector3 = recipe.turret_pos
 					expect(swept_radius+maxf(absf(pivot.x),absf(pivot.z)) <= float(spec.size)*.5+.005, id + " rotating/recoiling turret exceeds rule footprint")
-		expect(pair.kestrel.vertex_digest != pair.rivet.vertex_digest, art + " uses identical faction geometry")
+		if pair.has("kestrel") and pair.has("rivet"):
+			expect(pair.kestrel.vertex_digest != pair.rivet.vertex_digest, art + " uses identical faction geometry")
 		report.pairs[art] = pair
 	paper.free()
 	report.checks = checks
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://artifacts/faction_validation"))
 	var file: FileAccess = FileAccess.open(report_path, FileAccess.WRITE)
 	if file != null: file.store_string(JSON.stringify(report, "\t")); file.close()
-	print("Faction buildings: 22 real mesh/mass/footprint/scale/paint checks, checks=", checks, ", failures=", failures)
+	print("Faction buildings: ", validated_buildings, " real mesh/mass/footprint/scale/paint checks, checks=", checks, ", failures=", failures)
 	Models.recipes.clear()
 	quit(0 if failures.is_empty() else 1)

@@ -34,10 +34,11 @@ func run() -> void:
 		check(game.battlefield_viewport.mesh_lod_threshold == 0.0, "automatic mesh decimation disabled " + policy)
 		check(game.battlefield_viewport.msaa_3d == root.msaa_3d, "original edge antialiasing retained " + policy)
 		var landscape = world.landscape
-		check(not landscape._forest_lods.is_empty() and landscape._forest_lods.all(func(lod): return lod.near.visible and lod.near.visibility_range_end == 0.0 and not lod.mid.visible and not lod.far.visible), "complete tree crowns at all distances " + policy)
-		check(not landscape._trunk_lods.is_empty() and landscape._trunk_lods.all(func(lod): return lod.near.visible and lod.near.visibility_range_end == 0.0 and not lod.far.visible and not lod.distant.visible), "complete trunks, roots and ink at all distances " + policy)
-		for distance: float in [20.0, 40.0, 110.0]:
-			game.distance = distance
+		check(not landscape._forest_lods.is_empty() and landscape._forest_lods.all(func(lod): return lod.meshes.size() == 3 and lod.meshes[0] == lod.source and lod.node.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON), "three crown tiers retain the authored near model and shadows " + policy)
+		check(not landscape._trunk_lods.is_empty() and landscape._trunk_lods.all(func(lod): return lod.meshes.size() == 3 and lod.meshes[0] == lod.source), "three trunk tiers retain the authored near roots and ink " + policy)
+		for tier: int in range(3):
+			game.distance = [20.0, 75.0, 110.0][tier]
+			world.lod_override = tier
 			game.update_camera()
 			world._begin_batches()
 			for id in world.models:
@@ -45,15 +46,16 @@ func run() -> void:
 				world._sync_entity(model, sim.entities[id], false)
 				if not model.volumetric: continue
 				for part in model.render_parts:
-					var label: String = "%s/%s/%s" % [model.pool_spec, policy, distance]
-					check(part.batch.multi.mesh == part.node.mesh, "authored full mesh " + label)
-					check(part.batch.node.material_override == part.node.material_override, "authored pigment material " + label)
-					check(part.batch.node.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "full model shadows " + label)
-					check(world._batch_transforms(part.batch).has(part.node.global_transform), "complete mesh actually submitted " + label)
+					var label: String = "%s/%s/tier%s" % [model.pool_spec, policy, tier]
+					var active: Dictionary = part.lod_batches[tier]
+					check(part.batch.multi.mesh == part.node.mesh, "authored full source remains intact " + label)
+					check(active.node.material_override == part.node.material_override, "authored pigment material at every tier " + label)
+					check(active.node.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "model shadow retained at every tier " + label)
+					check(world._batch_transforms(active).has(part.node.global_transform), "chosen LOD actually submitted " + label)
 					if part.has("ink_batch"):
-						check(world._batch_transforms(part.ink_batch).has(part.node.global_transform) and world._batch_transforms(part.paper_batch).has(part.node.global_transform), "ink and paper borders actually submitted " + label)
+						check(world._batch_transforms(part.ink_lod_batches[tier]).has(part.node.global_transform) and world._batch_transforms(part.paper_lod_batches[tier]).has(part.node.global_transform), "matching ink and paper borders actually submitted " + label)
 					if part.has("performance_batch"):
-						check(part.performance_batch == part.batch and part.quality_batch == part.batch, "quality aliases cannot reduce geometry " + label)
+						check(part.quality_batch == part.lod_batches[1] and part.performance_batch == part.lod_batches[2], "far and extreme descriptors are available in every preset " + label)
 			world._flush_batches()
 	print("MODEL_DETAIL_TESTS ", JSON.stringify({"checks":checks, "solid_models":solids, "buildings_including_starting_hqs":buildings, "failures":failures}))
 	game.queue_free()

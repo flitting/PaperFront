@@ -13,6 +13,7 @@ class SightMaskSampler {
         bool air = false;
     };
     int64_t size = 0;
+    double water_depth = 2.65;
     uint64_t generation = 0;
     std::vector<Cell> cells;
     std::vector<Array> terrain_rows, height_rows;
@@ -55,11 +56,11 @@ class SightMaskSampler {
     bool terrain_line(const Observer &observer, Vector2 target, bool naval) {
         const double length = observer.pos.distance_to(target);
         const int steps = std::max(1, int(std::ceil(length / 1.5)));
-        const double end_height = (naval ? height(target) - 2.65 : height(target)) + (naval ? 2.5 : 1.0);
+        const double end_height = (naval ? height(target) - water_depth : height(target)) + (naval ? 2.5 : 1.0);
         for (int index = 1; index < steps; ++index) {
             const double t = double(index) / double(steps);
             const Vector2 point = observer.pos.lerp(target, t);
-            const double terrain_height = terrain(point) == 1 ? height(point) - 2.65 : height(point);
+            const double terrain_height = terrain(point) == 1 ? height(point) - water_depth : height(point);
             if (terrain_height > observer.eye_height + (end_height - observer.eye_height) * t + 0.2) return false;
         }
         return true;
@@ -81,6 +82,7 @@ public:
         answer["queries"] = int64_t(0);
         if (changed_buckets.is_empty()) return answer;
         size = int64_t(map["size"]);
+        water_depth = String(map.get("mode", String())) == "dev" ? double(map.get("developer_water_depth", 2.65)) : 2.65;
         const int64_t width = (size + cell_size - 1) / cell_size;
         if (size <= 0 || previous.size() != width * width * 2) return answer;
         const Array terrain_data = map["terrain"], height_data = map["heights"];

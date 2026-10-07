@@ -48,7 +48,15 @@ func show_control(control: Control) -> void:
 
 func click(control: Control) -> void:
 	await show_control(control)
-	await click_at(control.get_global_rect().get_center())
+	var viewport: Viewport=control.get_viewport()
+	if viewport!=root and DisplayServer.get_name()=="headless":
+		# Dummy display cannot dispatch a native subwindow mouse event. Exercise
+		# the actual button signal here; native capture covers its presentation.
+		(control as Button).pressed.emit();await frames();return
+	for pressed: bool in [true,false]:
+		var event:=InputEventMouseButton.new();event.button_index=MOUSE_BUTTON_LEFT;event.position=control.get_global_rect().get_center();event.pressed=pressed
+		viewport.push_input(event,true)
+	await frames()
 
 func key(code: Key) -> void:
 	for pressed: bool in [true, false]:
@@ -74,7 +82,7 @@ func check_fps_visible(screen_name: String) -> void:
 	check(fps.is_visible_in_tree() and fps.text.ends_with(" FPS") and root.get_visible_rect().encloses(fps.get_global_rect()), "FPS remains visible within the window: " + screen_name)
 	var readouts := 0
 	for candidate: Label in game.find_children("", "Label", true, false):
-		if candidate.name == "FPS" or candidate.text.contains("FPS"): readouts += 1
+		if candidate.get_viewport()==fps.get_viewport() and (candidate.name=="FPS" or candidate.text.contains("FPS")):readouts+=1
 	var top_layers := 0
 	for candidate: CanvasLayer in game.find_children("", "CanvasLayer", true, false):
 		if candidate.layer == 7: top_layers += 1
@@ -117,26 +125,29 @@ func expect_audio(scene: String) -> void:
 	if scene == "silent":
 		check(not game.audio.music.player.playing, "silent scene stops PCM playback")
 	else:
-		var expected_track: String = game.audio.music.track_for_map(str(game.sim.map.mode)) if scene == "battle" else scene
+		var expected_track: String = game.audio.music.track_for_map(str(game.sim.map.mode)) if scene in ["battle","win","lose","draw"] else scene
 		check(game.audio.music.requested_track == expected_track and game.audio.music.active_track == expected_track and game.audio.music.tracks.has(expected_track) and game.audio.music.player.stream == game.audio.music.tracks.get(expected_track) and game.audio.music.player.playing, "music scene plays its actual bundled map-specific PCM: " + expected_track)
 
 func monitor_loading() -> void:
 	while monitor_active:
 		if game.loading:
 			loading_samples += 1
-			if loading_samples == 1: check_fps_visible("loading overlay")
+			if loading_samples == 1:
+				check(not game.hud.fps_label.is_visible_in_tree(), "FPS is hidden throughout loading")
+				check(not game.performance_overlay.screen.visible, "Loading hides the FPS chip and its paper background")
+				check(game.performance_overlay.update_timer.is_stopped(), "Loading suspends the FPS refresh timer")
 			if game.audio.music.requested_scene != "silent":
 				loading_audio_errors.append(str(game.audio.music.requested_scene))
 		await process_frame
 
 func check_preferences() -> void:
 	check(game.hud.entry_menu.visible and not game.started, "clean startup shows entry before a match")
-	check(not game.debug_available and not game.hud.debug_menu_enabled and game.hud.map_option.item_count == 6, "clean startup disables optional debug and hides its dev battlefield")
+	check(not game.debug_available and not game.hud.debug_menu_enabled and game.hud.map_option.item_count == 7, "clean startup disables optional debug and hides its dev battlefield")
 	check_fps_visible("main entry")
 	check(is_equal_approx(game.render_scale, 1.0) and game.graphics_quality == "balanced", "clean startup preserves native 3D scale and default quality")
 	check(game.lens.dof_blur_near_enabled and game.key_light.shadow_enabled and game.environment.ssao_enabled, "clean startup keeps default depth, shadows and SSAO")
 	expect_audio("menu")
-	await click_named(game.hud.entry_menu, "开始战局")
+	await click_named(game.hud.entry_menu, "新建战局")
 	check(game.hud.menu.visible, "the actual entry action opens new-match setup")
 	check_fps_visible("new-match setup")
 	await key(KEY_ESCAPE)
@@ -150,7 +161,7 @@ func check_preferences() -> void:
 		check(game.hud.settings.is_ancestor_of(control) and not game.debug_panel.is_ancestor_of(control), "every graphics and camera control belongs to the settings sheet: " + str(control.name))
 	await click(game.hud.settings.debug_enabled)
 	var debug_preferences := ConfigFile.new()
-	check(game.debug_available and game.hud.debug_menu_enabled and game.hud.map_option.item_count == 7, "the actual optional debug toggle exposes the compact dev battlefield")
+	check(game.debug_available and game.hud.debug_menu_enabled and game.hud.map_option.item_count == 8, "the actual optional debug toggle exposes the compact dev battlefield")
 	check(debug_preferences.load("user://settings.cfg") == OK and bool(debug_preferences.get_value("debug", "enabled", false)), "enabling optional debug persists its preference")
 	game.hud.select_map("dev")
 	check(game.hud.selected_map() == "dev", "opting into debug makes the dev map selectable")
@@ -184,7 +195,7 @@ func check_preferences() -> void:
 	await frames()
 	await new_game()
 	check(game.audio.get_mix() == saved_mix, "a fresh actual main scene restores all saved audio preferences")
-	check(game.debug_available and game.hud.debug_menu_enabled and game.hud.map_option.item_count == 7, "a fresh actual main scene restores the enabled debug preference")
+	check(game.debug_available and game.hud.debug_menu_enabled and game.hud.map_option.item_count == 8, "a fresh actual main scene restores the enabled debug preference")
 	check(is_equal_approx(game.render_scale, 1.0) and game.graphics_quality == "balanced", "a fresh main scene restores native rendering quality")
 	await click_named(game.hud.entry_menu, "设置 · 声音与画面")
 	for id: String in ["master", "music", "sfx", "voice"]:
@@ -192,7 +203,7 @@ func check_preferences() -> void:
 	check(game.hud.settings.debug_enabled.button_pressed, "reopened settings displays the restored debug preference")
 	game.hud.select_map("dev")
 	await click(game.hud.settings.debug_enabled)
-	check(not game.debug_available and not game.debug_panel.visible and game.hud.map_option.item_count == 6 and game.hud.selected_map() == "forest", "disabling optional debug closes diagnostics and safely replaces a dev menu selection")
+	check(not game.debug_available and not game.debug_panel.visible and game.hud.map_option.item_count == 7 and game.hud.selected_map() == "forest", "disabling optional debug closes diagnostics and safely replaces a dev menu selection")
 	check(debug_preferences.load("user://settings.cfg") == OK and not bool(debug_preferences.get_value("debug", "enabled", true)) and str(debug_preferences.get_value("game", "map_mode", "")) == "forest", "disabling debug persists both the off preference and forest fallback")
 	game.set_debug_enabled(true)
 	game.load_preferences()
@@ -215,7 +226,7 @@ func check_legacy_menu_preferences() -> void:
 		check(settings.save("user://settings.cfg") == OK, "historical map preference fixture writes: " + old_mode)
 		game.hud.select_map("snow")
 		game.load_preferences()
-		check(game.hud.selected_map() == "forest" and game.hud.map_option.item_count == 6, "the real preference loader falls back to forest for an unavailable new-match mode: " + old_mode)
+		check(game.hud.selected_map() == "forest" and game.hud.map_option.item_count == 7, "the real preference loader falls back to forest for an unavailable new-match mode: " + old_mode)
 	settings.erase_section_key("game", "map_mode")
 	for old_index: int in 3:
 		settings.set_value("game", "map", old_index)
@@ -246,14 +257,10 @@ func check_pause_and_save_replacement() -> void:
 	for initial_pause: bool in [false, true]:
 		game.pve_paused = initial_pause
 		await key(KEY_ESCAPE)
-		check_fps_visible("live match menu")
-		await click_named(game.hud.menu, "设置")
-		check(game.hud.settings.visible and game.pve_paused, "in-match settings pauses simulation before editing")
-		check_fps_visible("live menu settings")
+		check(game.hud.settings.visible and not game.hud.menu.visible and game.pve_paused, "Escape opens the same paused settings sheet as the gear")
+		check_fps_visible("Escape settings")
 		await key(KEY_ESCAPE)
-		check(not game.hud.settings.visible and game.pve_paused == initial_pause, "Escape restores the exact pre-settings PVE state: " + str(initial_pause))
-		await key(KEY_ESCAPE)
-		check(not game.hud.menu.visible, "Escape returns from live menu to the active battlefield")
+		check(not game.hud.settings.visible and not game.hud.menu.visible and game.pve_paused == initial_pause, "Escape restores the exact pre-settings PVE state: " + str(initial_pause))
 	game.pve_paused = false
 	var alternate = Sim.new()
 	alternate.setup(Rules.load_rules(), "dev", 23, "rivet", false)
@@ -290,7 +297,9 @@ func set_result_fixture(outcome: String) -> void:
 			game.sim._kill_entity(id, true)
 	game.sim._check_result()
 	game.hud.refresh(game.sim, [], game.camera, false, "", 0)
-	check(game.sim.result == outcome and game.hud.end_panel.visible, "actual building-elimination result shows settlement: " + outcome)
+	game.benchmark=false
+	game._process(0.0)
+	check(game.sim.result == outcome and game.hud.scoreboard.visible and game.hud.scoreboard.displayed_result==outcome, "actual building-elimination result shows settlement: " + outcome)
 	check_fps_visible("settlement " + outcome)
 	expect_audio(outcome)
 
@@ -298,22 +307,29 @@ func check_end_flow() -> void:
 	for outcome: String in ["win", "lose", "draw"]:
 		set_result_fixture(outcome)
 		if outcome == "win":
-			await click_named(game.hud.end_panel, "再战一次")
-			var deadline: int = Time.get_ticks_msec() + 30000
-			while (game.loading or not game.sim.result.is_empty()) and Time.get_ticks_msec() < deadline: await process_frame
-			check(not game.loading and game.sim.result.is_empty() and not game.hud.end_panel.visible and game.sim.counts(0).y == 1, "real settlement restart creates a fresh playable match")
+			await click(game.hud.scoreboard.new_battle_button)
+			check(game.hud.menu.visible and not game.hud.scoreboard.visible,"real same-window settlement opens reviewed new-match setup")
+			game.set_debug_enabled(true);game.hud.select_map("dev")
+			await click_named(game.hud.menu,"开始遭遇战")
+			var deadline:int=Time.get_ticks_msec()+30000
+			while (game.loading or not game.sim.result.is_empty()) and Time.get_ticks_msec()<deadline:await process_frame
+			check(not game.loading and game.sim.result.is_empty() and not game.hud.scoreboard.visible and game.sim.counts(0).y==1,"real same-window settlement creates a fresh playable match through normal setup")
 			expect_audio("battle")
 		else:
-			await click_named(game.hud.end_panel, "返回主菜单")
-			check(game.hud.entry_menu.visible and not game.hud.end_panel.visible and not game.hud.entry_menu.resume_button.visible, "real settlement return opens main menu without a finished-match resume action: " + outcome)
+			await click(game.hud.scoreboard.menu_button)
+			check(game.hud.entry_menu.visible and not game.hud.scoreboard.visible and not game.hud.entry_menu.resume_button.visible,"real settlement return opens main menu without a finished-match resume action: "+outcome)
 			expect_audio("menu")
 	set_result_fixture("win")
-	var exit_button := button_named(game.hud.end_panel, "退出游戏")
+	var exit_button: Button=game.hud.scoreboard.quit_button
 	check(exit_button != null, "visible flow exposes action: 退出游戏")
 	if exit_button != null:
 		await show_control(exit_button)
 		# Restore files and emit the report before yielding to main's quit timer.
-		push_click_at(exit_button.get_global_rect().get_center())
+		var target_view:Viewport=exit_button.get_viewport()
+		if target_view!=root and DisplayServer.get_name()=="headless":exit_button.pressed.emit()
+		else:
+			for pressed:bool in [true,false]:
+				var event:=InputEventMouseButton.new();event.button_index=MOUSE_BUTTON_LEFT;event.position=exit_button.get_global_rect().get_center();event.pressed=pressed;target_view.push_input(event,true)
 	check(game.quit_pending and not game.started, "real settlement exit requests the guarded game shutdown")
 	check(not game.audio.music.player.playing and game.audio.music.player.stream == null, "real exit immediately releases active music playback")
 

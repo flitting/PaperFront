@@ -30,7 +30,7 @@ static func build(rules: Dictionary, path: String = MANIFEST_PATH) -> Dictionary
 		var base := Vector2(63.0 if team == 0 else 97.0, 92.0)
 		var buildings: Array = [["hq", Vector2(-5, -3)], ["power", Vector2(-8, 5)], ["barracks", Vector2(-5, 14)], ["refinery", Vector2(1, 15)], ["factory", Vector2(1, 5)], ["tower", Vector2(7, -5)]]
 		for item: Array in buildings:
-			var spec: String = sim.factions[team] + "_" + str(item[0])
+			var spec: String = sim.building_spec(team, str(item[0]))
 			var offset: Vector2 = item[1]
 			var desired: Vector2 = base + Vector2(offset.x * mirror, offset.y)
 			var spot: Vector2 = _find_spot(sim, desired, float(sim.data_for(spec).size) * 0.6, team, spec)

@@ -25,7 +25,7 @@ static func make(mesh, faction: String, art: String, team: int) -> Dictionary:
 	_smoke_ports = []
 	var hammer: bool = faction == "rivet"
 	var paint: Color = RED if hammer else BLUE
-	var owner: Color = OWNER[posmod(team, OWNER.size())]
+	var owner: Color = load("res://scripts/volume_models.gd").player_color(team)
 	var turret = null
 	var pivot: Vector3 = Vector3.ZERO
 	var muzzle: Vector3 = Vector3.ZERO
@@ -34,7 +34,9 @@ static func make(mesh, faction: String, art: String, team: int) -> Dictionary:
 		"outpost": _outpost(mesh, hammer, paint, faction, owner)
 		"power": _power(mesh, hammer, paint, faction, owner)
 		"refinery": _refinery(mesh, hammer, paint, faction, owner)
-		"barracks": _barracks(mesh, hammer, paint, faction, owner)
+		"barracks":
+			if hammer: _hq(mesh, true, paint, faction, owner)
+			else: _barracks(mesh, false, paint, faction, owner)
 		"factory": _factory(mesh, hammer, paint, faction, owner)
 		"tech": _tech(mesh, hammer, paint, faction, owner)
 		"repair": _repair(mesh, hammer, paint, faction, owner)
@@ -209,24 +211,12 @@ static func _flag(mesh, position: Vector3, faction: String, owner: Color, height
 	mesh.badge(position + Vector3(width * .35, height - .22, .05), faction, owner, Vector3.BACK, .13)
 
 static func _hq(mesh, hammer: bool, paint: Color, faction: String, owner: Color) -> void:
-	_base(mesh, 3.82, 3.80, hammer)
 	if hammer:
-		# Stepped fortress: the tall central command block is filled, not a press.
-		_room(mesh, Vector3(0, 1.65, -.28), Vector3(1.51, 2.82, 2.38), true, paint)
-		for side: float in [-1.0, 1.0]:
-			_room(mesh, Vector3(side * 1.25, .98, -.20), Vector3(.93, 1.48, 2.62), true, paint)
-			_room(mesh, Vector3(side * 1.38, .65, 1.12), Vector3(.75, .82, .84), true, paint)
-			_door(mesh, Vector3(side * 1.38, .60, 1.57), .33, .55, true, paint)
-			mesh.cylinder(Vector3(side * 1.33, 2.24, -.82), .11, .91, Vector3.UP, INK, 8)
-			mesh.cylinder(Vector3(side * 1.33, 2.67, -.82), .13, .13, Vector3.UP, paint, 8)
-		_room(mesh, Vector3(0, 1.10, 1.04), Vector3(1.40, 1.70, 1.10), true, paint)
-		_door(mesh, Vector3(0, 1.04, 1.64), .88, 1.48, true, paint)
-		_windows(mesh, Vector3(0, 2.74, .99), 1.12, .22, 2)
-		_solid_box(mesh, Vector3(0, 3.37, -.48), Vector3(1.04, .38, 1.05), ARMOR, "equipment")
-		mesh.box(Vector3(0, 3.59, -.48), Vector3(1.16, .13, 1.17), paint)
-		_marks(mesh, faction, owner, Vector3(0, 2.16, .99), Vector3(0, 3.69, -.48), .40)
-		_flag(mesh, Vector3(-.44, 3.62, -.79), faction, owner, .92, .48)
+		# The headquarters is the same muster hall as a barracks at HQ scale.
+		_barracks(mesh, true, paint, faction, owner)
+		_scale_geometry(mesh, 1.34)
 	else:
+		_base(mesh, 3.82, 3.80, false)
 		# Broad cream headquarters with blue roofing and complete low side wings.
 		_room(mesh, Vector3(0, 1.06, -.14), Vector3(2.80, 1.63, 2.78), false, paint)
 		_roof(mesh, Vector3(0, 1.96, -.14), 3.03, 2.93, .42, paint)
@@ -244,6 +234,15 @@ static func _hq(mesh, hammer: bool, paint: Color, faction: String, owner: Color)
 		mesh.box(Vector3(0, .28, 1.64), Vector3(1.38, .13, .36), KRAFT)
 		_marks(mesh, faction, owner, Vector3(.75, 1.59, 1.34), Vector3(.65, 2.29, .55), .29)
 		_flag(mesh, Vector3(0, 3.10, -.38), faction, owner, 1.07, .65)
+
+static func _scale_geometry(mesh, factor: float) -> void:
+	# Uniform scaling preserves the hard normals and triangle winding.
+	for i in range(mesh.vertices.size()): mesh.vertices[i] *= factor
+	for i in range(mesh.shell_vertices.size()): mesh.shell_vertices[i] *= factor
+	for part: Dictionary in _solid_parts:
+		part.center *= factor
+		part.size *= factor
+	for i in range(_smoke_ports.size()): _smoke_ports[i] *= factor
 
 static func _outpost(mesh, hammer: bool, paint: Color, faction: String, owner: Color) -> void:
 	_base(mesh, 2.84, 2.82, hammer)

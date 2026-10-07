@@ -1,0 +1,1925 @@
+{
+	"error": 0,
+	"irreducible": [
+		"house:alpine_cabin:4.50:1:v2:rubble",
+		"prop:bench:0:v1",
+		"house:rail_station:6.80:0:v3:rubble",
+		"house:boat_shed:4.80:2:v3:rubble",
+		"prop:pier:1:v2",
+		"house:snow_ruin:4.50:2:v2",
+		"house:freight_depot:6.00:2:v2",
+		"house:bazaar:6.00:0:v2",
+		"prop:sea_rock:0:v2",
+		"prop:waterfall:1:v3",
+		"prop:rail_track:0:v2",
+		"trunk_far",
+		"trunk_distant",
+		"fence",
+		"ruin",
+		"contact",
+		"crystal_0",
+		"crystal_1",
+		"crystal_2",
+		"forest/DeckSubstrate",
+		"forest/BrokenDeck",
+		"forest/DeckSubstrate",
+		"forest/BrokenDeck",
+		"forest/DeckSubstrate",
+		"forest/BrokenDeck",
+		"desert/DeckSubstrate",
+		"desert/BrokenDeck",
+		"desert/DeckSubstrate",
+		"desert/BrokenDeck",
+		"desert/DeckSubstrate",
+		"desert/BrokenDeck",
+		"snow/DeckSubstrate",
+		"snow/DeckSubstrate",
+		"snow/BrokenDeck",
+		"snow/DeckSubstrate",
+		"snow/BrokenDeck",
+		"snow/DeckSubstrate",
+		"random_city/DeckSubstrate",
+		"campaign/DeckSubstrate",
+		"campaign/BrokenDeck",
+		"dev/StoneAbutments",
+		"dev/DeckSubstrate",
+		"dev/BrokenDeck",
+		"handmade/DeckSubstrate",
+		"handmade/BrokenDeck",
+		"mountains/DeckSubstrate",
+		"mountains/BrokenDeck",
+		"mountains640/DeckSubstrate",
+		"mountains640/BrokenDeck"
+	],
+	"models": [
+		{
+			"label": "prop:streetlamp:0:v2",
+			"signature": "c79f7599275767b862faeec57e49374b5aafb8dd77f880e60f96bba801157ab0",
+			"triangles": {
+				"extreme": 242,
+				"far": 242,
+				"full": 400
+			}
+		},
+		{
+			"label": "house:warehouse:2.90:1:v2",
+			"signature": "188bab832f2c92a4dc451bde9a93d018ac32c9c424c35e6c9e31f55b9494d09f",
+			"triangles": {
+				"extreme": 1834,
+				"far": 5310,
+				"full": 13232
+			}
+		},
+		{
+			"label": "house:warehouse:2.90:1:v2:rubble",
+			"signature": "67d7ed8d67da8e891021dc575c8dd8d2a08a61e9e8690b38623859c17a0693ed",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:office_tower:17.00:1:v2",
+			"signature": "23e104bb67c6e2750e7ba38f945129184a41cd82a0c00e4c045f72b533965be0",
+			"triangles": {
+				"extreme": 21572,
+				"far": 21572,
+				"full": 70148
+			}
+		},
+		{
+			"label": "house:office_tower:17.00:1:v2:rubble",
+			"signature": "eead208e74ba27bc07feef9c6b2f556a10af1ca31f78510e7994af06525a83d0",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:terrace:4.80:1:v3",
+			"signature": "a8be386bc5d7bca677bffba16e475f93b8b5be762fc3fb8f2393ba77b94ba00d",
+			"triangles": {
+				"extreme": 7544,
+				"far": 7544,
+				"full": 22204
+			}
+		},
+		{
+			"label": "house:terrace:4.80:1:v3:rubble",
+			"signature": "ed24ace91ae56008e4698b0daa5fafd51acdb14bd67eb9612428927eca08bb60",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "prop:coastal_rock:0:v3",
+			"signature": "b9763d9da9545da24a15904c399ed8c6f68c70add06a6206f8bc85884fb53d79",
+			"triangles": {
+				"extreme": 157,
+				"far": 253,
+				"full": 540
+			}
+		},
+		{
+			"label": "prop:birch:1:v2",
+			"signature": "c6d9e69db7a03bfadf11d217367ef0ef0ca140f8dc0a72986db537a2f32ab739",
+			"triangles": {
+				"extreme": 304,
+				"far": 304,
+				"full": 1688
+			}
+		},
+		{
+			"label": "house:office_tower:20.00:2:v2",
+			"signature": "4610de3c46fedb9fc45fcf8ecc4c9a1cf8e419441aa81952db08a7d3af6a1e06",
+			"triangles": {
+				"extreme": 24128,
+				"far": 24128,
+				"full": 79472
+			}
+		},
+		{
+			"label": "house:office_tower:20.00:2:v2:rubble",
+			"signature": "8b7c8ce9eb130601d5e6c8416c1d3316d3424435a52c2497d1432d7feb697c35",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:alpine_cabin:4.50:1:v2",
+			"signature": "f0b4057dd5fbe373ffed5af2a7275e5dcf87b6bf9cf76c746fe16f5b69b1bb9f",
+			"triangles": {
+				"extreme": 381,
+				"far": 381,
+				"full": 916
+			}
+		},
+		{
+			"label": "house:alpine_cabin:4.50:1:v2:rubble",
+			"signature": "af5c4689b586aeb077ce340cda5ad1c73fbd8e4466d89d745a5ac4f00e55254b",
+			"triangles": {
+				"extreme": 1512,
+				"far": 1512,
+				"full": 1512
+			}
+		},
+		{
+			"label": "prop:moss_boulder:2:v3",
+			"signature": "88094a90aae9eb372175825d704ecf8c654c0950668e2860312ded3c87f48218",
+			"triangles": {
+				"extreme": 256,
+				"far": 256,
+				"full": 540
+			}
+		},
+		{
+			"label": "house:warehouse:3.70:0:v3",
+			"signature": "8eda89afb2188a6e632d8a12d99e6071e5e79d8b877a62f50cfabf712f3832ab",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "house:warehouse:3.70:0:v3:rubble",
+			"signature": "a677fa554051a2bff1a503d422b5f619c63304e06d43b0e08d6894bf24c29fb0",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:shipwreck:4.20:1:v2",
+			"signature": "a60f9fcb745999ee5d1ff43ba2356fa2b005d65f943bb90d8411aa431e8f45ef",
+			"triangles": {
+				"extreme": 154,
+				"far": 154,
+				"full": 876
+			}
+		},
+		{
+			"label": "house:fishing_hut:4.80:1:v3",
+			"signature": "0439e57bc990c025d8f98c15cde258221975365629c0d343442a7077666810ca",
+			"triangles": {
+				"extreme": 452,
+				"far": 452,
+				"full": 944
+			}
+		},
+		{
+			"label": "house:cottage:2.90:2:v2",
+			"signature": "5189c4871601a4bc777f6d04a5c0b477f887717ad8c68008e8f1066930b1b5ba",
+			"triangles": {
+				"extreme": 1806,
+				"far": 4418,
+				"full": 12448
+			}
+		},
+		{
+			"label": "house:cottage:2.90:2:v2:rubble",
+			"signature": "ef2904a12a460e354905594da89621d04c521854d216855860ffed7f21c3e167",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "prop:bench:0:v1",
+			"signature": "bb17ea4f638bb7aa66a5f21b183f6cd4bc1d03481dfc016affa3cd25edad1b6c",
+			"triangles": {
+				"extreme": 1188,
+				"far": 1188,
+				"full": 1188
+			}
+		},
+		{
+			"label": "house:townhouse:5.10:0:v2",
+			"signature": "3db251a02e12c8598e9c0c6f798fdfff88c231dda27be7a86b25c8a69bb05a82",
+			"triangles": {
+				"extreme": 6942,
+				"far": 6942,
+				"full": 21584
+			}
+		},
+		{
+			"label": "house:rail_station:6.80:0:v3",
+			"signature": "5242af86d94220847bf36ab9cffb557ccc857581a99b436aaa30491ad63d911d",
+			"triangles": {
+				"extreme": 410,
+				"far": 410,
+				"full": 900
+			}
+		},
+		{
+			"label": "house:rail_station:6.80:0:v3:rubble",
+			"signature": "04f7119a2e9a1e29120df03f03d1aa6f837a799e6ad17d8941f0afd690b016c8",
+			"triangles": {
+				"extreme": 1512,
+				"far": 1512,
+				"full": 1512
+			}
+		},
+		{
+			"label": "house:boat_shed:4.80:2:v3",
+			"signature": "ab6ccd1e0dacd8f5f3cd3cc7aa166d0bb803ca8ce5ddc98d8f2aaddbd528e81c",
+			"triangles": {
+				"extreme": 195,
+				"far": 661,
+				"full": 1484
+			}
+		},
+		{
+			"label": "house:boat_shed:4.80:2:v3:rubble",
+			"signature": "29f53a3c58b32f55c69690bc2692bd8f28aada01b7cf8b052cbb0d4155475936",
+			"triangles": {
+				"extreme": 1512,
+				"far": 1512,
+				"full": 1512
+			}
+		},
+		{
+			"label": "house:warehouse:3.70:2:v1",
+			"signature": "04d822f69421edec92f129ca8d63dd45f3e40f13933855d688d8c35d7d1bd36f",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "house:modern_shop:5.90:2:v2",
+			"signature": "6877012e735bad467662df479cc1f2d77b1c3e06cf4ff6841316e6aa41e98091",
+			"triangles": {
+				"extreme": 7052,
+				"far": 7052,
+				"full": 22556
+			}
+		},
+		{
+			"label": "prop:ice_floe:0:v2",
+			"signature": "6384712633464da0dc0b3057832d4243c7f3328fa4b6dc8c3afb5ad8b9c33ed9",
+			"triangles": {
+				"extreme": 43,
+				"far": 43,
+				"full": 56
+			}
+		},
+		{
+			"label": "house:modern_shop:5.90:1:v3",
+			"signature": "e03e337ec6062636efdea4f3b268fb4040475f7c01b4dd61c06b2b8908ae5fd3",
+			"triangles": {
+				"extreme": 7052,
+				"far": 7052,
+				"full": 22556
+			}
+		},
+		{
+			"label": "prop:pier:1:v2",
+			"signature": "238543a40ea4f1b5d8cffc361e5f598d6da7d33fdb512383d655f5b367d27103",
+			"triangles": {
+				"extreme": 1836,
+				"far": 1836,
+				"full": 1836
+			}
+		},
+		{
+			"label": "house:townhouse:5.10:1:v3",
+			"signature": "76dd694f509d336dec376361e406430dda066a02f712509bc9bc7802e699836a",
+			"triangles": {
+				"extreme": 6942,
+				"far": 6942,
+				"full": 21584
+			}
+		},
+		{
+			"label": "house:snow_ruin:4.50:2:v2",
+			"signature": "716e61151cfd6177c838ceb876f34388c19e7fc02b9830145080e04e171ca819",
+			"triangles": {
+				"extreme": 648,
+				"far": 648,
+				"full": 648
+			}
+		},
+		{
+			"label": "house:snow_spire:8.50:1:v3",
+			"signature": "eb6eb960e1102fe284ea1f7d6d40ad6d53f93cae0a771ab3ef652ece133f5e44",
+			"triangles": {
+				"extreme": 574,
+				"far": 1313,
+				"full": 3900
+			}
+		},
+		{
+			"label": "prop:log_stack:1:v2",
+			"signature": "be87603a674a34e30e4ec4585d5ac491cf01b86ae0495eb5cae430baf0de4205",
+			"triangles": {
+				"extreme": 595,
+				"far": 595,
+				"full": 2616
+			}
+		},
+		{
+			"label": "house:shop:5.90:1:v3",
+			"signature": "f71b815860dfefc2f73d9aeb6b3e682d1b66a81b0d1a8c0ac169f3552be4065c",
+			"triangles": {
+				"extreme": 2337,
+				"far": 2337,
+				"full": 23312
+			}
+		},
+		{
+			"label": "house:sawmill:6.00:1:v2",
+			"signature": "23f7fdcda193738247cf462c91087070621a813abb2caed897e10a8413848df9",
+			"triangles": {
+				"extreme": 636,
+				"far": 636,
+				"full": 3192
+			}
+		},
+		{
+			"label": "prop:sidewalk:0:v3",
+			"signature": "5e2dafac4b399eaed299b12dc6bdc4dc8378d455c7b5ad3dd91cdb1fd6170716",
+			"triangles": {
+				"extreme": 15,
+				"far": 15,
+				"full": 132
+			}
+		},
+		{
+			"label": "house:forest_camp:4.50:2:v3",
+			"signature": "d1a7533d10e4a98b934af5c4eca863406a1235c69298a202a96ea89fcd02541c",
+			"triangles": {
+				"extreme": 134,
+				"far": 134,
+				"full": 492
+			}
+		},
+		{
+			"label": "prop:cargo_stack:2:v2",
+			"signature": "5120541b7e25f7a38740318ac98d0d111eece2193eebff08a6b865bc42347c67",
+			"triangles": {
+				"extreme": 435,
+				"far": 435,
+				"full": 2808
+			}
+		},
+		{
+			"label": "house:warehouse:3.70:1:v3",
+			"signature": "2aa0e47e5b6fa371e9bf5522ad15456a148ee2ef7b0f58b0525e5c50e17d4024",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "house:oasis_village:6.00:0:v3",
+			"signature": "2d9219456d007965e382f276ba49bceb043b058656bd4d30cbdda1abf731aeb0",
+			"triangles": {
+				"extreme": 315,
+				"far": 870,
+				"full": 2156
+			}
+		},
+		{
+			"label": "house:bell_tower:14.00:0:v2",
+			"signature": "981c6b5fe4e0d371ad48b6565e393757ca0b20689dc286274897bea751afeabf",
+			"triangles": {
+				"extreme": 704,
+				"far": 704,
+				"full": 3052
+			}
+		},
+		{
+			"label": "house:cottage:2.90:0:v1",
+			"signature": "c53323a4e62c0ac9ae207ab65bffa8fc3d611265b30f95bce401976236cf50d8",
+			"triangles": {
+				"extreme": 1806,
+				"far": 4418,
+				"full": 12448
+			}
+		},
+		{
+			"label": "house:adobe_house:4.50:2:v3",
+			"signature": "bfdc44a4d80ade02a4b6c1c800e289307c9d54b200be96de6133e50f504aab1f",
+			"triangles": {
+				"extreme": 439,
+				"far": 439,
+				"full": 1188
+			}
+		},
+		{
+			"label": "house:dig_site:4.50:0:v3",
+			"signature": "8d34bd94531db482cd54a9b5a784eb794773fd9a2987c9713928a3e8efd33bca",
+			"triangles": {
+				"extreme": 150,
+				"far": 150,
+				"full": 972
+			}
+		},
+		{
+			"label": "house:clock_tower:18.50:0:v2",
+			"signature": "c610b342e5b1359f1a9a0bcf02fa5bdb717988ed46e6871237e6517b039e0ab0",
+			"triangles": {
+				"extreme": 277,
+				"far": 277,
+				"full": 1500
+			}
+		},
+		{
+			"label": "house:stone_fort:6.50:2:v3",
+			"signature": "fe45d81325ef21a78828917d2e82a797ba98843ede5b09c0e06197adeb45dbb6",
+			"triangles": {
+				"extreme": 649,
+				"far": 1543,
+				"full": 3220
+			}
+		},
+		{
+			"label": "house:modern_block:9.50:2:v2",
+			"signature": "b891bc17f413535d38de47a43aa872e9334507614db9a7da832f710f19dcdbbf",
+			"triangles": {
+				"extreme": 12282,
+				"far": 12282,
+				"full": 40556
+			}
+		},
+		{
+			"label": "house:mesa_spire:8.50:1:v2",
+			"signature": "2ed6e8a1d4b06560da6a6c0dbcad7bd9410242d2089131cba40724d9af3ea86e",
+			"triangles": {
+				"extreme": 568,
+				"far": 1236,
+				"full": 3820
+			}
+		},
+		{
+			"label": "prop:quay_wall:0:v3",
+			"signature": "ae3fe5f38e9b16f1820ae367398e8102668531fdd7d938d435049e057586af24",
+			"triangles": {
+				"extreme": 216,
+				"far": 216,
+				"full": 756
+			}
+		},
+		{
+			"label": "prop:ice_floe:1:v2",
+			"signature": "bb93f0e42ad93a43528c6ad849058ce2c3dde34259fccbee211e4c2f71d6707f",
+			"triangles": {
+				"extreme": 43,
+				"far": 43,
+				"full": 56
+			}
+		},
+		{
+			"label": "house:rowhouse:5.10:0:v2",
+			"signature": "a9e385034464970b7da18938d8dddae9f2b78df8033990d06f5dea9f56b7ddad",
+			"triangles": {
+				"extreme": 7545,
+				"far": 7545,
+				"full": 22204
+			}
+		},
+		{
+			"label": "house:rowhouse:5.10:0:v2:rubble",
+			"signature": "07dc0fb3bbcdc474bbcb580cb58fb06e125e7c3997397a236177366eb5e94ae8",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:freight_depot:6.00:2:v2",
+			"signature": "a96406926010615ef8c4ff08f67b192556e56c730f6904f24860800c52b7f0df",
+			"triangles": {
+				"extreme": 512,
+				"far": 512,
+				"full": 512
+			}
+		},
+		{
+			"label": "house:townhouse:5.10:2:v1",
+			"signature": "588acf38fd9ca5918f18d84c976c585007579f25d0d64569b51575c98a52f668",
+			"triangles": {
+				"extreme": 6942,
+				"far": 6942,
+				"full": 21584
+			}
+		},
+		{
+			"label": "house:mesa_spire:8.50:0:v3",
+			"signature": "535bf87f6074239387a03091d8e44475d5c7a53e873965f4ee778266b0f552ec",
+			"triangles": {
+				"extreme": 568,
+				"far": 1236,
+				"full": 3820
+			}
+		},
+		{
+			"label": "house:shop:5.90:0:v3",
+			"signature": "476ffaf4778349284246cef47c763c0c72db78cabcf83f0ea99c55d816607eb3",
+			"triangles": {
+				"extreme": 2337,
+				"far": 2337,
+				"full": 23312
+			}
+		},
+		{
+			"label": "house:warehouse:4.20:1:v2",
+			"signature": "4fd8276180fbaaaa15b45c60b0531be4596611ddf4189c890ecfd6de5be17d88",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "house:moss_spire:8.50:2:v2",
+			"signature": "b74b50178b043ba60f213f4f6e4e5ddff4d24671a529114a9d445540c0be7dd2",
+			"triangles": {
+				"extreme": 460,
+				"far": 1343,
+				"full": 3928
+			}
+		},
+		{
+			"label": "house:freight_shed:5.40:2:v2",
+			"signature": "152cf715b650de935853200044c0eec9e90cc2da80157bfdcf7693c067c590e6",
+			"triangles": {
+				"extreme": 3258,
+				"far": 8272,
+				"full": 22904
+			}
+		},
+		{
+			"label": "house:freight_shed:5.40:2:v2:rubble",
+			"signature": "04b3694fafbc70e45e6bc0215c959808404593019d85fc7ed5bf11d8596da722",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:bazaar:6.00:0:v2",
+			"signature": "fe20155715d621ea5e3a72b379f7aef4c1ce9f393f1e8f1280a8ad9eaf33c3ad",
+			"triangles": {
+				"extreme": 728,
+				"far": 728,
+				"full": 728
+			}
+		},
+		{
+			"label": "house:office_tower:20.00:1:v2",
+			"signature": "e8ffded98eff2ecc26ea5b299e9a3a34cd48f2fb68bde02a5706389f81aea18d",
+			"triangles": {
+				"extreme": 24128,
+				"far": 24128,
+				"full": 79472
+			}
+		},
+		{
+			"label": "prop:lighthouse:1:v2",
+			"signature": "663e91feba1ad43e8af95bcae243cb44f32084ebe35f3f52adbc65905eb0c915",
+			"triangles": {
+				"extreme": 680,
+				"far": 1260,
+				"full": 3761
+			}
+		},
+		{
+			"label": "house:modern_block:9.50:0:v3",
+			"signature": "484c283e3ac1a565826ef6d4528cbb3000df192612108f39700012577cfdf41f",
+			"triangles": {
+				"extreme": 12282,
+				"far": 12282,
+				"full": 40556
+			}
+		},
+		{
+			"label": "house:modern_block:9.50:0:v3:rubble",
+			"signature": "7583f48477a41109c74249bf02b3c783f116906aa8c93425ae6d89fce625cf96",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "prop:snow_boulder:2:v2",
+			"signature": "c06f248554154381a15d4ec0281e70d3409c1148b38236aa10d0e45fc538eefc",
+			"triangles": {
+				"extreme": 256,
+				"far": 256,
+				"full": 540
+			}
+		},
+		{
+			"label": "house:civic_hall:10.50:2:v2",
+			"signature": "198c462430c584b42d2f2d03159ad7bbbc363603e0bf587bcf8353b741e66b55",
+			"triangles": {
+				"extreme": 606,
+				"far": 1242,
+				"full": 2988
+			}
+		},
+		{
+			"label": "prop:buoy:0:v3",
+			"signature": "a4d25835edce6d1432e617a1b27768c9ff7e80e4a069054dea880724963d5f83",
+			"triangles": {
+				"extreme": 541,
+				"far": 553,
+				"full": 692
+			}
+		},
+		{
+			"label": "prop:sea_rock:0:v2",
+			"signature": "4104278fab5a41875236e6daf25170aaa29e8d119ebb20f7957989201e685981",
+			"triangles": {
+				"extreme": 324,
+				"far": 324,
+				"full": 324
+			}
+		},
+		{
+			"label": "prop:fuel_tank:1:v3",
+			"signature": "cc73af2730de438623985a77be9b54a5c1d22eedea1bd820d4d46a954112a2d9",
+			"triangles": {
+				"extreme": 223,
+				"far": 223,
+				"full": 788
+			}
+		},
+		{
+			"label": "house:office_tower:17.00:0:v3",
+			"signature": "88a799b2210c1032c451be210f2801ea982612dfd557933ced232528673a859f",
+			"triangles": {
+				"extreme": 21572,
+				"far": 21572,
+				"full": 70148
+			}
+		},
+		{
+			"label": "house:modern_block:9.50:1:v2",
+			"signature": "fd0edce7ebe717ef8f62ad48a96ca3d6e51079129b4fd2972131e65712b6b441",
+			"triangles": {
+				"extreme": 12282,
+				"far": 12282,
+				"full": 40556
+			}
+		},
+		{
+			"label": "prop:pedestrian:1:v2",
+			"signature": "05071dfdeab3b7557ab325d4fafa6edd6a234e45e3da0c42b6dd1480da4d630f",
+			"triangles": {
+				"extreme": 373,
+				"far": 373,
+				"full": 680
+			}
+		},
+		{
+			"label": "prop:pedestrian:0:v1",
+			"signature": "4a8510e35dbbddc1f2124e6113b353aaf1c20c3be60d9b6445706e38d1a26135",
+			"triangles": {
+				"extreme": 373,
+				"far": 373,
+				"full": 680
+			}
+		},
+		{
+			"label": "prop:waterfall:1:v3",
+			"signature": "7662da2e83a12dea27468526be2040bde38adaae34ee372e136223826d224ae9",
+			"triangles": {
+				"extreme": 240,
+				"far": 240,
+				"full": 240
+			}
+		},
+		{
+			"label": "house:moss_spire:8.50:0:v2",
+			"signature": "e771ed7c5db992de86d18a8b61a3d9636bdae9440fa1c576feb772906cdcfa52",
+			"triangles": {
+				"extreme": 684,
+				"far": 1344,
+				"full": 3928
+			}
+		},
+		{
+			"label": "prop:palm:1:v3",
+			"signature": "0a28a1e84eddfb607d7bb1f033cd60fd49a284d8e1798128016f8ae502be7649",
+			"triangles": {
+				"extreme": 40,
+				"far": 48,
+				"full": 136
+			}
+		},
+		{
+			"label": "house:shop:5.90:2:v3",
+			"signature": "977878e221c62e9f4e6dc4e54263ae161bee7cb6d1ce2a8e745500fec0904e3d",
+			"triangles": {
+				"extreme": 2337,
+				"far": 2337,
+				"full": 23312
+			}
+		},
+		{
+			"label": "house:old_shop:5.10:0:v3",
+			"signature": "a4c7528354185c1ea934a8a4b5917cc3eef5c02838322a73654a901a05d80a4b",
+			"triangles": {
+				"extreme": 7669,
+				"far": 7669,
+				"full": 23176
+			}
+		},
+		{
+			"label": "prop:rail_track:0:v2",
+			"signature": "70b2bedcec6fec8d43bcfbad32c944c20df507a5bee88168bab2498e968ab6e9",
+			"triangles": {
+				"extreme": 36,
+				"far": 36,
+				"full": 36
+			}
+		},
+		{
+			"label": "house:cottage:2.90:1:v2",
+			"signature": "20df0099bb9da8b25451163bb55d29add1fbd4ab20ab8b32290c3b571b826cc0",
+			"triangles": {
+				"extreme": 1806,
+				"far": 4418,
+				"full": 12448
+			}
+		},
+		{
+			"label": "prop:harbor_crane:0:v3",
+			"signature": "aff97ac422c63fec9941603d72c21a110d7ab857be58b591e46937567a037b4b",
+			"triangles": {
+				"extreme": 275,
+				"far": 275,
+				"full": 492
+			}
+		},
+		{
+			"label": "prop:boat:0:v3",
+			"signature": "b9d17ca505cba21eaed5d6c0ca3ebbe173930fd8b86519c7addc1301acf241e1",
+			"triangles": {
+				"extreme": 64,
+				"far": 64,
+				"full": 229
+			}
+		},
+		{
+			"label": "house:warehouse:4.20:2:v2",
+			"signature": "f7bb18a45b8cedd483fcd205540a29a1b28fc574a71d4edf302a2d21fe127f46",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "house:old_shop:5.10:2:v2",
+			"signature": "127ae6184af357acec3be8a710cf9cff95374d89aa075a4dc8297c16d84a2ce5",
+			"triangles": {
+				"extreme": 7669,
+				"far": 7669,
+				"full": 23176
+			}
+		},
+		{
+			"label": "house:old_shop:5.10:2:v2:rubble",
+			"signature": "c1cccde98d745a63bbdbd715b6c6b84f8bb330c04a8e2f07edc52102b211ca4a",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:old_townhouse:5.10:2:v3",
+			"signature": "3d5f4a09c09117e332e793d93286f966a3c4365ceeda6289c50107e27e26b8d1",
+			"triangles": {
+				"extreme": 7545,
+				"far": 7545,
+				"full": 22204
+			}
+		},
+		{
+			"label": "house:warehouse:2.90:0:v2",
+			"signature": "fdf165cf083898e15e4591b7b22404f7c52ade77bf5b03b9f566f561536b0041",
+			"triangles": {
+				"extreme": 1834,
+				"far": 5310,
+				"full": 13232
+			}
+		},
+		{
+			"label": "prop:snow_pine:1:v1",
+			"signature": "36f745ff9a411830e9a4f46a0fceffc4598c4064c746bab2cdb6fadc408691b1",
+			"triangles": {
+				"extreme": 71,
+				"far": 87,
+				"full": 214
+			}
+		},
+		{
+			"label": "house:adobe_wall:4.50:1:v3",
+			"signature": "9d0479093258a8090d86c04ca98c3b5079f49aa2ee6015a2f1bd5534c1b52bd1",
+			"triangles": {
+				"extreme": 131,
+				"far": 659,
+				"full": 1296
+			}
+		},
+		{
+			"label": "house:rowhouse:5.10:1:v3",
+			"signature": "d7c2f332f3762f3e5b7f6c159efcb425b9b8f58fc219f3d212a4bdda4f42ced7",
+			"triangles": {
+				"extreme": 7545,
+				"far": 7545,
+				"full": 22204
+			}
+		},
+		{
+			"label": "house:modern_shop:5.90:0:v3",
+			"signature": "0b2e39b22284ac1e15ed0a4f8759fb948a8228b4e01c224c61a2e75eeaa9911c",
+			"triangles": {
+				"extreme": 7052,
+				"far": 7052,
+				"full": 22556
+			}
+		},
+		{
+			"label": "prop:cactus:1:v2",
+			"signature": "edb32289b86dfe534467289b76e9de822c4a588dc32cba1937490948c73ea7ce",
+			"triangles": {
+				"extreme": 141,
+				"far": 141,
+				"full": 504
+			}
+		},
+		{
+			"label": "house:freight_shed:5.40:1:v2:rubble",
+			"signature": "77f44ccaf62a323c0ee381ab8ed85a2659a4f9ace81cf74b34fad75736bb43c5",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:ranger_tower:14.00:1:v3",
+			"signature": "45843e706bd9ee28788a2c96f72a1f0cbb64b9da6caa480058dfd17af545eabd",
+			"triangles": {
+				"extreme": 524,
+				"far": 872,
+				"full": 2504
+			}
+		},
+		{
+			"label": "house:warehouse:2.90:2:v1",
+			"signature": "a5fcb8ea847bc426db76cb144911d0e212d2db0d95d6cc849fba14ed0ff97b44",
+			"triangles": {
+				"extreme": 1834,
+				"far": 5310,
+				"full": 13232
+			}
+		},
+		{
+			"label": "house:office_tower:17.00:2:v2",
+			"signature": "a7a89c14d033886a6fe4d9d3d7e961c0ecfffc118e484547059db3f7cea23b33",
+			"triangles": {
+				"extreme": 21572,
+				"far": 21572,
+				"full": 70148
+			}
+		},
+		{
+			"label": "house:mesa_gate:4.50:0:v2",
+			"signature": "aa3883ee90144cb3b50995c4e0a4f804bc235e12ec92fe5ffc110451ebdb6c9f",
+			"triangles": {
+				"extreme": 313,
+				"far": 974,
+				"full": 2052
+			}
+		},
+		{
+			"label": "house:church:13.80:1:v3",
+			"signature": "a554e6847d909e4d8d3a214cff3344305050b36de674f752048c0a262ccd1c1f",
+			"triangles": {
+				"extreme": 153,
+				"far": 420,
+				"full": 832
+			}
+		},
+		{
+			"label": "prop:cargo_stack:1:v3",
+			"signature": "c48cb312262979674ea76f01b7cdb57b839b039b69b7ba664ca67a260aec2614",
+			"triangles": {
+				"extreme": 435,
+				"far": 435,
+				"full": 2808
+			}
+		},
+		{
+			"label": "house:freight_shed:5.40:0:v2:rubble",
+			"signature": "4258a0e050e7ef283b6a80de29b4b006f6facbe4c849e0435eab3aba8558a0c7",
+			"triangles": {
+				"extreme": 113,
+				"far": 113,
+				"full": 1404
+			}
+		},
+		{
+			"label": "house:warehouse:4.20:0:v2",
+			"signature": "ce2d54c133034783dafbf3c7079b763858ed513ff1f12fc9790cb2a75e4c6624",
+			"triangles": {
+				"extreme": 2039,
+				"far": 7915,
+				"full": 22556
+			}
+		},
+		{
+			"label": "prop:ice_floe:2:v3",
+			"signature": "c3643f3bcc995cfd8275db5c618d419212e33bbfbdf2a8d86dc54b7f62d73940",
+			"triangles": {
+				"extreme": 43,
+				"far": 43,
+				"full": 56
+			}
+		},
+		{
+			"label": "prop:sandstone:1:v3",
+			"signature": "62fb56e7b3fd4233233524dbdcff0f87fa5b069575cebc1ffbab8c6809634b01",
+			"triangles": {
+				"extreme": 250,
+				"far": 250,
+				"full": 432
+			}
+		},
+		{
+			"label": "house:office_tower:20.00:0:v2",
+			"signature": "8a4509932411ee1a238656281ec35928ee3dbe3c543d794aba8f5904a2ffc40b",
+			"triangles": {
+				"extreme": 24128,
+				"far": 24128,
+				"full": 79472
+			}
+		},
+		{
+			"label": "prop:pedestrian:2:v3",
+			"signature": "b545cb71880b6d91ff0dd0c0e591cd08a75df3217b8f4524420fa5047c446241",
+			"triangles": {
+				"extreme": 373,
+				"far": 373,
+				"full": 680
+			}
+		},
+		{
+			"label": "house:terrace:4.80:2:v3",
+			"signature": "86ee04619c89e7b1f0bde54be041fb554680469ee7b5b4e4b9fce3d6e4e54db1",
+			"triangles": {
+				"extreme": 7544,
+				"far": 7544,
+				"full": 22204
+			}
+		},
+		{
+			"label": "prop:market_tent:1:v3",
+			"signature": "135294f2762830b67921731039f23f2348084fb64d085c4b72bf2ce08f7417fe",
+			"triangles": {
+				"extreme": 67,
+				"far": 517,
+				"full": 1052
+			}
+		},
+		{
+			"label": "house:old_shop:5.10:1:v2",
+			"signature": "e0419c5053989f67478aaf5c389881b42ef5d28396107396a630dd0a4e86994e",
+			"triangles": {
+				"extreme": 7669,
+				"far": 7669,
+				"full": 23176
+			}
+		},
+		{
+			"label": "house:mesa_spire:8.50:2:v3",
+			"signature": "523136d2ae419491b7ee774adbca45ac8a5609b4c0e9aa31e67a0f84e1cf8d0e",
+			"triangles": {
+				"extreme": 456,
+				"far": 1235,
+				"full": 3820
+			}
+		},
+		{
+			"label": "house:snow_spire:8.50:2:v2",
+			"signature": "b21d3d811b5d647453173c1a12e5ae8ab4a3e52051df31ebcaaacd4a88cb9cb2",
+			"triangles": {
+				"extreme": 686,
+				"far": 1313,
+				"full": 3900
+			}
+		},
+		{
+			"label": "prop:fountain:0:v2",
+			"signature": "d9c482d84993d1f210a704af9c0a673295bcdf3fcf1073b02f908e87da546842",
+			"triangles": {
+				"extreme": 382,
+				"far": 1167,
+				"full": 1992
+			}
+		},
+		{
+			"label": "house:snow_spire:8.50:0:v3",
+			"signature": "8c6a615933bdca9a446a60ad9ea5b34c85b3a7931a3ba54832322bc9f9b01dee",
+			"triangles": {
+				"extreme": 574,
+				"far": 1313,
+				"full": 3900
+			}
+		},
+		{
+			"label": "prop:market_tent:0:v3",
+			"signature": "056523df92ea2206311dbf15fa1d28d23cef1cd4d51260ae157e1d773635e777",
+			"triangles": {
+				"extreme": 67,
+				"far": 517,
+				"full": 1052
+			}
+		},
+		{
+			"label": "house:moss_spire:8.50:1:v2",
+			"signature": "921e0f46f6c90f9b143d0529d7e36e23907592256122fd326a25e0b666db6370",
+			"triangles": {
+				"extreme": 572,
+				"far": 1344,
+				"full": 3928
+			}
+		},
+		{
+			"label": "prop:market_tent:2:v3",
+			"signature": "6986fccc0a08cd991e045f7e4291bda071c7b64ff8a6f140acdd2d2e44f28ee5",
+			"triangles": {
+				"extreme": 67,
+				"far": 517,
+				"full": 1052
+			}
+		},
+		{
+			"label": "house:terrace:4.80:0:v3",
+			"signature": "406b0c6dfac5a53351d4fcffcde25fe9f06fceb0fdffbeec8d7ee18de032d14e",
+			"triangles": {
+				"extreme": 7544,
+				"far": 7544,
+				"full": 22204
+			}
+		},
+		{
+			"label": "prop:cargo_stack:0:v3",
+			"signature": "ff103ee8d1fc45ba5857043707c2333849e4896e3b0a83a20ee2dda04a4964c6",
+			"triangles": {
+				"extreme": 435,
+				"far": 435,
+				"full": 2808
+			}
+		},
+		{
+			"label": "tree_0",
+			"signature": "c76dd0c5a0f588814ec6bfa32086d89d2f61c214d6fe79b5f0fc59f0d4c48981",
+			"triangles": {
+				"extreme": 660,
+				"far": 1622,
+				"full": 3192
+			}
+		},
+		{
+			"label": "tree_1",
+			"signature": "9d976f28a5f84ea57535886c0402a57288d13f0edabb3ca5916282adcdf672af",
+			"triangles": {
+				"extreme": 766,
+				"far": 1637,
+				"full": 3192
+			}
+		},
+		{
+			"label": "tree_2",
+			"signature": "23e37a543b72625ea5623eaf182a5f0adeea81d1cae04aa940617d21c52d1474",
+			"triangles": {
+				"extreme": 439,
+				"far": 1612,
+				"full": 3192
+			}
+		},
+		{
+			"label": "trunk",
+			"signature": "c78053ca5dc9715d1e55ad930ff734d730e1ee41f55c78ff224f0128a353b417",
+			"triangles": {
+				"extreme": 355,
+				"far": 664,
+				"full": 1638
+			}
+		},
+		{
+			"label": "trunk_far",
+			"signature": "abe04f3c1a129e35678c066dc4dcf2d95043094721a0b5bfd9e9e1710acd997c",
+			"triangles": {
+				"extreme": 166,
+				"far": 166,
+				"full": 166
+			}
+		},
+		{
+			"label": "trunk_distant",
+			"signature": "13058da242021d440f20c86a8cbd95716e6e22abef07ed02120056dfc639f4e8",
+			"triangles": {
+				"extreme": 106,
+				"far": 106,
+				"full": 106
+			}
+		},
+		{
+			"label": "rock_0",
+			"signature": "22f6e3c9a965abd8a08787ca20c232fb1d51b33cf69a323ad1c3c656bf054708",
+			"triangles": {
+				"extreme": 124,
+				"far": 210,
+				"full": 416
+			}
+		},
+		{
+			"label": "rock_1",
+			"signature": "12b48d68c193ce4b5ba6eea52f4bc3b05a354f5641118e6b317254160dffeebc",
+			"triangles": {
+				"extreme": 192,
+				"far": 296,
+				"full": 780
+			}
+		},
+		{
+			"label": "rock_2",
+			"signature": "965211a9fe1252f20e554fae8844c3df9ac69b3ba39b37a99ce9448ce6cbd6c8",
+			"triangles": {
+				"extreme": 101,
+				"far": 137,
+				"full": 312
+			}
+		},
+		{
+			"label": "fence",
+			"signature": "b6a3f0ac8ebe15f624087f69d619083c00c741f761a1a986e779c1308223c545",
+			"triangles": {
+				"extreme": 48,
+				"far": 48,
+				"full": 48
+			}
+		},
+		{
+			"label": "ruin",
+			"signature": "5e62ceaf8e7815bfb9e22b95070dffab1e491ee649658ed3b97b41c9b191d2b7",
+			"triangles": {
+				"extreme": 132,
+				"far": 132,
+				"full": 132
+			}
+		},
+		{
+			"label": "contact",
+			"signature": "a3833d9af19106da811664800b85e5a1703819156a3ce09194b29ab95fa94be4",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "context_wall_corner_l",
+			"signature": "8561c1d77320d97cea38638760f28d70ac5b47e307c2a6d0b7125f16aa00b29b",
+			"triangles": {
+				"extreme": 191,
+				"far": 295,
+				"full": 780
+			}
+		},
+		{
+			"label": "crystal_0",
+			"signature": "56d6231cdfda28b83823e949ad15c8b6d9841d6e99dbfba67a40f2e8357e16f3",
+			"triangles": {
+				"extreme": 105,
+				"far": 105,
+				"full": 105
+			}
+		},
+		{
+			"label": "house_0",
+			"signature": "bb473320f4691a2f96cbf5f612f1a2001d11906ab5079c755473fc9565ea6fed",
+			"triangles": {
+				"extreme": 1552,
+				"far": 1552,
+				"full": 14198
+			}
+		},
+		{
+			"label": "house_0_rubble",
+			"signature": "5186236db0fe34aa18909cf3d804aa683c282820bed5236ff9e1a366133f470d",
+			"triangles": {
+				"extreme": 765,
+				"far": 3346,
+				"full": 7222
+			}
+		},
+		{
+			"label": "wall_0",
+			"signature": "09021585d8bc71c3c043e4ca2027707a677386049c4efcf2498df3a7c845ab1c",
+			"triangles": {
+				"extreme": 588,
+				"far": 588,
+				"full": 5132
+			}
+		},
+		{
+			"label": "wall_0_rubble",
+			"signature": "d29dca019afc5d9a4fc34c3a833788c2331b53db648070b83f5753af63f293de",
+			"triangles": {
+				"extreme": 1014,
+				"far": 1469,
+				"full": 2912
+			}
+		},
+		{
+			"label": "crystal_1",
+			"signature": "0ab8362821628a9fb71b186253b4f8465c7f1dda3c8281a5166a507588fb2516",
+			"triangles": {
+				"extreme": 105,
+				"far": 105,
+				"full": 105
+			}
+		},
+		{
+			"label": "house_1",
+			"signature": "a2460080431f2e7072127a6c9e0c681628c68a3888231a216c7d80adbadb8881",
+			"triangles": {
+				"extreme": 1551,
+				"far": 1551,
+				"full": 14110
+			}
+		},
+		{
+			"label": "house_1_rubble",
+			"signature": "e3c26d6dace7686ee2ca30eb08b7b58cacea1f9f0aaf7e5c3a2ac431fe6ceab4",
+			"triangles": {
+				"extreme": 2202,
+				"far": 2202,
+				"full": 7222
+			}
+		},
+		{
+			"label": "wall_1",
+			"signature": "9ba6430f4b494af6a37051ef93d59d281707b5baa29e66ec6d0fc154aa7b2a27",
+			"triangles": {
+				"extreme": 584,
+				"far": 584,
+				"full": 5124
+			}
+		},
+		{
+			"label": "wall_1_rubble",
+			"signature": "1e1c20cdc536967bc89a7ac838e22aed37369b5667495406de23bce077ede1ad",
+			"triangles": {
+				"extreme": 1008,
+				"far": 1464,
+				"full": 2904
+			}
+		},
+		{
+			"label": "crystal_2",
+			"signature": "ac5ef9766ab85f8561fbf9ee6459d36e8011363e4b9f8c550b79740d305a60e9",
+			"triangles": {
+				"extreme": 105,
+				"far": 105,
+				"full": 105
+			}
+		},
+		{
+			"label": "house_2",
+			"signature": "c7e70dd745f7f0f6b1b28e9f42a3940af42bbca978e16526c69ca096f4b5020d",
+			"triangles": {
+				"extreme": 1552,
+				"far": 1552,
+				"full": 14198
+			}
+		},
+		{
+			"label": "house_2_rubble",
+			"signature": "09d7f023b3d2c69fee0fde1315773105a13e6b5d2b48036928132d1ccf2272bb",
+			"triangles": {
+				"extreme": 2196,
+				"far": 2196,
+				"full": 7222
+			}
+		},
+		{
+			"label": "wall_2",
+			"signature": "04d56885f3d673d5f846fc9b953dc30bc95526c2ef0afea101155481b9b79204",
+			"triangles": {
+				"extreme": 596,
+				"far": 596,
+				"full": 5124
+			}
+		},
+		{
+			"label": "wall_2_rubble",
+			"signature": "7e28a1bf6c61db1744474666e276023c6e7fb54913a4f86bb446c5bf70e9f42b",
+			"triangles": {
+				"extreme": 737,
+				"far": 1504,
+				"full": 2904
+			}
+		},
+		{
+			"label": "forest/StoneAbutments",
+			"signature": "7e8dd8f98573a9069c73b5fe962ff03aa4eea3e3329802ba430b6aeb6259e57f",
+			"triangles": {
+				"extreme": 71,
+				"far": 189,
+				"full": 590
+			}
+		},
+		{
+			"label": "forest/IntactDeck",
+			"signature": "820790d5432ff99882647dd2ea11b9554ae40682fbfd7e851fc185a15a96dcb2",
+			"triangles": {
+				"extreme": 843,
+				"far": 1757,
+				"full": 3718
+			}
+		},
+		{
+			"label": "forest/DeckSubstrate",
+			"signature": "c17488e3a77b7b1b75c3e36c17e9bb8f0b07c4e8c7df7bd4ac5c14138735844d",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "forest/BrokenDeck",
+			"signature": "9598c23121d4efc437efa786dbd285ad335e3c80929ac8e7c1d8bd5e980eb6c7",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "forest/StoneAbutments",
+			"signature": "9b42245349767f0c15330403f4440e47c59fe96296e990a99e94d3520e79d93b",
+			"triangles": {
+				"extreme": 155,
+				"far": 155,
+				"full": 566
+			}
+		},
+		{
+			"label": "forest/IntactDeck",
+			"signature": "5fa2b224f9a6ba1b77b22bc3d6d9fc794dea16d1d1d877af3537cf6469591592",
+			"triangles": {
+				"extreme": 969,
+				"far": 2149,
+				"full": 4340
+			}
+		},
+		{
+			"label": "forest/DeckSubstrate",
+			"signature": "53eee18f4eafee905d5d50dcbd64c25c122bbfcc8b3cb173bbf4c59f1760438a",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "forest/BrokenDeck",
+			"signature": "5600d477976ecd9d60d65ac249de4b2d68885073497b48961040ab19b2844d93",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "forest/StoneAbutments",
+			"signature": "e93890011343a8d315505f71720f84c2972c13c9dc2f1580e9cae8f0e6496ce8",
+			"triangles": {
+				"extreme": 161,
+				"far": 161,
+				"full": 554
+			}
+		},
+		{
+			"label": "forest/IntactDeck",
+			"signature": "1ca7d6a875863bf8a55bedd4583abd9ffed879ad8e45d8dc1c4d172be7455a02",
+			"triangles": {
+				"extreme": 933,
+				"far": 1949,
+				"full": 4010
+			}
+		},
+		{
+			"label": "forest/DeckSubstrate",
+			"signature": "7a5d526612b53a0aae361a027665530765b043a122e0bc3b23b7f97d42de089a",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "forest/BrokenDeck",
+			"signature": "0c0a7df77ed34eb3bbfb23a2617b549f8ae3a7ab8879a59829f23d33d7c49885",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "desert/StoneAbutments",
+			"signature": "91eea74eb133111662d19bb423a4f2fbe02a518df62c1f77efdd43612b7a2ec2",
+			"triangles": {
+				"extreme": 155,
+				"far": 155,
+				"full": 584
+			}
+		},
+		{
+			"label": "desert/IntactDeck",
+			"signature": "cc915332034c4d17580e26c023badf83d9dd469f885faa8ab7d8c7aa8fce23f8",
+			"triangles": {
+				"extreme": 551,
+				"far": 887,
+				"full": 2606
+			}
+		},
+		{
+			"label": "desert/DeckSubstrate",
+			"signature": "8ee5dc76dac7a9d6e85600f6c0941bc26433a7c5a85c2824c60a51fbc2822f45",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "desert/BrokenDeck",
+			"signature": "4f2f8bb1e04d50e09bf5a7f62f79d65f13b8e005ac03274e3ee173b91cb64af0",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "desert/StoneAbutments",
+			"signature": "3a672294c147bc4e743d851f0c1cd3419d60fbc24607594444c7a8e7ffe3845b",
+			"triangles": {
+				"extreme": 165,
+				"far": 165,
+				"full": 550
+			}
+		},
+		{
+			"label": "desert/IntactDeck",
+			"signature": "cd587683485cee9b555331b03ed659482f76ce19b90ab6c58444090fc6a2eef2",
+			"triangles": {
+				"extreme": 593,
+				"far": 933,
+				"full": 2690
+			}
+		},
+		{
+			"label": "desert/DeckSubstrate",
+			"signature": "c0301f4771a63e8ff7e4192e5df5b2c0b84ce31667be68c77128f0c44055b7a1",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "desert/BrokenDeck",
+			"signature": "fc7ac8b9ef4892c25aea940f01b7dc94bd0a8ff34fed3c24367544807ca326a9",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "desert/StoneAbutments",
+			"signature": "c765ea38473cdb41f052c5996a6416d0867536095e72a920b574e5d74a641b3e",
+			"triangles": {
+				"extreme": 163,
+				"far": 163,
+				"full": 554
+			}
+		},
+		{
+			"label": "desert/IntactDeck",
+			"signature": "5dca48c87f23a3970ad830821c1e5cb805b2aa6f7ee4715513546c91c8bb7765",
+			"triangles": {
+				"extreme": 595,
+				"far": 1075,
+				"full": 2822
+			}
+		},
+		{
+			"label": "desert/DeckSubstrate",
+			"signature": "e7fd580238a07344924fd8585e1f3f228616956181cf2e321b9421b257b0303e",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "desert/BrokenDeck",
+			"signature": "674332b783e8133e383939ba6e6a5ab0efc040813700d884e944b5de60fa77bf",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "snow/IntactDeck",
+			"signature": "608d0ca3f72d768688893f950ec49d94b4e30761bd306cb16ac859852e2def75",
+			"triangles": {
+				"extreme": 655,
+				"far": 1211,
+				"full": 3368
+			}
+		},
+		{
+			"label": "snow/DeckSubstrate",
+			"signature": "70dc1f306a9f2eb1b559808acf0a7938fc2830362d8f13eee4768024069387cc",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "snow/StoneAbutments",
+			"signature": "39d7eb92d465c161ce1ef7a2c173afc0a0fec733a07af7ca56f0fba75c7ec47d",
+			"triangles": {
+				"extreme": 157,
+				"far": 157,
+				"full": 548
+			}
+		},
+		{
+			"label": "snow/IntactDeck",
+			"signature": "cc3991cc9067a910f608bb4cb9e78584aa172867e4cbd6368b47cab2049d91de",
+			"triangles": {
+				"extreme": 873,
+				"far": 1763,
+				"full": 3562
+			}
+		},
+		{
+			"label": "snow/DeckSubstrate",
+			"signature": "75d1e864b3fd1274e33535a197f7733d6625d5ba9e67f3249a7d750cff47b48f",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "snow/BrokenDeck",
+			"signature": "3a253e1584792749d17e4dd3ac7569ef4f5a947e7209e96cd77a10b5d108ea94",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "snow/StoneAbutments",
+			"signature": "0e4430af92ef42eac3d36a38645d266aaeda6152cb052b5af7400527e45f7f47",
+			"triangles": {
+				"extreme": 165,
+				"far": 165,
+				"full": 568
+			}
+		},
+		{
+			"label": "snow/IntactDeck",
+			"signature": "691090d6a6127bad8dd57bd8255b79c97352510d5ced33dc27882325f2e8d371",
+			"triangles": {
+				"extreme": 1655,
+				"far": 3413,
+				"full": 7584
+			}
+		},
+		{
+			"label": "snow/DeckSubstrate",
+			"signature": "ceb04c61816b5769c10d4137b855c81863fa4d088c8d066849b0cc26777d02cd",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "snow/BrokenDeck",
+			"signature": "ddefea3c3cd4345416fd352b34b64c0fa97d12ae3b6144ac30bb23d9b6e06522",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "snow/IntactDeck",
+			"signature": "ec7c828e0acf9d5e9f42024e380dadd24cf09c45897a4adba65f98ddbbffcbde",
+			"triangles": {
+				"extreme": 857,
+				"far": 1811,
+				"full": 3656
+			}
+		},
+		{
+			"label": "snow/DeckSubstrate",
+			"signature": "72f0ed31995c446db3e5db986dc5b9d3dfd485879014d6730dfaa9fe4a90eb96",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "random_city/IntactDeck",
+			"signature": "0246d376501969e9006d11a6e0f38c8b3a2583790b8c73bf16bf1d70571ab1ab",
+			"triangles": {
+				"extreme": 631,
+				"far": 1119,
+				"full": 3118
+			}
+		},
+		{
+			"label": "random_city/DeckSubstrate",
+			"signature": "83ad3b77ae450accd49f399db52d0ad064c27484869b9bfda70ecfae9feb7a17",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "random_city/PropBatch_environment_building_clock_tower_15_0_1_intact_1_3",
+			"signature": "4d46b12bd31f1427ffcd9b1732f39c0f7b112f532f901b5a4220c950861b948e",
+			"triangles": {
+				"extreme": 300,
+				"far": 300,
+				"full": 1500
+			}
+		},
+		{
+			"label": "campaign/StoneAbutments",
+			"signature": "a2d9130d3b68c17a059a837b30c2eed7bea14b810f42bf6b3642f18ad87191a9",
+			"triangles": {
+				"extreme": 211,
+				"far": 211,
+				"full": 746
+			}
+		},
+		{
+			"label": "campaign/IntactDeck",
+			"signature": "9fd4906dfd14ae5cc6dd63b314c0d6876297c644f2800f78c8dbfb206d00f245",
+			"triangles": {
+				"extreme": 749,
+				"far": 1521,
+				"full": 3114
+			}
+		},
+		{
+			"label": "campaign/DeckSubstrate",
+			"signature": "8eacf00e56de51e7d0e635831f6ce702dd43f43d31090fcee855c50f0513bd24",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "campaign/BrokenDeck",
+			"signature": "af6ffe0ebf110579fff1ec453d52f73ebf6a9e1a674946fba0161a740ef0ec43",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "dev/StoneAbutments",
+			"signature": "f037d2db3c2b08e09642b45f3772fc32032d3cd89de69101dc720c1c6566c2e5",
+			"triangles": {
+				"extreme": 288,
+				"far": 288,
+				"full": 288
+			}
+		},
+		{
+			"label": "dev/IntactDeck",
+			"signature": "ca4a829205235462bd598bc488fc46ac24bc4db353a50756f5df326c7c69702e",
+			"triangles": {
+				"extreme": 719,
+				"far": 719,
+				"full": 946
+			}
+		},
+		{
+			"label": "dev/DeckSubstrate",
+			"signature": "767c298da0f6288887a87070834cc81032395dee4886382dc1274e3cf7a32639",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "dev/BrokenDeck",
+			"signature": "f37c6ffd2239eda6ec805a077a3b75f7cdbe26eec8b4e0e1bc06a18480a4828e",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "handmade/StoneAbutments",
+			"signature": "224faadf63f60b865097daf1cf1f37983eaf0532acad186461e18102df64167b",
+			"triangles": {
+				"extreme": 70,
+				"far": 144,
+				"full": 344
+			}
+		},
+		{
+			"label": "handmade/IntactDeck",
+			"signature": "9eba18432c4d471469606a6ace6720795a473ce3515d769fc3f65ac682f496ca",
+			"triangles": {
+				"extreme": 855,
+				"far": 855,
+				"full": 1124
+			}
+		},
+		{
+			"label": "handmade/DeckSubstrate",
+			"signature": "2cb02460d346df8c0cb8db373efd10226567779300d5de36444b6be312e0517a",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "handmade/BrokenDeck",
+			"signature": "fc377adf01dc8bcd1e17899aa30062c9ea822007b881b88c94bc391cafbad8c2",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "mountains/StoneAbutments",
+			"signature": "08f409599dc23e87e1783c7ed8a2e02ca5348f697a95c2e7ed7d28afccf50d5e",
+			"triangles": {
+				"extreme": 61,
+				"far": 151,
+				"full": 443
+			}
+		},
+		{
+			"label": "mountains/IntactDeck",
+			"signature": "8933b2ad01ad6bc28b355b1f21525fa3f48a3044e4339d457d0ac0a6722ec8f0",
+			"triangles": {
+				"extreme": 457,
+				"far": 603,
+				"full": 1792
+			}
+		},
+		{
+			"label": "mountains/DeckSubstrate",
+			"signature": "1b9486532bf0fc6001a25035963bb41a817f68c3f6bb05cfb89de2eb6b329b6c",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "mountains/BrokenDeck",
+			"signature": "9d6c4b22d2a79d5185dffa256dfbf9a0a2e942592c81738f6b03c4fe0adfc99f",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		},
+		{
+			"label": "mountains640/StoneAbutments",
+			"signature": "10e9e3ee90dc7bfaa517b51ada72f8445efdd902907f4189d3f4a4a4e6d012c3",
+			"triangles": {
+				"extreme": 172,
+				"far": 172,
+				"full": 647
+			}
+		},
+		{
+			"label": "mountains640/IntactDeck",
+			"signature": "783af8251aadbbe92cc28d8b0ed5a3bc27354ce5de62a167559c86bc6b5abe49",
+			"triangles": {
+				"extreme": 895,
+				"far": 1879,
+				"full": 3896
+			}
+		},
+		{
+			"label": "mountains640/DeckSubstrate",
+			"signature": "c8b9925c09582a4a86b7f1bb29ed6848298964256ece5297a76f3cc7ed48167f",
+			"triangles": {
+				"extreme": 12,
+				"far": 12,
+				"full": 12
+			}
+		},
+		{
+			"label": "mountains640/BrokenDeck",
+			"signature": "b5983852984bd4a972fa3f885f98cf7da629961fa3260e8be139bb6d2baa3fbc",
+			"triangles": {
+				"extreme": 72,
+				"far": 72,
+				"full": 72
+			}
+		}
+	],
+	"templates": 207,
+	"triangles": {
+		"extreme": 382460,
+		"far": 473731,
+		"full": 1498069
+	}
+}

@@ -10,6 +10,8 @@ const PAD_CLEARANCE:=0.0
 static var source_mesh:Mesh
 static var rig_meta:Dictionary={}
 static var skin_material:ShaderMaterial
+static var owner_cutoff: float = INF
+static var owner_area_evidence: Dictionary = {}
 
 static func _metadata()->Dictionary:
 	if rig_meta.is_empty():
@@ -40,6 +42,8 @@ static func _skin_material()->ShaderMaterial:
 	shader.code="""shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx, cull_back;
 uniform vec3 skin_tint : source_color = vec3(0.78, 0.58, 0.49);
+uniform vec4 owner_color : source_color = vec4(0.9059,0.6784,0.2588,1.0);
+uniform float paint_cutoff = 0.0;
 varying vec3 skin_point;
 void vertex() { skin_point = VERTEX; }
 float hash(vec3 p) { return fract(sin(dot(p,vec3(12.9898,78.233,39.425)))*43758.5453); }
@@ -54,7 +58,11 @@ float noise3(vec3 p) {
 void fragment() {
     float broad=noise3(skin_point*3.5)-0.5;
     float pores=noise3(skin_point*48.0)-0.5;
-    ALBEDO=skin_tint*(0.98+broad*0.055+pores*0.025);
+    vec3 natural=skin_tint*(0.98+broad*0.055+pores*0.025);
+    // A small wrist identification mark leaves the hand predominantly natural.
+    float paint=1.0-step(paint_cutoff,skin_point.x);
+    vec3 pigment=owner_color.rgb*(0.98+broad*0.025);
+    ALBEDO=mix(natural,pigment,paint);
     ROUGHNESS=0.86+pores*0.035;
     SPECULAR=0.12;
 }
@@ -62,6 +70,48 @@ void fragment() {
 	skin_material=ShaderMaterial.new()
 	skin_material.shader=shader
 	return skin_material
+
+static func _owner_paint_cutoff(mesh: Mesh) -> float:
+	if is_finite(owner_cutoff): return owner_cutoff
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var views: Array[Vector3] = [Vector3.ZERO,Vector3.LEFT,Vector3.RIGHT,Vector3.UP,Vector3.DOWN,Vector3.FORWARD,Vector3.BACK,Vector3(.3,.72,.62).normalized()]
+	var total := PackedFloat64Array();total.resize(views.size())
+	var triangles: Array = []
+	var low: float = INF
+	var high: float = -INF
+	for p in vertices:low=minf(low,p.x);high=maxf(high,p.x)
+	for i in range(0,indices.size(),3):
+		var points := PackedVector3Array([vertices[indices[i]],vertices[indices[i+1]],vertices[indices[i+2]]])
+		var cross: Vector3 = (points[1]-points[0]).cross(points[2]-points[0])
+		var area: float = cross.length()*.5
+		var normal: Vector3 = -cross.normalized()
+		var weights := PackedFloat64Array()
+		for j in range(views.size()):
+			var weight: float = 1.0 if views[j]==Vector3.ZERO else maxf(0,normal.dot(views[j]))
+			weights.append(weight);total[j]+=area*weight
+		triangles.append({"points":points,"weights":weights})
+	var volume = load("res://scripts/volume_models.gd")
+	for iteration in range(11):
+		var cut: float = (low+high)*.5
+		var areas := PackedFloat64Array();areas.resize(views.size())
+		for triangle in triangles:
+			var area: float = volume._livery_area(volume._livery_polygon(triangle.points,0,cut))
+			for j in range(views.size()):areas[j]+=area*float(triangle.weights[j])
+		var largest: float = 0.0
+		for j in [0,views.size()-1]:largest=maxf(largest,areas[j]/maxf(.00001,total[j]))
+		if largest <= .06:low=cut
+		else:high=cut
+	owner_cutoff=low
+	var fractions: Array[float] = []
+	var areas := PackedFloat64Array();areas.resize(views.size())
+	for triangle in triangles:
+		var area: float = volume._livery_area(volume._livery_polygon(triangle.points,0,owner_cutoff))
+		for j in range(views.size()):areas[j]+=area*float(triangle.weights[j])
+	for j in range(views.size()):fractions.append(areas[j]/maxf(.00001,total[j]))
+	owner_area_evidence={"cutoff":owner_cutoff,"source_and_six_sides_and_tabletop_owner_area":fractions,"fixed_secondary":"natural_skin","surface_and_tabletop_owner_area":[fractions[0],fractions[-1]]}
+	return owner_cutoff
 
 static func create(spec:Dictionary,team:int,_pose_only:bool=false)->Dictionary:
 	var root:Node3D=SCENE.instantiate()
@@ -73,7 +123,18 @@ static func create(spec:Dictionary,team:int,_pose_only:bool=false)->Dictionary:
 	# are shared, while Skeleton3D pose state remains per spawned hand.
 	skin.skeleton=NodePath("..")
 	skin.skin=skin.skin
-	skin.set_surface_override_material(0,_skin_material())
+	var owner: Color=spec.get("owner_color_override",load("res://scripts/volume_models.gd").player_color(team))
+	var paint: ShaderMaterial=_skin_material().duplicate()
+	paint.set_shader_parameter("owner_color",owner)
+	paint.set_shader_parameter("paint_cutoff",_owner_paint_cutoff(skin.mesh))
+	skin.set_surface_override_material(0,paint)
+	var owner_materials: Array[Material]=[paint]
+	var nail_source: Material=skin.mesh.surface_get_material(1)
+	if nail_source is StandardMaterial3D:
+		var nails: StandardMaterial3D=nail_source.duplicate()
+		nails.roughness=.75
+		skin.set_surface_override_material(1,nails)
+		owner_materials.append(nails)
 	var base_rotations:Array[Quaternion]=[]
 	for index in range(skeleton.get_bone_count()):
 		base_rotations.append(skeleton.get_bone_pose_rotation(index))
@@ -88,7 +149,7 @@ static func create(spec:Dictionary,team:int,_pose_only:bool=false)->Dictionary:
 		"dimensions":DIMENSIONS,"height":DIMENSIONS.y,
 		"footprint":Vector2(DIMENSIONS.x,DIMENSIONS.z),
 		"volumetric":true,"faction":str(spec.get("faction","sky")),
-		"art":"creator_hand","team":team,"clock":0.0,
+		"art":"creator_hand","team":team,"owner_color":owner,"owner_materials":owner_materials,"clock":0.0,
 		"pose_version":0,"pose_active":true,"recoil":Vector3.ZERO,
 		"base_bone_rotations":base_rotations,
 		"model_scale":1.0,"recoil_distance":0.0,

@@ -1,0 +1,1024 @@
+{
+  "units": {
+    "rivet_gunner": {
+      "name": "重装机枪兵",
+      "faction": "rivet",
+      "cost": 240,
+      "hp": 165,
+      "speed": 1.85,
+      "build_time": 8.6,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "rivet_gunner",
+      "crush": false,
+      "crushable": true,
+      "art": "gunner",
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/rivet_gunner_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/rivet_gunner_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/rivet_gunner_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/rivet_gunner_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/rivet_gunner_death_0.svg"
+      },
+      "formal_name": "重装机枪兵",
+      "description": "持续火力压制步兵，穿甲有限，无法对空。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "突击队就位，听候命令。",
+          "兄弟们到齐了！",
+          "说吧，往哪儿打？"
+        ],
+        "move": [
+          "迈开步子，跟上。",
+          "重锤向前，别掉队！",
+          "收到，咱们这就走！"
+        ],
+        "attack": [
+          "压住目标，开火。",
+          "压过去，给他们重击！",
+          "目标在前，全力开火。"
+        ],
+        "ready": [
+          "重锤步兵，整装待发！",
+          "装填完成，准备开打！",
+          "队伍到齐，等你发令！"
+        ],
+        "return": [
+          "兄弟们，回去检修。",
+          "收到，撤回集结！",
+          "先归队，再打下一场！"
+        ],
+        "combat": [
+          "火力别停，压住他们！",
+          "跟紧我，继续打！",
+          "守住阵线，顶住。"
+        ],
+        "under_attack": [
+          "敌人开火了，找掩护。",
+          "我们挨打了，帮一把！",
+          "别散开，稳住！"
+        ],
+        "death": [
+          "啊——！",
+          "兄弟，救我！",
+          "别…丢下我！",
+          "呃！顶…住…"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/rivet_gunner_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 16,
+      "armor_family": "infantry"
+    },
+    "rivet_grenadier": {
+      "name": "震荡榴弹兵",
+      "faction": "rivet",
+      "cost": 210,
+      "hp": 120,
+      "speed": 2.1,
+      "build_time": 7.5,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "rivet_grenadier",
+      "crush": false,
+      "crushable": true,
+      "art": "grenadier",
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/rivet_grenadier_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/rivet_grenadier_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/rivet_grenadier_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/rivet_grenadier_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/rivet_grenadier_death_0.svg"
+      },
+      "formal_name": "震荡榴弹兵",
+      "description": "曲射榴弹造成范围伤害，适合成群步兵与轻装目标。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "突击队就位，听候命令。",
+          "兄弟们到齐了！",
+          "说吧，往哪儿打？"
+        ],
+        "move": [
+          "迈开步子，跟上。",
+          "重锤向前，别掉队！",
+          "收到，咱们这就走！"
+        ],
+        "attack": [
+          "压住目标，开火。",
+          "压过去，给他们重击！",
+          "目标在前，全力开火。"
+        ],
+        "ready": [
+          "重锤步兵，整装待发！",
+          "装填完成，准备开打！",
+          "队伍到齐，等你发令！"
+        ],
+        "return": [
+          "兄弟们，回去检修。",
+          "收到，撤回集结！",
+          "先归队，再打下一场！"
+        ],
+        "combat": [
+          "火力别停，压住他们！",
+          "跟紧我，继续打！",
+          "守住阵线，顶住。"
+        ],
+        "under_attack": [
+          "敌人开火了，找掩护。",
+          "我们挨打了，帮一把！",
+          "别散开，稳住！"
+        ],
+        "death": [
+          "啊——！",
+          "兄弟，救我！",
+          "别…丢下我！",
+          "呃！顶…住…"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/rivet_grenadier_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 16,
+      "armor_family": "infantry"
+    },
+    "kestrel_gunner": {
+      "name": "班用机枪兵",
+      "faction": "kestrel",
+      "cost": 170,
+      "hp": 112,
+      "speed": 2.65,
+      "build_time": 6.1,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "kestrel_gunner",
+      "crush": false,
+      "crushable": true,
+      "art": "gunner",
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/kestrel_gunner_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/kestrel_gunner_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/kestrel_gunner_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/kestrel_gunner_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/kestrel_gunner_death_0.svg"
+      },
+      "formal_name": "班用机枪兵",
+      "description": "持续火力压制步兵，穿甲有限，无法对空。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "小队集结，听候指令。",
+          "小队就位，请下令。",
+          "队形完整，随时行动。"
+        ],
+        "move": [
+          "按令前进，保持队形。",
+          "目标确认，小队转移。",
+          "路线收到，稳步推进。"
+        ],
+        "attack": [
+          "集中火力，执行攻击。",
+          "目标锁定，协同开火。",
+          "按战术推进，压制目标。"
+        ],
+        "ready": [
+          "小队整备完毕。",
+          "人员到齐，等待任务。",
+          "步兵小队，准备就绪。"
+        ],
+        "return": [
+          "撤回整备，保持队形。",
+          "返回集结点。",
+          "任务结束，小队归队。"
+        ],
+        "combat": [
+          "火力覆盖，继续推进！",
+          "交替掩护，稳住阵线！",
+          "目标仍在，保持压制！"
+        ],
+        "under_attack": [
+          "小队遭袭，请求支援！",
+          "发现敌火，寻找掩体！",
+          "有人受伤，保持队形！"
+        ],
+        "death": [
+          "呃啊！",
+          "救…救我！",
+          "别…别停…",
+          "快撤！啊！"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/kestrel_gunner_portrait.svg",
+      "large_unit": false,
+      "tier": 1,
+      "armor": 12,
+      "armor_family": "infantry"
+    },
+    "kestrel_marksman": {
+      "name": "精确射手",
+      "faction": "kestrel",
+      "cost": 240,
+      "hp": 85,
+      "speed": 2.8,
+      "build_time": 8.6,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "kestrel_marksman",
+      "crush": false,
+      "crushable": true,
+      "art": "marksman",
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/kestrel_marksman_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/kestrel_marksman_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/kestrel_marksman_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/kestrel_marksman_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/kestrel_marksman_death_0.svg"
+      },
+      "formal_name": "精确射手",
+      "description": "远距离精确打击步兵，射速慢，对重型装甲效能低。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "小队集结，听候指令。",
+          "小队就位，请下令。",
+          "队形完整，随时行动。"
+        ],
+        "move": [
+          "按令前进，保持队形。",
+          "目标确认，小队转移。",
+          "路线收到，稳步推进。"
+        ],
+        "attack": [
+          "集中火力，执行攻击。",
+          "目标锁定，协同开火。",
+          "按战术推进，压制目标。"
+        ],
+        "ready": [
+          "小队整备完毕。",
+          "人员到齐，等待任务。",
+          "步兵小队，准备就绪。"
+        ],
+        "return": [
+          "撤回整备，保持队形。",
+          "返回集结点。",
+          "任务结束，小队归队。"
+        ],
+        "combat": [
+          "火力覆盖，继续推进！",
+          "交替掩护，稳住阵线！",
+          "目标仍在，保持压制！"
+        ],
+        "under_attack": [
+          "小队遭袭，请求支援！",
+          "发现敌火，寻找掩体！",
+          "有人受伤，保持队形！"
+        ],
+        "death": [
+          "呃啊！",
+          "救…救我！",
+          "别…别停…",
+          "快撤！啊！"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 12,
+      "portrait": "assets/cards/paper_infantry_revision/kestrel_marksman_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 12,
+      "armor_family": "infantry"
+    },
+    "kestrel_aa_infantry": {
+      "name": "防空导弹兵",
+      "faction": "kestrel",
+      "cost": 225,
+      "hp": 100,
+      "speed": 2.75,
+      "build_time": 8.0,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "kestrel_aa_infantry",
+      "crush": false,
+      "crushable": true,
+      "art": "aa_infantry",
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/kestrel_aa_infantry_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/kestrel_aa_infantry_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/kestrel_aa_infantry_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/kestrel_aa_infantry_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/kestrel_aa_infantry_death_0.svg"
+      },
+      "formal_name": "防空导弹兵",
+      "description": "专职远程防空，无法攻击地面目标。",
+      "domain": "ground",
+      "armor_class": "infantry",
+      "voices": {
+        "select": [
+          "小队集结，听候指令。",
+          "小队就位，请下令。",
+          "队形完整，随时行动。"
+        ],
+        "move": [
+          "按令前进，保持队形。",
+          "目标确认，小队转移。",
+          "路线收到，稳步推进。"
+        ],
+        "attack": [
+          "集中火力，执行攻击。",
+          "目标锁定，协同开火。",
+          "按战术推进，压制目标。"
+        ],
+        "ready": [
+          "小队整备完毕。",
+          "人员到齐，等待任务。",
+          "步兵小队，准备就绪。"
+        ],
+        "return": [
+          "撤回整备，保持队形。",
+          "返回集结点。",
+          "任务结束，小队归队。"
+        ],
+        "combat": [
+          "火力覆盖，继续推进！",
+          "交替掩护，稳住阵线！",
+          "目标仍在，保持压制！"
+        ],
+        "under_attack": [
+          "小队遭袭，请求支援！",
+          "发现敌火，寻找掩体！",
+          "有人受伤，保持队形！"
+        ],
+        "death": [
+          "呃啊！",
+          "救…救我！",
+          "别…别停…",
+          "快撤！啊！"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 12.5,
+      "portrait": "assets/cards/paper_infantry_revision/kestrel_aa_infantry_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 12,
+      "armor_family": "infantry"
+    },
+    "iron_marksman": {
+      "name": "长钉狙击兵",
+      "formal_name": "长钉狙击兵",
+      "faction": "iron",
+      "art": "marksman",
+      "cost": 255,
+      "hp": 90,
+      "speed": 2.2,
+      "build_time": 9.1,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "iron_marksman",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/iron_marksman_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/iron_marksman_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/iron_marksman_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/iron_marksman_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/iron_marksman_death_0.svg"
+      },
+      "description": "远距离精确打击步兵，射速慢，对重型装甲效能低。",
+      "voices": {
+        "select": [
+          "队伍齐整，放心交给我。",
+          "装备检查好了，请指示。"
+        ],
+        "move": [
+          "工具带齐，踏实往前走。",
+          "收到，我们稳稳过去。",
+          "跟好队伍，别落下战友。"
+        ],
+        "attack": [
+          "瞄准再打，别浪费弹药。",
+          "目标收到，稳稳拿下。",
+          "把阵线钉牢，开火！"
+        ],
+        "ready": [
+          "装备可靠，人员到齐。",
+          "备件和弹药，都检查过了。"
+        ],
+        "return": [
+          "回去检查装备。",
+          "队伍归队，一个也别落下。",
+          "收到，撤回整备。"
+        ],
+        "combat": [
+          "稳住阵线，照顾战友！",
+          "别急，瞄准再来！"
+        ],
+        "under_attack": [
+          "有敌火，先找掩体！",
+          "有人受伤，需要支援！",
+          "装备受损，帮我们掩护！"
+        ],
+        "death": [
+          "啊！战友…",
+          "救…救我！",
+          "呃…撑不住…",
+          "别…别停…"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 13,
+      "portrait": "assets/cards/paper_infantry_revision/iron_marksman_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 10,
+      "armor_family": "infantry"
+    },
+    "iron_mortar": {
+      "name": "轨道迫击炮兵",
+      "formal_name": "轨道迫击炮兵",
+      "faction": "iron",
+      "art": "mortar",
+      "cost": 300,
+      "hp": 100,
+      "speed": 1.9,
+      "build_time": 10.7,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "iron_mortar",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/iron_mortar_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/iron_mortar_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/iron_mortar_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/iron_mortar_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/iron_mortar_death_0.svg"
+      },
+      "description": "远程曲射压制集群，移动缓慢，需要近身保护。",
+      "voices": {
+        "select": [
+          "队伍齐整，放心交给我。",
+          "装备检查好了，请指示。"
+        ],
+        "move": [
+          "工具带齐，踏实往前走。",
+          "收到，我们稳稳过去。",
+          "跟好队伍，别落下战友。"
+        ],
+        "attack": [
+          "瞄准再打，别浪费弹药。",
+          "目标收到，稳稳拿下。",
+          "把阵线钉牢，开火！"
+        ],
+        "ready": [
+          "装备可靠，人员到齐。",
+          "备件和弹药，都检查过了。"
+        ],
+        "return": [
+          "回去检查装备。",
+          "队伍归队，一个也别落下。",
+          "收到，撤回整备。"
+        ],
+        "combat": [
+          "稳住阵线，照顾战友！",
+          "别急，瞄准再来！"
+        ],
+        "under_attack": [
+          "有敌火，先找掩体！",
+          "有人受伤，需要支援！",
+          "装备受损，帮我们掩护！"
+        ],
+        "death": [
+          "啊！战友…",
+          "救…救我！",
+          "呃…撑不住…",
+          "别…别停…"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 14,
+      "portrait": "assets/cards/paper_infantry_revision/iron_mortar_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 10,
+      "armor_family": "infantry"
+    },
+    "sky_storm": {
+      "name": "脉冲步兵",
+      "formal_name": "脉冲步兵",
+      "faction": "sky",
+      "art": "storm",
+      "cost": 290,
+      "hp": 78,
+      "speed": 3.0,
+      "build_time": 10.4,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "sky_storm",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/sky_storm_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/sky_storm_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/sky_storm_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/sky_storm_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/sky_storm_death_0.svg"
+      },
+      "description": "短程范围脉冲能穿透护甲并短暂干扰车辆；低生命需要掩护。",
+      "voices": {
+        "select": [
+          "标定完成，等待指令。",
+          "想象就绪，请指示。"
+        ],
+        "move": [
+          "坐标收到，正在接近。",
+          "调整阵列，前往目标。",
+          "路径确认，轻步前进。"
+        ],
+        "attack": [
+          "目标标定，集中能量。",
+          "锁定完成，开始攻击。",
+          "让想象成真，开火。"
+        ],
+        "ready": [
+          "感知阵列正常。",
+          "标定设备，准备就绪。"
+        ],
+        "return": [
+          "返回阵列，重新校准。",
+          "收到，撤回集结。",
+          "任务结束，回收设备。"
+        ],
+        "combat": [
+          "锁定稳定，继续压制！",
+          "能量聚焦，保持阵列！",
+          "目标还在，重新标定！"
+        ],
+        "under_attack": [
+          "阵列受击，寻找掩体！",
+          "敌火干扰，请求支援！",
+          "设备受损，保持联络！"
+        ],
+        "death": [
+          "啊！信号…",
+          "救…救我！",
+          "呃！别…",
+          "快撤…啊！"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/sky_storm_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 8,
+      "armor_family": "infantry"
+    },
+    "sky_aa_infantry": {
+      "name": "折翼导引兵",
+      "formal_name": "折翼导引兵",
+      "faction": "sky",
+      "art": "aa_infantry",
+      "cost": 275,
+      "hp": 72,
+      "speed": 3.0,
+      "build_time": 9.8,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "sky_aa_infantry",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/paper_infantry_revision/sky_aa_infantry_idle_0.svg",
+        "move": "res://assets/cards/paper_infantry_revision/sky_aa_infantry_move_0.svg",
+        "attack": "res://assets/cards/paper_infantry_revision/sky_aa_infantry_combat_0.svg",
+        "hit": "res://assets/cards/paper_infantry_revision/sky_aa_infantry_hit_0.svg",
+        "death": "res://assets/cards/paper_infantry_revision/sky_aa_infantry_death_0.svg"
+      },
+      "description": "专职远程防空，无法攻击地面目标。",
+      "voices": {
+        "select": [
+          "标定完成，等待指令。",
+          "想象就绪，请指示。"
+        ],
+        "move": [
+          "坐标收到，正在接近。",
+          "调整阵列，前往目标。",
+          "路径确认，轻步前进。"
+        ],
+        "attack": [
+          "目标标定，集中能量。",
+          "锁定完成，开始攻击。",
+          "让想象成真，开火。"
+        ],
+        "ready": [
+          "感知阵列正常。",
+          "标定设备，准备就绪。"
+        ],
+        "return": [
+          "返回阵列，重新校准。",
+          "收到，撤回集结。",
+          "任务结束，回收设备。"
+        ],
+        "combat": [
+          "锁定稳定，继续压制！",
+          "能量聚焦，保持阵列！",
+          "目标还在，重新标定！"
+        ],
+        "under_attack": [
+          "阵列受击，寻找掩体！",
+          "敌火干扰，请求支援！",
+          "设备受损，保持联络！"
+        ],
+        "death": [
+          "啊！信号…",
+          "救…救我！",
+          "呃！别…",
+          "快撤…啊！"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 13.5,
+      "portrait": "assets/cards/paper_infantry_revision/sky_aa_infantry_portrait.svg",
+      "large_unit": false,
+      "tier": 2,
+      "armor": 8,
+      "armor_family": "infantry"
+    },
+    "iron_rifle": {
+      "name": "钉枪兵",
+      "formal_name": "气动钉枪兵",
+      "faction": "iron",
+      "art": "rifle",
+      "cost": 105,
+      "hp": 85,
+      "speed": 2.4,
+      "build_time": 5,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "iron_rifle",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_rifle_idle.svg",
+        "move": "res://assets/cards/iron_rifle_move.svg",
+        "attack": "res://assets/cards/iron_rifle_attack.svg",
+        "hit": "res://assets/cards/iron_rifle_hit.svg",
+        "death": "res://assets/cards/iron_rifle_death.svg"
+      },
+      "description": "发射高速金属钉的基础步兵，擅长压制步兵，重型装甲需要反甲火力。",
+      "voices": {
+        "select": [
+          "队伍齐整，放心交给我。",
+          "装备检查好了，请指示。"
+        ],
+        "move": [
+          "工具带齐，踏实往前走。",
+          "收到，我们稳稳过去。",
+          "跟好队伍，别落下战友。"
+        ],
+        "attack": [
+          "瞄准再打，别浪费弹药。",
+          "目标收到，稳稳拿下。",
+          "把阵线钉牢，开火！"
+        ],
+        "ready": [
+          "装备可靠，人员到齐。",
+          "备件和弹药，都检查过了。"
+        ],
+        "return": [
+          "回去检查装备。",
+          "队伍归队，一个也别落下。",
+          "收到，撤回整备。"
+        ],
+        "combat": [
+          "稳住阵线，照顾战友！",
+          "别急，瞄准再来！"
+        ],
+        "under_attack": [
+          "有敌火，先找掩体！",
+          "有人受伤，需要支援！",
+          "装备受损，帮我们掩护！"
+        ],
+        "death": [
+          "啊！战友…",
+          "救…救我！",
+          "呃…撑不住…",
+          "别…别停…"
+        ]
+      },
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/iron_rifle_portrait.svg",
+      "large_unit": false,
+      "tier": 1,
+      "armor": 10,
+      "armor_family": "infantry"
+    },
+    "iron_engineer": {
+      "name": "铁道工程兵",
+      "formal_name": "铁道工程兵",
+      "faction": "iron",
+      "art": "engineer",
+      "cost": 165,
+      "hp": 65,
+      "speed": 2.3,
+      "build_time": 7,
+      "radius": 0.5,
+      "turn_speed": 360,
+      "producer": "barracks",
+      "requires": [],
+      "weapon": "",
+      "crush": false,
+      "crushable": true,
+      "domain": "ground",
+      "armor_class": "infantry",
+      "has_turret": false,
+      "fire_while_moving": false,
+      "animations": {
+        "idle": "res://assets/cards/iron_engineer_idle.svg",
+        "move": "res://assets/cards/iron_engineer_move.svg",
+        "attack": "res://assets/cards/iron_engineer_attack.svg",
+        "hit": "res://assets/cards/iron_engineer_hit.svg",
+        "death": "res://assets/cards/iron_engineer_death.svg"
+      },
+      "description": "维修与占领，并可在现场铺设铁路及岔道口；施工消耗资金。",
+      "voices": {
+        "select": [
+          "队伍齐整，放心交给我。",
+          "装备检查好了，请指示。"
+        ],
+        "move": [
+          "工具带齐，踏实往前走。",
+          "收到，我们稳稳过去。",
+          "跟好队伍，别落下战友。"
+        ],
+        "attack": [
+          "瞄准再打，别浪费弹药。",
+          "目标收到，稳稳拿下。",
+          "把阵线钉牢，开火！"
+        ],
+        "ready": [
+          "装备可靠，人员到齐。",
+          "备件和弹药，都检查过了。"
+        ],
+        "return": [
+          "回去检查装备。",
+          "队伍归队，一个也别落下。",
+          "收到，撤回整备。"
+        ],
+        "combat": [
+          "稳住阵线，照顾战友！",
+          "别急，瞄准再来！"
+        ],
+        "under_attack": [
+          "有敌火，先找掩体！",
+          "有人受伤，需要支援！",
+          "装备受损，帮我们掩护！"
+        ],
+        "death": [
+          "啊！战友…",
+          "救…救我！",
+          "呃…撑不住…",
+          "别…别停…"
+        ]
+      },
+      "repair_radius": 1.8,
+      "repair_rate": 12,
+      "voice_category": "infantry",
+      "logical_size": 1,
+      "vision_radius": 10,
+      "portrait": "assets/cards/paper_infantry_revision/iron_engineer_portrait.svg",
+      "large_unit": false,
+      "tier": 1,
+      "armor": 10,
+      "armor_family": "infantry"
+    }
+  },
+  "weapons": {
+    "rivet_gunner": {
+      "damage": 12,
+      "interval": 0.23,
+      "range": 6.6,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 24,
+      "damage_type": "ballistic",
+      "multipliers": {
+        "infantry": 1.25,
+        "armored": 0.28,
+        "building": 0.3
+      }
+    },
+    "rivet_grenadier": {
+      "damage": 62,
+      "interval": 2.6,
+      "range": 7.2,
+      "kind": "shell",
+      "blast": 1.15,
+      "speed": 30,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 55,
+      "damage_type": "explosive",
+      "aoe_falloff": "linear"
+    },
+    "kestrel_gunner": {
+      "damage": 10,
+      "interval": 0.22,
+      "range": 7,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 22,
+      "damage_type": "ballistic",
+      "multipliers": {
+        "infantry": 1.25,
+        "armored": 0.28,
+        "building": 0.3
+      }
+    },
+    "kestrel_marksman": {
+      "damage": 72,
+      "interval": 2.9,
+      "range": 11,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 30,
+      "damage_type": "ballistic",
+      "multipliers": {
+        "infantry": 1.25,
+        "armored": 0.28,
+        "building": 0.3
+      }
+    },
+    "kestrel_aa_infantry": {
+      "damage": 68,
+      "interval": 2.4,
+      "range": 11.5,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "air"
+      ],
+      "penetration": 70,
+      "damage_type": "explosive"
+    },
+    "iron_marksman": {
+      "damage": 84,
+      "interval": 3.2,
+      "range": 12,
+      "kind": "instant",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 36,
+      "damage_type": "ballistic",
+      "multipliers": {
+        "infantry": 1.25,
+        "armored": 0.28,
+        "building": 0.3
+      }
+    },
+    "iron_mortar": {
+      "damage": 80,
+      "interval": 3.8,
+      "range": 13,
+      "kind": "shell",
+      "blast": 1.5,
+      "speed": 16,
+      "targets": [
+        "ground"
+      ],
+      "penetration": 70,
+      "damage_type": "explosive",
+      "aoe_falloff": "linear"
+    },
+    "sky_storm": {
+      "damage": 22,
+      "interval": 1.4,
+      "range": 7,
+      "kind": "instant",
+      "blast": 0.8,
+      "speed": 30,
+      "targets": [
+        "ground",
+        "air"
+      ],
+      "penetration": 9999,
+      "damage_type": "electric",
+      "aoe_falloff": "linear",
+      "emp_vehicle_duration": 0.65,
+      "emp_air_duration": 0.65
+    },
+    "sky_aa_infantry": {
+      "damage": 62,
+      "interval": 2,
+      "range": 12.5,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 30,
+      "targets": [
+        "air"
+      ],
+      "penetration": 75,
+      "damage_type": "explosive"
+    },
+    "iron_rifle": {
+      "damage": 10,
+      "interval": 0.8,
+      "range": 5.2,
+      "kind": "shell",
+      "blast": 0,
+      "speed": 28,
+      "targets": [
+        "ground"
+      ],
+      "multipliers": {
+        "infantry": 1.15,
+        "armored": 0.6,
+        "building": 0.55
+      },
+      "penetration": 18,
+      "damage_type": "ballistic",
+      "trajectory": "nail"
+    }
+  }
+}

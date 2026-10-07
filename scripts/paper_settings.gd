@@ -2,6 +2,7 @@ extends Control
 class_name PaperSettings
 
 signal changed(kind: String, value: Variant)
+signal action(kind: String, value: Variant)
 signal closed
 
 const Paper = preload("res://scripts/paper_ui.gd")
@@ -16,9 +17,21 @@ var ambient_occlusion: CheckButton
 var shadows: CheckButton
 var fullscreen: CheckButton
 var debug_enabled: CheckButton
+var audio_browser_enabled: CheckButton
 var pitch: HSlider
 var pitch_label: Label
+var pitch_mode: OptionButton
+var dynamic_pitch_note: Label
 var close_button: Button
+var session_controls: VBoxContainer
+var save_button: Button
+var load_button: Button
+var new_game_button: Button
+var home_button: Button
+var wiki_button: Button
+var quit_button: Button
+var notice: Label
+var tabs: TabContainer
 var _panel: PanelContainer
 
 func _ready() -> void:
@@ -50,23 +63,43 @@ func _ready() -> void:
 	stack.add_theme_constant_override("separation", 10)
 	panel.add_child(stack)
 	stack.add_child(_label("设置  /  SETTINGS", 28))
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.mouse_force_pass_scroll_events = false
-	stack.add_child(scroll)
-	var content := VBoxContainer.new()
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 12)
-	scroll.add_child(content)
+	tabs = TabContainer.new()
+	tabs.name = "SettingsTabs"
+	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	preload("res://scripts/paper_tabs.gd").apply(tabs)
+	stack.add_child(tabs)
+	var content: VBoxContainer = _page("战局")
+	session_controls = VBoxContainer.new()
+	session_controls.add_theme_constant_override("separation", 8)
+	content.add_child(session_controls)
+	session_controls.add_child(_label("战局", 19))
+	var session_grid := GridContainer.new()
+	session_grid.columns = 2
+	session_grid.add_theme_constant_override("h_separation", 10)
+	session_grid.add_theme_constant_override("v_separation", 8)
+	session_controls.add_child(session_grid)
+	save_button = _session_button(session_grid, "保存战局 · F5", "save")
+	load_button = _session_button(session_grid, "读取存档 · F9", "load")
+	new_game_button = _session_button(session_grid, "开始新战局", "new_game")
+	wiki_button = _session_button(session_grid, "军团档案 · Wiki", "wiki")
+	home_button = _session_button(session_grid, "返回主菜单", "entry_home")
+	quit_button = _session_button(session_grid, "退出游戏", "quit")
+	session_controls.add_child(HSeparator.new())
+	notice = _label("", 14)
+	notice.name = "SessionNotice"
+	notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	notice.hide()
+	stack.add_child(notice)
+	content = _page("声音")
 	content.add_child(_label("声音", 19))
-	for item in [["master", "总音量"], ["music", "音乐"], ["sfx", "音效"], ["voice", "单位应答"]]:
+	for item in [["master", "总音量"], ["music", "音乐"], ["sfx", "音效"], ["voice", "单位应答"], ["commander", "指挥官播报"]]:
 		_add_volume(content, item[0], item[1])
 	mute_button = CheckButton.new(); mute_button.text = "全部静音"
 	content.add_child(mute_button)
 	mute_button.toggled.connect(func(value: bool): changed.emit("audio_mix", {"muted": value}))
 	content.add_child(HSeparator.new())
-	content.add_child(_label("画面与镜头", 19))
+	content = _page("画面")
+	content.add_child(_label("画面", 19))
 	quality = _option(content, "画面效果", ["完整效果", "均衡（默认）", "性能优先"])
 	quality.item_selected.connect(func(index: int): changed.emit("graphics_quality", ["native", "balanced", "performance"][index]))
 	resolution = _option(content, "3D 清晰度", ["100%（原生）", "85%", "75%"])
@@ -86,6 +119,13 @@ func _ready() -> void:
 	fullscreen = CheckButton.new(); fullscreen.text = "全屏"
 	content.add_child(fullscreen)
 	fullscreen.toggled.connect(func(value: bool): changed.emit("fullscreen", value))
+	content = _page("镜头")
+	content.add_child(_label("镜头", 19))
+	pitch_mode = _option(content, "俯角模式", ["动态（随缩放）", "固定俯角"])
+	pitch_mode.item_selected.connect(func(index: int): changed.emit("camera_pitch_mode", "dynamic" if index == 0 else "fixed"))
+	dynamic_pitch_note = _label("最大放大时为 10°，缩小时平滑升至 45°；远景保持 45°。", 13)
+	dynamic_pitch_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(dynamic_pitch_note)
 	var row := HBoxContainer.new(); content.add_child(row)
 	pitch_label = _label("镜头俯角 30°", 15); pitch_label.custom_minimum_size.x = 155
 	row.add_child(pitch_label)
@@ -94,15 +134,21 @@ func _ready() -> void:
 	row.add_child(pitch)
 	pitch.value_changed.connect(func(value: float): pitch_label.text = "镜头俯角 %.0f°" % value; changed.emit("pitch", value))
 	content.add_child(HSeparator.new())
+	content = _page("调试")
 	content.add_child(_label("调试（可选）", 19))
 	debug_enabled = CheckButton.new()
 	debug_enabled.name = "DebugEnabled"
 	debug_enabled.text = "启用调试面板"
 	content.add_child(debug_enabled)
 	debug_enabled.toggled.connect(func(value: bool): changed.emit("debug_enabled", value))
-	var debug_note := _label("开启后可按 F2 显示或收起详细指标。角落帧率始终显示。", 13)
+	var debug_note := _label("开启后可按 F2 显示或收起详细指标。对局显示帧率，加载时隐藏。", 13)
 	debug_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(debug_note)
+	audio_browser_enabled = CheckButton.new()
+	audio_browser_enabled.name = "AudioBrowserEnabled"
+	audio_browser_enabled.text = "启用 Wiki 音频浏览器（调试）"
+	content.add_child(audio_browser_enabled)
+	audio_browser_enabled.toggled.connect(func(value: bool): changed.emit("audio_browser_enabled", value))
 	close_button = Button.new(); close_button.text = "完成 · 返回  /  Esc"
 	close_button.custom_minimum_size.y = 44
 	stack.add_child(close_button)
@@ -111,10 +157,31 @@ func _ready() -> void:
 	_fit()
 	hide()
 
+func _page(caption: String) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.name = caption
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.mouse_force_pass_scroll_events = false
+	tabs.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 12)
+	scroll.add_child(content)
+	return content
+
+func _session_button(parent: Control, caption: String, kind: String) -> Button:
+	var button := Button.new()
+	button.text = caption
+	button.custom_minimum_size.y = 40
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.pressed.connect(func(): action.emit(kind, null))
+	parent.add_child(button)
+	return button
+
 func _add_volume(parent: Control, id: String, caption: String) -> void:
 	var row := HBoxContainer.new(); parent.add_child(row)
 	var label := _label(caption, 15); label.custom_minimum_size.x = 120; row.add_child(label)
-	var slider := HSlider.new(); slider.min_value = 0; slider.max_value = 100; slider.step = 1
+	var slider := HSlider.new(); slider.min_value = 0; slider.max_value = 200; slider.step = 1
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL; slider.custom_minimum_size.y = 26
 	row.add_child(slider)
 	var percent := _label("100%", 14); percent.custom_minimum_size.x = 52
@@ -139,8 +206,14 @@ func _label(text: String, font_size: int) -> Label:
 	return label
 
 func open(values: Dictionary) -> void:
+	show_notice("")
+	var in_match: bool = bool(values.get("in_match", false))
+	session_controls.visible = in_match
+	tabs.set_tab_hidden(0, not in_match)
+	tabs.current_tab = 0 if in_match else 1
+	save_button.disabled = not bool(values.get("can_save", false))
 	for id: String in sliders:
-		var value: float = clampf(float(values.get(id, 1.0)), 0.0, 1.0) * 100.0
+		var value: float = clampf(float(values.get(id, 1.0)), 0.0, 2.0) * 100.0
 		sliders[id].set_value_no_signal(value); percentages[id].text = "%d%%" % roundi(value)
 	mute_button.set_pressed_no_signal(bool(values.get("muted", false)))
 	quality.select(maxi(0, ["native", "balanced", "performance"].find(str(values.get("quality", "balanced")))))
@@ -151,12 +224,25 @@ func open(values: Dictionary) -> void:
 	shadows.set_pressed_no_signal(bool(values.get("shadows", true)))
 	fullscreen.set_pressed_no_signal(bool(values.get("fullscreen", false)))
 	debug_enabled.set_pressed_no_signal(bool(values.get("debug_enabled", false)))
-	pitch.set_value_no_signal(float(values.get("pitch", 30.0)))
-	pitch_label.text = "镜头俯角 %.0f°" % pitch.value
+	audio_browser_enabled.set_pressed_no_signal(bool(values.get("audio_browser_enabled", true)))
+	set_pitch_controls(str(values.get("pitch_mode", "dynamic")), float(values.get("pitch", 30.0)), float(values.get("effective_pitch", 30.0)))
 	show(); close_button.grab_focus()
 
 func close() -> void:
+	if not visible: return
 	hide(); closed.emit()
+
+func show_notice(message: String) -> void:
+	notice.text = message
+	notice.visible = not message.is_empty()
+
+func set_pitch_controls(mode: String, fixed_pitch: float, effective_pitch: float) -> void:
+	var dynamic: bool = mode != "fixed"
+	pitch_mode.select(0 if dynamic else 1)
+	dynamic_pitch_note.visible = dynamic
+	pitch.editable = not dynamic
+	pitch.set_value_no_signal(effective_pitch if dynamic else fixed_pitch)
+	pitch_label.text = ("动态俯角 %.0f°" if dynamic else "固定俯角 %.0f°") % pitch.value
 
 func _fit() -> void:
 	if _panel == null: return

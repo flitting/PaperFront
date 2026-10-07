@@ -6,7 +6,6 @@ extends RefCounted
 ## direct assignment to simulation.result. Ordinary startup does not run it.
 const SETTINGS_PATH := "user://settings.cfg"
 const EXTENSION_PATH := "res://assets/native/paper_front_kernels.gdextension"
-const OLD_VOICE_MANIFEST := "res://assets/audio/voices/manifest.json"
 const MUSIC_TRACKS := ["menu", "battle", "battle_forest", "battle_desert", "battle_snow", "battle_city", "battle_random_city", "battle_islands", "battle_campaign", "win", "lose", "draw"]
 
 static func run(owner_game: Node) -> int:
@@ -145,7 +144,7 @@ class RuntimeProbe extends RefCounted:
 	func resource_and_native_checks() -> void:
 		var identities: Dictionary = {}
 		var readable := true
-		for path: String in ["res://scripts/main.gd", "res://scripts/demo_runtime_validation.gd", "res://scripts/paper_audio.gd", "res://scripts/paper_music.gd", "res://scripts/paper_settings.gd", "res://data/rules.json", "res://assets/audio/music/manifest.json", "res://assets/audio/radio/manifest.json"]:
+		for path: String in ["res://scripts/main.gd", "res://scripts/demo_runtime_validation.gd", "res://scripts/paper_audio.gd", "res://scripts/paper_music.gd", "res://scripts/paper_settings.gd", "res://data/rules.json", "res://assets/audio/music/manifest.json", PaperAudio.VOICE_MANIFEST, PaperAudio.SFX_MANIFEST, PaperMusic.REVISION_MANIFEST]:
 			identities[path] = file_identity(path)
 			readable = not str(identities[path].sha256).is_empty() and readable
 		details.resources = identities
@@ -155,7 +154,8 @@ class RuntimeProbe extends RefCounted:
 		var lifetime: Dictionary = {}
 		if game.sim._kernels != null and game.sim._kernels.has_method("verify_container_lifetimes"):
 			lifetime = game.sim._kernels.verify_container_lifetimes()
-		var native_path: String = OS.get_executable_path().get_base_dir().path_join("libpaper_front_kernels.so") if exported else "res://assets/native/libpaper_front_kernels.so"
+		var native_filename: String = "paper_front_kernels.dll" if OS.has_feature("windows") else "libpaper_front_kernels.so"
+		var native_path: String = OS.get_executable_path().get_base_dir().path_join(native_filename) if exported else "res://assets/native/" + native_filename
 		details.native = {"loaded_extensions": loaded, "extension_open": extension != null and extension.is_library_open(),
 			"kernel_class": ClassDB.class_exists("PaperFrontKernels"), "kernel_instance": game.sim._kernels != null,
 			"library": file_identity(native_path), "lifetime_call": lifetime,
@@ -172,62 +172,55 @@ class RuntimeProbe extends RefCounted:
 			routes_ok = index >= 0 and send == ("Master" if name == PaperAudio.MASTER_BUS else PaperAudio.MASTER_BUS) and routes_ok
 		check(routes_ok and game.audio.music.player.bus == PaperAudio.MUSIC_BUS and game.audio.speech_player.bus == PaperAudio.VOICE_BUS, "four Demo buses route real music/response players through the Demo master", routing)
 		var music_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/music/manifest.json"))
+		var revision_music_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(PaperMusic.REVISION_MANIFEST))
 		var radio_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(PaperAudio.VOICE_MANIFEST))
 		var licenses: Dictionary = {}
 		var licenses_ok := true
 		for path: String in ["res://assets/audio/licenses/ESPEAK_GPL-3.0.txt", "res://assets/audio/licenses/ESPEAK_DEBIAN_COPYRIGHT.txt", "res://assets/audio/licenses/UNICODE-LICENSE.txt"]:
 			licenses[path] = file_identity(path)
 			licenses_ok = not str(licenses[path].sha256).is_empty() and licenses_ok
-		details.audio_provenance = {"music": music_manifest, "radio": radio_manifest, "license_files": licenses}
+		details.audio_provenance = {"music": music_manifest, "radio": radio_manifest, "music_revision": revision_music_manifest, "license_files": licenses}
 		check(music_manifest is Dictionary and music_manifest.get("license", "") == "CC0-1.0" and music_manifest.get("tracks", []).size() == 12, "music provenance identifies twelve project-authored CC0-1.0 tracks")
-		check(radio_manifest is Dictionary and radio_manifest.get("license", "") == "GPL-3.0-or-later" and radio_manifest.get("clips", []).size() == 20 and licenses_ok, "spoken radio provenance identifies GPL-3.0-or-later PCM with bundled engine and dictionary notices", licenses)
+		check(radio_manifest is Dictionary and not str(radio_manifest.get("license", "")).is_empty() and radio_manifest.get("clips", []).size() >= 288, "spoken class banks identify their actual provider provenance and generation terms", radio_manifest)
+		check(revision_music_manifest is Dictionary and revision_music_manifest.get("tracks", []).size() == 2 and not str(revision_music_manifest.get("license", "")).is_empty(), "menu and intense battle compositions record their actual generation provenance")
 		details.music = {}
-		check(game.audio.music.tracks.size() == 12, "all five music scenes and seven independent battlefield tracks load")
-		for track: String in MUSIC_TRACKS:
+		check(game.audio.music.tracks.size() == 14, "all scenes, seven battlefield themes and both combat levels load")
+		for track: String in game.audio.music.tracks:
 			var stream: Variant = game.audio.music.tracks.get(track)
 			var identity: Dictionary = pcm_identity(stream) if stream is AudioStreamWAV else {"missing": true}
-			identity.resource = file_identity("res://assets/audio/music/%s.wav" % track)
+			identity.resource = file_identity((PaperMusic.REVISION_MANIFEST.get_base_dir() if track in ["menu"] + PaperMusic.BATTLE_TRACKS else "res://assets/audio/music") + "/%s.wav" % track)
 			details.music[track] = identity
 			check(pcm_ok(stream, true), "bundled looping 16-bit PCM music: " + track, identity)
-		var radio_metadata: Dictionary = {}
-		if radio_manifest is Dictionary:
-			for clip: Dictionary in radio_manifest.get("clips", []):
-				radio_metadata[str(clip.get("faction", "")) + "/" + str(clip.get("action", ""))] = clip
-		var radio_ok: bool = game.audio.radio_bank.size() == 20 and radio_metadata.size() == 20
+		var radio_ok: bool = game.audio.radio_bank.size() >= 288 and game.audio.speech_clips.size() == 96
 		details.radio = {}
 		for faction: String in ["kestrel", "rivet", "iron", "sky"]:
-			for action_id: String in PaperAudio.RADIO_ACTIONS:
-				var key: String = faction + "/" + action_id
-				var stream: Variant = game.audio.radio_bank.get(key)
-				var clip: Dictionary = radio_metadata.get(key, {})
-				var words: String = str(clip.get("text", ""))
-				var captions: Array = game.audio.speech_clips.get(key, [])
-				radio_ok = pcm_ok(stream) and bool(clip.get("spoken_words", false)) and not words.is_empty() and str(clip.get("language", "")) == "cmn" and captions.size() == 1 and str(captions[0].get("text", "")) == words and radio_ok
-				var clip_identity: Dictionary = pcm_identity(stream) if stream is AudioStreamWAV else {"missing": true}
-				clip_identity.merge({"text": words, "spoken_words": clip.get("spoken_words", false), "language": clip.get("language", ""), "provenance": clip.get("provenance", {})})
-				details.radio[key] = clip_identity
-			game.audio.reset_field()
-			var spec := ""
-			for candidate: String in game.rules.units:
-				var definition: Dictionary = game.rules.units[candidate]
-				if definition.get("faction") == faction and not definition.get("voices", {}).get("select", []).is_empty(): spec = candidate; break
-			radio_ok = not spec.is_empty() and game.audio.play_unit_voice(spec, "select") and game.audio.speech_player.stream == game.audio.radio_bank.get(faction + "/select") and game.audio.speech_player.playing and radio_ok
-		check(radio_ok, "all twenty Mandarin radio PCM resources contain authored words and matching captions, and each faction plays its response stream")
+			for category: String in PaperAudio.RADIO_CATEGORIES:
+				for action_id: String in PaperAudio.RADIO_ACTIONS:
+					var key: String = faction + "/" + category + "/" + action_id
+					var clips: Array = game.audio.speech_clips.get(key, [])
+					radio_ok = clips.size() >= 3 and clips.size() <= 4 and radio_ok
+					var variants: Array = []
+					for clip: Dictionary in clips:
+						var stream: Variant = game.audio.radio_bank.get(str(clip.key))
+						var words: String = str(clip.get("text", ""))
+						radio_ok = pcm_ok(stream) and not words.is_empty() and not clip.get("provenance", {}).is_empty() and radio_ok
+						var identity: Dictionary = pcm_identity(stream) if stream is AudioStreamWAV else {"missing": true}
+						identity.merge({"text": words, "language": clip.get("language", "cmn"), "provenance": clip.get("provenance", {}), "variant": clip.get("variant", 0)})
+						variants.append(identity)
+					details.radio[key] = variants
+				game.audio.reset_field()
+				var spec := ""
+				for candidate: String in game.rules.units:
+					var definition: Dictionary = game.rules.units[candidate]
+					if definition.get("faction") == faction and game.audio.voice_category(candidate) == category: spec = candidate; break
+				radio_ok = not spec.is_empty() and game.audio.play_unit_voice(spec, "select") and game.audio.speech_player.stream == game.audio.radio_bank.get(str(game.audio.last_spoken_clip.get("key", ""))) and game.audio.speech_player.playing and radio_ok
+		check(radio_ok, "all faction/class/action PCM banks contain distinct authored words and exact clip captions, and every faction/class plays its selected response")
 		game.audio.reset_field()
-		var old_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(OLD_VOICE_MANIFEST))
-		var cached: Array[String] = []
-		var available: Array[String] = []
-		var old_count := 0
-		if old_manifest is Dictionary:
-			for clip: Dictionary in old_manifest.get("clips", []):
-				var path: String = str(clip.get("path", ""))
-				old_count += 1
-				if ResourceLoader.has_cached(path): cached.append(path)
-				if ResourceLoader.exists(path): available.append(path)
-		details.old_speech = {"metadata_clip_count": old_count, "cached_paths": cached, "available_paths": available,
-			"availability_policy": "excluded from exported templates; historical source files may remain in source-engine checks",
-			"static_pck_audit_still_required": true}
-		check(old_count > 0 and cached.is_empty() and game.audio.speech_cache.is_empty() and (not exported or available.is_empty()), "old online speech never loads; exported template exposes no old speech resource", details.old_speech)
+		var retired_available: Array[String] = []
+		for retired_path: String in ["res://assets/audio/radio/manifest.json", "res://assets/audio/voices/manifest.json", "res://assets/audio/radio/rivet_select.wav", "res://assets/audio/voices/iron_ship_frigate_select_01.wav"]:
+			if FileAccess.file_exists(retired_path) or ResourceLoader.exists(retired_path): retired_available.append(retired_path)
+		details.retired_speech = {"available_paths": retired_available, "runtime_cache_empty": game.audio.speech_cache.is_empty()}
+		check(retired_available.is_empty() and game.audio.speech_cache.is_empty(), "retired mechanical acknowledgements are removed and only new class banks load", details.retired_speech)
 
 	func settings_checks() -> void:
 		var opened: bool = press_named(game.hud.entry_menu, "设置 · 声音与画面")
@@ -312,6 +305,10 @@ class RuntimeProbe extends RefCounted:
 		check(game.quit_pending and not game.started and not game.audio.music.player.playing and game.audio.music.player.stream == null, "actual controlled quit guards shutdown and releases music playback")
 		exit_code = 0 if failures.is_empty() else 1
 		var executable: String = OS.get_executable_path()
+		details.data_paths = {"portable_feature": OS.has_feature("portable"), "user_data": OS.get_user_data_dir(),
+			"globalized_user": ProjectSettings.globalize_path("user://"), "cache": OS.get_cache_dir(),
+			"appdata": OS.get_environment("APPDATA"), "localappdata": OS.get_environment("LOCALAPPDATA"),
+			"temp": OS.get_environment("TEMP"), "tmp": OS.get_environment("TMP")}
 		var report: Dictionary = {"schema": 1, "scope": "opt-in actual main/PCK resource, audio routing, settings and settlement-menu smoke",
 			"opt_in_flag": "--verify-demo", "fixture_only": true,
 			"not_validated": ["economic/combat victory through normal play", "campaign completion", "pathfinding/transport regression", "performance on target integrated GPU", "physical audio output/listening quality", "pixel/visual acceptance"],

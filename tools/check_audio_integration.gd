@@ -2,6 +2,9 @@ extends SceneTree
 
 # Short source-scene integration: uses main.tscn's native frame/physics loop,
 # real WarSimulation movement/combat, and the ordinary selection/order paths.
+const REPORT_DEFAULT := "res://artifacts/revision_v8/audio_source_integration.json"
+var max_speech_count := 0
+var observed_voice_actions: Dictionary = {}
 var failures: Array[String] = []
 var seen_events: Dictionary = {}
 var engine_observed := false
@@ -23,6 +26,8 @@ func observe(seconds: float) -> void:
 		for event in scene.sim.events:
 			var kind := str(event.get("kind", ""))
 			seen_events[kind] = int(seen_events.get(kind, 0)) + 1
+		max_speech_count = maxi(max_speech_count, scene.audio.active_speech_count())
+		for slot: Dictionary in scene.audio.speech_slots.values(): observed_voice_actions[str(slot.action)] = true
 		for family in scene.audio.recent:
 			observed_families[family] = true
 		if scene.sim.entities.has(moving_id):
@@ -68,6 +73,8 @@ func run() -> void:
 	require(observed_families.has("fire_cannon"), "Actual tank fire never reached cannon audio family")
 	require(observed_families.has("fire_rifle"), "Actual infantry fire never reached rifle audio family")
 	require(observed_families.has("impact_medium"), "Actual projectile landing never reached medium impact audio")
+	require(max_speech_count <= PaperAudio.MAX_SPEECH_VOICES, "Real main combat exceeded the global speech limit")
+	require(observed_voice_actions.has("combat") or observed_voice_actions.has("under_attack"), "Real combat never dispatched a contextual unit voice")
 	# Spawn moving transport to guarantee active loops immediately before mute.
 	var harvester_pos: Vector2 = scene.standable_near(scene.focus + Vector2(0, 6))
 	var harvester_id: int = scene.sim.debug_spawn(0, "rivet_harvester", harvester_pos)
@@ -83,12 +90,17 @@ func run() -> void:
 	scene.started = false
 	await observe(1.2)
 	for player in scene.audio.engine_players: require(not player.playing, "Stopped scene retained vehicle loop")
-	scene.handle_action("restart", null)
+	await scene.handle_action("restart", null)
 	await observe(0.65)
 	require(scene.started, "Normal restart action did not restart match")
 	for player in scene.audio.engine_players: require(not player.playing, "Restart inherited old moving-vehicle loop")
-	var report := {"status":"PASS" if failures.is_empty() else "FAIL", "source_scene":"res://main.tscn", "mode":"handmade normal match; native main frame/physics loop with a short deterministic combat setup", "simulation_seconds":scene.sim.time, "max_actual_motion":max_motion, "engine_observed":engine_observed, "actual_events_observed_before_main_dispatch":seen_events, "audio_families_reached_via_main":observed_families.keys(), "checks":["normal source scene start", "normal box selection", "normal command path", "real simulation motion", "nearby vehicle loops", "real rifle/cannon fire and projectile impacts", "normal mute/unmute actions", "stopped match gate", "normal restart action", "normal quit cleanup"], "failures":failures}
-	var file := FileAccess.open("res://artifacts/visual_iteration/v44_reference_rebuild/audio/source_integration.json", FileAccess.WRITE)
+	var report := {"status":"PASS" if failures.is_empty() else "FAIL", "source_scene":"res://main.tscn", "mode":"handmade normal match; native main frame/physics loop with a short deterministic combat setup", "simulation_seconds":scene.sim.time, "max_actual_motion":max_motion, "engine_observed":engine_observed, "max_simultaneous_speech":max_speech_count, "voice_actions_reached_via_main":observed_voice_actions.keys(), "actual_events_observed_before_main_dispatch":seen_events, "audio_families_reached_via_main":observed_families.keys(), "checks":["normal source scene start", "normal box selection", "normal command path", "real simulation motion", "nearby vehicle loops", "real rifle/cannon fire and projectile impacts", "normal mute/unmute actions", "stopped match gate", "normal restart action", "normal quit cleanup"], "failures":failures}
+	var report_path: String = REPORT_DEFAULT
+	var args: PackedStringArray = OS.get_cmdline_user_args()
+	var report_arg: int = args.find("--audio-report")
+	if report_arg >= 0 and report_arg + 1 < args.size(): report_path = args[report_arg + 1]
+	DirAccess.make_dir_recursive_absolute(report_path.get_base_dir())
+	var file := FileAccess.open(report_path, FileAccess.WRITE)
 	if file: file.store_string(JSON.stringify(report, "  "))
 	file = null
 	print("AUDIO_SOURCE_INTEGRATION ", JSON.stringify(report))

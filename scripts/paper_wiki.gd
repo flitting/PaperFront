@@ -4,6 +4,7 @@ class_name PaperWiki
 signal closed
 
 const Catalog = preload("res://scripts/wiki_catalog.gd")
+const AudioPanel = preload("res://scripts/audio_browser.gd")
 const Preview = preload("res://scripts/wiki_model_preview.gd")
 const Paper = preload("res://scripts/paper_ui.gd")
 const INK := Color("392c21")
@@ -13,6 +14,13 @@ const BLUE := Color("2865a5")
 const RED := Color("bb4034")
 
 var rules: Dictionary = {}
+var audio_owner: PaperAudio
+var audio_browser_enabled := true
+var audio_tab_active := false
+var audio_button: Button
+var equipment_button: Button
+var audio_browser: Control
+var equipment_body: Control
 var selected_id := ""
 var current_entries: Array[Dictionary] = []
 var entry_buttons: Dictionary = {}
@@ -28,6 +36,12 @@ var detail_scroll: ScrollContainer
 var detail_box: VBoxContainer
 var description_label: Label
 var preview: Control
+var preview_grid: GridContainer
+var model_panel_node: Control
+var comparison_previews: Array[Control] = []
+var color_buttons: Array[CheckButton] = []
+var comparison_colors: Array[Color] = [Color("e7ad42"),Color("df7860")]
+const COMPARISON_PALETTE = [["琥珀","e7ad42"],["赤红","df7860"],["湛蓝","6498df"],["草绿","9bb85a"],["紫罗兰","af80d1"],["白","f2eee2"]]
 var rotation_button: Button
 var table_sections: Array[Dictionary] = []
 var displayed_rows: Array[Dictionary] = []
@@ -56,10 +70,14 @@ func _ready() -> void:
 	var heading_text:=_label("军团档案  /  WIKI",30)
 	heading_text.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	heading.add_child(heading_text)
-	heading.add_child(_label("单位 · 建筑 · 工业装备",16))
+	equipment_button = _button("装备档案", func(): set_audio_tab(false))
+	heading.add_child(equipment_button)
+	audio_button = _button("音频浏览器 · 调试", func(): set_audio_tab(true))
+	heading.add_child(audio_button)
 	back_button=_button("返回菜单  Esc",close_catalog)
 	heading.add_child(back_button)
 	var body:=HBoxContainer.new()
+	equipment_body = body
 	body.size_flags_vertical=Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation",20)
 	page.add_child(body)
@@ -103,6 +121,7 @@ func _ready() -> void:
 	content.add_theme_constant_override("separation",10)
 	body.add_child(content)
 	var model_panel:=_panel(Color("e7d1aa"))
+	model_panel_node = model_panel
 	model_panel.custom_minimum_size.y=330
 	content.add_child(model_panel)
 	var model_box:=VBoxContainer.new()
@@ -119,22 +138,34 @@ func _ready() -> void:
 	formal_label=_label("",15)
 	formal_label.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 	names.add_child(formal_label)
-	rotation_button=_button("暂停旋转",func():preview.toggle_rotation();_sync_rotation_button())
+	rotation_button=_button("暂停旋转",_toggle_comparison_rotation)
 	model_heading.add_child(rotation_button)
-	model_heading.add_child(_button("复位",func():preview.reset_rotation()))
-	preview=Preview.new()
-	preview.custom_minimum_size.y=230
-	preview.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-	preview.size_flags_vertical=Control.SIZE_EXPAND_FILL
-	model_box.add_child(preview)
-	preview.rotation_active_changed.connect(func(_active):_sync_rotation_button())
-	var model_footer:=HBoxContainer.new()
-	model_box.add_child(model_footer)
-	var hint:=_label("拖动展台旋转 · 纸片步兵保留原剪影",13)
-	hint.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-	model_footer.add_child(hint)
-	model_footer.add_child(_button("橙黄识别",func():preview.set_preview_team(0)))
-	model_footer.add_child(_button("青色识别",func():preview.set_preview_team(1)))
+	model_heading.add_child(_button("复位",func():
+		for display in comparison_previews: display.reset_rotation()))
+	var swatches := HFlowContainer.new()
+	swatches.add_theme_constant_override("h_separation",8)
+	swatches.add_theme_constant_override("v_separation",2)
+	model_box.add_child(swatches)
+	swatches.add_child(_label("势力颜色 · 多选对照",13))
+	for item in COMPARISON_PALETTE:
+		var choice := CheckButton.new()
+		choice.text = item[0]
+		choice.add_theme_font_size_override("font_size",13)
+		choice.add_theme_color_override("font_color",Color(item[1]).darkened(.22))
+		choice.button_pressed = Color(item[1]) in comparison_colors
+		choice.toggled.connect(func(_pressed): _select_comparison_colors())
+		swatches.add_child(choice)
+		color_buttons.append(choice)
+	preview_grid = GridContainer.new()
+	preview_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	preview_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	preview_grid.add_theme_constant_override("h_separation",8)
+	preview_grid.add_theme_constant_override("v_separation",6)
+	model_box.add_child(preview_grid)
+	_rebuild_comparison_previews()
+	var hint:=_label("拖动旋转 · 阵营辅色与橙黄徽章保留 · 势力色独立对照",13)
+	hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	model_box.add_child(hint)
 	var info_panel:=_panel(Color("f4e7cc"))
 	info_panel.size_flags_vertical=Control.SIZE_EXPAND_FILL
 	content.add_child(info_panel)
@@ -146,6 +177,13 @@ func _ready() -> void:
 	detail_box.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	detail_box.add_theme_constant_override("separation",7)
 	detail_scroll.add_child(detail_box)
+	audio_browser = AudioPanel.new()
+	audio_browser.name = "AudioBrowser"
+	page.add_child(audio_browser)
+	audio_browser.hide()
+	audio_browser.set_enabled(audio_browser_enabled)
+	audio_browser.configure(audio_owner, rules)
+	audio_button.visible = audio_browser_enabled
 	faction_filter.item_selected.connect(func(_i):_rebuild_entries())
 	kind_filter.item_selected.connect(func(_i):_rebuild_entries())
 	search.text_changed.connect(func(_text):_rebuild_entries())
@@ -154,10 +192,32 @@ func _ready() -> void:
 	resized.connect(_resize_preview)
 	_resize_preview()
 
+func configure_audio_browser(owner_audio: PaperAudio, enabled: bool) -> void:
+	audio_owner = owner_audio
+	audio_browser_enabled = enabled
+	if not is_node_ready(): return
+	audio_button.visible = enabled
+	audio_browser.configure(owner_audio, rules)
+	audio_browser.set_enabled(enabled)
+	if not enabled and audio_tab_active: set_audio_tab(false)
+
+func set_audio_tab(active: bool) -> void:
+	if not is_node_ready(): return
+	audio_tab_active = active and audio_browser_enabled
+	if not audio_tab_active: audio_browser.set_session_active(false)
+	equipment_body.visible = not audio_tab_active
+	audio_browser.visible = audio_tab_active
+	audio_browser.set_session_active(audio_tab_active and is_visible_in_tree())
+	for display in comparison_previews: display.set_preview_active(is_visible_in_tree() and not audio_tab_active)
+	equipment_button.add_theme_stylebox_override("normal", _style(Color("ecd092") if not audio_tab_active else CREAM))
+	audio_button.add_theme_stylebox_override("normal", _style(Color("ecd092") if audio_tab_active else CREAM))
+	if audio_tab_active: audio_browser.search.grab_focus()
+
 func configure(config: Dictionary) -> void:
 	rules=config.duplicate(true)
 	if is_node_ready():
 		_refresh_factions()
+		if audio_browser != null: audio_browser.configure(audio_owner, rules)
 		_rebuild_entries(selected_id if not selected_id.is_empty() else "kestrel_hq")
 
 func _refresh_factions() -> void:
@@ -182,15 +242,17 @@ func _faction_short_name(id: String) -> String:
 
 func open_catalog(initial_id: String="") -> void:
 	if rules.is_empty():return
+	set_audio_tab(false)
 	show()
 	_rebuild_entries(initial_id if not initial_id.is_empty() else selected_id if not selected_id.is_empty() else "kestrel_hq")
-	preview.set_preview_active(true)
+	for display in comparison_previews: display.set_preview_active(true)
 	search.grab_focus()
 
 func close_catalog() -> void:
 	if not visible:return
+	audio_browser.set_session_active(false)
 	hide()
-	preview.clear_preview()
+	for display in comparison_previews: display.clear_preview()
 	closed.emit()
 
 func _input(event: InputEvent) -> void:
@@ -203,12 +265,14 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _sync_active() -> void:
-	if preview!=null:preview.set_preview_active(is_visible_in_tree())
+	if audio_browser != null: audio_browser.set_session_active(is_visible_in_tree() and audio_tab_active)
+	if preview!=null:
+		for display in comparison_previews: display.set_preview_active(is_visible_in_tree() and not audio_tab_active)
 
 func _resize_preview() -> void:
 	if preview==null:return
 	# Leave a useful lower reading area at the minimum supported window.
-	preview.get_parent().get_parent().custom_minimum_size.y=clampf(size.y*.44,330,430)
+	model_panel_node.custom_minimum_size.y=clampf(size.y*(.61 if comparison_previews.size()>3 else .44),330,610)
 
 func _rebuild_entries(preferred: String="") -> void:
 	for child in list_box.get_children():list_box.remove_child(child);child.queue_free()
@@ -218,12 +282,12 @@ func _rebuild_entries(preferred: String="") -> void:
 	for entry in current_entries:
 		var id: String=entry.id
 		var faction_name: String=rules.factions[entry.spec.faction].name
-		var title: String=_faction_short_name(str(entry.spec.faction))+" · "+str(entry.spec.name)
+		var title: String=Catalog.tier_label(entry.spec)+" · "+_faction_short_name(str(entry.spec.faction))+" · "+str(entry.spec.name)
 		var button:=_button(title,func():select_entry(id))
 		button.name=id
 		button.custom_minimum_size=Vector2(228,55)
 		button.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-		button.tooltip_text=faction_name+" · "+("单位" if entry.kind=="unit" else "建筑")+"\n"+str(entry.spec.get("description",""))
+		button.tooltip_text=faction_name+" · "+("单位" if entry.kind=="unit" else "建筑")+"\n"+Catalog.tier_label(entry.spec)+" · "+Catalog.tier_description(entry.spec)+"\n"+str(entry.spec.get("description",""))
 		button.add_theme_font_size_override("font_size",17)
 		list_box.add_child(button)
 		entry_buttons[id]=button
@@ -231,12 +295,48 @@ func _rebuild_entries(preferred: String="") -> void:
 	if not entry_buttons.has(pick) and not current_entries.is_empty():pick=current_entries[0].id
 	if current_entries.is_empty():
 		selected_id=""
-		preview.clear_preview()
+		for display in comparison_previews: display.clear_preview()
 		title_label.text="没有匹配的资料"
 		formal_label.text="试试其它名称、用途或筛选条件"
 		_clear_details()
 		rotation_button.disabled=true
 	else:select_entry(pick)
+
+func _select_comparison_colors() -> void:
+	var colors: Array[Color] = []
+	for index in range(color_buttons.size()):
+		if color_buttons[index].button_pressed: colors.append(Color(COMPARISON_PALETTE[index][1]))
+	if colors.is_empty():
+		color_buttons[0].set_pressed_no_signal(true)
+		colors.append(Color(COMPARISON_PALETTE[0][1]))
+	comparison_colors = colors
+	_rebuild_comparison_previews()
+	if not selected_id.is_empty(): select_entry(selected_id)
+	_resize_preview()
+
+func _rebuild_comparison_previews() -> void:
+	var rotating: bool = true if preview == null else bool(preview.rotation_active)
+	for display in comparison_previews:
+		preview_grid.remove_child(display)
+		display.queue_free()
+	comparison_previews.clear()
+	preview_grid.columns = comparison_colors.size() if comparison_colors.size()<=3 else 2 if comparison_colors.size()==4 else 3
+	for color in comparison_colors:
+		var display := Preview.new()
+		display.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		display.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		preview_grid.add_child(display)
+		display.custom_minimum_size = Vector2(120,160 if comparison_colors.size()>3 else 230)
+		display.set_preview_color(color)
+		display.set_rotation_active(rotating)
+		display.rotation_active_changed.connect(func(_active):_sync_rotation_button())
+		comparison_previews.append(display)
+	preview = comparison_previews[0]
+
+func _toggle_comparison_rotation() -> void:
+	var active: bool = not bool(preview.rotation_active)
+	for display in comparison_previews: display.set_rotation_active(active)
+	_sync_rotation_button()
 
 func select_entry(id: String) -> void:
 	var kind: String="unit" if rules.units.has(id) else "building"
@@ -244,10 +344,11 @@ func select_entry(id: String) -> void:
 	if spec.is_empty():return
 	selected_id=id
 	title_label.text=str(spec.name)
-	formal_label.text=str(rules.factions[spec.faction].name)+" / "+str(spec.get("formal_name",spec.name))+" / "+("单位" if kind=="unit" else "建筑")
+	formal_label.text=str(rules.factions[spec.faction].name)+" / "+str(spec.get("formal_name",spec.name))+" / "+("单位" if kind=="unit" else "建筑")+" / "+Catalog.tier_label(spec)
 	title_label.add_theme_color_override("font_color",_faction_color(str(spec.faction)))
-	preview.set_entry(spec,kind,0)
-	preview.set_preview_active(is_visible_in_tree())
+	for display in comparison_previews:
+		display.set_entry(spec,kind,0)
+		display.set_preview_active(is_visible_in_tree() and not audio_tab_active)
 	rotation_button.disabled=false
 	_sync_rotation_button()
 	for key in entry_buttons:

@@ -16,19 +16,20 @@ func run() -> void:
 	require(not rules.is_empty(), "Expanded rules must load")
 	var manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PaperAudio.VOICE_MANIFEST))
 	var clips: Dictionary = {}
-	for clip in manifest.clips:
-		clips[str(clip.faction) + "/" + str(clip.action)] = clip
-		require(ResourceLoader.exists(str(clip.path)), "Missing synthesized WAV " + str(clip.path))
-		var stream: AudioStreamWAV = load(str(clip.path))
-		require(stream != null and stream.mix_rate == 22050 and stream.get_length() > 0.25, "Invalid PCM speech " + str(clip.path))
-		require(clip.provenance.type == "offline_formant_synthesized_speech" and not clip.provenance.human_recording and not clip.provenance.online_service, "Speech provenance must identify native offline synthesis")
-	for spec in rules.units:
-		# All four factions use short semantic Mandarin acknowledgements.
-		# The unit name remains in the caption; its spoken words come from the
-		# same faction/action manifest that identifies the offline PCM asset.
-		for action_id in rules.units[spec].voices:
-			var key: String = str(rules.units[spec].faction) + "/" + str(action_id)
-			require(clips.has(key) and not str(clips[key].text).is_empty(), "Unit action has no semantic Mandarin dialogue: " + key)
+	for clip: Dictionary in manifest.clips:
+		var key: String = str(clip.faction) + "/" + str(clip.category) + "/" + str(clip.action)
+		if not clips.has(key): clips[key] = []
+		clips[key].append(clip)
+		var path: String = str(clip.get("file", clip.get("path", "")))
+		require(ResourceLoader.exists(path), "Missing synthesized WAV " + path)
+		var stream: AudioStreamWAV = load(path)
+		require(stream != null and stream.mix_rate == 22050 and stream.get_length() > 0.25, "Invalid PCM speech " + path)
+		require(clip.has("provenance") and not str(clip.provenance.get("type", "")).is_empty(), "Speech records its actual synthesis provenance")
+	for faction: String in ["rivet", "kestrel", "iron", "sky"]:
+		for category: String in PaperAudio.RADIO_CATEGORIES:
+			for action_id: String in PaperAudio.RADIO_ACTIONS:
+				var key: String = faction + "/" + category + "/" + action_id
+				require(clips.has(key) and clips[key].size() >= 3, "Every class/action has three actual Mandarin speech variants: " + key)
 	var sound := PaperAudio.new()
 	root.add_child(sound)
 	await process_frame
@@ -36,7 +37,7 @@ func run() -> void:
 	sound.unit_caption.connect(func(text: String, _duration: float): caption_text = text)
 	require(sound.play_unit_voice("kestrel_tank", "select"), "A selected unit must speak its own dialogue")
 	require(sound.speech_player.playing and sound.speech_player.bus == PaperAudio.VOICE_BUS, "Speech requires a separate audio player and bus")
-	require(caption_text.ends_with(str(clips["kestrel/select"].text)), "The audible dialogue must have a matching subtitle")
+	require(caption_text.ends_with(str(sound.last_spoken_clip.text)), "The audible dialogue must have a matching subtitle")
 	var active_stream: AudioStream = sound.speech_player.stream
 	require(not sound.play_unit_voice("rivet_tank", "move") and sound.speech_player.stream == active_stream, "Rapid orders must not overlap or replace speech during cooldown")
 	require(not sound.play_unit_voice("kestrel_fighter", "return") and not sound.pending_speech.is_empty(), "A background return response must wait for the current spoken order")
@@ -107,7 +108,7 @@ func finish() -> void:
 	await process_frame
 	await create_timer(.2).timeout
 	if failures.is_empty():
-		print("faction_ui_audio_tests: ", checks, " checks PASS; Chinese speech coverage, PCM/provenance, separate voice pool, subtitles, aviation UI and sky selection")
+		print("faction_ui_audio_tests: ", checks, " checks PASS; Chinese faction/class/variant speech coverage, PCM/provenance, bounded voice pool, subtitles, aviation UI and sky selection")
 		quit(0)
 	else:
 		for failure in failures: push_error(failure)

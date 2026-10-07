@@ -22,6 +22,7 @@ var angle: float = 0.0
 var auto_rotate: bool = true
 var rotation_speed: float = 0.20
 var preview_team: int = 0
+var preview_color: Color = Color.TRANSPARENT
 var current_spec: Dictionary = {}
 var current_kind: String = ""
 var is_volumetric: bool = false
@@ -117,6 +118,7 @@ func set_entry(spec: Dictionary, kind: String, team: int = 0) -> void:
 	_ensure_scene()
 	_release_model()
 	current_spec = spec.duplicate(true)
+	if preview_color.a > 0.0: current_spec.owner_color_override = preview_color
 	current_kind = "building" if kind in ["building", "buildings"] else "unit"
 	preview_team = clampi(team, 0, 1)
 	angle = 0.0
@@ -139,7 +141,7 @@ func set_entry(spec: Dictionary, kind: String, team: int = 0) -> void:
 		var graphic := MeshInstance3D.new()
 		graphic.name = "OriginalPaperCard"
 		var texture_path: String = _paper_factory._texture_path(current_spec, "idle")
-		graphic.mesh = _paper_factory._card(str(current_spec.faction) + "_" + str(current_spec.art) + "_idle", dimensions.x, dimensions.y, texture_path, preview_team)
+		graphic.mesh = _paper_factory._card(str(current_spec.faction) + "_" + str(current_spec.art) + "_idle", dimensions.x, dimensions.y, texture_path, preview_team, preview_color)
 		graphic.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		model_node.add_child(graphic)
 		model_data = {"root": model_node, "meshes": [graphic], "volumetric": false, "team": preview_team, "texture_path": texture_path}
@@ -262,6 +264,16 @@ func get_model_bounds(rotated: bool = false) -> AABB:
 func get_preview_bounds() -> AABB:
 	return rotation_bounds
 
+
+func set_preview_color(color: Color) -> void:
+	if preview_color.is_equal_approx(color): return
+	preview_color = color
+	if current_spec.is_empty(): return
+	var previous_angle: float = angle
+	set_entry(current_spec,current_kind,preview_team)
+	angle = previous_angle
+	rotation_pivot.rotation.y = angle
+	_request_redraw()
 
 func set_preview_team(team: int) -> void:
 	team = clampi(team, 0, 1)

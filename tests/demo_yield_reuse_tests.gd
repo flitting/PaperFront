@@ -20,13 +20,13 @@ var checks:=0
 var failures: Array[String]=[]
 var rows: Array[Dictionary]=[]
 var output: String="res://artifacts/demo_20261004/navigation/yield_reuse.json"
-var expect_reuse:=false
+var expect_reuse:=true
 func _initialize()->void:call_deferred("run")
 func check(ok: bool,label: String)->void:
 	checks+=1
 	if not ok:failures.append(label)
 func run()->void:
-	var args:=OS.get_cmdline_user_args();expect_reuse="--expect-reuse" in args
+	var args:=OS.get_cmdline_user_args();expect_reuse=not ("--expect-baseline" in args)
 	for i in range(args.size()-1):
 		if args[i]=="--output":output=args[i+1]
 	for native_backend in [false,true]:two_tanks(native_backend)
@@ -83,6 +83,6 @@ func two_tanks(native_backend: bool)->void:
 	check(completed_at>=0,"two real tanks complete the original move within unchanged 20sim seconds")
 	check(violations==0,"every two-tank actual stride/position and pair margin is legal")
 	check(sim.yield_origin_jobs==0 if expect_reuse else sim.yield_origin_jobs>0,"already validated yield retreat avoids new origin AStar jobs only in reuse variant")
-	check(sim._path_in_flight<=2 and sim._avoidance_probes>=0 and sim._yield_requests>=0 and max_admin<750,"original worker/probe/request/admin budgets remain bounded")
+	check(sim._path_in_flight<=Sim.PATH_IN_FLIGHT and sim._avoidance_probes>=0 and sim._yield_requests>=0 and max_admin<750,"configured worker/probe/request/admin budgets remain bounded")
 	rows.append({"backend":"native" if native_backend else "script","completed_at":completed_at,"assignments":sim.assignments,"yield_origin_jobs":sim.yield_origin_jobs,"navigation":sim.navigation_stats.duplicate(),"static_pair_violations":violations,"max_local_us":max_local,"max_admin_us":max_admin,"direct_path_installed":direct_installed,"old_request_retained":old_request_retained,"prior_inflight":prior_inflight,"final_inflight":sim._path_in_flight})
 	sim=null

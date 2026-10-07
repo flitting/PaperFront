@@ -51,7 +51,7 @@ func check_faction_menu() -> void:
 	hud.show_menu(true)
 	await settle()
 	var ids: Array[String] = ["kestrel", "rivet", "iron", "sky"]
-	var names: Array[String] = ["正典军团", "重锤军团", "铁钉同盟", "天翼教团"]
+	var names: Array[String] = ["正典军团", "重锤军团", "长钉军团", "天翼教团"]
 	expect(hud.faction_buttons.size() == 4, "Pregame setup offers all four playable factions")
 	for index in ids.size():
 		var id := ids[index]
@@ -71,24 +71,24 @@ func check_faction_menu() -> void:
 	expect(hud.selected_faction() == "iron" and hud.faction_buttons.iron.button_pressed, "Restoring a saved faction updates its visible card")
 	hud.select_faction("unknown-faction")
 	expect(hud.selected_faction() == "iron", "An unknown saved faction never corrupts the active selection")
-	var expected_modes: Array[String] = ["forest", "desert", "snow", "city", "random_city", "islands"]
+	var expected_modes: Array[String] = ["forest", "desert", "snow", "city", "random_city", "islands", "symmetric"]
 	var map_entries: Array[Dictionary] = Battlefields.entries(false)
-	expect(not hud.debug_menu_enabled and hud.map_option.item_count == 6, "Pregame setup defaults to exactly six public battlefields with debug disabled")
-	expect(map_entries.size() == expected_modes.size(), "The public catalogue retains all six 320 battlefields")
+	expect(not hud.debug_menu_enabled and hud.map_option.item_count == 7, "Pregame setup defaults to seven public battlefields including the symmetric land map with debug disabled")
+	expect(map_entries.size() == expected_modes.size(), "The public catalogue retains the six large battlefields and the compact symmetric map")
 	for index in range(map_entries.size()):
 		var entry: Dictionary = map_entries[index]
-		expect(index < expected_modes.size() and str(entry.id) == expected_modes[index] and int(entry.size) == 320, "The public catalogue preserves its battlefield ID and dimensions: " + str(entry.id))
-		expect(index < hud.map_option.item_count and str(hud.map_option.get_item_metadata(index)) == str(entry.id) and hud.map_option.get_item_text(index).contains(str(entry.name)) and hud.map_option.get_item_text(index).contains("320×320"), "Each public battlefield preserves its visible ID, name and dimensions: " + str(entry.id))
+		expect(index < expected_modes.size() and str(entry.id) == expected_modes[index] and int(entry.size) == (192 if entry.id == "symmetric" else 320), "The public catalogue preserves its battlefield ID and dimensions: " + str(entry.id))
+		expect(index < hud.map_option.item_count and str(hud.map_option.get_item_metadata(index)) == str(entry.id) and hud.map_option.get_item_text(index).contains(str(entry.name)) and hud.map_option.get_item_text(index).contains("%d×%d" % [entry.size,entry.size]), "Each public battlefield preserves its visible ID, name and dimensions: " + str(entry.id))
 	for old_mode: String in ["handmade", "random", "mountains", "mountains640", "dev", "unknown-map"]:
 		hud.select_map("snow")
 		hud.select_map(old_mode)
 		expect(hud.selected_map() == "forest", "Unavailable saved menu selections fall back to forest: " + old_mode)
 	hud.set_debug_available(true)
-	expect(hud.map_option.item_count == 7, "Enabling debug adds only the compact test battlefield")
+	expect(hud.map_option.item_count == 8, "Enabling debug adds only the compact test battlefield")
 	hud.select_map("dev")
 	expect(hud.selected_map() == "dev" and hud.map_option.get_item_text(hud.map_option.selected).contains("48×48"), "The dev battlefield becomes selectable after enabling debug")
 	hud.set_debug_available(false)
-	expect(hud.selected_map() == "forest" and hud.map_option.item_count == 6, "Disabling debug removes the dev selection and returns to forest")
+	expect(hud.selected_map() == "forest" and hud.map_option.item_count == 7, "Disabling debug removes the dev selection and returns to forest")
 	hud.seed_input.text = "12345"
 	var start: Button
 	for candidate: Button in hud.menu.find_children("", "Button", true, false):

@@ -24,7 +24,7 @@ func run() -> void:
 				setup.opponent_rows[i].difficulty.select(i)
 			var options: Dictionary = setup.options("kestrel")
 			check(options.players == players and options.slots.size() == players, "player count creates exactly matching slots")
-			check(options.slots[0] == {"faction": "kestrel", "control": "human", "difficulty": "normal"}, "human slot preserves selected faction")
+			check(options.slots[0] == {"faction": "kestrel", "control": "human", "difficulty": "normal", "color": PaperHUD.PLAYER_COLORS[0].to_html(false)}, "human slot preserves selected faction and independent default color")
 			for index: int in 3:
 				check(setup.opponent_rows[index].row.visible == (index < players - 1), "only participating opponent rows are shown")
 			for index: int in range(1, players):
@@ -32,6 +32,10 @@ func run() -> void:
 	for mode: String in ["handmade", "random", "mountains", "mountains640", "dev"]:
 		hud.select_map(mode)
 		check(hud.selected_map() == "forest" and not setup.players_option.disabled and setup.player_count() == 4, "unavailable menu map falls back to forest and preserves participant preference: " + mode)
+	hud.select_map("symmetric")
+	check(hud.selected_map() == "symmetric" and setup.players_option.disabled and setup.player_count() == 2 and setup.options("iron").slots.size() == 2, "public symmetric battlefield fixes the match to its two real starts")
+	hud.select_map("forest")
+	check(setup.player_count() == 4, "switching away from symmetric battlefield restores multiplayer preference")
 	hud.set_debug_available(true)
 	hud.select_map("dev")
 	check(hud.selected_map() == "dev" and setup.players_option.disabled and setup.player_count() == 2 and setup.options("iron").slots.size() == 2, "opted-in dev battlefield enforces its actual two starts")
@@ -39,7 +43,7 @@ func run() -> void:
 	check(hud.selected_map() == "forest" and not setup.players_option.disabled and setup.player_count() == 4, "disabling debug returns to forest and restores the public participant preference")
 	hud.select_map("islands")
 	check(setup.player_count() == 4, "public participant preference survives a temporary dev selection")
-	var saved: Dictionary = {"players": 3, "slots": [{"faction": "sky", "control": "human", "difficulty": "normal"}, {"faction": "iron", "control": "ai", "difficulty": "hard"}, {"faction": "kestrel", "control": "ai", "difficulty": "easy"}]}
+	var saved: Dictionary = {"players": 3, "slots": [{"faction": "sky", "control": "human", "difficulty": "normal", "color":"e7ad42"}, {"faction": "iron", "control": "ai", "difficulty": "hard", "color":"41c7c6"}, {"faction": "kestrel", "control": "ai", "difficulty": "easy", "color":"af80d1"}]}
 	setup.restore(saved)
 	check(setup.options("sky") == saved, "saved participant factions and difficulties restore exactly")
 	var requested: Array = []

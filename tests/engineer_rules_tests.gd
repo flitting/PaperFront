@@ -2,6 +2,7 @@ extends SceneTree
 
 const Sim = preload("res://tests/rule_test_simulation.gd")
 const Rules = preload("res://scripts/rules_loader.gd")
+const LegacyRivet = preload("res://tests/legacy_rivet_construction.gd")
 var config: Dictionary
 var checks: int = 0
 var failures: Array[String] = []
@@ -13,6 +14,8 @@ func _initialize() -> void:
 		push_error("Engineer rule fixture is invalid: " + str(Rules.errors))
 		quit(1)
 		return
+	# This suite deliberately preserves outpost-era snapshot behavior.
+	config = LegacyRivet.adapt(config)
 	_test_headquarters_limit()
 	_test_capture_and_exclusions()
 	_test_capture_production_refunds()
@@ -228,7 +231,7 @@ func _test_outpost_without_headquarters() -> void:
 	var outpost: int = _wait_for_outpost(sim, pos)
 	if outpost >= 0:
 		_tick(sim, float(config.buildings.rivet_outpost.build_time) + 0.1)
-	_check(outpost >= 0 and sim.build(0, "rivet_power").is_empty(), "a completed engineer outpost restores normal building authorization")
+	_check(outpost >= 0 and sim.build(0, "rivet_power").is_empty(), "historical completed outpost restores normal building authorization")
 
 
 func _test_builder_loss_selection() -> void:

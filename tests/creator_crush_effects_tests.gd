@@ -25,7 +25,7 @@ func run() -> void:
 		world.sync(.01, [])
 		sim._kill_entity(ordinary, true)
 		world.sync(.01, [])
-		check(world.ghosts.size() == 1, "ordinary tank retains its normal death presentation")
+		check(world.ghosts.is_empty() and world.effects.any(func(effect): return effect.kind=="death_blast") and world.effects.any(func(effect): return effect.kind=="debris"), "ordinary tank uses explosion and detached geometry")
 		sim.events.clear()
 		world.sync(2.6, [])
 		var hand: int = sim._spawn(0, "sky_creator_hand", Vector2(22, 28), true)
@@ -55,7 +55,7 @@ func run() -> void:
 		check(not world.models[replacement].has("creator_crushed"), "pooled targets cannot inherit crush death flags")
 		sim._kill_entity(replacement, true)
 		world.sync(.01, [])
-		check(world.ghosts.size() == 1, "ordinary death after pooled crush still uses normal presentation")
+		check(world.ghosts.is_empty() and world.effects.any(func(effect): return effect.kind=="death_blast"), "ordinary death after pooled crush still uses explosion presentation")
 		sim.events.clear()
 		world.sync(2.6, [])
 		# A nonlethal strike must not mark a later unrelated death as a crush.

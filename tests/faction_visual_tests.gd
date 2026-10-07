@@ -83,7 +83,7 @@ func run() -> void:
 	var configured_paper:int=rules.units.values().filter(func(spec):return spec.art in ["rifle","anti","engineer","demolition"]).size()
 	expect(total==rules.units.size()+rules.buildings.size()-configured_paper,"all configured vehicle and building models must remain solid")
 	var comparisons: Array[Dictionary] = SILHOUETTES.new().run(scene,rules)
-	expect(comparisons.size()==24,"all corresponding solid and paper roles must have silhouette comparisons")
+	expect(comparisons.size()==22,"all remaining corresponding solid and paper roles must have silhouette comparisons after merging Rivet bases")
 	for comparison in comparisons:
 		expect(comparison["pass"],"Faction geometry too similar: "+str(comparison.key)+" silhouette="+str(comparison.get("silhouette_mean",0.0))+" gray="+str(comparison.get("gray_mean",0.0)))
 	# Actual renderer keeps aircraft in the sky while marks stay on the ground.

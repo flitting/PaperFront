@@ -53,7 +53,7 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 			_positive(radii, "default", "$.economy.construction_radii", issues, false)
 			for raw_role: Variant in radii:
 				var role: String = str(raw_role)
-				if role not in ["default", "hq", "power", "refinery", "barracks", "factory", "tower", "tech", "wall", "barricade", "outpost", "repair", "command", "airfield", "shipyard"]:
+				if role not in ["default", "hq", "power", "refinery", "barracks", "factory", "tower", "tech", "wall", "barricade", "outpost", "repair", "command", "airfield", "shipyard", "drill", "rail", "rail_junction"]:
 					issues.append("$.economy.construction_radii.%s: unknown building role" % role)
 				elif role != "default":
 					_positive(radii, role, "$.economy.construction_radii", issues, true)
@@ -90,23 +90,34 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 			if category == "factions":
 				for key: String in ["name", "mark"]:
 					_text(spec, key, prefix, issues)
+				if spec.has("building_method") and spec.building_method not in ["hq", "engineer"]:
+					issues.append("%s.building_method: expected hq or engineer" % prefix)
 				if spec.has("traits"):
 					if not spec.traits is Dictionary:
 						issues.append("%s.traits: expected an object" % prefix)
 					else:
-						for key: String in ["damage_reduction", "regen_delay", "regen_fraction_per_second", "cohesion_radius", "cohesion_min_allies", "cohesion_damage_bonus", "breakthrough_distance", "breakthrough_window", "breakthrough_damage_bonus"]:
+						# Old snapshot keys remain readable but no longer affect gameplay.
+						for key: String in ["regen_delay", "regen_fraction_per_second"]:
 							if spec.traits.has(key): _positive(spec.traits, key, prefix + ".traits", issues, false)
-						for key: String in ["damage_reduction", "regen_fraction_per_second", "cohesion_damage_bonus", "breakthrough_damage_bonus"]:
+						for key: String in ["regen_fraction_per_second"]:
 							if _number(spec.traits.get(key)) and float(spec.traits[key]) > 1.0: issues.append("%s.traits.%s: expected a ratio no greater than 1" % [prefix, key])
-						if spec.traits.has("cohesion_min_allies") and _number(spec.traits.cohesion_min_allies) and float(spec.traits.cohesion_min_allies) != floorf(float(spec.traits.cohesion_min_allies)): issues.append("%s.traits.cohesion_min_allies: expected a whole number" % prefix)
 				continue
 			if category == "weapons":
+				if spec.has("penetration"):
+					_positive(spec,"penetration",prefix,issues,true)
+					if _number(spec.penetration) and (float(spec.penetration)!=floorf(float(spec.penetration)) or float(spec.penetration)>9999): issues.append(prefix+".penetration: expected integer 0..9999")
+				if spec.has("aoe_falloff") and spec.aoe_falloff!="linear": issues.append(prefix+".aoe_falloff: expected linear")
+				if spec.has("friendly_fire") and not spec.friendly_fire is bool: issues.append(prefix+".friendly_fire: expected boolean")
 				for key: String in ["damage", "interval", "range"]:
 					_positive(spec, key, prefix, issues, false)
 				_positive(spec, "blast", prefix, issues, true)
-				_positive(spec, "speed", prefix, issues, spec.get("kind") == "instant")
-				if spec.get("kind") not in ["instant", "shell"]:
-					issues.append("%s.kind: expected instant or shell" % prefix)
+				_positive(spec, "speed", prefix, issues, spec.get("kind") in ["instant", "laser", "beam"])
+				if spec.get("kind") not in ["instant", "shell", "laser", "beam"]:
+					issues.append("%s.kind: expected instant, shell, laser or beam" % prefix)
+				if spec.has("trajectory"):
+					if str(spec.trajectory) not in ["gravity_bomb","nail"] or spec.get("kind") != "shell": issues.append("%s.trajectory: expected gravity_bomb or nail shell" % prefix)
+					if str(spec.trajectory)=="gravity_bomb":
+						for field in ["gravity","inherited_velocity"]: _positive(spec,field,prefix,issues,field=="inherited_velocity")
 				if spec.has("targets"):
 					_domains(spec.targets, prefix + ".targets", issues)
 				if spec.has("multipliers"):
@@ -118,6 +129,10 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 				if bool(spec.get("execute_building", false)) and (spec.get("kind") != "instant" or not _number(spec.get("blast")) or float(spec.get("blast", 0.0)) != 0.0):
 					issues.append("%s.execute_building: requires a direct instant weapon" % prefix)
 				continue
+			if spec.has("tier") and (not _number(spec.tier) or float(spec.tier)!=floorf(float(spec.tier)) or int(spec.tier)<0 or int(spec.tier)>3): issues.append("%s.tier: expected integer 0..3" % prefix)
+			if spec.has("armor"):
+				_positive(spec,"armor",prefix,issues,true)
+				if _number(spec.armor) and (float(spec.armor)!=floorf(float(spec.armor)) or float(spec.armor)>9999): issues.append(prefix+".armor: expected integer 0..9999")
 			for key: String in ["name", "faction", "art"]:
 				_text(spec, key, prefix, issues)
 			for key: String in ["cost", "hp", "build_time"]:
@@ -146,7 +161,11 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 			var weapon: Variant = spec.get("weapon")
 			if not weapon is String or (not str(weapon).is_empty() and not weapons.has(weapon)):
 				issues.append("%s.weapon: unknown weapon '%s'" % [prefix, str(weapon)])
+			if spec.has("secondary_weapon") and (not spec.secondary_weapon is String or not weapons.has(str(spec.secondary_weapon))):
+				issues.append("%s.secondary_weapon: unknown independent weapon" % prefix)
 			if category == "units":
+				if spec.has("roster_hidden") and not spec.roster_hidden is bool:issues.append(prefix+".roster_hidden: expected boolean")
+				if spec.has("naval_role") and spec.naval_role not in ["basic","transport","aa","heavy","support","carrier","submarine","amphibious"]:issues.append(prefix+".naval_role: unknown naval role")
 				if spec.has("max_active"):
 					_positive(spec, "max_active", prefix, issues, false)
 					if _number(spec.max_active) and float(spec.max_active) != floorf(float(spec.max_active)):
@@ -163,7 +182,7 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 						_positive(spec, key, prefix, issues, false)
 					if _number(spec.get("ammo_capacity")) and float(spec.ammo_capacity) != floor(float(spec.ammo_capacity)):
 						issues.append("%s.ammo_capacity: expected a whole number" % prefix)
-					if spec.get("producer") != "airfield" or spec.get("crush", false) or spec.get("crushable", false):
+					if spec.get("producer") not in ["airfield","carrier"] or (spec.get("producer")=="carrier" and not bool(spec.get("internal_only",false))) or spec.get("crush", false) or spec.get("crushable", false):
 						issues.append("%s: aircraft require an airfield producer and cannot crush or be crushable" % prefix)
 				elif spec.get("producer") == "airfield":
 					issues.append("%s.producer: airfield can only produce aircraft" % prefix)
@@ -176,7 +195,7 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 						issues.append("%s.transport_capacity: expected a whole number" % prefix)
 					var ground_carrier: bool = spec.get("domain", "ground") == "ground" and spec.get("art") in ["scout", "transport"]
 					var air_carrier: bool = spec.get("domain", "ground") == "air" and spec.get("art") == "air_transport" and str(spec.get("weapon", "")).is_empty()
-					var naval_carrier: bool = spec.get("domain", "ground") == "naval" and spec.get("art") == "naval_transport" and str(spec.get("weapon", "")).is_empty()
+					var naval_carrier: bool = spec.get("domain", "ground") == "naval" and spec.get("art") in ["naval_transport","naval_hovercraft"] and str(spec.get("weapon", "")).is_empty()
 					if _number(spec.get("transport_capacity")) and float(spec.transport_capacity) > 0.0 and not ground_carrier and not air_carrier and not naval_carrier:
 						issues.append("%s.transport_capacity: expected a personnel carrier or unarmed transport aircraft" % prefix)
 				for key: String in ["speed", "radius", "turn_speed"]:
@@ -194,11 +213,12 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 				if spec.get("fire_while_moving", false) and (not spec.get("has_turret", false) or str(weapon).is_empty()) and spec.get("domain", "ground") != "naval":
 					issues.append("%s.fire_while_moving: requires a turret and weapon" % prefix)
 				var producer: String = str(spec.get("producer", ""))
-				if producer not in ["barracks", "factory", "airfield", "shipyard"] or not buildings.has(faction + "_" + producer):
+				if producer not in ["barracks", "factory", "airfield", "shipyard","amphibious","carrier"] or (producer=="carrier" and not bool(spec.get("internal_only",false))) or (producer=="amphibious" and not (_has_producer(buildings,faction,"factory") and _has_producer(buildings,faction,"shipyard"))) or (producer not in ["amphibious","carrier"] and not _has_producer(buildings, faction, producer)):
 					issues.append("%s.producer: missing faction producer '%s'" % [prefix, producer])
-				elif not buildings[faction + "_" + producer] is Dictionary or buildings[faction + "_" + producer].get("role") != producer or buildings[faction + "_" + producer].get("faction") != faction:
-					issues.append("%s.producer: expected own faction's %s building" % [prefix, producer])
 			else:
+				if spec.has("rebuildable"):
+					if not spec.rebuildable is bool: issues.append("%s.rebuildable: expected a boolean" % prefix)
+					if spec.get("role") != "hq": issues.append("%s.rebuildable: only headquarters may enable rebuilding" % prefix)
 				if spec.get("domain", "ground") not in ["ground", "naval"] or (spec.get("domain", "ground") == "naval" and spec.get("role") != "shipyard"):
 					issues.append("%s.domain: only shipyards may use the naval building surface" % prefix)
 				_positive(spec, "size", prefix, issues, false)
@@ -206,7 +226,25 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 					issues.append("%s.size: footprint must be an integer number of cells" % prefix)
 				if not _number(spec.get("power")):
 					issues.append("%s.power: expected a finite numeric supply/demand value" % prefix)
-				if spec.get("role") not in ["hq", "power", "refinery", "barracks", "factory", "tower", "tech", "wall", "barricade", "outpost", "repair", "command", "airfield", "shipyard"]:
+				if spec.has("local_power") or spec.has("local_power_radius"):
+					_positive(spec, "local_power", prefix, issues, false)
+					_positive(spec, "local_power_radius", prefix, issues, false)
+					if spec.get("role") not in ["hq", "barracks"]: issues.append("%s.local_power: only headquarters or barracks bases may supply local power" % prefix)
+				for key: String in ["production_roles", "prerequisite_roles"]:
+					if not spec.has(key): continue
+					if not spec[key] is Array or spec[key].is_empty():
+						issues.append("%s.%s: expected a nonempty array of producer roles" % [prefix, key])
+						continue
+					var seen_roles: Dictionary = {}
+					var allowed_roles: Array[String] = ["barracks", "factory", "airfield", "shipyard"]
+					if key == "prerequisite_roles": allowed_roles.append("hq")
+					for role: Variant in spec[key]:
+						if role not in allowed_roles or seen_roles.has(str(role)):
+							issues.append("%s.%s: expected unique supported producer roles" % [prefix, key])
+						seen_roles[str(role)] = true
+					if spec.get("role") != "hq" and not (key == "prerequisite_roles" and spec.get("role") == "barracks"):
+						issues.append("%s.%s: only headquarters and barracks bases may alias these roles" % [prefix, key])
+				if spec.get("role") not in ["hq", "power", "refinery", "barracks", "factory", "tower", "tech", "wall", "barricade", "outpost", "repair", "command", "airfield", "shipyard", "drill", "rail", "rail_junction"]:
 					issues.append("%s.role: unknown building role" % prefix)
 				if spec.get("role") == "shipyard":
 					if spec.get("domain", "ground") == "ground":
@@ -219,9 +257,12 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 					if _number(spec.get("aircraft_capacity")) and float(spec.aircraft_capacity) != floor(float(spec.aircraft_capacity)):
 						issues.append("%s.aircraft_capacity: expected a whole number" % prefix)
 				if spec.get("role") == "repair":
-					for key: String in ["repair_radius", "repair_rate"]:
-						_positive(spec, key, prefix, issues, false)
+					if spec.has("service_rate"):
+						_positive(spec, "service_rate", prefix, issues, false)
+					else:
+						for key: String in ["repair_radius", "repair_rate"]: _positive(spec, key, prefix, issues, false)
 				if spec.has("vision_bonus"): _positive(spec, "vision_bonus", prefix, issues, true)
+				if spec.has("construction_radius"): _positive(spec, "construction_radius", prefix, issues, true)
 				if not spec.get("expands") is bool:
 					issues.append("%s.expands: expected a boolean" % prefix)
 			_validate_animations(spec, category == "units", prefix, check_assets, issues)
@@ -229,6 +270,15 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 	for id: Variant in buildings:
 		_check_cycle(str(id), buildings, visit, [], issues)
 	return issues
+
+
+static func _has_producer(buildings: Dictionary, faction: String, role: String) -> bool:
+	for info: Variant in buildings.values():
+		if not info is Dictionary or str(info.get("faction", "")) != faction: continue
+		if str(info.get("role", "")) == role: return true
+		var roles: Variant = info.get("production_roles", [])
+		if roles is Array and role in roles: return true
+	return false
 
 
 static func _domains(value: Variant, prefix: String, issues: Array[String]) -> void:

@@ -73,3 +73,12 @@ func refresh() -> void:
 	if fps == _last_fps: return
 	_last_fps = fps
 	fps_label.text = "%d FPS" % fps
+
+func set_loading(active: bool) -> void:
+	# Hide the whole paper chip, including its background, before loading draws.
+	screen.visible = not active
+	if active:
+		update_timer.stop()
+	else:
+		refresh()
+		update_timer.start()

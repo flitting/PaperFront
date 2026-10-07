@@ -126,6 +126,7 @@ func _observe_rendered_frame() -> void:
 	if active_case.is_empty() or not is_instance_valid(game) or not bool(game.get("loading")): return
 	var screen = game.loading_screen
 	_check(screen.screen.visible, str(active_case.name) + " loading screen must be visible")
+	_check(not game.hud.fps_label.is_visible_in_tree() and not game.performance_overlay.screen.visible, str(active_case.name) + " loading must hide FPS and its paper chip")
 	var fraction: float = float(screen.progress_bar.value)
 	var stage: String = str(screen.stage_label.text)
 	_check(fraction + 0.01 >= previous_progress, str(active_case.name) + " progress must be monotonic")
@@ -172,6 +173,7 @@ func _observe_rendered_frame() -> void:
 func _validate_match(success: bool, mode: String, faction: String, size: int) -> void:
 	_check(success, str(active_case.name) + " match must start successfully")
 	_check(not game.loading and not game.loading_screen.screen.visible, str(active_case.name) + " loading screen must close")
+	_check(game.hud.fps_label.is_visible_in_tree() and game.performance_overlay.screen.visible, str(active_case.name) + " finished loading restores FPS")
 	_check(game.started and game.hud.is_started, str(active_case.name) + " match must become active")
 	_check(game.world != null and game.world.landscape != null, str(active_case.name) + " world must be initialized")
 	_check(str(game.sim.map.mode) == mode and int(game.sim.map.size) == size and int(game.sim.map.seed) == 73026, str(active_case.name) + " map/seed must match the chosen setup")

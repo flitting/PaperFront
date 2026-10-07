@@ -3,6 +3,7 @@ extends Node3D
 
 # Original painted miniature tabletop scenery. Simulation is read-only here: every
 # navigable surface samples MapData, while water, props and cut faces are art.
+const CAMERA_OCCLUSION = preload("res://scripts/camera_occlusion.gd")
 const BRIDGE_CRAFT = preload("res://scripts/bridge_craft.gd")
 const SCENERY_SCALE = preload("res://scripts/scenery_scale.gd")
 const CLIFF_CRAFT = preload("res://scripts/cliff_craft.gd")
@@ -14,6 +15,8 @@ const FOREGROUND_GROVE = preload("res://scripts/foreground_grove.gd")
 const CONTEXT_PROPS = preload("res://scripts/contextual_props.gd")
 const BIOME_SCENERY = preload("res://scripts/biome_scenery.gd")
 const ENVIRONMENT_MODELS = preload("res://scripts/city_environment_models.gd")
+const SCENERY_LOD = preload("res://scripts/scenery_mesh_lod.gd")
+const MODEL_LOD = preload("res://scripts/model_lod.gd")
 const CHUNK: int = 32
 const PROP_CHUNK: int = 16
 const ENVIRONMENT_CHUNK: int = 32
@@ -22,6 +25,9 @@ const WATER_DEPTH: float = 2.65
 const LOAD_YIELD_BUDGET_USEC: int = 24000
 static var _terrain_cache: Dictionary = {}
 var bridge_visuals: Dictionary = {}
+var bridge_ground_nodes: Dictionary = {}
+var _bridge_ground_cells: Dictionary = {}
+var _bridge_alive: Dictionary = {}
 var ruin_visuals: Dictionary = {}
 var tree_visuals: Dictionary = {}
 var _tree_cells: Dictionary = {}
@@ -58,9 +64,76 @@ var _mine_buckets: Array[int] = []
 var _noise: FastNoiseLite = FastNoiseLite.new()
 var _water_profiles: Dictionary = {}
 var _civilian_batches: Array[Dictionary] = []
+var scenery_lod_enabled: bool = true
+var lod_records: Array[Dictionary] = []
+var _lod_view_key: Array = []
+
+
+## Switch the existing draw's mesh, keeping its destruction slots, material,
+## shadow mode and pickable scene identity. A chunk uses the largest individual
+## model and its nearest bound, rather than treating a whole city block as one
+## large model that never reaches a distant tier.
+func sync_lods(view: Camera3D) -> void:
+	if view == null: return
+	var key: Array = [view.global_transform, view.fov, view.projection, view.size, view.get_viewport().get_visible_rect(), scenery_lod_enabled]
+	if key == _lod_view_key: return
+	_lod_view_key = key
+	var counts: Array[int] = [0, 0, 0]
+	var fallback: int = 0
+	var missing: int = 0
+	var changed: int = 0
+	var context: Dictionary = MODEL_LOD.view(view)
+	for record: Dictionary in lod_records:
+		var node: GeometryInstance3D = record.node
+		if not is_instance_valid(node): continue
+		var center: Vector3 = node.global_transform * record.center
+		# Move the evaluation point towards the camera by the batch spread.
+		# This conservatively retains full detail for its nearest member.
+		var toward: Vector3 = view.global_position - center
+		if toward.length_squared() > 0.0001: center += toward.normalized() * float(record.spread)
+		var scale: Vector3 = node.global_basis.get_scale().abs()
+		var pixels: float = MODEL_LOD.pixels_from_view(context, center, float(record.diameter) * maxf(scale.x, maxf(scale.y, scale.z)))
+		var tier: int = MODEL_LOD.choose(pixels, int(record.tier)) if scenery_lod_enabled else 0
+		counts[tier] += 1
+		if tier > 0 and record.meshes[tier] == record.source: fallback += 1
+		if not bool(record.baked): missing += 1
+		if int(record.tier) == tier: continue
+		if node is MultiMeshInstance3D: node.multimesh.mesh = record.meshes[tier]
+		else: node.mesh = record.meshes[tier]
+		record.tier = tier
+		changed += 1
+	stats.lod_full_batches = counts[0]
+	stats.lod_far_batches = counts[1]
+	stats.lod_extreme_batches = counts[2]
+	stats.lod_full_fallback_batches = fallback
+	stats.lod_missing_bake_models = missing
+	stats.lod_mesh_switches = changed
+	stats.lod_registered_models = lod_records.size()
+
+
+func _register_scenery_lod(node: GeometryInstance3D, source: Mesh, transforms: Array = [], authored: Array[Mesh] = [], detail_diameter: float = 0.0) -> Dictionary:
+	if source == null or source.get_surface_count() == 0: return {}
+	var meshes: Array[Mesh] = authored if not authored.is_empty() else SCENERY_LOD.variants(source)
+	var bounds: AABB = source.get_aabb()
+	var center: Vector3 = bounds.get_center()
+	var diameter: float = bounds.size.length()
+	var spread: float = 0.0
+	if not transforms.is_empty():
+		var batch_bounds: AABB = transforms[0] * bounds
+		diameter = 0.0
+		for transform: Transform3D in transforms:
+			batch_bounds = batch_bounds.merge(transform * bounds)
+			diameter = maxf(diameter, (transform.basis.get_scale().abs() * bounds.size).length())
+		center = batch_bounds.get_center()
+		spread = maxf(0.0, batch_bounds.size.length() * 0.5 - diameter * 0.5)
+	if detail_diameter > 0.0: diameter = detail_diameter
+	var record: Dictionary = {"node": node, "near": node, "source": source, "meshes": meshes, "center": center, "diameter": diameter, "spread": spread, "tier": -1, "baked": not authored.is_empty() or SCENERY_LOD.has_bake(source)}
+	lod_records.append(record)
+	return record
 
 
 static func build(sim: WarSimulation) -> Node3D:
+	CAMERA_OCCLUSION.ensure_globals()
 	var landscape: Node3D = (load("res://scripts/landscape.gd") as Script).new()
 	landscape.name = "PaperLandscape"
 	landscape._build(sim)
@@ -68,6 +141,7 @@ static func build(sim: WarSimulation) -> Node3D:
 
 
 static func build_with_progress(sim: WarSimulation, progress: Callable) -> Node3D:
+	CAMERA_OCCLUSION.ensure_globals()
 	if not progress.is_valid(): return build(sim)
 	var landscape: Node3D = (load("res://scripts/landscape.gd") as Script).new()
 	landscape.name = "PaperLandscape"
@@ -76,6 +150,7 @@ static func build_with_progress(sim: WarSimulation, progress: Callable) -> Node3
 
 
 func sync_resources(sim: WarSimulation, force: bool = false) -> void:
+	preload("res://scripts/garrison_visuals.gd").sync(self,sim)
 	sync_environment(sim.time)
 	# A match/load does one complete reconciliation. During play, only actual
 	# destruction events touch forest slots, independent of total map area.
@@ -94,8 +169,11 @@ func sync_resources(sim: WarSimulation, force: bool = false) -> void:
 			var alive: bool = bool(bridge.alive)
 			if bool(visual.alive) != alive:
 				visual.deck.visible = alive
+				visual.substrate.visible = alive
 				visual.broken.visible = not alive
 				visual.alive = alive
+				_bridge_alive[int(bridge.id)] = alive
+				for node: MeshInstance3D in bridge_ground_nodes.get(int(bridge.id), []): node.visible = not alive
 	# Infinite mine landmarks are built at full scale and have no frame work.
 
 
@@ -150,24 +228,12 @@ func _sync_ruin(ruin: Dictionary) -> void:
 
 func configure_quality(preset: String = "native") -> void:
 	quality_mode = preset if preset in ["native", "balanced", "performance"] else "native"
-	var distance: float = 60.0 if quality_mode == "performance" else 75.0 if quality_mode == "balanced" else 90.0
-	for lod in _forest_lods:
-		lod.near.visibility_range_end = distance
-		lod.mid.visible = distance < 90.0
-		lod.mid.visibility_range_begin = distance
-		lod.mid.visibility_range_end = 90.0
-		lod.far.visibility_range_begin = 90.0
-		lod.far.material_override = _material("foliage") if quality_mode == "native" else _material("foliage_far")
-	# Keep full geometric bark strokes near the camera. At long distance only
-	# their thin overlay quads are removed; the trunk/root silhouette is intact.
-	var ink_distance:float=90.0 if quality_mode=="performance" else 110.0 if quality_mode=="balanced" else 140.0
-	for lod in _trunk_lods:
-		lod.far.visibility_range_end=0.0 if full_trunk_ink else ink_distance
-		lod.distant.visibility_range_begin=ink_distance
-		lod.distant.visible=not full_trunk_ink
-	stats.trunk_ink_lod_distance=0.0 if full_trunk_ink else ink_distance
-	stats.forest_visual_lod_distance = distance
-	stats.forest_shader_lod_distance = 90.0
+	# Visual size decides all tiers. Presets never replace the authored near
+	# shader or make large on-screen models coarse merely because they are far.
+	_lod_view_key.clear()
+	stats.forest_visual_lod_distance = 0.0
+	stats.trunk_ink_lod_distance = 0.0
+	stats.scenery_lod_policy = "projected_size_three_tiers"
 	stats.scenery_quality = quality_mode
 
 
@@ -221,6 +287,7 @@ func _build_with_progress(sim: WarSimulation, progress: Callable) -> void:
 
 func _initialize_build(sim: WarSimulation) -> void:
 	_map = sim.map
+	_prepare_bridge_ground(sim)
 	for ruin in sim.ruins:
 		_ruin_ids_by_position[ruin.pos] = int(ruin.id)
 		if ruin.kind == "tree": _tree_cells[Vector2i(floori(ruin.pos.x), floori(ruin.pos.y))] = int(ruin.id)
@@ -229,6 +296,34 @@ func _initialize_build(sim: WarSimulation) -> void:
 	_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	_noise.fractal_octaves = 3
 	_prepare_ground_exclusions(sim)
+
+
+func _prepare_bridge_ground(sim: WarSimulation) -> void:
+	# Exactly coplanar land below an intact deck has one visible surface owner.
+	# The unmodified land mesh is retained separately and restored on destruction.
+	_bridge_ground_cells.clear()
+	_bridge_alive.clear()
+	for bridge: Dictionary in _map.get("bridges", []):
+		var bounds: Array = bridge.bounds
+		var center := Vector2(float(bounds[0]) + float(bounds[2])*.5, float(bounds[1]) + float(bounds[3])*.5)
+		var deck_height: float = MAP.height_at(_map, center)
+		_bridge_alive[int(bridge.id)] = true
+		for z: int in range(maxi(0, int(bounds[1])), mini(int(_map.size), int(bounds[1]) + int(bounds[3]))):
+			for x: int in range(maxi(0, int(bounds[0])), mini(int(_map.size), int(bounds[0]) + int(bounds[2]))):
+				if int(_map.terrain[z][x]) == MAP.WATER: continue
+				var north: float = MAP.height_at(_map, Vector2(x+.5, z+.0001))
+				var middle: float = MAP.height_at(_map, Vector2(x+.5, z+.5))
+				var south: float = MAP.height_at(_map, Vector2(x+.5, z+.9999))
+				if absf(north-deck_height) > .00001 or absf(middle-deck_height) > .00001 or absf(south-deck_height) > .00001: continue
+				_bridge_ground_cells[Vector2i(x,z)] = int(bridge.id)
+	for bridge: Dictionary in sim.bridges: _bridge_alive[int(bridge.id)] = bool(bridge.alive)
+
+
+func _register_bridge_ground(node: MeshInstance3D, id: int) -> void:
+	if not bridge_ground_nodes.has(id): bridge_ground_nodes[id] = []
+	bridge_ground_nodes[id].append(node)
+	node.set_meta("bridge_underlay_id", id)
+	node.visible = not bool(_bridge_alive.get(id, true))
 
 
 func _build_ruin(ruin: Dictionary) -> void:
@@ -257,6 +352,10 @@ func _build_ruin(ruin: Dictionary) -> void:
 
 
 func _material(kind: String = "paper") -> Material:
+	return CAMERA_OCCLUSION.material(_authored_material(kind))
+
+
+func _authored_material(kind: String = "paper") -> Material:
 	if _materials.has(kind):
 		return _materials[kind]
 	if kind == "foliage_far":
@@ -330,6 +429,7 @@ void fragment() {
 		shader.code = """shader_type spatial;
 render_mode diffuse_lambert, specular_disabled, cull_back;
 uniform float surface_kind = 0.0;
+uniform float surface_detail = 1.0;
 uniform sampler2D pigment_noise : filter_linear_mipmap, repeat_enable;
 varying vec3 paper_position;
 varying vec3 paper_normal;
@@ -351,11 +451,12 @@ void fragment() {
     float footprint = max(fwidth(uv.x * 105.0), fwidth(uv.y * 105.0));
     grain = mix(0.5, grain, 1.0 - smoothstep(0.4, 1.2, footprint));
     vec3 pigment = COLOR.rgb;
+    float detail = top > 0.95 ? surface_detail : 1.0;
     if (surface_kind < 1.5) {
         // Mid-scale scumbled pigment remains visible at the gameplay distance.
-        pigment *= 0.89 + broad * 0.16 + brush * 0.055 + grain * 0.025;
+        pigment *= mix(1.0, 0.89 + broad * 0.16 + brush * 0.055 + grain * 0.025, detail);
         float fibres = wash(uv * vec2(35.0, 2.5));
-        pigment *= 0.99 + fibres * 0.02;
+        pigment *= mix(1.0, 0.99 + fibres * 0.02, detail);
         // Small irregular printed earth/gravel clusters break large empty tops.
         // Jittered centres and broad support avoid a grid or even noise blanket.
         if (surface_kind < 0.5 && top > 0.95) {
@@ -367,7 +468,7 @@ void fragment() {
             float spot = 1.0-smoothstep(size,size+aa,length(d));
             float clusters = smoothstep(0.40,0.70,wash(uv*0.70));
             vec3 earth = mix(vec3(0.31,0.28,0.18),vec3(0.61,0.53,0.37),hash(cell+46.3));
-            pigment = mix(pigment,earth,spot*clusters*0.47);
+            pigment = mix(pigment,earth,spot*clusters*0.47*detail);
         }
         // Vertical cardboard carries layered dark fibres; flat ground stays quiet.
         float strata = wash(vec2(uv.x * 2.2, p.y * 18.0 + broad));
@@ -388,6 +489,8 @@ void fragment() {
 		paper.shader = shader
 		paper.set_shader_parameter("pigment_noise",load("res://assets/textures/pigment_noise.png"))
 		paper.set_shader_parameter("surface_kind", 2.0 if kind == "water" else 1.0 if kind == "paper" else 0.0)
+		if kind == "ground" and str(_map.get("mode", "")) == "symmetric":
+			paper.set_shader_parameter("surface_detail", 0.12)
 		_materials[kind] = paper
 		return paper
 	var material := StandardMaterial3D.new()
@@ -462,6 +565,8 @@ func _instance(mesh: Mesh, parent: Node3D = null, label: String = "") -> MeshIns
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	var owner_node: Node3D = self if parent == null else parent
 	owner_node.add_child(instance)
+	if not label.begins_with("Ground_") and not label.begins_with("TerrainCaster_") and not label.begins_with("Water_") and label != "TabletopBase":
+		_register_scenery_lod(instance, mesh)
 	return instance
 
 
@@ -851,6 +956,10 @@ func _restore_terrain_node(item: Dictionary) -> void:
 	var node: MeshInstance3D = _instance(item.mesh, self, item.name)
 	node.cast_shadow = item.shadow
 	if item.has("navigation_top_ranges"): node.set_meta("navigation_top_ranges", item.navigation_top_ranges)
+	if item.has("bridge_underlay_id"): _register_bridge_ground(node, int(item.bridge_underlay_id))
+	if item.mesh.has_meta("scenery_far_mesh"):
+		var meshes: Array[Mesh] = [item.mesh, item.mesh.get_meta("scenery_far_mesh"), item.mesh.get_meta("scenery_extreme_mesh")]
+		_register_scenery_lod(node, item.mesh, [], meshes, 4.0)
 
 
 func _restore_terrain_stats() -> void:
@@ -870,18 +979,40 @@ func _prepare_terrain_geometry() -> void:
 
 func _build_terrain_chunk(cx: int, cz: int, size: int) -> void:
 	var land: Dictionary = _data()
+	var far_land: Dictionary = _data()
+	var extreme_land: Dictionary = _data()
+	var flat_land: Array = []
+	flat_land.resize(CHUNK * CHUNK)
 	var ecology: Dictionary = _data()
 	var water: Dictionary = _data()
+	var far_water: Dictionary = _data()
+	var extreme_water: Dictionary = _data()
+	var flat_water: Array = []
+	flat_water.resize(CHUNK * CHUNK)
 	var shadow_caps: Dictionary = _data()
 	var flat_shadow_tiles := PackedFloat32Array()
 	flat_shadow_tiles.resize(CHUNK * CHUNK)
 	flat_shadow_tiles.fill(INF)
 	var navigation_top_ranges: Array[Vector2i] = []
+	var bridge_tops: Dictionary = {}
 	for z: int in range(cz, mini(cz + CHUNK, size)):
 		for x: int in range(cx, mini(cx + CHUNK, size)):
 			var terrain: int = int(_map.terrain[z][x])
 			var wet: bool = terrain == MAP.WATER
 			var target: Dictionary = water if wet else land
+			var far_target: Dictionary = far_water if wet else far_land
+			var extreme_target: Dictionary = extreme_water if wet else extreme_land
+			var flat_target: Array = flat_water if wet else flat_land
+			var bank_id: int = int(_bridge_ground_cells.get(Vector2i(x,z), -1))
+			if bank_id >= 0:
+				if not bridge_tops.has(bank_id):
+					var bank_tiles: Array = []
+					bank_tiles.resize(CHUNK * CHUNK)
+					bridge_tops[bank_id] = {"full":_data(), "far":_data(), "extreme":_data(), "ecology":_data(), "tiles":bank_tiles, "ranges":[]}
+				target = bridge_tops[bank_id].full
+				far_target = bridge_tops[bank_id].far
+				extreme_target = bridge_tops[bank_id].extreme
+				flat_target = bridge_tops[bank_id].tiles
 			var top_start: int = target.vertices.size()
 			var flat_cap: bool = false
 			var color: Color = Color("397fa3").lightened(_noise.get_noise_2d(x * 2.0, z * 2.0) * 0.08) if wet else _ground_color(x, z, terrain)
@@ -907,36 +1038,82 @@ func _build_terrain_chunk(cx: int, cz: int, size: int) -> void:
 			if not wet:
 				# Preserve the real terrain subset for navigation-height QA. Printed
 				# marks, cardboard litter and scree later share this draw only.
-				navigation_top_ranges.append(Vector2i(top_start,target.vertices.size()))
+				if bank_id >= 0: bridge_tops[bank_id].ranges.append(Vector2i(top_start,target.vertices.size()))
+				else: navigation_top_ranges.append(Vector2i(top_start,target.vertices.size()))
 			if wet:
 				_paint_water_top(target, top_start)
+				_copy_data_range(far_water, target, top_start, target.vertices.size())
+				flat_water[(z - cz) * CHUNK + x - cx] = {"height": h_mid, "kind": MAP.WATER}
 			else:
 				if flat_cap:
 					flat_shadow_tiles[(z - cz) * CHUNK + x - cx] = h_mid
 				else:
 					_append_terrain_shadow_cap(shadow_caps, target, top_start)
 				_paint_top(target, top_start, terrain)
-			_build_cell_edges(land, x, z, h_n, h_s, wet)
+				_copy_data_range(far_target, target, top_start, target.vertices.size())
+				if flat_cap:
+					flat_target[(z - cz) * CHUNK + x - cx] = {"height": h_mid, "kind": terrain}
+				else:
+					# Warped bank corners and ramps retain their exact navigation top.
+					_copy_data_range(extreme_target, target, top_start, target.vertices.size())
+				var edge_start: int = land.vertices.size()
+				_build_cell_edges(land, x, z, h_n, h_s, wet)
+				_copy_data_range(far_land, land, edge_start, land.vertices.size())
+				_copy_data_range(extreme_land, land, edge_start, land.vertices.size())
 			if wet and (x * 3 + z) % 4 == 0:
 				_water_marks(water, x, z, h_mid)
 			elif terrain == MAP.ROAD and _map.get("profile", {}).get("biome", "") == "city":
-				_city_road_mark(land, x, z, h_mid)
+				var road_start: int = target.vertices.size()
+				_city_road_mark(target, x, z, h_mid)
+				_copy_data_range(far_target, target, road_start, target.vertices.size())
 			elif terrain == MAP.ROAD and (x + z) % 3 == 0:
+				var road_start: int = target.vertices.size()
 				var y: float = h_mid + 0.009
-				_quad(land, Vector3(x + 0.20, y, z + 0.44), Vector3(x + 0.20, y, z + 0.51), Vector3(x + 0.65, y, z + 0.57), Vector3(x + 0.65, y, z + 0.50), Color("dbceb4"), Vector3.UP)
+				_quad(target, Vector3(x + 0.20, y, z + 0.44), Vector3(x + 0.20, y, z + 0.51), Vector3(x + 0.65, y, z + 0.57), Vector3(x + 0.65, y, z + 0.50), Color("dbceb4"), Vector3.UP)
+				_copy_data_range(far_target, target, road_start, target.vertices.size())
 			elif terrain == MAP.LAND and _map.has("profile"):
-				_profile_ground_details(land, x, z, h_mid)
+				_profile_ground_details(target, x, z, h_mid)
 			elif terrain == MAP.LAND:
 				var context: Vector2 = _ground_context(x + 0.5, z + 0.5)
 				var patch: float = smoothstep(0.12, 0.4, _noise.get_noise_2d(x * 3.8 + 95.0, z * 3.8))
 				var density: float = 0.085 + maxf(context.x * 0.46, context.y * 0.37) + patch * 0.22
 				if _static_hash(x, z, 15.0) > 1.0 - density and not _cell_rim_changed(x, z, h_mid):
-					_ground_details(land, x + 0.32 + _static_hash(x,z,12.0)*0.36, z + 0.32 + _static_hash(x,z,13.0)*0.36, h_mid)
+					_ground_details(target, x + 0.32 + _static_hash(x,z,12.0)*0.36, z + 0.32 + _static_hash(x,z,13.0)*0.36, h_mid)
 			if terrain in [MAP.LAND, MAP.ROAD]:
-				_battle_marks(land, x, z, h_mid)
+				_battle_marks(target, x, z, h_mid)
 			if terrain == MAP.LAND and not _map.has("profile"):
-				_ground_ecology(ecology, Vector2i(x, z))
+				_ground_ecology(bridge_tops[bank_id].ecology if bank_id >= 0 else ecology, Vector2i(x, z))
+	for bank_id: int in bridge_tops:
+		var bank: Dictionary = bridge_tops[bank_id]
+		_append_coalesced_surface(bank.extreme, bank.tiles, cx, cz, mini(CHUNK, size-cx), mini(CHUNK, size-cz))
+		# Generic low grass had no shadow pass before the split; profile details
+		# did. Capture the exact original caster subset before adding low ecology.
+		var bank_shadow: Dictionary = _terrain_shadow_data(bank.full)
+		bank.full.vertices.append_array(bank.ecology.vertices)
+		bank.full.normals.append_array(bank.ecology.normals)
+		bank.full.colors.append_array(bank.ecology.colors)
+		var full_bank: ArrayMesh = _finish(bank.full, "ground")
+		var far_bank: ArrayMesh = _finish(bank.far, "ground")
+		var extreme_bank: ArrayMesh = _finish(bank.extreme, "ground")
+		far_bank.custom_aabb = full_bank.get_aabb()
+		extreme_bank.custom_aabb = full_bank.get_aabb()
+		full_bank.set_meta("scenery_far_mesh", far_bank)
+		full_bank.set_meta("scenery_extreme_mesh", extreme_bank)
+		var node: MeshInstance3D = _instance(full_bank, self, "Ground_%d_%d_BridgeBank_%d" % [cx, cz, bank_id])
+		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		node.set_meta("navigation_top_ranges", bank.ranges)
+		_register_bridge_ground(node, bank_id)
+		_register_scenery_lod(node, full_bank, [], [full_bank, far_bank, extreme_bank], 4.0)
+		stats.terrain_triangles = int(stats.terrain_triangles) + bank.full.vertices.size()/3
+		# These decorations belonged to the old terrain caster. Preserve their
+		# exact shadow geometry and state as well as their restored visible paint.
+		if not bank_shadow.vertices.is_empty():
+			var caster: MeshInstance3D = _instance(_finish(bank_shadow, "ground"), self, "TerrainCaster_%d_%d_BridgeBank_%d" % [cx, cz, bank_id])
+			caster.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+			_register_bridge_ground(caster, bank_id)
+			stats.terrain_shadow_triangles = int(stats.terrain_shadow_triangles) + bank_shadow.vertices.size()/3
 	if not land.vertices.is_empty():
+		_append_coalesced_surface(extreme_land, flat_land, cx, cz, mini(CHUNK, size - cx), mini(CHUNK, size - cz))
 		_append_coalesced_shadow_caps(shadow_caps, flat_shadow_tiles, cx, cz, mini(CHUNK, size - cx), mini(CHUNK, size - cz))
 		stats.shadow_cap_triangles = int(stats.shadow_cap_triangles) + shadow_caps.vertices.size() / 3
 		# Ecology shares this visible terrain draw. It remains below 22 cm and
@@ -946,9 +1123,17 @@ func _build_terrain_chunk(cx: int, cz: int, size: int) -> void:
 		land.vertices.append_array(ecology.vertices)
 		land.normals.append_array(ecology.normals)
 		land.colors.append_array(ecology.colors)
-		var visible_ground: MeshInstance3D = _instance(_finish(land, "ground"), self, "Ground_%d_%d" % [cx, cz])
+		var full_mesh: ArrayMesh = _finish(land, "ground")
+		var far_mesh: ArrayMesh = _finish(far_land, "ground")
+		var extreme_mesh: ArrayMesh = _finish(extreme_land, "ground")
+		far_mesh.custom_aabb = full_mesh.get_aabb()
+		extreme_mesh.custom_aabb = full_mesh.get_aabb()
+		full_mesh.set_meta("scenery_far_mesh", far_mesh)
+		full_mesh.set_meta("scenery_extreme_mesh", extreme_mesh)
+		var visible_ground: MeshInstance3D = _instance(full_mesh, self, "Ground_%d_%d" % [cx, cz])
 		visible_ground.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		visible_ground.set_meta("navigation_top_ranges",navigation_top_ranges)
+		_register_scenery_lod(visible_ground, full_mesh, [], [full_mesh, far_mesh, extreme_mesh], 4.0)
 		shadow_data.vertices.append_array(shadow_caps.vertices)
 		shadow_data.normals.append_array(shadow_caps.normals)
 		shadow_data.colors.append_array(shadow_caps.colors)
@@ -959,9 +1144,48 @@ func _build_terrain_chunk(cx: int, cz: int, size: int) -> void:
 		stats.ground_chunks = int(stats.ground_chunks) + 1
 		stats.terrain_triangles = int(stats.terrain_triangles) + land.vertices.size() / 3
 	if not water.vertices.is_empty():
-		var visible_water: MeshInstance3D = _instance(_finish(water, "water"), self, "Water_%d_%d" % [cx, cz])
+		_append_coalesced_surface(extreme_water, flat_water, cx, cz, mini(CHUNK, size - cx), mini(CHUNK, size - cz), true)
+		var full_mesh: ArrayMesh = _finish(water, "water")
+		var far_mesh: ArrayMesh = _finish(far_water, "water")
+		var extreme_mesh: ArrayMesh = _finish(extreme_water, "water")
+		far_mesh.custom_aabb = full_mesh.get_aabb()
+		extreme_mesh.custom_aabb = full_mesh.get_aabb()
+		full_mesh.set_meta("scenery_far_mesh", far_mesh)
+		full_mesh.set_meta("scenery_extreme_mesh", extreme_mesh)
+		var visible_water: MeshInstance3D = _instance(full_mesh, self, "Water_%d_%d" % [cx, cz])
 		visible_water.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_register_scenery_lod(visible_water, full_mesh, [], [full_mesh, far_mesh, extreme_mesh], 4.0)
 		stats.terrain_triangles = int(stats.terrain_triangles) + water.vertices.size() / 3
+
+
+func _copy_data_range(destination: Dictionary, source: Dictionary, start: int, end: int) -> void:
+	for attribute: String in ["vertices", "normals", "colors"]:
+		destination[attribute].append_array(source[attribute].slice(start, end))
+
+
+func _append_coalesced_surface(data: Dictionary, tiles: Array, cx: int, cz: int, width: int, depth: int, wet: bool = false) -> void:
+	for z: int in depth:
+		var x: int = 0
+		while x < width:
+			var tile: Variant = tiles[z * CHUNK + x]
+			if tile == null: x += 1; continue
+			var run: int = 1
+			while x + run < width and tiles[z * CHUNK + x + run] == tile: run += 1
+			var rows: int = 1
+			while z + rows < depth:
+				var same: bool = true
+				for offset: int in run:
+					if tiles[(z + rows) * CHUNK + x + offset] != tile: same = false; break
+				if not same: break
+				rows += 1
+			var start: int = data.vertices.size()
+			var height: float = tile.height
+			_quad(data, Vector3(cx + x, height, cz + z), Vector3(cx + x, height, cz + z + rows), Vector3(cx + x + run, height, cz + z + rows), Vector3(cx + x + run, height, cz + z), Color("397fa3") if wet else _ground_color(cx + x, cz + z, int(tile.kind)), Vector3.UP)
+			if wet: _paint_water_top(data, start)
+			else: _paint_top(data, start, int(tile.kind))
+			for row: int in rows:
+				for offset: int in run: tiles[(z + row) * CHUNK + x + offset] = null
+			x += run
 
 
 func _finish_terrain_build(request: Dictionary) -> void:
@@ -978,6 +1202,7 @@ func _finish_terrain_build(request: Dictionary) -> void:
 		if not str(node.name).begins_with("Ground_") and not str(node.name).begins_with("TerrainCaster_") and not str(node.name).begins_with("Water_") and str(node.name) != "TabletopBase": continue
 		var record: Dictionary = {"name": str(node.name), "mesh": node.mesh, "shadow": node.cast_shadow}
 		if node.has_meta("navigation_top_ranges"): record.navigation_top_ranges = node.get_meta("navigation_top_ranges")
+		if node.has_meta("bridge_underlay_id"): record.bridge_underlay_id = int(node.get_meta("bridge_underlay_id"))
 		nodes.append(record)
 	var cached_stats: Dictionary = {}
 	for key in ["terrain_triangles", "ground_chunks", "shadow_cap_triangles", "terrain_shadow_triangles"]: cached_stats[key] = stats[key]
@@ -1293,6 +1518,17 @@ func _append_water_rock(data: Dictionary, position: Vector3, dimensions: Vector3
 		data.normals.append((normal_basis * rock.normals[index]).normalized())
 		var tint: Color = rock.colors[index]
 		data.colors.append(tint.lerp(Color("998970"), 0.28))
+	if data.has("lod_far"):
+		var meshes: Array[Mesh] = SCENERY_LOD.variants(_prop_mesh("rock_%d" % variant))
+		for pair: Array in [["lod_far", 1], ["lod_extreme", 2]]:
+			var mesh: Mesh = meshes[int(pair[1])]
+			for surface: int in mesh.get_surface_count():
+				var arrays: Array = mesh.surface_get_arrays(surface)
+				var indices: PackedInt32Array = SCENERY_LOD.MESH_LOD.source_indices(mesh, surface)
+				for index: int in indices:
+					data[pair[0]].vertices.append(position + basis * arrays[Mesh.ARRAY_VERTEX][index])
+					data[pair[0]].normals.append((normal_basis * arrays[Mesh.ARRAY_NORMAL][index]).normalized())
+					data[pair[0]].colors.append(arrays[Mesh.ARRAY_COLOR][index].lerp(Color("998970"), 0.28))
 
 
 func _build_water_banks() -> void:
@@ -1300,6 +1536,8 @@ func _build_water_banks() -> void:
 	# Small partly submerged groups live strictly inside impassable water cells.
 	# Their independent node survives G0's authoritative PropBatch restoration.
 	var stones: Dictionary = _data()
+	stones.lod_far = _data()
+	stones.lod_extreme = _data()
 	var foam: Dictionary = _data()
 	var anchors: Array[Vector2] = []
 	for z: int in range(1, int(_map.size) - 1):
@@ -1333,10 +1571,25 @@ func _build_water_banks() -> void:
 	var root := Node3D.new()
 	root.name = "WaterBank"
 	add_child(root)
-	_instance(_finish(stones), root, "SubmergedReefs")
+	var near_rocks: ArrayMesh = _finish(stones)
+	var far_rocks: ArrayMesh = _finish(stones.lod_far)
+	var extreme_rocks: ArrayMesh = _finish(stones.lod_extreme)
+	far_rocks.custom_aabb = near_rocks.get_aabb()
+	extreme_rocks.custom_aabb = near_rocks.get_aabb()
+	var rocks: MeshInstance3D = _instance(near_rocks, root, "SubmergedReefs")
+	var record: Dictionary = lod_records.back()
+	record.meshes = [near_rocks, far_rocks, extreme_rocks]
+	record.diameter = 4.0
+	record.baked = true
 	if not foam.vertices.is_empty():
 		var foam_mesh: MeshInstance3D = _instance(_finish(foam, "water"), root, "ReefFlow")
 		foam_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# At extreme distance these thin, non-solid glints cover less than one
+		# pixel; terrain water pigment keeps the continuous river footprint.
+		var foam_record: Dictionary = lod_records.back()
+		foam_record.meshes = [foam_mesh.mesh, foam_mesh.mesh, ArrayMesh.new()]
+		foam_record.diameter = 1.0
+		foam_record.baked = true
 
 
 func _ground_details(data: Dictionary, x: float, z: float, height: float) -> void:
@@ -2021,84 +2274,13 @@ func _flush_prop_batch(key: String, group: Dictionary) -> void:
 		instance.set_meta("active_neutrals", 0 if group.neutral_form == "rubble" else group.neutral_ids.size())
 		instance.visible = group.neutral_form != "rubble"
 		for id: int in group.neutral_ids: ruin_visuals[id][str(group.neutral_form)].node = instance
-	if key.get_slice(":", 0) == "trunk":
-		var far_mesh := MultiMesh.new()
-		far_mesh.transform_format = MultiMesh.TRANSFORM_3D
-		far_mesh.mesh = _prop_mesh("trunk_far")
-		far_mesh.instance_count = group.transforms.size()
-		for index in range(far_mesh.instance_count):
-			var transform: Transform3D = group.transforms[index]
-			far_mesh.set_instance_transform(index, transform)
-			var cell := Vector2i(floori(transform.origin.x), floori(transform.origin.z))
-			if _tree_cells.has(cell):
-				var id: int = int(_tree_cells[cell])
-				tree_visuals[id].append({"multi": far_mesh, "slot": index, "transform": transform, "current_transform": transform})
-		var distant := MultiMeshInstance3D.new()
-		distant.name = "TrunkFar_" + key.replace(":", "_")
-		distant.multimesh = far_mesh
-		instance.visibility_range_end = 45.0
-		distant.visibility_range_begin = 45.0
-		add_child(distant)
-		var outline_mesh:=MultiMesh.new()
-		outline_mesh.transform_format=MultiMesh.TRANSFORM_3D
-		outline_mesh.mesh=_prop_mesh("trunk_distant")
-		outline_mesh.instance_count=group.transforms.size()
-		for index in range(outline_mesh.instance_count):
-			var transform:Transform3D=group.transforms[index]
-			outline_mesh.set_instance_transform(index,transform)
-			var cell:=Vector2i(floori(transform.origin.x),floori(transform.origin.z))
-			if _tree_cells.has(cell):
-				tree_visuals[int(_tree_cells[cell])].append({"multi":outline_mesh,"slot":index,"transform":transform,"current_transform":transform})
-		var outline:=MultiMeshInstance3D.new()
-		outline.name="TrunkDistant_"+key.replace(":","_")
-		outline.multimesh=outline_mesh
-		add_child(outline)
-		_trunk_lods.append({"near":instance,"far":distant,"distant":outline})
-	if key.get_slice(":", 0).begins_with("tree_") and not _tree_cells.is_empty():
-		instance.lod_bias = TREE_LOD_BIAS
-		var distant: ArrayMesh = _prop_shadow_mesh(key.get_slice(":", 0))
-		if distant != null:
-			instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			var near_shadow := MultiMeshInstance3D.new()
-			near_shadow.name = "TreeNearCaster_" + key.replace(":", "_")
-			near_shadow.multimesh = mesh
-			near_shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
-			near_shadow.visibility_range_end = 45.0
-			add_child(near_shadow)
-			var far_mesh := MultiMesh.new()
-			far_mesh.transform_format = MultiMesh.TRANSFORM_3D
-			far_mesh.mesh = distant
-			far_mesh.instance_count = group.transforms.size()
-			for index in range(far_mesh.instance_count):
-				var transform: Transform3D = group.transforms[index]
-				far_mesh.set_instance_transform(index, transform)
-				var cell := Vector2i(floori(transform.origin.x), floori(transform.origin.z))
-				if _tree_cells.has(cell):
-					var id: int = int(_tree_cells[cell])
-					tree_visuals[id].append({"multi": far_mesh, "slot": index, "transform": transform, "current_transform": transform, "shadow": true})
-			var far_shadow := MultiMeshInstance3D.new()
-			far_shadow.name = "TreeFarCaster_" + key.replace(":", "_")
-			far_shadow.multimesh = far_mesh
-			far_shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
-			far_shadow.visibility_range_begin = 45.0
-			add_child(far_shadow)
-			# The same compact geometry and transforms provide the far visual
-			# crown; destruction updates the visible and shadow passes together.
-			var mid_visual := MultiMeshInstance3D.new()
-			mid_visual.name = "TreeMidVisual_" + key.replace(":", "_")
-			mid_visual.multimesh = far_mesh
-			mid_visual.material_override = _material("foliage")
-			mid_visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			add_child(mid_visual)
-			var far_visual := MultiMeshInstance3D.new()
-			far_visual.name = "TreeFarVisual_" + key.replace(":", "_")
-			far_visual.multimesh = far_mesh
-			far_visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			add_child(far_visual)
-			_forest_lods.append({"near": instance, "mid": mid_visual, "far": far_visual})
-			stats.tree_shadow_batches = int(stats.tree_shadow_batches) + 2
-			stats.tree_far_shadow_triangles = int(stats.tree_far_shadow_triangles) + int(distant.get_meta("pine_shadow_triangles", 0)) * far_mesh.instance_count
 	add_child(instance)
+	var authored: Array[Mesh] = []
+	if key.get_slice(":", 0) == "trunk": authored = [group.mesh, _prop_mesh("trunk_far"), _prop_mesh("trunk_distant")]
+	var record: Dictionary = _register_scenery_lod(instance, group.mesh, group.transforms, authored)
+	if key.get_slice(":", 0) == "trunk": _trunk_lods.append(record)
+	elif key.get_slice(":", 0).begins_with("tree_"): _forest_lods.append(record)
+
 	stats.prop_draws = int(stats.prop_draws) + 1
 
 
@@ -2337,15 +2519,23 @@ func _build_bridge(bridge: Dictionary) -> void:
 	var deck: Dictionary = _data()
 	_bridge_arch(deck, length, breadth, turn)
 	BRIDGE_CRAFT.arch(self, deck, length, breadth, turn, WATER_DEPTH)
-	for index: int in ceili(length / 0.62):
-		var position: Vector3 = turn * Vector3(-length * 0.5 + 0.30 + index * 0.62, -0.07, 0)
-		_box(deck, position, Vector3(minf(0.58, length), 0.14, breadth), (Color("aeb0aa") if stone_deck else Color("a39171")).lightened((index % 3) * 0.025), turn)
+	var segments: Array[Vector2] = BRIDGE_CRAFT.plank_segments(length)
+	for index: int in segments.size():
+		var segment: Vector2 = segments[index]
+		var position: Vector3 = turn * Vector3((segment.x+segment.y)*.5, -0.07, 0)
+		_box(deck, position, Vector3(segment.y-segment.x, 0.14, breadth), (Color("aeb0aa") if stone_deck else Color("a39171")).lightened((index % 3) * 0.025), turn)
 	if not stone_deck: BRIDGE_CRAFT.planks(self, deck, length, breadth, turn)
 	for side: float in [-1.0, 1.0]:
 		_box(deck, turn * Vector3(0, 0.64, side * breadth * 0.47), Vector3(length, 0.1, 0.09), Color("75634a"), turn)
 		for index: int in ceili(length / 1.45):
 			_box(deck, turn * Vector3(-length * 0.5 + 0.23 + index * 1.45, 0.36, side * breadth * 0.47), Vector3(0.105, 0.85, 0.105), Color("897455"), turn)
 	var intact: MeshInstance3D = _instance(_finish(deck), root, "IntactDeck")
+	# A continuous thin backing stays inside the existing deck thickness. It
+	# supplies dark board joints without exposing holes when duplicate bank tops
+	# are hidden, and never lowers the old underside or changes the y=0 route.
+	var backing: Dictionary = _data()
+	_box(backing, Vector3(0,-.0425,0), Vector3(length,.035,breadth), Color("777971") if stone_deck else Color("5b4b37"), turn)
+	var substrate: MeshInstance3D = _instance(_finish(backing), root, "DeckSubstrate")
 	var ruin: Dictionary = _data()
 	for side: float in [-1.0, 1.0]:
 		for piece: int in range(3):
@@ -2354,8 +2544,9 @@ func _build_bridge(bridge: Dictionary) -> void:
 			_box(ruin, turn * Vector3(side * (length * 0.5 - 0.2 - piece * 0.43), -0.13 - piece * 0.13, 0), Vector3(0.42, 0.12, breadth * 0.87), Color("8b785b"), rotation)
 	var broken: MeshInstance3D = _instance(_finish(ruin), root, "BrokenDeck")
 	intact.visible = bool(bridge.alive)
+	substrate.visible = bool(bridge.alive)
 	broken.visible = not bool(bridge.alive)
-	bridge_visuals[int(bridge.id)] = {"root": root, "deck": intact, "broken": broken, "alive": bool(bridge.alive)}
+	bridge_visuals[int(bridge.id)] = {"root": root, "deck": intact, "substrate":substrate, "broken": broken, "alive": bool(bridge.alive)}
 
 
 func _bridge_arch(data: Dictionary, length: float, breadth: float, turn: Basis) -> void:
@@ -2399,18 +2590,26 @@ func _build_environment() -> void:
 	var people_by_variant: Dictionary = {}
 	for person: Dictionary in _map.get("civilians", []):
 		var variant: int = int(person.get("variant", 0))
-		if not people_by_variant.has(variant): people_by_variant[variant] = []
-		people_by_variant[variant].append(person)
-	for variant: int in people_by_variant:
+		var point: Vector2 = civilian_sample(person, 0.0).pos
+		var key: String = "%d:%d_%d" % [variant, floori(point.x / PROP_CHUNK), floori(point.y / PROP_CHUNK)]
+		if not people_by_variant.has(key): people_by_variant[key] = []
+		people_by_variant[key].append(person)
+	for key: String in people_by_variant:
+		var variant: int = int(key.get_slice(":", 0))
 		var multi := MultiMesh.new()
 		multi.transform_format = MultiMesh.TRANSFORM_3D
 		multi.mesh = ENVIRONMENT_MODELS.prop_mesh("pedestrian", variant)
-		multi.instance_count = people_by_variant[variant].size()
+		multi.instance_count = people_by_variant[key].size()
 		var instance := MultiMeshInstance3D.new()
-		instance.name = "NeutralPedestrians_%d" % variant
+		instance.name = "NeutralPedestrians_" + key.replace(":", "_")
 		instance.multimesh = multi
 		add_child(instance)
-		_civilian_batches.append({"multi": multi, "people": people_by_variant[variant]})
+		var transforms: Array = []
+		for person: Dictionary in people_by_variant[key]:
+			var point: Vector2 = civilian_sample(person, 0.0).pos
+			transforms.append(Transform3D(Basis.IDENTITY, Vector3(point.x, MAP.height_at(_map, point), point.y)))
+		_register_scenery_lod(instance, multi.mesh, transforms)
+		_civilian_batches.append({"multi": multi, "people": people_by_variant[key]})
 	stats.environment_props = _map.get("environment_props", []).size()
 	stats.environment_people = _map.get("civilians", []).size()
 	sync_environment(0.0)

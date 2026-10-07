@@ -15,7 +15,7 @@ const OBJECTIVES: Array[Dictionary] = [
 	{"title": "修复无字桥", "body": "让工程兵修好中央桥梁，恢复补给主路。", "hint": "选中工程兵，右键桥面或桥头；修桥会按进度支付费用。", "marker": Vector2(160, 160)},
 	{"title": "建立东岸分基地", "body": "让工程兵在东岸矿场附近建成分基地。", "hint": "选中工程兵，点击右侧「部署分基地」，在目标地点附近左键选址。", "marker": MAP.EXPANSION},
 	{"title": "机动运输", "body": "建成战车工厂，用侦察车搭载步兵并在东岸集结区卸载。", "hint": "步兵右键侦察车上车；选车后按 U，左键东岸集结区指定卸载。", "marker": MAP.EAST_ASSEMBLY},
-	{"title": "守住补给线 · 反攻", "body": "总部坚守 60 秒，再摧毁重锤军团总部。", "hint": "可建防御塔与坦克。稳住西岸工业设施后，沿主桥或南侧道路反攻。", "marker": MAP.ENEMY_START}
+	{"title": "守住补给线 · 反攻", "body": "总部坚守 60 秒，再摧毁重锤军团全部基地兵营。", "hint": "可建防御塔与坦克。稳住西岸工业设施后，沿主桥或南侧道路反攻。", "marker": MAP.ENEMY_START}
 ]
 
 var stage: int = 0
@@ -47,7 +47,7 @@ func step(sim: WarSimulation, delta: float) -> void:
 		stage += 1
 		if stage >= STAGE_COUNT:
 			finished = true
-			_last_notice = "无字桥补给线完成。重锤总部已被摧毁，补给线恢复。"
+			_last_notice = "无字桥补给线完成。重锤基地兵营已全部摧毁，补给线恢复。"
 		else:
 			_last_notice = "目标完成：%s。下一步：%s。" % [OBJECTIVES[old].title, OBJECTIVES[stage].title]
 		sim.notices.append(_last_notice)
@@ -74,7 +74,7 @@ func _observe_events(sim: WarSimulation) -> void:
 					flags.transport_unloaded = true
 			board_ids.erase(passenger_id)
 		elif kind == "death" and int(event.get("team", -1)) == 1 and str(event.get("spec", "")) == "rivet_hq":
-			flags.enemy_hq_destroyed = true
+			flags.enemy_hq_destroyed = not _enemy_hq_alive(sim)
 
 func _observe_entities(sim: WarSimulation) -> void:
 	var bridge: Dictionary = sim._bridge_by_id(1)
@@ -89,7 +89,10 @@ func _observe_entities(sim: WarSimulation) -> void:
 		if spec == "kestrel_outpost" and float(entity.get("construct_remaining", 0.0)) <= 0.0:
 			if (entity.pos as Vector2).distance_to(MAP.EXPANSION) <= 29.0: flags.outpost = true
 	# Result hooks can delete the HQ before mission code inspects the final event.
-	if not _enemy_hq_alive(sim): flags.enemy_hq_destroyed = true
+	if bool(sim.rules.buildings.get("rivet_hq", {}).get("rebuildable", false)):
+		flags.enemy_hq_destroyed = not _enemy_hq_alive(sim)
+	elif not _enemy_hq_alive(sim):
+		flags.enemy_hq_destroyed = true
 
 func _player_engineer_at_bridge(sim: WarSimulation, bridge: Dictionary) -> bool:
 	for entity: Dictionary in sim.entities.values():
@@ -159,7 +162,7 @@ func view_state() -> Dictionary:
 	elif stage == 5:
 		progress = "东岸卸载 %s" % ("✓" if flags.get("transport_unloaded", false) else "○")
 	elif stage == 6:
-		progress = "总部防守 %d / 60 秒 · 敌方总部 %s" % [ceili(hold_elapsed), "已摧毁" if flags.get("enemy_hq_destroyed", false) else "待摧毁"]
+		progress = "总部防守 %d / 60 秒 · 敌方基地兵营 %s" % [ceili(hold_elapsed), "已全部摧毁" if flags.get("enemy_hq_destroyed", false) else "待摧毁"]
 	return {"active": true, "title": "无字桥补给线", "stage": stage,
 		"total": STAGE_COUNT, "objective": objective.title, "body": objective.body,
 		"hint": objective.hint, "marker": objective.marker, "progress": progress,

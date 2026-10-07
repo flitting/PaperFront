@@ -1,6 +1,8 @@
 extends RefCounted
+const Orientation=preload("res://scripts/building_orientation.gd")
 
 const Navigation = preload("res://scripts/naval_navigation.gd")
+const FieldConstruction = preload("res://scripts/field_construction.gd")
 const LAND_NEIGHBOURS: Array[Vector2i] = [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.UP, Vector2i.DOWN, Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
 const COMPASS: Array[Vector2] = [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN, Vector2(0.7071068, 0.7071068), Vector2(-0.7071068, 0.7071068), Vector2(0.7071068, -0.7071068), Vector2(-0.7071068, -0.7071068)]
 
@@ -23,6 +25,7 @@ static func debug_spawn_point(sim, desired: Vector2, radius: float) -> Vector2:
 	return _nav(sim).near_water(sim, desired, radius, 2.3, -1, 8.0)
 
 static func move_to(sim, e: Dictionary, desired: Vector2, delta: float) -> bool:
+	if bool(sim.data_for(e.spec).get("amphibious", false)): return load("res://scripts/amphibious_navigation.gd").move_to(sim,e,desired,delta)
 	var nav = _nav(sim)
 	var radius: float = float(sim.data_for(e.spec).get("radius", 0.9))
 	var draft: float = _draft(sim, e)
@@ -48,11 +51,13 @@ static func move_to(sim, e: Dictionary, desired: Vector2, delta: float) -> bool:
 	if route.is_empty():
 		e.state = "unreachable"
 		return false
-	while route.size() > 1 and (e.pos as Vector2).distance_to(route[0]) <= maxf(0.3, radius * 0.35): route.pop_front()
+	while route.size() > 1 and (e.pos as Vector2).distance_to(route[0]) <= maxf(0.3, radius * 0.35):
+		if not nav.segment_clear(sim, e.pos, route[1], radius, draft, int(e.id), false): break
+		route.pop_front()
 	if route.is_empty(): return false
 	var waypoint: Vector2 = route[0]
 	var offset: Vector2 = waypoint - e.pos
-	if offset.length() <= 0.2:
+	if offset.length() <= 0.2 and (route.size() == 1 or nav.segment_clear(sim, e.pos, route[1], radius, draft, int(e.id), false)):
 		route.pop_front()
 		return false
 	var wanted: float = rad_to_deg(offset.angle())
@@ -77,13 +82,13 @@ static func move_to(sim, e: Dictionary, desired: Vector2, delta: float) -> bool:
 	e.motion = old.distance_to(next)
 	e.state = "move"
 	sim._spatial_move(e, old, next)
-	if next.distance_to(waypoint) <= 0.22: route.pop_front()
+	if next.distance_to(waypoint) <= 0.22 and (route.size() == 1 or nav.segment_clear(sim, next, route[1], radius, draft, int(e.id), false)): route.pop_front()
 	return next.distance_to(goal) <= maxf(0.26, radius * 0.35)
 
 ## New shipyards occupy water cells only. Old saves own their historical rule
 ## snapshot, whose ground-domain shipyards retain the prior coast footprint.
 ## Both policies keep physical exits, occupancy and construction authority.
-static func shipyard_site_error(sim, team: int, info: Dictionary, pos: Vector2, builder: int = -1) -> String:
+static func shipyard_site_error(sim, team: int, info: Dictionary, pos: Vector2, builder: int = -1, rotation_quarters: int = -1) -> String:
 	var size: int = int(info.get("size", 4))
 	var half: float = float(size) * 0.5
 	var origin: Vector2i = Vector2i(roundi(pos.x - half), roundi(pos.y - half))
@@ -110,9 +115,9 @@ static func shipyard_site_error(sim, team: int, info: Dictionary, pos: Vector2, 
 		if high_level - shore_level > 1.8: return "船坞陆侧高差过大"
 	if not _yard_authorized(sim,team,pos,half,water_built,builder): return "超出己方已完成建筑的扩建范围"
 	var largest: Vector2 = _largest_hull(sim,team)
-	var exit: Vector2 = _yard_exit(sim, pos, size, largest.x, largest.y)
+	var exit: Vector2 = _yard_exit(sim, pos, size, largest.x, largest.y,false,-1,rotation_quarters)
 	if not exit.is_finite(): return "船坞水侧没有舰艇航道出口"
-	if water_built and not _yard_has_shore_route(sim,pos,size,team): return "船坞会阻断舰艇往返岸边的航道"
+	if water_built and not _yard_has_shore_route(sim,pos,size,team,rotation_quarters): return "船坞会阻断舰艇往返岸边的航道"
 	for e: Dictionary in sim.entities.values():
 		if float(e.get("hp", 0.0)) <= 0.0 or int(e.get("id", -1)) == builder or int(e.get("transport_id", -1)) > 0: continue
 		if e.get("kind", "") == "building":
@@ -124,11 +129,17 @@ static func shipyard_site_error(sim, team: int, info: Dictionary, pos: Vector2, 
 		if float(ruin.hp) > 0.0 and absf(ruin.pos.x-pos.x) < half + ruin.half.x and absf(ruin.pos.y-pos.y) < half + ruin.half.y: return "船坞位置有石墙或废墟"
 	for ore: Dictionary in sim.mines:
 		if sim._circle_rect(ore.pos, 1.2, pos, Vector2.ONE * half): return "船坞不能覆盖矿点"
+	if builder >= 0:
+		if not sim._builder_valid(team, builder): return "船坞需要己方工程兵"
+		if water_built and not FieldConstruction.shore_approach(sim, sim.entities[builder], info, pos).is_finite(): return "船坞附近没有工程兵可达的岸边施工点"
 	return ""
 
 static func _yard_authorized(sim, team: int, pos: Vector2, half: float, water_built: bool, builder: int) -> bool:
-	if builder >= 0: return true
-	if sim.in_construction_range(team, pos): return true
+	if builder >= 0 and water_built:
+		if sim._builder_valid(team, builder):
+			var approach: Vector2 = FieldConstruction.shore_approach(sim, sim.entities[builder], {"size": half * 2.0}, pos)
+			if approach.is_finite() and sim.in_construction_range(team, approach): return true
+	elif sim.in_construction_range(team, pos): return true
 	# Headquarters in the island profile sit well inland. Their protected home
 	# harbour is an owned construction zone once a real base exists, while an
 	# enemy or remote expansion shore never grants free placement.
@@ -154,11 +165,11 @@ static func _largest_hull(sim, team: int) -> Vector2:
 ## Query the proposed solid footprint in an isolated local sea grid. The
 ## actual troop transport must reach its embarkation shore; large warships
 ## separately retain the whole-hull launch clearance checked above.
-static func _yard_has_shore_route(sim, center: Vector2, size: int, team: int) -> bool:
+static func _yard_has_shore_route(sim, center: Vector2, size: int, team: int, rotation_quarters: int = -1) -> bool:
 	var carrier_spec: String = sim.factions[team]+"_ship_transport"
 	var carrier: Dictionary = sim.data_for(carrier_spec)
 	var hull := Vector2(float(carrier.get("radius",2.2)),float(carrier.get("naval_air_draft",1.35)))
-	var exit: Vector2 = _yard_exit(sim,center,size,hull.x,hull.y)
+	var exit: Vector2 = _yard_exit(sim,center,size,hull.x,hull.y,false,-1,rotation_quarters)
 	if not exit.is_finite(): return false
 	var probe = Navigation.new()
 	probe.configure(sim.map,sim.bridges)
@@ -171,17 +182,17 @@ static func _yard_has_shore_route(sim, center: Vector2, size: int, team: int) ->
 		if int(harbor.get("team",-1)) == team and center.distance_to(harbor.shore_pos) <= 28.0: targets.append(harbor.land_pos)
 	if targets.is_empty(): targets.append(center)
 	for target: Vector2 in targets:
-		var pair: Dictionary = coast_pair(sim,ship,null,target)
+		var pair: Dictionary = coast_pair(sim,ship,null,target,probe)
 		if pair.is_empty() or not probe.water_clear(sim,pair.water,hull.x,hull.y,-1,false): continue
 		var route: Array[Vector2] = probe.path_between(sim,exit,pair.water,hull.x,hull.y,-1)
 		if not route.is_empty() and route.back().is_equal_approx(pair.water): return true
 	return false
 
-static func _yard_exit(sim, center: Vector2, size: int, radius: float, draft: float, dynamic: bool = false, ignore: int = -1) -> Vector2:
+static func _yard_exit(sim, center: Vector2, size: int, radius: float, draft: float, dynamic: bool = false, ignore: int = -1, rotation_quarters: int = -1) -> Vector2:
 	var nav = _nav(sim)
 	var half: float = float(size) * 0.5
-	var directions: Array[Vector2] = [Vector2.from_angle(deg_to_rad(shipyard_heading(sim, center)))]
-	directions.append_array(COMPASS)
+	var turns: int = rotation_quarters if rotation_quarters >= 0 else posmod(roundi(shipyard_heading(sim,center)/90.0),4)
+	var directions: Array[Vector2] = [Orientation.offset(Vector2.RIGHT,turns)]
 	for ring in range(12):
 		var distance: float = half + radius + 0.45 + float(ring) * 0.6
 		for side: Vector2 in directions:
@@ -202,7 +213,7 @@ static func shipyard_heading(sim, center: Vector2) -> float:
 		if shore.is_finite() and outward.length_squared() > 0.1 and center.distance_to(shore) < closest:
 			closest = center.distance_to(shore)
 			heading = outward.normalized()
-	if closest <= 18.0: return rad_to_deg(heading.angle())
+	if closest <= 18.0: return snappedf(rad_to_deg(heading.angle()),90.0)
 	var best: int = -1
 	for direction: Vector2 in COMPASS:
 		var score: int = 0
@@ -211,22 +222,32 @@ static func shipyard_heading(sim, center: Vector2) -> float:
 		if score > best:
 			best = score
 			heading = direction
-	return rad_to_deg(heading.angle())
+	return snappedf(rad_to_deg(heading.angle()),90.0)
 
 static func spawn_point(sim, shipyard: Dictionary, unit_spec: String) -> Vector2:
 	var info: Dictionary = sim.data_for(unit_spec)
 	var radius: float = float(info.get("radius", 1.0))
 	var draft: float = float(info.get("naval_air_draft", 1.5))
-	return _yard_exit(sim,shipyard.pos,int(sim.data_for(shipyard.spec).get("size",4)),radius,draft,true,int(shipyard.get("id",-1)))
+	return _yard_exit(sim,shipyard.pos,int(sim.data_for(shipyard.spec).get("size",4)),radius,draft,true,int(shipyard.get("id",-1)),Orientation.quarters(shipyard))
 
 ## Return a physically adjacent land/water pair. The land point is a real
 ## standing spot and the water point clears the entire hull. This also rejects
 ## high cliffs, walls, bridges and unloading through impassable shore objects.
-static func coast_pair(sim, ship: Dictionary, passenger: Variant = null, desired_land: Vector2 = Vector2.INF) -> Dictionary:
-	var nav = _nav(sim)
+static func shore_passenger_radius(sim, ship: Dictionary, passenger: Variant = null) -> float:
+	if passenger != null: return sim._radius(passenger)
+	var radius: float = 0.0
+	for id: int in ship.get("passengers", []):
+		if sim.entities.has(id): radius = maxf(radius, sim._radius(sim.entities[id]))
+	if radius > 0: return radius
+	var faction: String = str(sim.data_for(str(ship.get("spec", ""))).get("faction", ""))
+	var infantry: Dictionary = sim.data_for(faction + "_rifle")
+	return float(infantry.get("radius", .5)) if str(infantry.get("domain", "ground")) == "ground" else .5
+
+static func coast_pair(sim, ship: Dictionary, passenger: Variant = null, desired_land: Vector2 = Vector2.INF, navigation_override = null) -> Dictionary:
+	var nav = navigation_override if navigation_override != null else _nav(sim)
 	var radius: float = float(sim.data_for(ship.spec).get("radius", 0.85))
 	var draft: float = _draft(sim, ship)
-	var land_radius: float = 0.35 if passenger == null else sim._radius(passenger)
+	var land_radius: float = shore_passenger_radius(sim, ship, passenger)
 	var origin: Vector2 = desired_land if desired_land.is_finite() else passenger.pos if passenger != null else ship.pos
 	if not origin.is_finite(): return {}
 	var boarding_component: Dictionary = _boarding_land_component(sim, nav, passenger.pos) if passenger != null else {}
@@ -262,6 +283,7 @@ static func coast_pair(sim, ship: Dictionary, passenger: Variant = null, desired
 					if not sim._land(land.lerp(shoreline, 0.5)): continue
 					if not nav.is_water(water.lerp(shoreline, 0.5)): continue
 					if not _crossing_clear(sim, land, water, land_radius, int(passenger.id) if passenger != null else -1): continue
+					if nav.query_footprint.has_area() and nav._swept_shore_rect(sim, land, water, land_radius, nav.query_footprint): continue
 					var water_distance: float = (ship.pos as Vector2).distance_to(water)
 					var score: float = water_distance * 2.0 + land.distance_to(origin) * 0.05 if passenger == null and not desired_land.is_finite() else land.distance_to(origin) + water_distance * 0.035
 					if score < best_score:
@@ -356,7 +378,7 @@ static func pair_clear(sim, ship: Dictionary, passenger: Variant, pair: Dictiona
 	if pair.is_empty() or not pair.has("land") or not pair.has("water"): return false
 	var land: Vector2 = pair.land
 	var water: Vector2 = pair.water
-	var land_radius: float = 0.35 if passenger == null else sim._radius(passenger)
+	var land_radius: float = shore_passenger_radius(sim, ship, passenger)
 	var passenger_id: int = -1 if passenger == null else int(passenger.id)
 	if land.distance_to(water) > land_radius + sim._radius(ship) + 0.8: return false
 	if not sim._standing(land, land_radius, passenger_id, false): return false

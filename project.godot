@@ -4,8 +4,17 @@ config_version=5
 [application]
 config/name="纸境战线 · Paper Front"
 run/main_scene="res://main.tscn"
+run/main_scene.headless_sim="res://headless.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://assets/icon.svg"
+; The Windows portable launcher sets APPDATA before starting the runtime.
+; The feature override leaves editor and Linux user:// locations unchanged.
+config/use_custom_user_dir.portable=true
+config/custom_user_dir_name.portable="user_data"
+
+[debug]
+; The launcher supplies the absolute in-package log path with --log-file.
+file_logging/enable_file_logging.portable=false
 
 [display]
 window/size/viewport_width=1600

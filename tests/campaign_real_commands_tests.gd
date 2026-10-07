@@ -65,7 +65,9 @@ func _initialize() -> void:
 		check(tower > 0, "paid tower protects the headquarters during final defense")
 		var armor_factory: int = find_entity("kestrel_factory")
 		if armor_factory > 0:
-			for wave: int in 2:
+			# Allow a funded reinforcement after two counterattacks are exhausted.
+			# The baseline weapons no longer receive the old cohesion damage bonus.
+			for wave: int in 3:
 				if sim.result == "win": break
 				for order: int in 4:
 					check(sim.produce(armor_factory, "kestrel_tank").is_empty(), "paid armored counterattack order %d/%d" % [wave,order])

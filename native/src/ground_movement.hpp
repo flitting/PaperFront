@@ -8,11 +8,14 @@ struct MovementKeys {
         unreachable_notice{StringName{"unreachable_notice"}}, progress_anchor{StringName{"progress_anchor"}}, progress_clock{StringName{"progress_clock"}},
         avoid_until{StringName{"avoid_until"}}, avoid_dir{StringName{"avoid_dir"}}, reversing{StringName{"reversing"}}, yield_goal{StringName{"yield_goal"}},
         alpha{StringName{"alpha"}}, motion{StringName{"motion"}}, speed{StringName{"speed"}}, turn_speed{StringName{"turn_speed"}}, can_crush{StringName{"can_crush"}},
-        crushable{StringName{"crushable"}}, kind{StringName{"kind"}}, target{StringName{"target"}}, goal{StringName{"goal"}}, revision{StringName{"revision"}}, valid{StringName{"valid"}};
+        ground_motion_from{StringName{"ground_motion_from"}}, ground_motion_time{StringName{"ground_motion_time"}},
+        transport_id{StringName{"transport_id"}},
+        crush_strength{StringName{"crush_strength"}}, crush_resistance{StringName{"crush_resistance"}}, ground_crush_eligible{StringName{"ground_crush_eligible"}},
+        ground_vehicle{StringName{"ground_vehicle"}}, crushable{StringName{"crushable"}}, hold_position{StringName{"hold_position"}}, kind{StringName{"kind"}}, target{StringName{"target"}}, goal{StringName{"goal"}}, revision{StringName{"revision"}}, valid{StringName{"valid"}};
     const StringName _nav_dirty{"_nav_dirty"}, _plan_was_deferred{"_plan_was_deferred"}, _spec_cache{"_spec_cache"},
         _goal_standing_cache{"_goal_standing_cache"}, _static_geometry_revision{"_static_geometry_revision"},
-        _path_between{"_path_between"}, _notice{"_notice"}, _movement_detour{"_movement_detour"},
-        _request_movement_yield{"_request_movement_yield"}, _spatial_move{"_spatial_move"}, _update_contact{"_update_contact"};
+        _path_between{"_path_between"}, _move_pending_path{"_move_pending_path"}, crowd_overlap_enabled{"crowd_overlap_enabled"}, _notice{"_notice"}, _movement_detour{"_movement_detour"},
+        _request_movement_yield{"_request_movement_yield"}, _apply_ground_crush{"_apply_ground_crush"}, _spatial_move{"_spatial_move"}, _update_contact{"_update_contact"};
     const String idle{"idle"}, waiting{"waiting"}, unreachable{"unreachable"}, move{"move"}, force_move{"force_move"};
 };
 struct GroundMovement {
@@ -20,26 +23,32 @@ struct GroundMovement {
     GeometryQueries &geometry;
     const MovementKeys &k;
     bool crush(const Dictionary &e, const Dictionary &other) const {
-        if (!bool(e[k.can_crush]) || !bool(other[k.crushable])) return false;
-        if (e[k.team] != other[k.team]) return true;
-        const Array commands = e[k.commands];
-        if (commands.is_empty()) return false;
-        const Dictionary command = commands[0];
-        return String(command[k.kind]) == k.force_move && int64_t(command[k.target]) == int64_t(other[k.id]);
+        return bool(e.get(k.can_crush, false)) && bool(e.get(k.ground_crush_eligible, false)) && bool(other.get(k.ground_crush_eligible, false))
+            && e[k.team] != other[k.team] && int64_t(e.get(k.crush_strength, 0)) > int64_t(other.get(k.crush_resistance, 99));
+    }
+    Vector2 motion_start(const Dictionary &other, double time) const {
+        const Variant from = other.get(k.ground_motion_from, Variant());
+        return double(other.get(k.ground_motion_time, -1.0)) == time && from.get_type() == Variant::VECTOR2 ? Vector2(from) : Vector2(other[k.pos]);
     }
     bool clear(Dictionary e, Vector2 start, Vector2 next, bool request_yield) const {
         const double radius = e[k.radius];
         const int64_t id = e[k.id];
         if (!geometry.segment_static(start, next, radius, id)) return false;
-        const Array local = geometry.local_neighbors(next);
+        const double time = sim->get(k.time);
+        const bool soft_crowd = bool(sim->get(k.crowd_overlap_enabled));
+        const Array local = geometry.movement_neighbors(start, next, radius);
         for (int64_t i = 0; i < local.size(); ++i) {
             const Dictionary other = local[i];
-            if (int64_t(other[k.id]) == id || double(other[k.hp]) <= 0.0) continue;
-            const double combined = radius + double(other[k.radius]) + .02;
-            const Vector2 point = other[k.pos];
-            const double after = next.distance_squared_to(point), before = start.distance_squared_to(point);
-            if (after >= combined * combined) continue;
-            if (before < combined * combined && after > before + .00001) continue;
+            if (int64_t(other[k.id]) == id || double(other[k.hp]) <= 0.0 || int64_t(other.get(k.transport_id, -1)) > 0) continue;
+            const double other_radius = other[k.radius];
+            const bool overlap = soft_crowd && e[k.team] == other[k.team]
+                && bool(e.get(k.ground_crush_eligible, false)) && bool(other.get(k.ground_crush_eligible, false))
+                && !bool(e.get(k.hold_position, false)) && !bool(other.get(k.hold_position, false));
+            const double combined = radius + other_radius + (overlap ? -std::min(.12, std::min(radius, other_radius) * .12) : .02);
+            const Vector2 relative_start = start - motion_start(other, time), relative_end = next - Vector2(other[k.pos]);
+            const double after = relative_end.length_squared(), before = relative_start.length_squared();
+            if (before < combined * combined && (relative_end-relative_start).dot(relative_start) >= 0.0 && after > before + .00001) continue;
+            if (double(closest(Vector2(), relative_start, relative_end).length_squared()) >= combined * combined) continue;
             if (crush(e, other)) continue;
             if (request_yield) sim->call(k._request_movement_yield, e, other, start, next);
             return false;
@@ -48,13 +57,15 @@ struct GroundMovement {
     }
     void settle(Dictionary e, Vector2 next) const {
         if (!bool(e[k.can_crush])) return;
-        const Array local = geometry.local_neighbors(next);
+        const Vector2 start = e[k.pos];
+        const double time = sim->get(k.time);
+        const Array local = geometry.movement_neighbors(start, next, e[k.radius]);
         for (int64_t i = 0; i < local.size(); ++i) {
             Dictionary other = local[i];
             const double combined = double(e[k.radius]) + double(other[k.radius]);
-            if (crush(e, other) && double(next.distance_squared_to(Vector2(other[k.pos]))) < combined * combined) {
-                other[k.hp] = 0.0;
-                sim->call(k._update_contact, other);
+            const Vector2 relative_start = start - motion_start(other, time), relative_end = next - Vector2(other[k.pos]);
+            if (double(other[k.hp]) > 0.0 && int64_t(other.get(k.transport_id, -1)) <= 0 && crush(e, other) && double(closest(Vector2(), relative_start, relative_end).length_squared()) < combined * combined) {
+                sim->call(k._apply_ground_crush, e, other);
             }
         }
     }
@@ -103,7 +114,7 @@ struct GroundMovement {
         if (Vector2(e[k.path_goal]).distance_to(goal) > 1.0 || path.is_empty()) {
             if (double(e[k.path_wait]) > 0) { e[k.state] = k.waiting; return false; }
             const Array planned = sim->call(k._path_between, original, goal, radius, id);
-            if (bool(sim->get(k._plan_was_deferred))) { e[k.state] = k.waiting; return false; }
+            if (bool(sim->get(k._plan_was_deferred))) return bool(sim->call(k._move_pending_path, e, goal, delta));
             e[k.path] = planned; path = planned; e[k.path_goal] = goal; e[k.path_wait] = 2.0 + double(id % 7) * .07;
             if (path.is_empty()) {
                 e[k.state] = k.unreachable;
@@ -139,7 +150,8 @@ struct GroundMovement {
         const Dictionary specs = sim->get(k._spec_cache), spec = specs[e[k.spec]];
         const Vector2 waypoint = path[0], direction = (waypoint - original).normalized();
         double stride = std::min(double(spec[k.speed]) * delta, double(original.distance_to(waypoint)));
-        stride *= geometry.walking_scale(original, radius);
+        stride *= geometry.walking_scale(original, radius, int64_t(e[k.id]));
+        const bool vehicle = bool(e.get(k.ground_vehicle,!bool(e.get(k.crushable,false))));
         Vector2 next = original + direction * stride;
         bool can_move = clear(e, original, next, true);
         if (can_move) { e[k.avoid_until] = 0.0; if (!Vector2(e.get(k.yield_goal, Vector2(INFINITY, INFINITY))).is_finite()) e[k.reversing] = false; }
@@ -153,12 +165,13 @@ struct GroundMovement {
         }
         if (can_move) {
             double wanted = UtilityFunctions::rad_to_deg((next - original).angle());
-            if (radius > .5 && bool(e.get(k.reversing, false)) && (Vector2(e.get(k.yield_goal, Vector2(INFINITY, INFINITY))).is_finite() || time < double(e.get(k.avoid_until, 0)))) wanted = UtilityFunctions::wrapf(wanted + 180, -180, 180);
+            if (vehicle && bool(e.get(k.reversing, false)) && (Vector2(e.get(k.yield_goal, Vector2(INFINITY, INFINITY))).is_finite() || time < double(e.get(k.avoid_until, 0)))) wanted = UtilityFunctions::wrapf(wanted + 180, -180, 180);
             const double current = e[k.alpha], speed = spec.get(k.turn_speed, 360);
             const double difference = UtilityFunctions::wrapf(wanted - current, -180., 180.);
             const double alpha = UtilityFunctions::wrapf(current + std::clamp(difference, -speed * delta, speed * delta), -180., 180.);
             e[k.alpha] = alpha;
-            if (std::abs(UtilityFunctions::wrapf(wanted - alpha, -180., 180.)) > (radius > .5 ? 10.0 : 25.0)) {
+            if (std::abs(UtilityFunctions::wrapf(wanted - alpha, -180., 180.)) > (vehicle ? 10.0 : 25.0)) {
+                if (vehicle) { e[k.state] = k.waiting; return false; }
                 Vector2 forward = Vector2::from_angle(UtilityFunctions::deg_to_rad(alpha));
                 if (bool(e.get(k.reversing, false)) && (Vector2(e.get(k.yield_goal, Vector2(INFINITY, INFINITY))).is_finite() || time < double(e.get(k.avoid_until, 0)))) forward = -forward;
                 const Vector2 turning_step = original + forward * stride * .55;

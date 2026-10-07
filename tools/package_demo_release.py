@@ -138,12 +138,17 @@ def pck_entries(path: Path) -> tuple[dict, list[dict]]:
 
 
 def denied_resource_names() -> tuple[set[str], set[str]]:
-    voices = {p.name.lower() for p in (PROJECT / "assets/audio/voices").glob("*") if p.suffix.lower() in {".wav", ".ogg", ".mp3"}}
-    manifest = PROJECT / "assets/audio/voices/manifest.json"
-    if manifest.is_file():
-        for clip in json.loads(manifest.read_text(encoding="utf-8")).get("clips", []):
-            if clip.get("path"):
-                voices.add(PurePosixPath(clip["path"]).name.lower())
+    voices = set()
+    for category in ("radio", "voices"):
+        voices.update(p.name.lower() for p in (PROJECT / "assets/audio" / category).glob("*")
+                      if p.suffix.lower() in {".wav", ".ogg", ".mp3"})
+    # Removed source files can still leave stale .godot/imported payloads. The
+    # retirement index preserves their basenames after both old banks are gone.
+    retired_index = PROJECT / "docs/retired_voice_resources.json"
+    if retired_index.is_file():
+        retired = json.loads(retired_index.read_text(encoding="utf-8"))
+        voices.update(PurePosixPath(path).name.lower()
+                      for path in retired.get("retired_audio_files", []))
     references = set()
     for directory in (PROJECT / "docs", PROJECT / "assets/map_design_v6"):
         for item in directory.rglob("*"):
@@ -161,8 +166,8 @@ def audit_pck(path: Path) -> dict:
             name = entry["path"].lower()
             basename = PurePosixPath(name).name
             reason = None
-            if name.startswith("assets/audio/voices/") and basename != "manifest.json":
-                reason = "old speech audio/import/remap"
+            if name.startswith(("assets/audio/voices/", "assets/audio/radio/")):
+                reason = "retired speech bank audio/manifest/import/remap"
             elif name.startswith(("docs/", "tests/", "tools/", "artifacts/", "assets/map_design_v6/")):
                 reason = "developer evidence/reference resource"
             elif (name.startswith("data/golden_visual") and name.endswith(".json")) or name in {
@@ -181,7 +186,7 @@ def audit_pck(path: Path) -> dict:
                     raise ValueError(f"Unexpectedly large import mapping: {name}")
                 handle.seek(entry["offset"])
                 mapping = read_exact(handle, entry["bytes"]).decode("utf-8", errors="replace").lower()
-                if "res://assets/audio/voices/" in mapping or any("/" + voice + "-" in mapping for voice in voices):
+                if any(prefix in mapping for prefix in ("res://assets/audio/voices/", "res://assets/audio/radio/")) or any("/" + voice + "-" in mapping for voice in voices):
                     reason = "export mapping points to old speech audio"
             if reason:
                 forbidden.append({"path": entry["path"], "reason": reason})
@@ -204,56 +209,48 @@ def write_json(path: Path, value) -> None:
 
 def original_records(stage: Path) -> None:
     copy_file(PROJECT / "assets/audio/README_demo_original.md", stage / "PROVENANCE/README_demo_original.md")
-    for category, field in (("music", "tracks"), ("radio", "clips")):
-        source = PROJECT / f"assets/audio/{category}/manifest.json"
+    # Original calm/map score retains its exact CC0 generator and asset hashes.
+    source = PROJECT / "assets/audio/music/manifest.json"
+    data = json.loads(require_file(source).read_text(encoding="utf-8"))
+    if data.get("license") != "CC0-1.0" or not data.get("tracks"):
+        raise ValueError(f"Original music license/entries missing: {source}")
+    generator = PROJECT / data["generator"]
+    if digest(generator) != data.get("generator_sha256"):
+        raise ValueError(f"Audio generator changed since provenance was written: {generator}")
+    for entry in data["tracks"]:
+        asset = PROJECT / entry["path"].removeprefix("res://")
+        if digest(asset) != entry.get("sha256"):
+            raise ValueError(f"Original music differs from provenance: {asset}")
+    copy_file(source, stage / "PROVENANCE/audio_music_manifest.json")
+    # Current speech/effects/music records identify each real provider or local
+    # DSP source. Old eSpeak source is historical, with no active GPL radio bank.
+    for category, field, expected in (("radio", "clips", 300), ("sfx", "effects", 74), ("music", "tracks", 5), ("system", "clips", 2)):
+        source = PROJECT / f"assets/audio/revision_v8/{category}/manifest.json"
         data = json.loads(require_file(source).read_text(encoding="utf-8"))
-        if data.get("license") != {"music": "CC0-1.0", "radio": "GPL-3.0-or-later"}[category] or not data.get(field):
-            raise ValueError(f"Original audio license/entries missing: {source}")
-        generator = PROJECT / data["generator"]
-        if digest(generator) != data.get("generator_sha256"):
-            raise ValueError(f"Audio generator changed since provenance was written: {generator}")
-        for entry in data[field]:
-            asset = PROJECT / entry["path"].removeprefix("res://")
-            if digest(asset) != entry.get("sha256"):
-                raise ValueError(f"Original audio differs from provenance: {asset}")
-        copy_file(source, stage / f"PROVENANCE/audio_{category}_manifest.json")
-    # Conservative GPL radio distribution includes its complete corresponding
-    # source alongside the independently licensed engine and game assets.
-    kit = PROJECT / "tools/source_assets/espeak-ng"
-    records = json.loads(require_file(kit / "source_kit_manifest.json").read_text(encoding="utf-8"))
-    downloads = json.loads(require_file(kit / "source_download_manifest.json").read_text(encoding="utf-8"))
-    for entry in [downloads["dsc"], *downloads["archives"]]:
-        source = require_file(kit / entry["file"])
-        if digest(source) != entry["sha256"] or source.stat().st_size != entry["bytes"]:
-            raise ValueError(f"Corresponding source archive changed: {source}")
-    for key in ("generator", "generated_audio_manifest"):
-        entry = records[key]
-        if digest(kit / entry["file"]) != entry["sha256"]:
-            raise ValueError(f"Corresponding source record changed: {key}")
-    if digest(kit / records["generator"]["file"]) != digest(PROJECT / "tools/generate_demo_radio.py"):
-        raise ValueError("Radio corresponding generator differs from the current generator")
-    if digest(kit / records["generated_audio_manifest"]["file"]) != digest(PROJECT / "assets/audio/radio/manifest.json"):
-        raise ValueError("Radio corresponding manifest differs from the current PCM manifest")
-    for source in sorted(kit.rglob("*")):
-        if source.is_file() and source.name != ".gdignore":
-            copy_file(source, stage / "SOURCE/espeak-ng" / source.relative_to(kit))
-    for source in sorted((PROJECT / "assets/audio/licenses").glob("*.txt")):
-        copy_file(source, stage / "LICENSES" / source.name)
-    # Preserve source records for effects without distributing old supplier speech metadata.
-    effects_manifest = json.loads((PROJECT / "assets/audio/voices/manifest.json").read_text(encoding="utf-8"))
-    effects = []
-    for effect in effects_manifest.get("effects", []):
-        if effect.get("license") != "CC0-1.0":
-            raise ValueError("An effect has no explicit original CC0 record")
-        effects.append({**effect, "sha256": digest(PROJECT / effect["path"].removeprefix("res://"))})
+        entries = data.get(field, [])
+        if len(entries) != expected:
+            raise ValueError(f"Incomplete v8 audio provenance: {source}")
+        for entry in entries:
+            path = entry.get("file", "")
+            if not path.startswith(f"res://assets/audio/revision_v8/{category}/") or ".." in PurePosixPath(path).parts:
+                raise ValueError(f"Invalid v8 audio provenance path: {path}")
+            asset = PROJECT / path.removeprefix("res://")
+            if digest(asset) != entry.get("sha256") or not entry.get("provenance", {}).get("type"):
+                raise ValueError(f"V8 audio differs from provenance or has no actual source: {asset}")
+        copy_file(source, stage / f"PROVENANCE/audio_v8_{category}_manifest.json")
+    copy_file(PROJECT / "assets/audio/revision_v8/README.md", stage / "PROVENANCE/audio_v8_README.md")
+    for name in ("generate_revision_v8_audio.py", "revision_v8_dialogue.py", "revision_audio_20261007.py"):
+        copy_file(PROJECT / "tools" / name, stage / "SOURCE/audio_v8" / name)
+    # Top-level UI and historical original effects stay usable without the
+    # removed old supplier-speech manifest. Their actual WAV hashes are retained.
     generated_files = [{"path": p.relative_to(PROJECT).as_posix(), "sha256": digest(p)}
                        for p in sorted((PROJECT / "assets/audio").glob("*.wav"))]
     write_json(stage / "PROVENANCE/original_effects.json", {
         "license": "CC0-1.0", "source_record": "LICENSES/PROJECT_ASSETS.md",
         "generators": [{"path": str(p.relative_to(PROJECT)), "sha256": digest(p)} for p in
                        (PROJECT / "tools/generate_audio.py", PROJECT / "tools/generate_unit_voices.py")],
-        "project_effects": generated_files, "aviation_effects": effects,
-        "note": "Generator source stays in the project; no online speech audio is included."})
+        "project_effects": generated_files,
+        "note": "Top-level original CC0 effects only. Current provider-generated v8 assets have separate truthful manifests; retired speech and historical eSpeak source kit are not distributed."})
 
 
 def start_here(binary: str) -> str:

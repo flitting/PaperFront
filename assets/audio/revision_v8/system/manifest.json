@@ -1,0 +1,67 @@
+{
+  "version": 10,
+  "sample_rate": 22050,
+  "license": "Provider-generated output under OpenRouter and Microsoft service terms; no CC0 claim.",
+  "clips": [
+    {
+      "key": "system/low_power/1",
+      "action": "low_power",
+      "variant": 1,
+      "category": "system",
+      "faction": "",
+      "text": "电力不足，请增建电站。",
+      "speaker_id": "zh-CN-Harper:MAI-Voice-2.1@system",
+      "voice": "zh-CN-Harper:MAI-Voice-2.1",
+      "file": "res://assets/audio/revision_v8/system/low_power.wav",
+      "duration_s": 2.414,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "a3dd6b8403d6801fd21b0529deae4e870fd7ab79921b524819a55a5c6b7bfbf7",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "OpenRouter / Microsoft Azure MAI Voice",
+        "model": "microsoft/mai-voice-2.1",
+        "managed_voice": "zh-CN-Harper:MAI-Voice-2.1",
+        "generation_id": "gen-tts-1791286255-hnDMY4iWlP6mMCgbP1bG",
+        "request_sha256": "358be4877a97fa6823fdd07150436dc8876f85d6d9fd0f4221f6fb71f040ff23",
+        "raw_sha256": "4d1b8ad663372f66b368448049754d9c738aac6d759f07e29149af78aa9600b4",
+        "post_processing": {
+          "pitch": 1.0,
+          "amplitude_gain": 0.8,
+          "internal_pause_cap_s": 0.12
+        }
+      }
+    },
+    {
+      "key": "system/power_restored/1",
+      "action": "power_restored",
+      "variant": 1,
+      "category": "system",
+      "faction": "",
+      "text": "电力已恢复。",
+      "speaker_id": "zh-CN-Harper:MAI-Voice-2.1@system",
+      "voice": "zh-CN-Harper:MAI-Voice-2.1",
+      "file": "res://assets/audio/revision_v8/system/power_restored.wav",
+      "duration_s": 1.2595,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "c9b71fe45dcc9a0443d1c3e3b7e7f48ebe83cc2a5f4cbd6e42fdc2415227a6ef",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "OpenRouter / Microsoft Azure MAI Voice",
+        "model": "microsoft/mai-voice-2.1",
+        "managed_voice": "zh-CN-Harper:MAI-Voice-2.1",
+        "generation_id": "gen-tts-1791286258-1PJO8qGUZqFSG6el7iym",
+        "request_sha256": "b4d249416fe79e400a0b84a4f79c9f8021eb93fb2716eb2292cd105d1d9b36a2",
+        "raw_sha256": "17cc348fa9a09ff5c49ae1383e206f7239b361f0dcb0868ab77846b628ca1072",
+        "post_processing": {
+          "pitch": 1.0,
+          "amplitude_gain": 0.8,
+          "internal_pause_cap_s": 0.12
+        }
+      }
+    }
+  ]
+}

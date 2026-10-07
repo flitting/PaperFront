@@ -9,13 +9,14 @@ func check(ok: bool, message: String) -> void:
 
 func _initialize() -> void:
 	var rules: Dictionary = Rules.load_rules()
+	# Conventional headquarters retain the shared normal/defense build queues.
 	var sim = Sim.new()
-	sim.setup(rules, "dev", 7, "rivet", false)
+	sim.setup(rules, "dev", 7, "kestrel", false)
 	var funds: float = sim.money[0]
-	check(sim.build(0, "rivet_power").is_empty(), "normal construction accepts an initial order")
-	check(sim.build(0, "rivet_wall").is_empty(), "defense construction starts while normal construction is active")
-	check(sim.building_orders[0].spec == "rivet_power" and sim.defense_orders[0].spec == "rivet_wall", "legacy order remains normal and defense has its own slot")
-	check(sim.money[0] == funds - float(rules.buildings.rivet_power.cost) - float(rules.buildings.rivet_wall.cost), "both queues use shared funds")
+	check(sim.build(0, "kestrel_power").is_empty(), "normal construction accepts an initial order")
+	check(sim.build(0, "kestrel_wall").is_empty(), "defense construction starts while normal construction is active")
+	check(sim.building_orders[0].spec == "kestrel_power" and sim.defense_orders[0].spec == "kestrel_wall", "legacy order remains normal and defense has its own slot")
+	check(sim.money[0] == funds - float(rules.buildings.kestrel_power.cost) - float(rules.buildings.kestrel_wall.cost), "both queues use shared funds")
 	var protected_funds: float = sim.money[0]
 	var normal_order: Dictionary = sim.building_orders[0].duplicate(true)
 	var defense_order: Dictionary = sim.defense_orders[0].duplicate(true)
@@ -29,7 +30,7 @@ func _initialize() -> void:
 	var before_cancel: float = sim.money[0]
 	check(sim.cancel_build(0, "defense").is_empty() and sim.money[0] == before_cancel + refund, "defense cancellation refunds only its unfinished work")
 	check(not sim.building_orders[0].is_empty() and sim.defense_orders[0].is_empty(), "canceling defense preserves the normal order")
-	check(sim.build(0, "rivet_wall").is_empty(), "defense channel accepts a replacement order")
+	check(sim.build(0, "kestrel_wall").is_empty(), "defense channel accepts a replacement order")
 	sim.step(40.0)
 	check(bool(sim.building_orders[0].ready) and bool(sim.defense_orders[0].ready), "both queues can retain ready buildings together")
 	var path: String = "/tmp/paper_war_construction_channels.save"

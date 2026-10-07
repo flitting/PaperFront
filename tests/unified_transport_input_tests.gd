@@ -145,7 +145,7 @@ func run() -> void:
 	game.command_mode = ""
 	land_shortcut.keycode = KEY_B
 	game._unhandled_input(land_shortcut)
-	check(sim.entities[plane].flight_state == "returning" and bool(sim.entities[plane].park_after_service), "B remains the aircraft return shortcut")
+	check((sim.entities[plane].flight_state == "returning" or (bool(sim.entities[plane].get("takeoff_pending",false)) and bool(sim.entities[plane].get("takeoff_returning",false)))) and bool(sim.entities[plane].park_after_service), "B requests return; grounded aircraft reserves a safe takeoff before flying")
 	game.queue_free()
 	await process_frame
 	print("UNIFIED_TRANSPORT_INPUT ", JSON.stringify({"checks": checks, "failures": failures}))

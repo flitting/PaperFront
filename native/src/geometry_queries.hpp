@@ -2,21 +2,26 @@
 // terrain mask is immutable during a tick. No navigation decisions are skipped.
 struct GeometryKeys {
     const Variant hp{StringName{"hp"}}, pos{StringName{"pos"}}, half{StringName{"half"}}, id{StringName{"id"}}, radius{StringName{"radius"}},
-        spec{StringName{"spec"}}, size{StringName{"size"}}, role{StringName{"role"}}, alive{StringName{"alive"}}, bounds{StringName{"bounds"}};
+        ground_infantry{StringName{"ground_infantry"}}, spec{StringName{"spec"}}, size{StringName{"size"}}, role{StringName{"role"}}, alive{StringName{"alive"}}, bounds{StringName{"bounds"}};
     const String barricade{"barricade"};
 };
 class GeometryQueries {
     int64_t size = 0;
+    double max_ground_radius = 1.0;
     bool measurement_enabled=false;
     int64_t measured_queries=0,measured_ns=0,measured_rectangles=0;
     Array terrain, heights, bridges, mines;
-    PackedByteArray flat;
-    Dictionary ruins, buildings, mine_buckets, spatial, neighbors, specs;
+    PackedByteArray flat, flat_wide;
+    Dictionary ruins, buildings, mine_buckets, spatial, neighbors, specs, ground_motion, entities;
     GeometryKeys k;
     static Vector2i bucket(Vector2 pos) { return Vector2i(std::floor(pos.x / 2.0), std::floor(pos.y / 2.0)); }
     static Array at(const Dictionary &map, Vector2i key) {
         Variant result = map.get(key, Variant());
         return result.get_type() == Variant::ARRAY ? Array(result) : Array();
+    }
+    bool infantry(int64_t id) const {
+        const Variant value=entities.get(id,Variant());
+        return value.get_type()==Variant::DICTIONARY && bool(Dictionary(value).get(k.ground_infantry,false));
     }
     bool in_bounds(Vector2 p) const { return p.x >= 0 && p.y >= 0 && p.x < size && p.y < size; }
     int64_t cell_type(Vector2 p) const {
@@ -51,7 +56,10 @@ class GeometryQueries {
         return level;
     }
     bool fast_flat(Vector2 p, double radius) const {
-        return radius <= .99 && in_bounds(p) && flat[int64_t(std::floor(p.y)) * size + int64_t(std::floor(p.x))] == 1;
+        if (radius > 1.99 || !in_bounds(p)) return false;
+        const int64_t index = int64_t(std::floor(p.y)) * size + int64_t(std::floor(p.x));
+        if (radius <= .99) return flat[index] == 1;
+        return flat_wide.size() == size * size && flat_wide[index] == 1;
     }
     static bool circle_rect(Vector2 p, double radius, Vector2 center, Vector2 half) {
         Vector2 closest = p.clamp(center - half, center + half);
@@ -134,7 +142,7 @@ class GeometryQueries {
                 if(checked.has(id))continue;checked[id]=true;
                 if(int64_t(id)==ignore || double(e[k.hp])<=0)continue;
                 const Dictionary spec=specs[e[k.spec]];
-                if(radius<=.5 && String(spec.get(k.role,String()))==k.barricade)continue;
+                if(infantry(ignore) && String(spec.get(k.role,String()))==k.barricade)continue;
                 const double half=double(spec[k.size])*.5;
                 if(measurement_enabled)++measured_rectangles;
                 if(swept_circle_rect(start,end,clearance,e[k.pos],Vector2(half,half)))return false;
@@ -156,8 +164,32 @@ public:
         neighbors[key] = local;
         return local;
     }
-    double walking_scale(Vector2 p, double radius) const {
-        if (radius > .5) return 1.0;
+    Array movement_neighbors(Vector2 start, Vector2 end, double radius) {
+        const double reach = radius + max_ground_radius + .02;
+        const bool nearby = double(start.distance_to(end)) + reach <= 2.0;
+        if (nearby && ground_motion.is_empty()) return local_neighbors(end);
+        Array local, keys;
+        Dictionary checked;
+        if (nearby) {
+            const Vector2i center = bucket(end);
+            for (int z = -1; z <= 1; ++z) for (int x = -1; x <= 1; ++x) keys.append(center + Vector2i(x, z));
+        } else keys = segment_bucket_keys(start, end, reach).keys();
+        for (int64_t j = 0; j < keys.size(); ++j) {
+            for (const Dictionary *source : {&spatial, &ground_motion}) {
+                const Array entries = at(*source, keys[j]);
+                for (int64_t i = 0; i < entries.size(); ++i) {
+                    const Dictionary other = entries[i];
+                    const Variant id = other[k.id];
+                    if (checked.has(id)) continue;
+                    checked[id] = true;
+                    local.append(other);
+                }
+            }
+        }
+        return local;
+    }
+    double walking_scale(Vector2 p, double radius, int64_t id) const {
+        if (!infantry(id)) return 1.0;
         const Array local = at(buildings, bucket(p));
         for (int64_t i = 0; i < local.size(); ++i) {
             const Dictionary e = local[i], spec = specs[e[k.spec]];
@@ -167,9 +199,13 @@ public:
     }
     void configure(const Dictionary &data) {
         Dictionary map = data["map"]; size = map["size"]; terrain = map["terrain"]; heights = map["heights"];
-        flat = data["flat"]; bridges = data["bridges"]; mines = data["mines"];
+        flat = data["flat"]; flat_wide = data.get("flat_wide", PackedByteArray());
+        bridges = data["bridges"]; mines = data["mines"];
         ruins = data["ruins"]; buildings = data["buildings"]; mine_buckets = data["mine_buckets"];
         spatial = data["spatial"]; neighbors = data["neighbors"]; specs = data["specs"];
+        max_ground_radius = data.get("max_ground_radius", 1.0);
+        ground_motion = data.get("ground_motion", Dictionary());
+        entities = data.get("entities", Dictionary());
     }
     bool building_clear(Vector2 p, double radius, int64_t ignore) const {
         Vector2i key = bucket(p);
@@ -188,15 +224,43 @@ public:
             Dictionary e = local[i];
             if (int64_t(e[k.id]) == ignore || double(e[k.hp]) <= 0) continue;
             Dictionary spec = specs[e[k.spec]];
-            if (radius <= .5 && String(spec.get(k.role, String())) == k.barricade) continue;
+            if (infantry(ignore) && String(spec.get(k.role, String())) == k.barricade) continue;
             double half = double(spec[k.size]) * .5;
             if (circle_rect(p, radius + .02, e[k.pos], Vector2(half, half))) return false;
+        }
+        return true;
+    }
+    bool terrain_shape_clear(Vector2 start, Vector2 finish, double radius) const {
+        const Vector2 low = Vector2(std::min(start.x, finish.x), std::min(start.y, finish.y)) - Vector2(radius, radius);
+        const Vector2 high = Vector2(std::max(start.x, finish.x), std::max(start.y, finish.y)) + Vector2(radius, radius);
+        if (low.x < 0 || low.y < 0 || high.x >= size || high.y >= size) return false;
+        const Array buckets = segment_bucket_keys(start, finish, radius).keys();
+        for (int64_t i = 0; i < buckets.size(); ++i) {
+            const Vector2i b = buckets[i];
+            for (int z = std::max(0, b.y * 2); z < std::min(int(size), b.y * 2 + 2); ++z) {
+                const Array row = heights[z];
+                for (int x = std::max(0, b.x * 2); x < std::min(int(size), b.x * 2 + 2); ++x) {
+                    const Vector2 p(x + .5, z + .5);
+                    if (!land(p)) {
+                        if (swept_circle_rect(start, finish, radius, p, Vector2(.5, .5))) return false;
+                        continue;
+                    }
+                    if (x > 0 && land(p - Vector2(1, 0)) && std::abs(double(row[x]) - double(row[x - 1])) > .8)
+                        if (swept_circle_rect(start, finish, radius, Vector2(x, z + .5), Vector2(0, .5))) return false;
+                    if (z > 0 && land(p - Vector2(0, 1))) {
+                        const Array above = heights[z - 1];
+                        if (std::abs(double(row[x]) - double(above[x])) > .8)
+                            if (swept_circle_rect(start, finish, radius, Vector2(x + .5, z), Vector2(.5, 0))) return false;
+                    }
+                }
+            }
         }
         return true;
     }
     bool standing(Vector2 p, double radius, int64_t ignore, bool dynamic) {
         if (!land(p)) return false;
         if (!fast_flat(p, radius)) {
+            if (!terrain_shape_clear(p, p, radius)) return false;
             const double level = height(p);
             const Vector2 directions[] = {Vector2(1, 0), Vector2(-1, 0), Vector2(0, -1), Vector2(0, 1), Vector2(.707, .707), Vector2(-.707, .707), Vector2(.707, -.707), Vector2(-.707, -.707)};
             for (Vector2 direction : directions) {
@@ -251,6 +315,7 @@ public:
             }
             if (all_flat) return true;
         }
+        if (!terrain_shape_clear(start, end, radius)) return false;
         const int terrain_checks = std::max(1, int(std::ceil(double(start.distance_to(end)) / .25)));
         Vector2 previous = start;
         for (int n = 1; n <= terrain_checks; ++n) {

@@ -1,7 +1,7 @@
 extends RefCounted
 
-## Read the remaining authoritative route. Queued legs express command intent
-## only; this helper never asks navigation to plan a path or mutates an order.
+## One inexpensive intent line per selected unit. Navigation geometry and
+## queued orders are deliberately not traversed by this display helper.
 const MOVE_COMMANDS := ["move", "force_move", "attack_move", "patrol", "attack", "force_attack", "capture", "board", "repair_unit", "repair_building", "rescue", "deploy_outpost", "resume_outpost", "repair_bridge", "land", "unload_move", "return"]
 
 static func selected_routes(entities: Dictionary, selection: Array, rules: Dictionary, viewer_team: int = 0) -> Array[Dictionary]:
@@ -32,30 +32,22 @@ static func entity_routes(entity: Dictionary, spec: Dictionary, entities: Dictio
 	var commands: Array = entity.get("commands", [])
 	var air: bool = str(spec.get("domain", "ground")) == "air"
 	var kind: String = str(commands[0].get("kind", "move")) if not commands.is_empty() else "move"
-	var returning: bool = air and str(entity.get("flight_state", "")) == "returning"
-	var servicing: bool = air and str(entity.get("flight_state", "")) == "rearming"
-	var current := PackedVector2Array([entity.pos])
+	var destination: Vector2 = Vector2.INF
 	if air:
-		if returning:
+		if str(entity.get("flight_state", "")) == "returning":
 			kind = "return"
-			_append_distinct(current, _destination({"kind": "return"}, entities, entity))
+			destination = _destination({"kind": "return"}, entities, entity)
 		elif str(entity.get("flight_state", "")) not in ["rearming", "stranded"] and not commands.is_empty():
-			_append_distinct(current, _destination(commands[0], entities, entity))
+			destination = _destination(commands[0], entities, entity)
 	else:
-		for point in entity.get("path", []):
-			if point is Vector2: _append_distinct(current, point)
-	if current.size() > 1: result.append({"points": current, "kind": kind, "planned": true, "air": air})
-	# The first command is already represented by the remaining path. Following
-	# destinations have no planned geometry yet, so use a lighter dashed leg.
-	var anchor: Vector2 = current[current.size() - 1] if returning or servicing else _destination(commands[0], entities, entity) if not commands.is_empty() else entity.pos
-	if not anchor.is_finite(): anchor = current[current.size() - 1]
-	for index in range(0 if returning or servicing else 1, commands.size()):
-		var destination: Vector2 = _destination(commands[index], entities, entity)
-		if not destination.is_finite(): continue
-		var points := PackedVector2Array([anchor])
-		_append_distinct(points, destination)
-		if points.size() > 1: result.append({"points": points, "kind": str(commands[index].kind), "planned": false, "air": air})
-		anchor = destination
+		# The current navigation goal can be an approach point near a target.
+		# Use it for movement, including autonomous harvesting and naval travel.
+		if str(entity.get("state", "")) == "move" or (not commands.is_empty() and kind in MOVE_COMMANDS):
+			destination = entity.get("naval_path_goal", Vector2.INF) if str(spec.get("domain", "ground")) == "naval" else entity.get("path_goal", Vector2.INF)
+			if not destination.is_finite() and not commands.is_empty(): destination = _destination(commands[0], entities, entity)
+	var current := PackedVector2Array([entity.pos])
+	_append_distinct(current, destination)
+	if current.size() == 2: result.append({"points": current, "kind": kind, "planned": true, "air": air})
 	return result
 
 static func _append_distinct(points: PackedVector2Array, point: Vector2) -> void:
@@ -64,17 +56,8 @@ static func _append_distinct(points: PackedVector2Array, point: Vector2) -> void
 static func ground_points(points: PackedVector2Array, map: Dictionary, lift: float = .09, domain: String = "ground") -> PackedVector3Array:
 	var result := PackedVector3Array()
 	if points.is_empty(): return result
-	for index in range(points.size() - 1):
-		var start: Vector2 = points[index]
-		var finish: Vector2 = points[index + 1]
-		# Sample through terrain cells: ramps and intermediate plateaus must stay
-		# grounded, even when the navigator smoothed a long straight segment.
-		var steps: int = maxi(1, ceili(start.distance_to(finish) / .45))
-		for step in range(steps):
-			var point: Vector2 = start.lerp(finish, float(step) / float(steps))
-			result.append(Vector3(point.x, MapData.entity_surface_y(map, point, domain) + lift, point.y))
-	var last: Vector2 = points[points.size() - 1]
-	result.append(Vector3(last.x, MapData.entity_surface_y(map, last, domain) + lift, last.y))
+	for point: Vector2 in [points[0], points[points.size() - 1]]:
+		result.append(Vector3(point.x, MapData.entity_surface_y(map, point, domain) + lift, point.y))
 	return result
 
 static func dashed_segments(points: PackedVector2Array, dash: float = 8.0, gap: float = 5.0) -> Array[PackedVector2Array]:

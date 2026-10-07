@@ -99,6 +99,18 @@ static func _append(mesh, part, center: Vector3, right: Vector3, up: Vector3, fo
 
 static func _box(mesh, center: Vector3, size: Vector3, color: Color = WHITE) -> void:
 	mesh.box(center, size, color, false)
+	_pencil_box(mesh,center,size)
+
+static func _pencil_box(mesh, center: Vector3, size: Vector3) -> void:
+	# Only physical carton edges. Near has thin structural pencil strokes;
+	# medium keeps the upper fold and far omits them before they become a blob.
+	if mesh.detail_tier >= 2 or maxf(size.x,maxf(size.y,size.z)) < .18: return
+	var h: Vector3 = size*.5
+	var radius: float = .007 if mesh.detail_tier == 0 else .014
+	var top: Array = [center+Vector3(-h.x,h.y,-h.z),center+Vector3(h.x,h.y,-h.z),center+Vector3(h.x,h.y,h.z),center+Vector3(-h.x,h.y,h.z)]
+	for i in range(4): mesh.line(top[i],top[(i+1)%4],radius,INK)
+	if mesh.detail_tier == 0:
+		for point: Vector3 in top: mesh.line(point,point-Vector3(0,size.y,0),radius,INK)
 
 static func _panel(mesh, center: Vector3, width: float, height: float, normal: Vector3, color: Color) -> void:
 	var part = _part()
@@ -108,6 +120,7 @@ static func _panel(mesh, center: Vector3, width: float, height: float, normal: V
 	_append(mesh, part, center, right, outward.cross(right).normalized(), outward)
 
 static func _mark(mesh, center: Vector3, owner: Color, normal: Vector3 = Vector3.UP, size: float = .22) -> void:
+	owner = Color("efb537")
 	# A distinct four-point star with swept paired wings, never the canon bird badge.
 	var part = _part()
 	part.box(Vector3.ZERO, Vector3(size * 2.65, size * 2.28, .060), VIOLET, false)
@@ -124,7 +137,7 @@ static func _mark(mesh, center: Vector3, owner: Color, normal: Vector3 = Vector3
 static func _carton(mesh, center: Vector3, size: Vector3, color: Color = WHITE, skew: float = .025, taped: bool = true) -> void:
 	var w: float = size.x * .5
 	var h: float = size.y * .5
-	mesh.prism([Vector2(-w, -h), Vector2(-w + skew, h), Vector2(w + skew, h - .018), Vector2(w, -h)], size.z, center, color, false, {0:color.darkened(.035), 1:color.lightened(.035), 2:color.darkened(.025), 3:CUT})
+	mesh.prism([Vector2(-w, -h), Vector2(-w + skew, h), Vector2(w + skew, h - .018), Vector2(w, -h)], size.z, center, color, mesh.detail_tier == 0, {0:color.darkened(.035), 1:color.lightened(.035), 2:color.darkened(.025), 3:CUT})
 	if not taped: return
 	var top: float = center.y + h + .012
 	_box(mesh, Vector3(center.x + skew * .5, top, center.z), Vector3(size.x * .87, .016, .085), TAPE)
@@ -139,7 +152,7 @@ static func _board(mesh, profile: Array, depth: float, center: Vector3, color: C
 	# Thin boards show pale cut thickness. A broad extrusion is a folded roof
 	# or launch trough: its long faces are painted and its narrow ends are cut.
 	for i: int in range(profile.size()): cut_edges[i] = CUT if depth <= .30 else color
-	mesh.prism(profile, depth, center, color if depth <= .30 else CUT, false, cut_edges)
+	mesh.prism(profile, depth, center, color if depth <= .30 else CUT, mesh.detail_tier == 0, cut_edges)
 
 static func _sheet(mesh, profile: Array, thickness: float, center: Vector3, color: Color = WHITE) -> void:
 	var part = _part()
@@ -462,20 +475,25 @@ static func _harvester(mesh, owner: Color) -> void:
 	_mark(mesh, Vector3(.71, 1.51, 0), owner, Vector3.UP, .20)
 
 static func _scout(mesh, owner: Color) -> Dictionary:
-	_wheels(mesh, [-.53, .54], .58, .26)
-	_carton(mesh, Vector3(0, .54, 0), Vector3(1.65, .47, 1.04), WHITE, -.026)
-	_panel(mesh, Vector3(.84, .57, 0), .62, .21, Vector3.RIGHT, PURPLE)
-	_mark(mesh, Vector3(.22, .80, 0), owner, Vector3.UP, .17)
-	_mark(mesh, Vector3(-.30, .53, .553), owner, Vector3.BACK, .15)
+	# Folded survey rover: a low hexagonal paper hull, four independent wheel
+	# pods and a thin triangulated sensor crown, rather than a flat billboard.
+	_wheels(mesh, [-.57, .55], .59, .24)
+	mesh.slab([Vector2(-.82,-.38),Vector2(.49,-.43),Vector2(.94,0),Vector2(.49,.43),Vector2(-.82,.38)],.27,Vector3(0,.50,0),WHITE)
+	mesh.prism([Vector2(-.53,0),Vector2(-.36,.28),Vector2(.34,.19),Vector2(.53,0)],.56,Vector3(-.02,.64,0),PEARL)
+	for side: float in [-1.0,1.0]:
+		mesh.box(Vector3(-.16,.56,side*.48),Vector3(.75,.22,.12),owner)
+		mesh.line(Vector3(-.65,.67,side*.31),Vector3(.60,.67,side*.27),.020,CUT)
+		mesh.box(Vector3(.38,.77,side*.19),Vector3(.27,.045,.12),GLASS,false)
+	_mark(mesh,Vector3(-.44,.94,0),owner,Vector3.UP,.14)
 	var gun = _part()
 	gun.capture_shell = true
-	_carton(gun, Vector3(0, .10, 0), Vector3(.44, .20, .43), PEARL, .008)
-	_box(gun, Vector3(-.04, .50, 0), Vector3(.12, .69, .14), WHITE)
-	# A single broad unfoldable survey disc dominates this light vehicle.
-	_board(gun, [Vector2(-.45, 0), Vector2(-.62, .45), Vector2(-.42, .76), Vector2(.42, .72), Vector2(.61, .39), Vector2(.40, -.01)], .10, Vector3(-.03, .38, -.06), PURPLE)
-	_scale_board(gun, Vector3(-.03, .78, .035), .76, .34)
-	_tube(gun, Vector3(.37, .21, .21), Vector3.RIGHT, .053, .53, WHITE, true)
-	return _weapon(gun, Vector3(-.20, .79, 0), Vector3(.67, .21, .21))
+	mesh.cylinder(Vector3(-.24,1.0,0),.08,.36,Vector3.UP,METAL,8)
+	gun.prism([Vector2(-.43,0),Vector2(-.17,.29),Vector2(.17,.29),Vector2(.43,0),Vector2(.17,-.06),Vector2(-.17,-.06)],.12,Vector3(0,.14,0),WHITE)
+	gun.box(Vector3(0,.19,.081),Vector3(.41,.095,.035),GLASS,false)
+	gun.line(Vector3(-.25,.11,0),Vector3(-.45,.49,0),.035,CUT)
+	gun.line(Vector3(.25,.11,0),Vector3(.45,.49,0),.035,CUT)
+	gun.box(Vector3(0,.42,0),Vector3(.47,.045,.06),PURPLE)
+	return _weapon(gun,Vector3(-.24,1.15,0),Vector3(.47,.14,0))
 
 static func _tank(mesh, owner: Color) -> Dictionary:
 	_tracks(mesh, 2.13, .67, .47, 4)

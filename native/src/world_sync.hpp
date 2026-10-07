@@ -24,7 +24,7 @@ static double render_height(const Array &terrain, const Array &heights, int64_t 
 }
 static int64_t update_paper_native(Object *world, Dictionary model, const Dictionary &e, bool selected, double elapsed,
     const PoseKeys &k, const WorldKeys &w, PaperFrontRenderRecord *record) {
-    bool embarked = int64_t(e.get(k.transport_id, -1)) > 0;
+    bool embarked = int64_t(e.get(k.transport_id, -1)) > 0 || int64_t(e.get(StringName("garrison_id"), -1)) >= 0;
     model[k.embarked] = embarked;
     if (embarked) return 0;
     auto &pose=record->pose;
@@ -105,6 +105,7 @@ Dictionary sync_world_native(Object *world, const Dictionary &entities, Dictiona
     int64_t lifecycle_ns=0, culling_ns=0, cache_ns=0, volume_ns=0, paper_ns=0, fallback_ns=0;
     auto record_stage=[&](int64_t &bucket) { if (profile) { auto now=Clock::now(); bucket+=std::chrono::duration_cast<std::chrono::nanoseconds>(now-stamp).count(); stamp=now; } };
     Array terrain = map["terrain"], heights = map["heights"]; int64_t map_size = map["size"];
+    const double water_depth = String(map.get("mode", String())) == "dev" ? double(map.get("developer_water_depth", 2.65)) : 2.65;
     const bool performance = policy == w.performance;
     int64_t visible = 0, culled = 0, cached = 0, submitted = 0;
     // Tools can explicitly remove a public model and free its scene nodes.
@@ -168,15 +169,17 @@ Dictionary sync_world_native(Object *world, const Dictionary &entities, Dictiona
             model[w.fog_hidden]=false;
             scene_root->set_visible(true);
         }
-        bool loaded = int64_t(e.get(k.transport_id, -1)) > 0;
+        bool loaded = int64_t(e.get(k.transport_id, -1)) > 0 || int64_t(e.get(StringName("garrison_id"), -1)) >= 0;
         Vector2 p = e[k.pos];
         if (!loaded) {
             // Domain comes from the stable model recipe/spec cache. The naval
-            // root sits on the actual water sheet, 2.65 below terrain height.
+            // Use the same water sheet as MapData, including the shallow dev
+            // harbor. Ordinary and historical maps retain their 2.65 depth.
             const Dictionary spec = record ? record->spec : Dictionary(model[k.spec]);
-            const bool naval = String(spec.get(w.domain, w.ground)) == w.naval;
+            const Array terrain_row=terrain[std::clamp<int64_t>(std::floor(p.y),0,map_size-1)];
+            const bool naval = String(spec.get(w.domain, w.ground)) == w.naval && int64_t(terrain_row[std::clamp<int64_t>(std::floor(p.x),0,map_size-1)]) == 1;
             if (Vector2(model[w.last_terrain_pos]) != p) {
-                model[k.terrain_height] = render_height(terrain, heights, map_size, p) - (naval ? 2.65 : 0.0);
+                model[k.terrain_height] = render_height(terrain, heights, map_size, p) - (naval ? water_depth : 0.0);
                 model[w.last_terrain_pos] = p;
             }
             double flight = (record ? record->is_air : bool(model[k.is_air])) ? double(e.get(k.flight_height, spec.get(k.flight_height, 0.0))) : 0.0;
@@ -189,7 +192,9 @@ Dictionary sync_world_native(Object *world, const Dictionary &entities, Dictiona
             }
             if (!inside) {
                 if (Vector2(model[k.last_pos]) != p) { (record ? record->root : pose_node(model,k.root))->set_position(Vector3(p.x, double(model[k.terrain_height]), p.y)); model[k.last_pos] = p; if (record) record->pose.position=p; }
-                model[k.embarked] = false; model[w.view_culled] = true; ++culled; record_stage(culling_ns); continue;
+                model[k.embarked] = false; model[w.view_culled] = true;
+                if (bool(model.get(w.direct_skinned, false))) scene_root->set_visible(false);
+                ++culled; record_stage(culling_ns); continue;
             }
             ++visible;
         }

@@ -1,0 +1,179 @@
+{
+  "version": 11,
+  "sample_rate": 22050,
+  "format": "PCM signed16bit mono WAV",
+  "license": "Provider-generated output under OpenRouter and Google service terms; no CC0 claim.",
+  "tracks": [
+    {
+      "id": "menu",
+      "name": "menu",
+      "title": "桌边微光",
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/music/menu.wav",
+      "duration_s": 64.5339,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "2d0f7d59e05852d3b72d68b709b20b29a6fb5f6db295d1087ec1868a3e5505f3",
+      "provenance": {
+        "type": "generated_music",
+        "provider": "OpenRouter / Google Lyria",
+        "model": "google/lyria-3-pro-preview",
+        "prompt": "Compose an original64second instrumental gentlemenu theme for tactilepaper-tabletop strategy. Tender feltpiano, warm lowstrings, softwoodwinds, unhurried76BPM, spacioussmallmelody, relaxedwarmwelcome withnaturaldetail. No percussionclimax, no sharpbells, vocals, speech, effects orreferences to artists/songs. Completecomfortablyloopable arrangement withmatchingstart/end, no longfade orfinale.",
+        "generation_id": "gen-1791293772-8JTVJdk3kORsEdne3499",
+        "request_sha256": "e966e33422fddb0f5b0f6cf9feb36ac9f0917ed358979c976e60fb498095e0d3",
+        "raw_sha256": "3824e821ee816bacd1b22bf10b568a3af859e3fab693561f2790c97af9a87bf7",
+        "source_duration_s": 66.5339,
+        "loop_edit": "2-second cyclic crossfade",
+        "provider_reported_cost_usd": 0.08,
+        "license_notice": "Provider-generated original-prompt instrumental; no CC0 claim.",
+        "mastering": {
+          "source_rms": 0.1306351356166922,
+          "target_rms": 0.053929302668787926,
+          "applied_linear_gain": 0.4128238732573948,
+          "actual_rms": 0.05392930266878792,
+          "music_runtime_baseline": 0.3825,
+          "effective_default_rms": 0.02062795827081138
+        }
+      },
+      "peak_dbfs": -12.567560238894973
+    },
+    {
+      "id": "battle_calm",
+      "name": "battle_calm",
+      "title": "静谧边境",
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/music/battle_calm.wav",
+      "duration_s": 64.4555,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "c61402e7ffbe911f170082eb7a914f26c5ef47913cf0c87a42e99d732a76da7b",
+      "provenance": {
+        "type": "generated_music",
+        "provider": "OpenRouter / Google Lyria",
+        "model": "google/lyria-3-pro-preview",
+        "prompt": "Compose an original64second instrumental peacefulstrategymap music. Gentlewarmstrings andfeltpiano, softwoodwindcountermelody, sparse quietbrush percussion,74BPM, reflectivebutoptimistic. Natural richacousticdetails, restful unhurried exploration/planning, no tensionorcombatclimax. No vocals, speech, effects, choir, sharpbells orartist/songreferences. Consistentcomplete loopablebed with matchingstart/end and no longfade/finale.",
+        "generation_id": "gen-1791293792-YvVi3UyXSjN5rHNFcxJy",
+        "request_sha256": "c09a0e7676ce487afbf2c18dc2ea06daecbf283ac72000ebeb376cad57e97f26",
+        "raw_sha256": "3fef3f47f908c268768cc67e93e9a085b38f9018ca26d054f4c9280fba90c381",
+        "source_duration_s": 66.4555,
+        "loop_edit": "2-second cyclic crossfade",
+        "provider_reported_cost_usd": 0.08,
+        "license_notice": "Provider-generated original-prompt instrumental; no CC0 claim.",
+        "mastering": {
+          "source_rms": 0.1322447389437128,
+          "target_rms": 0.065,
+          "applied_linear_gain": 0.49151293668979823,
+          "actual_rms": 0.065,
+          "music_runtime_baseline": 0.3825,
+          "effective_default_rms": 0.024862500000000003
+        }
+      },
+      "peak_dbfs": -11.052157263283346
+    },
+    {
+      "id": "battle_engaged",
+      "name": "battle_engaged",
+      "title": "前哨警觉",
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/music/battle_engaged.wav",
+      "duration_s": 64.7167,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "17dc6fef141d81b574f84194a8897149874df9908620f2dc1d332e8d04914e19",
+      "provenance": {
+        "type": "generated_music",
+        "provider": "OpenRouter / Google Lyria",
+        "model": "google/lyria-3-pro-preview",
+        "prompt": "Compose an original64second restrained smallskirmish awarenesscue forpaper-tabletop strategy. Enemiesjustspotted, subtlealertness ratherthanbigbattle. Lowpluckedstrings, softwoodwindshortmotif, minimalmutedhanddrumpulse,88BPM. Quietmeasured tension, spaceandlow-midwarmth, noheavybrass, roaringdrums, heroicclimaxorwallofsound. No vocals, speech, effects, choir, piercinghighs orartist/songreferences. Steadyloopable complete musicbed, matchingbeginning/end, no longfade/finale.",
+        "generation_id": "gen-1791293825-ifVRb5yRxZmfsBU6kThz",
+        "request_sha256": "57f067348924f48178cecbb9ae8e55ae7b6543dabfb6df40400c6778253fa56a",
+        "raw_sha256": "665004b0a38bd23f4e1c6b5e4081851bc18cfaa1052475e8e02791110b0cd8a5",
+        "source_duration_s": 66.7167,
+        "loop_edit": "2-second cyclic crossfade",
+        "provider_reported_cost_usd": 0.08,
+        "license_notice": "Provider-generated original-prompt instrumental; no CC0 claim.",
+        "mastering": {
+          "source_rms": 0.12884394483742523,
+          "target_rms": 0.05358742526268107,
+          "applied_linear_gain": 0.4159095356036907,
+          "actual_rms": 0.05358742526268106,
+          "music_runtime_baseline": 0.3825,
+          "effective_default_rms": 0.020497190162975507
+        }
+      },
+      "peak_dbfs": -12.502878771565928
+    },
+    {
+      "id": "battle_danger",
+      "name": "battle_danger",
+      "title": "孤立阵线",
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/music/battle_danger.wav",
+      "duration_s": 63.9853,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "9249ae7072aefc8a0ee04c7f85e7072e3333bd8bfc337f578631a1db7de89ed6",
+      "provenance": {
+        "type": "generated_music",
+        "provider": "OpenRouter / Google Lyria",
+        "model": "google/lyria-3-pro-preview",
+        "prompt": "Compose an original64second instrumental crisis/outnumberedbattle cue forpaper-tabletop strategy. Isolatedfriendlyforces facingstronger enemy, ominousrestrained lowstringostinato, sparse darkpianomotif, pulsingsoftlowtoms anddistantlowbrass.96BPM, tacticalurgency anddread withclearspace, distinguishedfromheroicall-outassaultmusic. No vocals, speech, effects, choir, piercinghighs orartist/songreferences. Coherentcomplete loopable arrangement, matchingstart/end, no longfade/finale.",
+        "generation_id": "gen-1791293847-DzsTl6xgA41lB4JjKlBX",
+        "request_sha256": "1b5e68bae45f439f139b489bc81e51270d692320a5750eff203d4bb0bf02b93c",
+        "raw_sha256": "f052dd1736638246a27cae9eca2aa5888a7609bafb1f4b586b786d08845b210b",
+        "source_duration_s": 65.9853,
+        "loop_edit": "2-second cyclic crossfade",
+        "provider_reported_cost_usd": 0.08,
+        "license_notice": "Provider-generated original-prompt instrumental; no CC0 claim.",
+        "mastering": {
+          "source_rms": 0.1243447210822081,
+          "target_rms": 0.08723668165359384,
+          "applied_linear_gain": 0.7015712520350502,
+          "actual_rms": 0.08723668165359386,
+          "music_runtime_baseline": 0.3825,
+          "effective_default_rms": 0.03336803073249965
+        }
+      },
+      "peak_dbfs": -7.961420626778313
+    },
+    {
+      "id": "battle_intense",
+      "name": "battle_intense",
+      "title": "战线燃起",
+      "loop": true,
+      "file": "res://assets/audio/revision_v8/music/battle_intense.wav",
+      "duration_s": 60.693878,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "71b87d43889354d2f103bbefa45f6498b9f395bf03267974add62ab384ed0a8e",
+      "provenance": {
+        "type": "generated_music",
+        "provider": "OpenRouter / Google Lyria",
+        "model": "google/lyria-3-pro-preview",
+        "prompt": "Compose a completely original 64-second instrumental high-intensity battle cue for a paper tabletop real-time strategy game. Passionate heroic urgency, driving rhythmic low strings, muscular low brass, snare rolls and deep orchestral tom percussion, a forceful minor-key motif developing through 8-bar phrases. 128 beats per minute, D minor, energetic steady momentum with focused tactical tension and confident resolve. Rich cinematic orchestral game music, lively instrumental detail rather than a single drone. No vocals, no choir, no speech, no weapon effects, no existing tune references. Keep a continuous strong rhythmic bed throughout with matching loopable beginning and ending; no long fadeout, no silence or finale. Avoid piercing highs and leave a clear midrange opening for military radio voices and combat effects.",
+        "generation_id": "gen-1791273395-duMSHrDvgrozoNES1CnG",
+        "request_sha256": "ea0efa3acc5137cbf36a8a6881d0aca511fd190f0ce19aefe188d898cc2cd2ab",
+        "raw_sha256": "cddae0b020e21dea5335ff880d519225678e2a5ec5886aa9cd1a17df6b5fb771",
+        "source_duration_s": 62.6939,
+        "loop_edit": "2-second cyclic crossfade",
+        "provider_reported_cost_usd": 0.08,
+        "license_notice": "Provider-generated original-prompt instrumental; no CC0 claim."
+      },
+      "peak_dbfs": -7.8831,
+      "rms_dbfs": -20.2709,
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": -3.0,
+        "source_sha256": "26e5c515c72d3c2740dacb69f1a6a794e9107d5ce9cc8e122e8c9737bd0a7b3b",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
+    }
+  ],
+  "scope": "Onlyfivecurrentlyapplied files; alloldmap/result/menu aliasesremovedfromcatalog."
+}

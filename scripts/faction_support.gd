@@ -15,7 +15,7 @@ static func rescue_error(sim, id: int, target_id: int) -> String:
 	var target: Dictionary = sim.entities[target_id]
 	if float(sim.data_for(e.spec).get("rescue_speed_bonus", 0.0)) <= 0.0: return "该单位没有拖救能力"
 	if id == target_id or e.team != target.team or not vehicle(sim, target): return "拖救只接受仍存活的己方地面载具"
-	if float(target.hp) >= float(sim.data_for(target.spec).hp): return "载具无需拖救"
+	if float(target.hp) >= sim.max_hp(target): return "载具无需拖救"
 	return ""
 
 static func step_rescue(sim, e: Dictionary, command: Dictionary, delta: float) -> void:
@@ -35,36 +35,21 @@ static func step_rescue(sim, e: Dictionary, command: Dictionary, delta: float) -
 
 static func prepare(sim, delta: float) -> void:
 	sim._designation_bonuses.clear()
-	sim._overcharge_bonuses.clear()
-	sim._support_power.clear()
 	var providers: Array[Dictionary] = []
 	for e in sim.entities.values():
 		e.rescue_speed_scale = 1.0
 		if float(e.hp) <= 0.0 or float(e.construct_remaining) > 0.0 or sim.Transport.is_loaded(e) or float(e.get("emp_until", 0.0)) > sim.time: continue
 		var spec: Dictionary = sim.data_for(e.spec)
-		if spec.has("rescue_radius") or spec.has("designation_radius") or spec.has("overcharge_radius"): providers.append(e)
+		if spec.has("rescue_radius") or spec.has("designation_radius"): providers.append(e)
 	for e in providers:
 		var spec: Dictionary = sim.data_for(e.spec)
 		if spec.has("rescue_radius") and not e.commands.is_empty() and e.commands[0].kind == "rescue":
 			var target_id: int = int(e.commands[0].target)
 			if rescue_error(sim, int(e.id), target_id).is_empty():
 				var target: Dictionary = sim.entities[target_id]
-				if float(target.hp) <= float(sim.data_for(target.spec).hp) * .6 and not target.commands.is_empty() and target.commands[0].kind in ["move", "force_move", "patrol"] and (e.pos as Vector2).distance_to(target.pos) <= float(spec.rescue_radius) and sim._segment_static(e.pos, target.pos, .05, int(e.id)):
+				if float(target.hp) <= sim.max_hp(target) * .6 and not target.commands.is_empty() and target.commands[0].kind in ["move", "force_move", "patrol"] and (e.pos as Vector2).distance_to(target.pos) <= float(spec.rescue_radius) and sim._segment_static(e.pos, target.pos, .05, int(e.id)):
 					target.rescue_speed_scale = maxf(float(target.rescue_speed_scale), 1.0 + float(spec.rescue_speed_bonus))
 		if spec.has("designation_radius"): _designation(sim, e, spec, delta)
-	# Reserve the electrical headroom for ongoing windows before new activation.
-	for e in providers:
-		var spec: Dictionary = sim.data_for(e.spec)
-		if not spec.has("overcharge_radius"): continue
-		e.overcharge_remaining = maxf(0.0, float(e.get("overcharge_remaining", 0.0)) - delta)
-		e.overcharge_cooldown = maxf(0.0, float(e.get("overcharge_cooldown", 0.0)) - delta)
-		if float(e.overcharge_remaining) > 0.0:
-			var energy: Vector2 = sim.power(int(e.team))
-			if energy.x - energy.y < float(spec.overcharge_power): e.overcharge_remaining = 0.0
-			else: sim._support_power[int(e.team)] = float(sim._support_power.get(int(e.team), 0.0)) + float(spec.overcharge_power)
-	for e in providers:
-		var spec: Dictionary = sim.data_for(e.spec)
-		if spec.has("overcharge_radius"): _overcharge(sim, e, spec)
 
 static func visible(sim, source: Dictionary, target: Dictionary, reach: float) -> bool:
 	if source.team == target.team or not vehicle(sim, target) or (source.pos as Vector2).distance_to(target.pos) > reach: return false
@@ -102,31 +87,6 @@ static func _designation(sim, e: Dictionary, spec: Dictionary, delta: float) -> 
 		var key := Vector2i(int(e.team), target_id)
 		sim._designation_bonuses[key] = maxf(float(sim._designation_bonuses.get(key, 0.0)), float(spec.damage_bonus))
 
-static func _overcharge(sim, e: Dictionary, spec: Dictionary) -> void:
-	var nearby: Array = sim._nearby_entities(e.pos, float(spec.overcharge_radius))
-	if float(e.overcharge_remaining) <= 0.0 and float(e.overcharge_cooldown) <= 0.0:
-		var energy: Vector2 = sim.power(int(e.team))
-		var ready: bool = energy.x - energy.y >= float(spec.overcharge_power) and float(sim.money[int(e.team)]) >= float(spec.overcharge_cost)
-		var combat: bool = false
-		if ready:
-			for other in nearby:
-				if other.team != e.team or other.kind != "unit" or float(other.hp) <= 0.0 or sim.Transport.is_loaded(other) or (e.pos as Vector2).distance_to(other.pos) > float(spec.overcharge_radius): continue
-				var weapon_id: String = str(sim.data_for(other.spec).get("weapon", ""))
-				if not weapon_id.is_empty() and sim._nearest_enemy(other, float(sim.rules.weapons[weapon_id].range)) >= 0:
-					combat = true
-					break
-		if combat:
-			sim.money[int(e.team)] -= float(spec.overcharge_cost)
-			e.overcharge_remaining = float(spec.overcharge_window)
-			e.overcharge_cooldown = float(spec.overcharge_recharge) + float(spec.overcharge_window)
-			sim._support_power[int(e.team)] = float(sim._support_power.get(int(e.team), 0.0)) + float(spec.overcharge_power)
-			sim.events.append({"kind":"overcharge", "id":e.id, "pos":e.pos, "team":e.team})
-	if float(e.overcharge_remaining) <= 0.0: return
-	for other in nearby:
-		if other.team == e.team and other.kind == "unit" and not sim.Transport.is_loaded(other) and float(other.hp) > 0.0 and (e.pos as Vector2).distance_to(other.pos) <= float(spec.overcharge_radius):
-			sim._overcharge_bonuses[int(other.id)] = maxf(float(sim._overcharge_bonuses.get(int(other.id), 0.0)), float(spec.damage_bonus))
-
 static func damage_scale(sim, source: Dictionary, target_id: int) -> float:
 	var designated: float = float(sim._designation_bonuses.get(Vector2i(int(source.team), target_id), 0.0))
-	var charged: float = float(sim._overcharge_bonuses.get(int(source.id), 0.0))
-	return (1.0 + designated) * (1.0 + charged)
+	return 1.0 + designated

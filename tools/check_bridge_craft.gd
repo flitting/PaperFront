@@ -26,8 +26,8 @@ func run() -> void:
 				CRAFT.abutments(builder,stone_detail,length,breadth,turn)
 				check_on_surface(foundation,stone_detail,"abutments")
 				var boards: Dictionary=builder._data()
-				for index: int in ceili(length/.62):
-					builder._box(boards,turn*Vector3(-length*.5+.30+index*.62,-.07,0),Vector3(minf(.58,length),.14,breadth),Color.WHITE,turn)
+				for segment: Vector2 in CRAFT.plank_segments(length):
+					builder._box(boards,turn*Vector3((segment.x+segment.y)*.5,-.07,0),Vector3(segment.y-segment.x,.14,breadth),Color.WHITE,turn)
 				var wood_detail: Dictionary=builder._data()
 				CRAFT.planks(builder,wood_detail,length,breadth,turn)
 				check_on_surface(boards,wood_detail,"planks")
@@ -89,8 +89,10 @@ func capture(builder) -> void:
 	for side: float in [-1.0,1.0]:
 		builder._box(data,Vector3(side*(length*.5-.55),-1.325,0),Vector3(.85,2.73,breadth),Color("a99a82"))
 	CRAFT.abutments(builder,data,length,breadth,Basis.IDENTITY)
-	for index: int in ceili(length/.62):
-		builder._box(data,Vector3(-length*.5+.30+index*.62,-.07,0),Vector3(.58,.14,breadth),Color("a39171").lightened((index%3)*.025))
+	var segments: Array[Vector2] = CRAFT.plank_segments(length)
+	for index: int in segments.size():
+		var segment: Vector2 = segments[index]
+		builder._box(data,Vector3((segment.x+segment.y)*.5,-.07,0),Vector3(segment.y-segment.x,.14,breadth),Color("a39171").lightened((index%3)*.025))
 	CRAFT.planks(builder,data,length,breadth,Basis.IDENTITY)
 	for side: float in [-1.0,1.0]:
 		builder._box(data,Vector3(0,.64,side*breadth*.47),Vector3(length,.1,.09),Color("75634a"))

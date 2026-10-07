@@ -4,7 +4,6 @@ extends RefCounted
 ## Shared player-facing wording. Both the UI and document generator read the
 ## templates; all numeric values come from the active rules snapshot.
 const TEMPLATES_PATH := "res://scripts/faction_trait_text.json"
-const Traits = preload("res://scripts/faction_traits.gd")
 static var _templates: Dictionary = {}
 static var _menu_rules: Dictionary = {}
 
@@ -26,15 +25,18 @@ static func number(value: float) -> String:
 
 static func _values(rules: Dictionary, faction: String) -> Dictionary:
 	var config: Dictionary = rules.get("factions", {}).get(faction, {}).get("traits", {})
+	var hq: Dictionary = rules.get("buildings", {}).get(faction + "_hq", {})
+	var barracks: Dictionary = hq if faction == "rivet" and bool(hq.get("rebuildable", false)) else rules.get("buildings", {}).get(faction + "_barracks", {})
 	return {
-		"reduction": number(float(config.get("damage_reduction", 0.0)) * 100.0),
 		"delay": number(float(config.get("regen_delay", 0.0))),
 		"regen": number(float(config.get("regen_fraction_per_second", 0.0)) * 100.0),
-		"radius": number(float(config.get("cohesion_radius", 0.0))),
-		"allies": str(int(config.get("cohesion_min_allies", 0))),
-		"bonus": number(float(config.get("cohesion_damage_bonus", config.get("breakthrough_damage_bonus", 0.0))) * 100.0),
-		"distance": number(float(config.get("breakthrough_distance", 0.0))),
-		"window": number(float(config.get("breakthrough_window", 0.0)))
+		"barracks_cost": number(float(barracks.get("cost", 0.0))),
+		"barracks_build_time": number(float(barracks.get("build_time", 0.0))),
+		"barracks_local_power": number(float(barracks.get("local_power", 0.0))),
+		"barracks_local_power_radius": number(float(barracks.get("local_power_radius", 0.0))),
+		"barracks_construction_radius": number(float(barracks.get("construction_radius", 0.0))),
+		"local_power": number(float(hq.get("local_power", 0.0))),
+		"local_power_radius": number(float(hq.get("local_power_radius", 0.0)))
 	}
 
 static func _emp_values(weapon: Dictionary) -> Dictionary:
@@ -43,29 +45,39 @@ static func _emp_values(weapon: Dictionary) -> Dictionary:
 static func faction_lines(rules: Dictionary, faction: String) -> PackedStringArray:
 	var lines: PackedStringArray = []
 	var config: Dictionary = rules.get("factions", {}).get(faction, {}).get("traits", {})
-	if not config.is_empty() and faction in ["iron", "kestrel", "rivet"]:
-		lines.append(_text(faction, "description", _values(rules, faction)))
+	if faction in ["iron", "kestrel", "rivet", "sky"]:
+		var field: String = "standard_description" if faction == "rivet" and rules.get("factions", {}).get(faction, {}).get("building_method", "") != "engineer" else "description"
+		if faction == "rivet" and field == "description" and not bool(rules.get("buildings", {}).get("rivet_hq", {}).get("rebuildable", false)):
+			field = "legacy_engineer_description"
+		lines.append(_text(faction, field, _values(rules, faction)))
+	if faction == "iron" and float(config.get("regen_fraction_per_second", 0.0)) > 0.0:
+		lines.append(_text("iron", "regeneration", _values(rules, faction)))
 	if faction == "sky":
 		var emp: Dictionary = rules.get("weapons", {}).get("sky_disruptor", {})
 		if emp.has("emp_vehicle_duration"): lines.append(_text("emp", "description", _emp_values(emp)))
+	if float(rules.get("buildings", {}).get(faction + "_hq", {}).get("local_power", 0.0)) > 0.0:
+		lines.append(_text("hq_power", "base_barracks_description" if faction == "rivet" and bool(rules.get("buildings", {}).get("rivet_hq", {}).get("rebuildable", false)) else "description", _values(rules, faction)))
 	return lines
 
 static func menu_short(rules: Dictionary, faction: String) -> String:
-	if not rules.get("factions", {}).get(faction, {}).get("traits", {}).is_empty() and faction in ["iron", "kestrel", "rivet"]:
-		return _text(faction, "short", _values(rules, faction))
-	if faction == "sky" and rules.get("weapons", {}).get("sky_disruptor", {}).has("emp_vehicle_duration"):
-		return _text("emp", "short")
-	return {"kestrel":"工程协同 / 精确校正", "rivet":"重装推进 / 范围压制", "iron":"可靠结构 / 维护保障", "sky":"纸模科技 / 蓄能支援"}.get(faction, "")
+	if faction == "rivet" and rules.get("factions", {}).get(faction, {}).get("building_method", "") != "engineer":
+		return _text("rivet", "short_standard")
+	if faction == "rivet" and not bool(rules.get("buildings", {}).get("rivet_hq", {}).get("rebuildable", false)):
+		return _text("rivet", "short_legacy_engineer")
+	if faction == "iron" and float(rules.get("factions", {}).get(faction, {}).get("traits", {}).get("regen_fraction_per_second", 0.0)) <= 0.0:
+		return _text("iron", "short_without_regeneration")
+	return _text(faction, "short")
 
 static func spec_lines(rules: Dictionary, spec: Dictionary) -> PackedStringArray:
 	var lines: PackedStringArray = []
 	var faction: String = str(spec.get("faction", ""))
-	var armed: bool = not str(spec.get("weapon", "")).is_empty()
 	if spec.has("speed"):
-		if faction == "iron" or (faction == "kestrel" and armed) or (faction == "rivet" and armed and spec.get("armor_class", "") == "armored" and spec.get("domain", "ground") in ["ground", "naval"]):
-			lines.append_array(faction_lines(rules, faction))
+		if faction == "iron" and spec.get("armor_class", "") == "armored" and float(rules.get("factions", {}).get(faction, {}).get("traits", {}).get("regen_fraction_per_second", 0.0)) > 0.0:
+			lines.append(_text("iron", "regeneration", _values(rules, faction)))
 	elif spec.get("role", "") == "hq":
 		lines.append_array(faction_lines(rules, faction))
+	elif float(spec.get("local_power", 0.0)) > 0.0:
+		lines.append(_text("local_power", "description", {"capacity": number(float(spec.local_power)), "radius": number(float(spec.get("local_power_radius", 0.0)))}))
 	var weapon: Dictionary = rules.get("weapons", {}).get(str(spec.get("weapon", "")), {})
 	if weapon.has("emp_vehicle_duration"): lines.append(_text("emp", "description", _emp_values(weapon)))
 	return lines
@@ -78,21 +90,9 @@ static func state_text(sim, entity: Dictionary) -> String:
 	var spec: Dictionary = sim.data_for(str(entity.spec))
 	var faction: String = str(sim.factions[int(entity.team)])
 	var config: Dictionary = sim.rules.factions.get(faction, {}).get("traits", {})
-	var values: Dictionary = _values(sim.rules, faction)
-	if faction == "iron" and config.has("damage_reduction"):
-		states.append(_text("iron", "status", values))
+	if faction == "iron" and spec.get("armor_class", "") == "armored" and float(config.get("regen_fraction_per_second", 0.0)) > 0.0:
 		if float(entity.hp) < float(spec.hp):
 			var last_combat: float = maxf(float(entity.get("last_damage_time", sim.time)), float(entity.get("last_attack_time", sim.time)))
 			var wait: float = maxf(0.0, float(config.get("regen_delay", 0.0)) - (float(sim.time) - last_combat))
 			states.append(_text("iron", "healing") if wait <= 0.0 else _text("iron", "waiting", {"remaining": "%.1f" % wait}))
-	elif faction == "kestrel" and config.has("cohesion_damage_bonus") and not str(spec.get("weapon", "")).is_empty():
-		states.append(_text("kestrel", "active", values) if Traits.cohesion_bonus(sim, entity) > 0.0 else _text("kestrel", "waiting"))
-	elif faction == "rivet" and config.has("breakthrough_distance") and spec.get("armor_class", "") == "armored" and spec.get("domain", "ground") in ["ground", "naval"] and not str(spec.get("weapon", "")).is_empty():
-		remaining = maxf(0.0, float(entity.get("breakthrough_ready_until", 0.0)) - float(sim.time))
-		if remaining > 0.0:
-			values.remaining = "%.1f" % remaining
-			states.append(_text("rivet", "active", values))
-		elif not entity.get("commands", []).is_empty() and entity.commands[0].get("kind", "") == "attack_move":
-			values.progress = "%.1f" % float(entity.get("breakthrough_progress", 0.0))
-			states.append(_text("rivet", "progress", values))
 	return " · ".join(states)

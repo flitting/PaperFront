@@ -51,9 +51,14 @@ lifetime, insertion-order retirement and script transitions have regression test
 `PAPER_FRONT_SCRIPT_MOVEMENT=1` selects reference ground movement;
 `PAPER_FRONT_SCRIPT_BATCHES=1` selects script batches;
 `PAPER_FRONT_BATCH_SETTERS=1` disables whole-buffer uploads;
-`PAPER_FRONT_RENDER_OVERLAP=0` selects serial simulation/render scheduling;
-`PAPER_FRONT_FULL_TRUNK_INK=1` restores full distant trunk ink geometry.
+`PAPER_FRONT_RENDER_OVERLAP=0` selects serial simulation/render scheduling.
 These switches are diagnostic comparisons, not the measured defaults.
+
+The current renderer uses explicit near/far/extreme meshes in every quality
+preset. `PaperWorld.lod_enabled=false` and
+`world.landscape.scenery_lod_enabled=false` provide the full-geometry diagnostic
+control. Rebuild entity/scenery tiers with `tools/bake_unit_lod_indices.gd` and
+`tools/bake_scenery_lods.gd`; editor-only simplification never runs in gameplay.
 
 Run `tools/test.sh` after rebuilding. It treats Godot script/engine errors and
 leak diagnostics as failures even when the process returns exit code zero.

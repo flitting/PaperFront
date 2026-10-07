@@ -15,10 +15,46 @@ var selected: Array = []
 var inspected_bridge:int=-1
 var inspected_ruin:int=-1
 var groups: Dictionary = {}
+var hovered_entity: int = -1
+var _hover_clock := 0.0
 var focus := Vector2(24,24)
 var yaw: float = 0.0
-var camera_pitch: float = 30.0
-var distance: float = 44.0
+var camera_pitch_mode: String = "dynamic"
+var camera_pitch: float = 30.0:
+	set(value):
+		camera_pitch = clampf(value, 20.0, 45.0)
+		# Explicit diagnostic assignments keep their immediate fixed pose.
+		camera_pitch_mode = "fixed"
+		_camera_pitch_blending = false
+var camera_effective_pitch: float = 30.0
+var _camera_pitch_blending: bool = false
+var camera_actual_distance: float = 44.0
+var camera_base_fov: float = 42.0
+var _camera_applied_fov: float = -1.0
+var zoom_target_distance: float = 44.0
+var _zoom_last_direction: int = 0
+var _advancing_camera_motion: bool = false
+var distance: float = 44.0:
+	set(value):
+		if not is_finite(value): return
+		distance = maxf(value, .001)
+		# Map starts, loads and explicit diagnostic poses remain immediate.
+		if not _advancing_camera_motion:
+			zoom_target_distance = distance
+			_zoom_last_direction = 0
+			_camera_pitch_blending = false
+var camera_reference_height: float = 0.0
+var camera_clearance_height: float = 0.0
+var _camera_reference_sim_id: int = 0
+var _camera_local_clearance = preload("res://scripts/camera_local_clearance.gd").new()
+const CAMERA_OCCLUSION = preload("res://scripts/camera_occlusion.gd")
+var _camera_terrain_transition = preload("res://scripts/camera_terrain_transition.gd").new()
+var _scoreboard_sim_id := 0
+var _scoreboard_result := ""
+var _statistics_export_sim_id := 0
+var _statistics_export_prefix := ""
+var _navigation_attention_ids: Array = []
+var _navigation_attention_sim_id := 0
 var dragging: bool = false
 var middle_drag: bool = false
 var drag_start := Vector2.ZERO
@@ -29,11 +65,25 @@ var started: bool = false
 var loading: bool = false
 var loading_screen
 var pve_paused: bool = false
+var _player_music_paused := false
 var wiki_return_to_entry: bool = true
 var wiki_pause_before: bool = false
+var wiki_return_to_settings: bool = false
+var wiki_return_to_menu: bool = false
 var entry_pause_before: bool = false
 var settings_pause_before: bool = false
+var settings_session_active: bool = false
+var setup_session_active: bool = false
+var setup_pause_before: bool = false
+var setup_return_to_entry: bool = false
 var audio_scene: String = ""
+var _audio_attention_clock := 0.0
+var _audio_attention_point := Vector2.INF
+var _audio_attention_sim_id := 0
+var _audible_movement_entities: Dictionary = {}
+var _audibility_sim_id := 0
+var _audibility_clock := 0.0
+var _key_feedback_ms := -100000
 var quit_pending: bool = false
 var dev_mode: bool = false
 var rules: Dictionary
@@ -48,7 +98,14 @@ var marker_time: float = 0.0
 var debug_panel: PanelContainer
 var debug_metrics: Label
 var debug_tools: VBoxContainer
+var debug_tools_scroll: ScrollContainer
+var debug_instant_toggle: CheckBox
+var debug_faction_picker: OptionButton
+var debug_building_report: Label
+var debug_instant_build: bool = false
+const DeveloperTools = preload("res://scripts/developer_tools.gd")
 var debug_available: bool = false
+var audio_browser_enabled: bool = true
 var performance_overlay: CanvasLayer
 var debug_clock: float = 0.0
 var pointer_in_window: bool = true
@@ -118,6 +175,18 @@ const TransportCommands = preload("res://scripts/transport_commands.gd")
 const EntityPicking = preload("res://scripts/entity_picking.gd")
 const Battlefields = preload("res://scripts/battlefield_catalog.gd")
 const EDGE_PAN_PIXELS: float = 24.0
+const CAMERA_SCENERY_CLEARANCE: float = 2.0
+const DYNAMIC_PITCH_NEAR: float = 20.0
+const DYNAMIC_PITCH_OVERVIEW: float = 60.0
+const CAMERA_ZOOM_MIN: float = 8.0
+const CAMERA_ZOOM_MAX: float = 110.0
+const CAMERA_WHEEL_RATIO: float = 1.03
+const CAMERA_ZOOM_TAU: float = .10
+const CAMERA_ZOOM_LOG_SPEED: float = 1.5
+const CAMERA_ZOOM_LOG_EPSILON: float = .0001
+const CAMERA_PITCH_TAU: float = .12
+const CAMERA_PITCH_SPEED: float = 90.0
+const CAMERA_PITCH_EPSILON: float = .001
 const RENDER_SCALES: Array[float] = [1.0,0.85,0.75]
 
 func _ready() -> void:
@@ -182,6 +251,7 @@ func _ready() -> void:
 	add_child(hud)
 	hud.action.connect(handle_action)
 	hud.set_debug_available(debug_available)
+	set_audio_browser_enabled(audio_browser_enabled)
 	performance_overlay=preload("res://scripts/performance_overlay.gd").new()
 	performance_overlay.name="PerformanceOverlay"
 	performance_overlay.fps_label=hud.fps_label
@@ -192,7 +262,9 @@ func _ready() -> void:
 	loading_screen.screen.theme = hud.theme_paper
 	audio.unit_caption.connect(hud.show_voice)
 	var overlay_layer:=CanvasLayer.new()
-	overlay_layer.layer=4
+	overlay_layer.name="BattlefieldOverlay"
+	# Routes and selection marks belong above the battlefield, below all HUD.
+	overlay_layer.layer=2
 	add_child(overlay_layer)
 	overlay=preload("res://scripts/selection_overlay.gd").new()
 	overlay.projector=self
@@ -231,6 +303,8 @@ func _ready() -> void:
 		call_deferred("verify_expansion")
 	if "--verify-demo" in OS.get_cmdline_user_args():
 		call_deferred("verify_demo")
+	if "--verify-portable" in OS.get_cmdline_user_args():
+		call_deferred("verify_portable")
 
 	# The verified ownership interval is one synchronous renderer draw call.
 	# A separately configured render thread uses the established serial path.
@@ -301,6 +375,9 @@ func verify_expansion() -> void:
 
 func verify_demo() -> void:
 	await preload("res://scripts/demo_runtime_validation.gd").run(self)
+
+func verify_portable() -> void:
+	await preload("res://scripts/portable_runtime_validation.gd").run(self)
 
 func create_battlefield_viewport() -> void:
 	var window_viewport: Viewport = get_viewport()
@@ -532,7 +609,7 @@ func apply_golden_view(view: String) -> void:
 		var nearest: int = -1
 		var closest: float = INF
 		for entity: Dictionary in sim.entities.values():
-			if entity.team==0 and entity.kind=="building" and sim.data_for(entity.spec).role==role:
+			if entity.team==0 and entity.kind=="building" and (sim.data_for(entity.spec).role==role or (role=="barracks" and sim.TechAvailability.producer_matches(sim, entity, role))):
 				var separation: float = entity.pos.distance_squared_to(Vector2(73,102))
 				if separation<closest:closest=separation;nearest=int(entity.id)
 		selected.assign([nearest] if nearest>=0 else [])
@@ -757,7 +834,13 @@ func _prepare_match(override_rules: Dictionary) -> bool:
 		push_error(error)
 		report(error)
 		return false
+	_close_settings()
+	setup_session_active = false
+	_scoreboard_result="";_scoreboard_sim_id=0
+	_statistics_export_sim_id=0;_statistics_export_prefix=""
+	if hud.get("scoreboard")!=null:hud.scoreboard.close_scoreboard()
 	pve_paused = false
+	_player_music_paused=false
 	if hud != null and hud.pause_button != null: hud.pause_button.text = "暂停"
 	rules=current_rules
 	audio.reset_field()
@@ -770,22 +853,34 @@ func _prepare_match(override_rules: Dictionary) -> bool:
 
 func _create_match_world() -> void:
 	building_pick_mesh_cache.clear()
+	_configure_player_palette()
 	world=preload("res://scripts/world_profile_probe.gd").new() if "--profile-world" in OS.get_cmdline_user_args() else PaperWorld.new()
 	add_child(world)
 
+func _configure_player_palette() -> void:
+	var colors: Array = []
+	for index in sim.match_options.get("slots", []).size():
+		var slot: Dictionary = sim.match_options.slots[index]
+		var value: String = str(slot.get("color", ""))
+		colors.append(value if not value.is_empty() else PaperHUD.PLAYER_COLORS[posmod(index, PaperHUD.PLAYER_COLORS.size())])
+	VolumeModels.configure_player_colors(colors)
+
 func _finish_match(mode: String, seed_value: int, faction: String, begin: bool, timing: Dictionary) -> bool:
 	if quit_pending: return false
+	battlefield_display.show()
 	set_graphics_quality(graphics_quality)
 	selected.clear()
 	inspected_bridge=-1
 	inspected_ruin=-1
 	groups.clear()
+	audio.commander.reset(sim)
 	feedback.clear()
 	placing=false
 	command_mode=""
 	angle_test_id=-1
 	menu_config={"mode":mode,"seed":seed_value,"faction":faction,"match_options":sim.get("match_options")}
 	dev_mode=mode=="dev"
+	_sync_developer_options()
 	started=begin
 	audio.set_map(str(sim.map.get("mode",mode)))
 	_set_audio_scene("silent" if loading else "battle" if begin else "menu")
@@ -798,14 +893,15 @@ func _finish_match(mode: String, seed_value: int, faction: String, begin: bool, 
 	focus=Vector2(start_pos[0],start_pos[1]) + Vector2(4,3)
 	distance=43 if mode!="dev" else 40
 	yaw=0
+	_refresh_camera_reference()
 	update_camera()
 	if begin:
 		if mode == "campaign":
 			post("晨雾中，无字桥被炸；重锤军团封锁东岸矿路。正典军团必须恢复补给线。")
 			post("先点亮后方。左上方显示任务，点击「查看目标地点」可移动镜头。")
 		else:
-			post("总部已展开。资金 %d；电脑使用相同造价、前置和生产速度。" % int(sim.money[0]))
-			post("开发工具已启用；作弊仅在试验场生效。" if dev_mode else "左键选中总部，点电站卡片建造；完工后再点卡片，在地图左键放置。右键指挥部队。")
+			post(("基地兵营已部署。资金 %d；选中基地兵营训练步兵，工兵负责建设。" if bool(sim.data_for(sim.factions[0]+"_hq").get("rebuildable", false)) else "总部已展开。资金 %d；电脑使用相同造价、前置和生产速度。") % int(sim.money[0]))
+			post("开发工具已启用；作弊仅在试验场生效。" if dev_mode else ("左键选中基地兵营训练工兵；选工兵点击建筑卡选址施工。" if bool(sim.data_for(sim.factions[0]+"_hq").get("rebuildable", false)) else "左键选中总部，点电站卡片建造；完工后再点卡片，在地图左键放置。右键指挥部队。"))
 	hud.refresh(sim,selected,camera,dev_mode,"\n".join(feedback),sim_cpu_ms,inspected_bridge,debug_available)
 	var first_models_started:int=Time.get_ticks_usec()
 	world.sync(0.0,selected,{})
@@ -826,7 +922,9 @@ func _loading_progress(fraction: float, stage: String) -> void:
 func _begin_loading(title: String, detail: String) -> void:
 	if quit_pending: return
 	_flush_render_simulation()
+	_reset_camera_motion()
 	loading = true
+	performance_overlay.set_loading(true)
 	dragging = false
 	middle_drag = false
 	overlay.active = false
@@ -847,7 +945,9 @@ func _finish_loading(success: bool) -> void:
 		if quit_pending: return
 	loading_screen.close()
 	loading = false
+	performance_overlay.set_loading(false)
 	_sync_audio_scene()
+	_update_navigation_attention()
 
 func start_match_with_loading(mode: String, seed_value: int, faction: String, match_options: Dictionary = {}) -> bool:
 	if loading or quit_pending: return false
@@ -876,6 +976,8 @@ func load_game_with_loading() -> void:
 		return
 	rules = sim.rules
 	audio.configure_units(rules)
+	audio.commander.reset(sim)
+	_configure_player_palette()
 	await _loading_progress(0.35, "重建战场…")
 	if quit_pending: return
 	if world != null:
@@ -901,10 +1003,18 @@ func load_game_with_loading() -> void:
 	command_mode = ""
 	started = true
 	hud.is_started = true
+	battlefield_display.show()
+	_close_settings()
+	setup_session_active = false
 	hud.show_entry(false)
+	_scoreboard_result="";_scoreboard_sim_id=0
+	_statistics_export_sim_id=0;_statistics_export_prefix=""
+	if hud.get("scoreboard")!=null:hud.scoreboard.close_scoreboard()
+	_player_music_paused=false
 	pve_paused = false
 	hud.pause_button.text = "暂停"
 	dev_mode = sim.map.mode == "dev"
+	_sync_developer_options()
 	menu_config = {"mode":sim.map.mode, "seed":sim.map.seed, "faction":sim.factions[0],"match_options":sim.get("match_options")}
 	hud.show_menu(false)
 	hud.end_panel.hide()
@@ -912,6 +1022,8 @@ func load_game_with_loading() -> void:
 	post("存档已恢复：资金、队列、命令、在途炮弹与桥梁进度延续。")
 	await _loading_progress(0.94, "恢复部队与建筑…")
 	if quit_pending: return
+	_refresh_camera_reference()
+	update_camera()
 	hud.refresh(sim, selected, camera, dev_mode, "\n".join(feedback), sim_cpu_ms, inspected_bridge, debug_available)
 	world.sync(0.0, selected, {})
 	await _finish_loading(true)
@@ -919,7 +1031,7 @@ func load_game_with_loading() -> void:
 func _physics_process(delta: float) -> void:
 	if quit_pending:return
 	_collect_render_simulation()
-	if loading or sim==null or not started or pve_paused:return
+	if loading or sim==null or not started or pve_paused or (setup_session_active and hud.menu.visible):return
 	if not render_overlap_enabled:
 		_step_simulation_now(delta)
 		return
@@ -979,16 +1091,29 @@ func _exit_tree()->void:
 func _process(delta: float) -> void:
 	if quit_pending:return
 	_collect_render_simulation()
+	if audio != null and audio.commander != null:
+		audio.commander.enabled = started and not loading and not pve_paused and sim != null and sim.result.is_empty() and not hud.modal_catalog_visible()
 	if loading:return
 	if sim==null:return
 	_sync_audio_scene()
+	if started and not sim.result.is_empty() and _scoreboard_sim_id==sim.get_instance_id() and _scoreboard_result==sim.result and not benchmark and not golden_mode:
+		battlefield_viewport.render_target_update_mode=SubViewport.UPDATE_DISABLED
+		return
+	audio.music.set_combat_paused(pve_paused or hud.modal_catalog_visible())
 	var logic_started_us:int=Time.get_ticks_usec() if benchmark else 0
 	if golden_mode:
 		process_golden_visual()
 		return
+	var camera_changed: bool = _advance_camera_zoom(delta)
 	if hud.modal_catalog_visible():
 		dragging=false;middle_drag=false;overlay.active=false
-		battlefield_viewport.render_target_update_mode=SubViewport.UPDATE_DISABLED
+		# A settings slider can animate the paused scene. Freeze it again once
+		# the camera settles, so an idle menu keeps its existing rendering cost.
+		battlefield_viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS if camera_changed else SubViewport.UPDATE_DISABLED
+		if camera_changed:
+			update_camera(delta)
+			world.sync(0.0,selected,{})
+			overlay.refresh_overlay()
 		audio.update_battlefield(delta,{},focus)
 		return
 	if battlefield_viewport.render_target_update_mode==SubViewport.UPDATE_DISABLED:
@@ -998,37 +1123,55 @@ func _process(delta: float) -> void:
 		overlay.active=false
 	if middle_drag and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):middle_drag=false
 	camera_controls(delta)
-	update_camera()
+	update_camera(delta)
 	var placement:Dictionary={}
 	if placing and battlefield_rect().has_point(get_viewport().get_mouse_position()):
-		var p:=sim.snap_build_position(0,ground_at(get_viewport().get_mouse_position()),placement_channel)
+		var ground:Vector2=ground_at(get_viewport().get_mouse_position())
 		var bo:Dictionary=sim.order_for_team(0,placement_channel)
-		if not bo.is_empty():
-			placement={"pos":p,"spec":bo.spec,"valid":sim.placement_error(0,p,placement_channel).is_empty(),"channel":placement_channel,"builder":int(bo.get("builder",-1))}
-		else:placing=false
+		if not bo.is_empty() and ground.is_finite():
+			var p:=sim.snap_build_position(0,ground,placement_channel)
+			var reason: String = sim.placement_error(0,p,placement_channel)
+			var quarters: int=int(bo.get("rotation_quarters",bo.get("rail_rotation",0)))
+			placement={"pos":p,"spec":bo.spec,"valid":reason.is_empty(),"channel":placement_channel,"builder":int(bo.get("builder",-1)),"rail_rotation":int(bo.get("rail_rotation",0)),"rotation_quarters":quarters}
+			hud.show_placement_reason(reason, str(sim.data_for(bo.spec).get("role", "")),quarters)
+		elif bo.is_empty():placing=false
+	if not placing: hud.show_placement_reason("", "", 0)
 	var world_start:int=Time.get_ticks_usec()
 	world.sync(0.0 if pve_paused else delta,selected,placement)
 	world_cpu_ms=float(Time.get_ticks_usec()-world_start)/1000.0
 	if benchmark and benchmark_elapsed>5:world_cpu_samples.append(world_cpu_ms)
-	audio.update_battlefield(delta, sim.entities if started and not pve_paused and sim.result.is_empty() else {}, focus)
+	_update_audio_attention(delta)
+	audio.update_battlefield(delta, _movement_sound_entities(delta) if started and not pve_paused and sim.result.is_empty() else {}, focus)
 	for ev in sim.events:
+		audio.commander.observe_event(ev, sim)
 		var event_kind:String=str(ev.get("kind",""))
 		if int(ev.get("team",0)) == 0 or sim.position_visible_to(0,ev.get("pos",Vector2.ZERO),"air" if float(ev.get("height",0.0)) > 2.0 else "naval" if MapData.terrain_at(sim.map,ev.get("pos",Vector2.ZERO)) == MapData.WATER else "ground"):
 			audio.play_event(ev)
+			audio.music.observe_combat(ev)
 		if event_kind in ["produce", "rearm"] and sim.entities.has(int(ev.get("id", -1))):
 			var ready_unit: Dictionary = sim.entities[int(ev.id)]
-			if int(ready_unit.team) == 0: audio.play_unit_voice(str(ready_unit.spec), "ready")
+			if int(ready_unit.team) == 0: audio.play_unit_voice(str(ready_unit.spec), "ready", {"id":int(ready_unit.id),"team":int(ready_unit.team),"pos":ready_unit.pos})
 		elif event_kind == "return" and int(ev.get("team", -1)) == 0:
-			audio.play_unit_voice(str(ev.get("spec", "")), "return")
+			audio.play_unit_voice(str(ev.get("spec", "")), "return", ev)
 		if benchmark:benchmark_events[event_kind]=int(benchmark_events.get(event_kind,0))+1
+	audio.music.update_engagement(sim)
+	# Commands such as selling the last base may end a match between ticks.
+	# Consume their logical events before presentation drains the shared queue.
+	sim.statistics.sample(sim)
 	sim.events.clear()
 	while not sim.notices.is_empty(): post(str(sim.notices.pop_front()))
 	selected=selected.filter(func(id):return sim.entities.has(id) and int(sim.entities[id].get("transport_id",-1))<0 and sim.entity_visible_to(0,int(id)))
+	prune_control_groups()
+	if started and not sim.result.is_empty() and not benchmark and not golden_mode:
+		_show_battle_scoreboard()
+		return
 	ui_clock+=delta
 	feedback_clock+=delta
 	if ui_clock>=0.15:
 		ui_clock=0
 		hud.refresh(sim,selected,camera,dev_mode,"\n".join(feedback),sim_cpu_ms,inspected_bridge,debug_available)
+		hud.refresh_groups(groups)
+		_update_battle_information()
 		if selected.is_empty() and inspected_ruin<=sim.RUIN_TARGET_BASE:
 			var ruin: Dictionary = sim.ruin_by_target(inspected_ruin)
 			if not ruin.is_empty() and float(ruin.hp)>0:
@@ -1089,6 +1232,52 @@ func _set_audio_scene(scene: String) -> void:
 	audio_scene=scene
 	audio.set_scene(scene)
 
+func _update_audio_attention(delta: float) -> void:
+	if not audio.has_method("set_attention"):return
+	if not selected.is_empty():
+		audio.set_attention(selected,focus)
+		_audio_attention_clock=0.0
+		return
+	_audio_attention_clock=maxf(0.0,_audio_attention_clock-delta)
+	if _audio_attention_clock<=0.0 or _audio_attention_sim_id!=sim.get_instance_id():
+		_audio_attention_sim_id=sim.get_instance_id()
+		_audio_attention_point=focus
+		var pointer: Vector2=get_viewport().get_mouse_position()
+		if battlefield_rect().has_point(pointer):
+			var hovered: Vector2=ground_at(pointer)
+			if hovered.is_finite():_audio_attention_point=hovered
+		# Audio focus can follow at 10 Hz without another terrain ray every frame.
+		_audio_attention_clock=.1
+	audio.set_attention([],_audio_attention_point)
+
+func _show_battle_scoreboard() -> void:
+	if _scoreboard_sim_id==sim.get_instance_id() and _scoreboard_result==sim.result:return
+	_collect_render_simulation()
+	_queued_simulation_delta=0.0
+	pve_paused=true
+	dragging=false;middle_drag=false;placing=false;overlay.active=false
+	audio.reset_field()
+	audio.play_event({"kind":"result","result":sim.result})
+	battlefield_viewport.render_target_update_mode=SubViewport.UPDATE_DISABLED
+	battlefield_display.hide()
+	_scoreboard_sim_id=sim.get_instance_id();_scoreboard_result=sim.result
+	hud.end_panel.hide()
+	if hud.get("scoreboard")!=null:hud.scoreboard.show_result(sim.match_statistics(),sim.result)
+	_export_match_statistics()
+
+func _export_match_statistics() -> void:
+	if sim==null or sim.map.is_empty():return
+	if _statistics_export_sim_id!=sim.get_instance_id():
+		_statistics_export_sim_id=sim.get_instance_id()
+		var stamp:String=Time.get_datetime_string_from_system().replace(":","-").replace("T","_")
+		_statistics_export_prefix="user://match_reports/%s_%s_%d"%[stamp,str(sim.map.get("mode","match")),Time.get_ticks_usec()]
+	var exported:Dictionary=preload("res://scripts/match_statistics_exporter.gd").export_snapshot(sim.match_statistics(),_statistics_export_prefix)
+	if hud!=null and hud.get("scoreboard")!=null:
+		if bool(exported.get("ok",false)):
+			hud.scoreboard.show_export_status("统计已导出（JSON / CSV）："+ProjectSettings.globalize_path("user://match_reports"),true)
+		else:
+			hud.scoreboard.show_export_status("统计导出失败："+str(exported.get("error","未知错误")),false)
+
 func _sync_audio_scene() -> void:
 	if quit_pending:return
 	if audio!=null and sim!=null and not sim.map.is_empty():audio.set_map(str(sim.map.get("mode","forest")))
@@ -1096,20 +1285,151 @@ func _sync_audio_scene() -> void:
 	elif hud.entry_menu.visible or not started:_set_audio_scene("menu")
 	elif not sim.result.is_empty():_set_audio_scene(sim.result)
 	else:_set_audio_scene("battle")
+	if audio.music.has_method("set_playback_paused") and not audio.preview_active:
+		var paused_context:bool=pve_paused and not hud.entry_menu.visible and not hud.menu.visible and not hud.wiki.visible
+		audio.music.set_playback_paused(started and sim.result.is_empty() and (paused_context or (_player_music_paused and pve_paused)))
 
-func update_camera() -> void:
-	var h:float=MapData.height_at(sim.map,focus)
-	var target:=Vector3(focus.x,h,focus.y)
-	var pitch:float=deg_to_rad(camera_pitch)
-	var horizontal:float=distance*cos(pitch)
-	camera.position=target+Vector3(sin(yaw)*horizontal,distance*sin(pitch),cos(yaw)*horizontal)
+func _update_navigation_attention() -> void:
+	if sim==null or not sim.has_method("set_player_navigation_priority"):return
+	if _navigation_attention_sim_id==sim.get_instance_id() and _navigation_attention_ids==selected:return
+	_navigation_attention_sim_id=sim.get_instance_id()
+	_navigation_attention_ids=selected.duplicate()
+	sim.set_player_navigation_priority(selected)
+
+func _movement_sound_entities(delta: float) -> Dictionary:
+	if not sim.vision_enabled:return sim.entities
+	_audibility_clock-=delta
+	if _audibility_clock<=0.0 or _audibility_sim_id!=sim.get_instance_id():
+		_audibility_sim_id=sim.get_instance_id();_audibility_clock=.15
+		_audible_movement_entities.clear()
+		for id:Variant in sim.entities:
+			var entity:Dictionary=sim.entities[id]
+			if int(entity.team)==0 or sim.entity_visible_to(0,int(id)):_audible_movement_entities[id]=entity
+	return _audible_movement_entities
+
+func _refresh_camera_reference() -> void:
+	# Cache the map-wide ceiling for cursor ray bounds and diagnostics only.
+	# The camera targets local terrain; visual cutaways clear its central view.
+	var anchor: Vector2 = focus
+	var starts: Array = sim.map.get("starts", [])
+	if not starts.is_empty(): anchor = Vector2(float(starts[0][0]), float(starts[0][1]))
+	camera_reference_height = MapData.height_at(sim.map, anchor)
+	var scenery_top: float = camera_reference_height
+	for row: Array in sim.map.heights:
+		for height: float in row: scenery_top = maxf(scenery_top, height)
+	# Static bounds include tall roofs and crowns when bounding cursor rays.
+	if is_instance_valid(world) and is_instance_valid(world.landscape):
+		var pending: Array[Node] = [world.landscape]
+		while not pending.is_empty():
+			var node: Node = pending.pop_back()
+			if node is VisualInstance3D:
+				var bounds: AABB = node.global_transform * node.get_aabb()
+				scenery_top = maxf(scenery_top, bounds.end.y)
+			for child: Node in node.get_children(): pending.append(child)
+	camera_clearance_height = scenery_top + CAMERA_SCENERY_CLEARANCE
+	_camera_local_clearance.rebuild(world.landscape if is_instance_valid(world) else null)
+	_camera_reference_sim_id = sim.get_instance_id()
+	_camera_terrain_transition.reset()
+
+func _desired_camera_pitch() -> float:
+	if camera_pitch_mode == "fixed": return camera_pitch
+	if distance < DYNAMIC_PITCH_NEAR: return lerpf(10.0, 20.0, smoothstep(CAMERA_ZOOM_MIN, DYNAMIC_PITCH_NEAR, distance))
+	return lerpf(20.0, 45.0, smoothstep(DYNAMIC_PITCH_NEAR, DYNAMIC_PITCH_OVERVIEW, distance))
+
+func effective_camera_pitch() -> float:
+	return camera_effective_pitch if _camera_pitch_blending else _desired_camera_pitch()
+
+func _queue_camera_zoom(direction: int, factor: float = 1.0) -> void:
+	if direction == 0 or not is_finite(factor): return
+	var amount: float = absf(factor) if factor != 0.0 else 1.0
+	var sense: int = 1 if direction > 0 else -1
+	# Reverse from the currently displayed view, discarding unfinished travel.
+	var base: float = distance if _zoom_last_direction != 0 and _zoom_last_direction != sense else zoom_target_distance
+	var min_log: float = log(CAMERA_ZOOM_MIN)
+	var max_log: float = log(CAMERA_ZOOM_MAX)
+	var target_log: float = clampf(log(base)+sense*amount*log(CAMERA_WHEEL_RATIO),min_log,max_log)
+	# Keep numeric endpoints exact; exp(log(limit)) can cross them by an ULP.
+	zoom_target_distance = CAMERA_ZOOM_MIN if target_log <= min_log else CAMERA_ZOOM_MAX if target_log >= max_log else exp(target_log)
+	_zoom_last_direction = sense
+
+func _camera_eased_error(error: float, delta: float, tau: float, speed: float) -> float:
+	# Solve both phases exactly, including frames crossing their boundary.
+	var linear_time: float = minf(delta,maxf(0.0,(error-speed*tau)/speed))
+	return (error-speed*linear_time)*exp(-(delta-linear_time)/tau)
+
+func _advance_camera_zoom(delta: float) -> bool:
+	if delta <= 0.0 or not is_finite(delta): return false
+	var before_distance: float = distance
+	var before_pitch: float = effective_camera_pitch()
+	var current_log: float = log(distance)
+	var target_log: float = log(zoom_target_distance)
+	var error: float = target_log-current_log
+	var remaining: float = absf(error)
+	if remaining > CAMERA_ZOOM_LOG_EPSILON:
+		# Closed-form rate-limited exponential motion. Splitting the constant
+		# speed and easing phases makes equal wall time agree at every FPS.
+		remaining = _camera_eased_error(remaining,delta,CAMERA_ZOOM_TAU,CAMERA_ZOOM_LOG_SPEED)
+		current_log = target_log-signf(error)*remaining
+		_advancing_camera_motion = true
+		distance = zoom_target_distance if remaining <= CAMERA_ZOOM_LOG_EPSILON else exp(current_log)
+		_advancing_camera_motion = false
+	elif distance != zoom_target_distance:
+		_advancing_camera_motion = true
+		distance = zoom_target_distance
+		_advancing_camera_motion = false
+	if distance == zoom_target_distance: _zoom_last_direction = 0
+	if _camera_pitch_blending:
+		var desired: float = _desired_camera_pitch()
+		var angle_error: float = desired-camera_effective_pitch
+		camera_effective_pitch = desired-signf(angle_error)*_camera_eased_error(absf(angle_error),delta,CAMERA_PITCH_TAU,CAMERA_PITCH_SPEED)
+		if absf(camera_effective_pitch-desired) <= CAMERA_PITCH_EPSILON:
+			camera_effective_pitch = desired
+			_camera_pitch_blending = false
+	var changed: bool = distance != before_distance or effective_camera_pitch() != before_pitch
+	if changed and hud != null and hud.settings.visible: _sync_pitch_controls()
+	return changed
+
+func _start_camera_pitch_transition(from: float) -> void:
+	camera_effective_pitch = from
+	_camera_pitch_blending = absf(_desired_camera_pitch()-from) > CAMERA_PITCH_EPSILON
+
+func _reset_camera_motion() -> void:
+	zoom_target_distance = distance
+	_zoom_last_direction = 0
+	_camera_pitch_blending = false
+
+func _sync_pitch_controls() -> void:
+	hud.pitch_slider.set_value_no_signal(camera_pitch)
+	hud.pitch_label.text = "固定俯角 %.0f°" % camera_pitch if camera_pitch_mode == "fixed" else "动态俯角 %.0f°" % effective_camera_pitch()
+	if hud.settings != null and hud.settings.pitch_mode != null:
+		hud.settings.set_pitch_controls(camera_pitch_mode, camera_pitch, effective_camera_pitch())
+
+func update_camera(delta: float=-1.0) -> void:
+	if _camera_reference_sim_id != sim.get_instance_id(): _refresh_camera_reference()
+	camera_effective_pitch = effective_camera_pitch()
+	var pitch:float=deg_to_rad(camera_effective_pitch)
+	var pose:Dictionary=_camera_terrain_transition.pose(sim,focus,distance,yaw,pitch,_camera_local_clearance,delta)
+	var target:Vector3=pose.target
+	camera_actual_distance=float(pose.actual_distance)
+	var horizontal:float=camera_actual_distance*cos(pitch)
+	camera.position=target+Vector3(sin(yaw)*horizontal,camera_actual_distance*sin(pitch),cos(yaw)*horizontal)
 	camera.look_at(target,Vector3.UP)
+	# Preserve the visual scale of the logical zoom even above tall scenery.
+	# Explicit fixture FOV changes reset the base; our own compensation never
+	# becomes the base of the following frame.
+	if _camera_applied_fov<0.0 or not is_equal_approx(camera.fov,_camera_applied_fov):camera_base_fov=camera.fov
+	camera.fov=rad_to_deg(2.0*atan(tan(deg_to_rad(camera_base_fov)*.5)*distance/camera_actual_distance))
+	_camera_applied_fov=camera.fov
+	CAMERA_OCCLUSION.update(camera, target)
 	# The camera now looks at the centre of its own unobstructed battlefield.
 	camera.h_offset=0.0
-	LENS.update(camera,lens,target,distance)
+	var ground_target := Vector3(focus.x,MapData.height_at(sim.map,focus),focus.y)
+	LENS.update(camera,lens,ground_target,distance)
 	# The overview can move the focal plane beyond the original 105m atlas.
 	# Keep its buildings shadowed throughout the supported zoom range.
-	key_light.directional_shadow_max_distance=maxf(105.0,distance*1.7)
+	key_light.directional_shadow_max_distance=maxf(105.0,camera_actual_distance*1.7)
+	if hud != null and hud.mini != null and hud.mini.has_method("update_camera_outline"):
+		hud.mini.update_camera_outline(camera,sim,target.y)
 
 func camera_controls(delta: float) -> void:
 	if benchmark or golden_mode or hud.menu.visible or hud.modal_catalog_visible() or not started or not sim.result.is_empty():return
@@ -1141,44 +1461,128 @@ func edge_pan_direction(mouse: Vector2, window_size: Vector2) -> Vector2:
 	elif mouse.y>=window_size.y-EDGE_PAN_PIXELS:direction.y=1.0
 	return direction.normalized()
 
+func _open_settings() -> void:
+	if hud.settings.visible: return
+	settings_pause_before = pve_paused
+	settings_session_active = true
+	if started: pve_paused = true
+	dragging = false
+	middle_drag = false
+	overlay.active = false
+	var values: Dictionary = audio.get_mix()
+	values.merge({"quality": graphics_quality, "render_scale": render_scale, "depth_of_field": lens.dof_blur_near_enabled, "pitch": camera_pitch, "pitch_mode": camera_pitch_mode, "effective_pitch": effective_camera_pitch(), "fullscreen": get_window().mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN], "ambient_occlusion": environment.ssao_enabled, "shadows": key_light.shadow_enabled, "debug_enabled": debug_available, "audio_browser_enabled": audio_browser_enabled, "in_match": started, "can_save": started})
+	hud.settings.open(values)
+
+func _open_match_setup() -> void:
+	_close_settings()
+	if setup_session_active and hud.menu.visible: return
+	setup_pause_before = pve_paused
+	setup_return_to_entry = hud.entry_menu.visible
+	setup_session_active = true
+	if started: pve_paused = true
+	dragging = false
+	middle_drag = false
+	overlay.active = false
+	hud.show_entry(false)
+	hud.show_menu(true)
+
+func _close_match_setup() -> void:
+	hud.show_menu(false)
+	if not setup_session_active: return
+	setup_session_active = false
+	pve_paused = setup_pause_before
+	if setup_return_to_entry: hud.show_entry(true)
+	hud.pause_button.text = "继续" if pve_paused else "暂停"
+
+func _close_settings() -> void:
+	if hud == null or hud.settings == null: return
+	if hud.settings.visible: hud.settings.close()
+	# Loading blocks general actions, including the close signal. Complete the
+	# same transaction directly when that signal could not reach its handler.
+	if settings_session_active: _settings_closed()
+
+func _settings_closed() -> void:
+	if not settings_session_active: return
+	settings_session_active = false
+	pve_paused = settings_pause_before
+	hud.pause_button.text = "继续" if pve_paused else "暂停"
+	save_preferences()
+
+func _close_top_popup() -> bool:
+	var pending: Array[Node] = [hud]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		if (node is Popup or node is AcceptDialog) and node.visible:
+			node.hide()
+			return true
+		pending.append_array(node.get_children(true))
+	return false
+
+func _escape_menu() -> void:
+	if _close_top_popup(): return
+	if hud.settings.visible: _close_settings(); return
+	if hud.wiki.visible: hud.wiki.close_catalog(); return
+	if hud.entry_menu.visible:
+		if started and sim.result.is_empty(): handle_action("entry_resume", null)
+		return
+	if hud.menu.visible:
+		if setup_session_active: _close_match_setup()
+		else:
+			hud.show_menu(false)
+			if not started or not sim.result.is_empty(): hud.show_entry(true)
+		return
+	if placing or not command_mode.is_empty():
+		placing = false
+		command_mode = ""
+		return
+	if hud.help_panel.visible: hud.help_panel.hide(); return
+	handle_action("settings_open", null)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if loading:
 		get_viewport().set_input_as_handled()
 		return
 	_flush_render_simulation()
 	if sim==null:return
+	if hud.scoreboard!=null and hud.scoreboard.visible:
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE:handle_action("entry_home",null)
+		get_viewport().set_input_as_handled()
+		return
 	if benchmark:return
 	if golden_mode:
 		if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE:quit_game()
 		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ESCAPE,KEY_F2,KEY_F5,KEY_F9,KEY_P,KEY_PAUSE,KEY_Z,KEY_X,KEY_C,KEY_G,KEY_H,KEY_F,KEY_U,KEY_L,KEY_B,KEY_R,KEY_T,KEY_SPACE,KEY_HOME]:
+		audio.play("ui_key")
+		_key_feedback_ms=Time.get_ticks_msec()
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if not event.echo: _escape_menu()
+		get_viewport().set_input_as_handled()
+		return
 	if hud.settings.visible:
-		if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE:
-			hud.settings.close()
-			get_viewport().set_input_as_handled()
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.keycode == KEY_F5: handle_action("save", null)
+			elif event.keycode == KEY_F9: handle_action("load", null)
 		return
 	if hud.wiki.visible:
-		if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE:
-			hud.wiki.close_catalog()
-			get_viewport().set_input_as_handled()
 		return
 	if hud.entry_menu.visible:
-		if event is InputEventKey and event.pressed and event.keycode==KEY_ESCAPE and started:
-			handle_action("entry_resume",null)
-			get_viewport().set_input_as_handled()
-		elif event is InputEventKey and event.pressed and event.keycode==KEY_F9:
+		if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_F9:
 			handle_action("load",null)
 			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode==KEY_ESCAPE:
-			if placing or not command_mode.is_empty():placing=false; command_mode=""
-			elif hud.menu.visible and not started:hud.show_entry(true)
-			else:hud.show_menu(not hud.menu.visible)
-			return
 		if event.keycode==KEY_F5:handle_action("save",null);return
 		if event.keycode==KEY_F9:handle_action("load",null);return
-		if event.keycode in [KEY_P,KEY_PAUSE]:handle_action("pause",null);return
+		if event.keycode in [KEY_P,KEY_PAUSE]:
+			if not setup_session_active:handle_action("pause",null)
+			return
 		if hud.menu.visible:return
+		if event.keycode==KEY_R and placing:
+			var rotation_error: String=sim.rotate_build_order(0,1,placement_channel)
+			if not rotation_error.is_empty():post(rotation_error)
+			get_viewport().set_input_as_handled()
+			return
 		if event.keycode==KEY_Z:handle_action("attack_move",null)
 		if event.keycode==KEY_X:handle_action("stop",null)
 		if event.keycode==KEY_C:handle_action("waypoint",null)
@@ -1186,19 +1590,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode==KEY_H:handle_action("force_attack",null)
 		if event.keycode==KEY_B:handle_action("return",null)
 		if event.keycode==KEY_L:handle_action("land",null)
-		if event.keycode==KEY_U:handle_action("unload_move",null)
-		if event.keycode==KEY_R:handle_action("pitch",camera_pitch+2)
-		if event.keycode==KEY_T:handle_action("pitch",camera_pitch-2)
+		if event.keycode==KEY_U:handle_action("unload" if inspected_ruin<=sim.RUIN_TARGET_BASE else "unload_move",null)
+		if event.keycode==KEY_R:handle_action("pitch",(camera_pitch if _camera_pitch_blending and camera_pitch_mode=="fixed" else effective_camera_pitch())+2)
+		if event.keycode==KEY_T:handle_action("pitch",(camera_pitch if _camera_pitch_blending and camera_pitch_mode=="fixed" else effective_camera_pitch())-2)
 		if event.keycode==KEY_F:handle_action("force_move",null)
-		if event.keycode==KEY_SPACE:focus_selection()
+		if event.keycode==KEY_SPACE:focus_hotspot()
+		if event.keycode==KEY_V and placing:
+			var rotation_error: String = sim.rotate_rail_order(0, 1, placement_channel)
+			if not rotation_error.is_empty(): post(rotation_error)
 		if event.keycode==KEY_HOME:
 			for e in sim.entities.values():
 				if e.team==0 and sim.data_for(e.spec).get("role","")=="hq":focus=e.pos;break
 		if event.keycode==KEY_F2 and debug_available:set_debug_visible(not debug_panel.visible)
-		if event.keycode>=KEY_0 and event.keycode<=KEY_9:
+		if event.keycode>=KEY_1 and event.keycode<=KEY_6:
 			var num:int=event.keycode-KEY_0
-			if event.ctrl_pressed:groups[num]=selected.duplicate();post("编队 %d 已保存" % num)
-			elif groups.has(num):selected=groups[num].filter(func(id):return sim.entities.has(id) and int(sim.entities[id].get("transport_id",-1))<0);audio.play("select");speak_selection("select")
+			if event.ctrl_pressed:save_control_group(num)
+			else:select_control_group(num)
 		return
 	if hud.menu.visible or not started or not sim.result.is_empty():return
 	if event is InputEventMouseButton:
@@ -1214,7 +1621,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			# GUI normally consumes scrolling; this also protects the sidebar edge
 			# and controls which deliberately pass a scroll event to their parent.
 			if not event.pressed or hud.blocks_world_scroll(event.position):return
-			distance=clampf(distance*(0.9 if event.button_index==MOUSE_BUTTON_WHEEL_UP else 1.1),20,110)
+			_queue_camera_zoom(-1 if event.button_index==MOUSE_BUTTON_WHEEL_UP else 1,event.factor)
 			get_viewport().set_input_as_handled()
 		elif event.button_index==MOUSE_BUTTON_MIDDLE:middle_drag=event.pressed
 		elif event.button_index==MOUSE_BUTTON_RIGHT and event.pressed:
@@ -1224,8 +1631,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index==MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				if placing:
+					var ground: Vector2 = ground_at(event.position)
+					if not ground.is_finite(): return
 					var engineer_deployment:bool=int(sim.order_for_team(0,placement_channel).get("builder",-1))>=0
-					var err:String=sim.place_building(0,ground_at(event.position),placement_channel)
+					var err:String=sim.place_building(0,ground,placement_channel)
 					if err.is_empty():
 						placing=false;audio.play("build")
 						post("工程兵前往所选位置部署分基地。" if engineer_deployment else "建筑已落地，1.5 秒后启用。")
@@ -1262,7 +1671,8 @@ func ground_at(screen: Vector2) -> Vector2:
 	var pixel: Vector2 = screen_to_battlefield(screen)
 	var origin:=camera.project_ray_origin(pixel)
 	var direction:=camera.project_ray_normal(pixel)
-	var max_height:float=8
+	if not origin.is_finite() or not direction.is_finite() or direction.y >= -0.00001: return Vector2.INF
+	var max_height:float=camera_clearance_height
 	var start_t:float=maxf(0,(max_height-origin.y)/direction.y)
 	var end_t:float=(0-origin.y)/direction.y+10
 	var previous:float=start_t
@@ -1279,10 +1689,12 @@ func ground_at(screen: Vector2) -> Vector2:
 				if v.y<=cursor_surface_y(Vector2(v.x,v.z)):hi=mid
 				else:lo=mid
 			var hit:Vector3=origin+direction*hi
-			return Vector2(hit.x,hit.z)
+			var point:=Vector2(hit.x,hit.z)
+			return point if sim._in_bounds(point) else Vector2.INF
 		previous=t
 	var fallback:Vector3=origin+direction*((0-origin.y)/direction.y)
-	return Vector2(fallback.x,fallback.z)
+	var point:=Vector2(fallback.x,fallback.z)
+	return point if sim._in_bounds(point) else Vector2.INF
 
 func cursor_surface_y(pos: Vector2) -> float:
 	return MapData.water_surface_y(sim.map,pos) if MapData.terrain_at(sim.map,pos) == MapData.WATER else MapData.height_at(sim.map,pos)
@@ -1342,6 +1754,7 @@ func pick_entity(screen: Vector2) -> int:
 		if sd < 34 or (not airborne and ground_distance < radius):
 			var score: float = sd if airborne else minf(sd, ground_distance * 24)
 			if score<distance_score:distance_score=score;best=e.id
+	if not pos.is_finite(): return best
 	# A crown can project behind its trunk's ground point. Include that ray
 	# offset and the terrain's height range before precise mesh picking.
 	var neutral_reach: float = 16.0 / maxf(absf(direction.y), 0.08) + 3.0
@@ -1364,7 +1777,8 @@ func click_select(screen: Vector2, append: bool) -> void:
 	if not battlefield_rect().has_point(screen):return
 	var id:=pick_entity(screen)
 	inspected_ruin=id if id<=sim.RUIN_TARGET_BASE else -1
-	inspected_bridge=sim.bridge_at(ground_at(screen)) if id<0 and inspected_ruin==-1 else -1
+	var ground:Vector2=ground_at(screen)
+	inspected_bridge=sim.bridge_at(ground) if id<0 and inspected_ruin==-1 and ground.is_finite() else -1
 	if not append:selected.clear()
 	if id>=0:
 		if append and id in selected:selected.erase(id)
@@ -1377,7 +1791,7 @@ func box_select(rect: Rect2, append: bool) -> void:
 	rect=rect.intersection(battlefield_rect())
 	if not append:selected.clear()
 	for e in sim.entities.values():
-		if e.team!=0 or e.kind!="unit" or int(e.get("transport_id",-1))>=0:continue
+		if e.team!=0 or e.kind!="unit" or sim.Transport.is_loaded(e):continue
 		var p: Vector3 = entity_visual_center(e)
 		if not camera.is_position_behind(p) and rect.has_point(project_world_to_screen(p)) and e.id not in selected:selected.append(e.id)
 	audio.play("select")
@@ -1388,25 +1802,64 @@ func entity_visual_center(e: Dictionary) -> Vector3:
 	var d: Dictionary = sim.data_for(e.spec)
 	var height: float = MapData.entity_surface_y(sim.map, e.pos, str(d.get("domain","ground")))
 	if str(d.get("domain", "ground")) == "air":
-		height += float(e.get("flight_height", d.get("flight_height", 4.0))) + 0.4
+		var air_model: Dictionary=world.models.get(int(e.id),{}) if is_instance_valid(world) else {}
+		height=float(air_model.visual_air_y)+.4 if air_model.has("visual_air_y") else height+float(e.get("flight_height",d.get("flight_height",4.0)))+.4
 	else:
 		height += 1.8 if e.kind == "building" else 0.7
 	return Vector3(e.pos.x, height, e.pos.y)
 
 func speak_selection(action_id: String, ids: Array = []) -> void:
 	var source: Array = selected if ids.is_empty() else ids
+	_update_navigation_attention()
+	if action_id=="select":_update_audio_attention(0.0)
 	for id in source:
 		if sim.entities.has(id):
 			var e: Dictionary = sim.entities[id]
 			if int(e.team) == 0 and e.kind == "unit":
-				audio.play_unit_voice(str(e.spec), action_id)
+				if audio.voice_category(str(e.spec))=="infantry" and action_id in ["select","move","attack"] and audio.has_method("play_unit_group_voice"):
+					var contexts: Array=[]
+					var voice_profile: String=audio.speech_profile_key(str(e.spec))
+					for member_id:Variant in source:
+						var member:Dictionary=sim.entities.get(int(member_id),{})
+						if member.is_empty() or member.kind!="unit" or int(member.team)!=0 or audio.speech_profile_key(str(member.spec))!=voice_profile:continue
+						contexts.append({"id":int(member.id),"team":int(member.team),"pos":member.pos})
+						if contexts.size()>=3:break
+					if contexts.size()>1:
+						audio.play_unit_group_voice(str(e.spec),action_id,contexts)
+						return
+				audio.play_unit_voice(str(e.spec), action_id, {"id":int(e.id),"team":int(e.team),"pos":e.pos})
+				return
+			elif int(e.team)==0 and e.kind=="building" and action_id=="select":
+				audio.play_event({"kind":"select_building","id":int(e.id),"team":int(e.team),"spec":str(e.spec),"pos":e.pos})
 				return
 
 func friendly_units() -> Array:
-	return selected.filter(func(id):return sim.entities.has(id) and sim.entities[id].team==0 and sim.entities[id].kind=="unit" and int(sim.entities[id].get("transport_id",-1))<0)
+	return selected.filter(func(id):return sim.entities.has(id) and sim.entities[id].team==0 and sim.entities[id].kind=="unit" and not sim.Transport.is_loaded(sim.entities[id]))
 
 func right_command(pos: Vector2, target: int, append: bool) -> void:
+	if not pos.is_finite():
+		if target>=0 and sim.entities.has(target):pos=sim.entities[target].pos
+		else:return
 	_flush_render_simulation()
+	if target<=sim.RUIN_TARGET_BASE:
+		var ruin:Dictionary=sim.ruin_by_target(target)
+		if sim.GarrisonOperations.suitable(ruin):
+			var troops:Array=friendly_units()
+			if troops.is_empty() and int(ruin.get("garrison_team",-1))==0:
+				report(sim.GarrisonOperations.unload(sim,target,false,0),"驻军正在从建筑撤出。")
+			elif sim.GarrisonOperations.hostile(sim,0,target):
+				sim.issue(troops,"attack",ruin.pos,target,append)
+			else:
+				var boarders:Array=troops.filter(func(id):return sim.GarrisonOperations.board_error(sim,int(id),target).is_empty())
+				if boarders.is_empty():post("只有普通步兵可以进驻，工兵不能进驻。")
+				else:sim.issue(boarders,"garrison",ruin.pos,target,append)
+			return
+	if target>=0 and sim.entities.has(target) and int(sim.entities[target].team)==0 and sim.data_for(sim.entities[target].spec).get("role","")=="refinery":
+		var miners:Array=friendly_units().filter(func(id):return sim.data_for(sim.entities[id].spec).get("art","")=="harvester")
+		if not miners.is_empty():
+			sim.issue(miners,"return_miner",sim.entities[target].pos,target,append)
+			post("矿车立即回厂卸矿。")
+			return
 	var bridge_id:int=sim.bridge_at(pos)
 	if bridge_id<0:
 		for b in sim.bridges:
@@ -1433,6 +1886,16 @@ func right_command(pos: Vector2, target: int, append: bool) -> void:
 			if not fighters.is_empty() or capturing:
 				audio.play("command")
 				show_marker(pos)
+		elif target >= 0 and sim.entities.has(target) and int(sim.entities[target].team) == 0 and sim.entities[target].kind == "building" and sim.data_for(sim.entities[target].spec).get("role", "") == "repair" and float(sim.data_for(sim.entities[target].spec).get("service_rate", 0.0)) > 0.0:
+			var servicing: Array = units.filter(func(id): return sim.service_error(int(id), target).is_empty())
+			if servicing.is_empty():
+				report(sim.service_error(int(units[0]), target))
+			else:
+				sim.issue(servicing, "service", sim.entities[target].pos, target, append)
+				audio.play("command")
+				speak_selection("move", servicing)
+				show_marker(sim.entities[target].pos)
+				post("%d 辆受损载具前往修理厂；入厂后按实际恢复生命付费维修。" % servicing.size())
 		elif target >= 0 and sim.entities.has(target) and int(sim.entities[target].team) == 0 and int(sim.data_for(sim.entities[target].spec).get("transport_capacity",0)) > 0 and not TransportCommands.infantry(sim, units).is_empty():
 			var boarding: Dictionary = TransportCommands.board(sim, units, target, append)
 			if not str(boarding.error).is_empty(): report(boarding.error)
@@ -1490,6 +1953,9 @@ func right_command(pos: Vector2, target: int, append: bool) -> void:
 				show_marker(pos)
 
 func command_units(kind: String, pos: Vector2, target: int=-1, append: bool=false) -> bool:
+	if not pos.is_finite():
+		if target>=0 and sim.entities.has(target):pos=sim.entities[target].pos
+		else:return false
 	_flush_render_simulation()
 	var ids:=friendly_units()
 	if kind in ["land", "unload_move"]:
@@ -1537,7 +2003,46 @@ func focus_selection() -> void:
 		if sim.entities.has(id):total+=sim.entities[id].pos;count+=1
 	if count>0:focus=total/count
 
+func prune_control_groups() -> void:
+	for number in groups.keys():
+		groups[number] = groups[number].filter(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and str(sim.entities[id].kind) == "unit" and float(sim.entities[id].hp) > 0.0)
+		if groups[number].is_empty(): groups.erase(number)
+
+func save_control_group(number: int) -> void:
+	if number < 1 or number > 6: return
+	groups[number] = selected.filter(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and str(sim.entities[id].kind) == "unit" and float(sim.entities[id].hp) > 0.0)
+	var count: int = groups[number].size()
+	if count == 0: groups.erase(number)
+	hud.refresh_groups(groups)
+	post("编队 %d 已保存 · %d 单位" % [number, count] if count > 0 else "编队 %d 已清空" % number)
+
+func select_control_group(number: int) -> void:
+	if number < 1 or number > 6: return
+	prune_control_groups()
+	hud.refresh_groups(groups)
+	if not groups.has(number): return
+	selected = groups[number].filter(func(id): return int(sim.entities[id].get("transport_id", -1)) < 0 and sim.entity_visible_to(0, int(id)))
+	hud.refresh(sim, selected, camera, dev_mode, "\n".join(feedback), sim_cpu_ms, inspected_bridge, debug_available)
+	audio.play("select"); speak_selection("select")
+
+func focus_hotspot() -> void:
+	var point: Vector2 = audio.commander.latest_hotspot(sim)
+	if point.is_finite(): focus = point; return
+	for entity: Dictionary in sim.entities.values():
+		if int(entity.team) == 0 and str(sim.data_for(entity.spec).get("role", "")) == "hq": focus = entity.pos; return
+
+func _update_battle_information() -> void:
+	var pointer := get_viewport().get_mouse_position()
+	hovered_entity = pick_entity(pointer) if battlefield_rect().has_point(pointer) and not hud.blocks_world_scroll(pointer) else -1
+	hud.show_entity_hover(hovered_entity, pointer)
+	hud.refresh_base_markers([])
+
 func handle_action(kind: String, value: Variant) -> void:
+	if kind == "select_group": select_control_group(int(value)); return
+	if kind in ["entry_home","entry_play","quit","new_game"] and hud!=null and hud.get("scoreboard")!=null:
+		hud.scoreboard.close_scoreboard()
+	if audio!=null and kind not in ["settings_closed","wiki_closed","audio_mix","pitch"] and Time.get_ticks_msec()-_key_feedback_ms>20:
+		audio.play("ui_click")
 	if quit_pending:return
 	if loading:
 		if kind == "quit": quit_game()
@@ -1549,17 +2054,16 @@ func handle_action(kind: String, value: Variant) -> void:
 	if golden_mode:
 		if kind=="quit":quit_game()
 		return
-	if kind=="settings_open":
-		settings_pause_before=pve_paused
-		if started:pve_paused=true
-		dragging=false;middle_drag=false;overlay.active=false
-		var values:Dictionary=audio.get_mix()
-		values.merge({"quality":graphics_quality,"render_scale":render_scale,"depth_of_field":lens.dof_blur_near_enabled,"pitch":camera_pitch,"fullscreen":get_window().mode in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN],"ambient_occlusion":environment.ssao_enabled,"shadows":key_light.shadow_enabled,"debug_enabled":debug_available})
-		hud.settings.open(values)
+	if kind=="export_statistics":
+		_export_match_statistics()
+	elif kind=="settings_open":
+		_open_settings()
 	elif kind=="settings_closed":
-		pve_paused=settings_pause_before
-		hud.pause_button.text="继续" if pve_paused else "暂停"
-		save_preferences()
+		_settings_closed()
+	elif kind=="new_game":
+		_open_match_setup()
+	elif kind=="setup_resume":
+		_close_match_setup()
 	elif kind=="audio_mix":
 		audio.set_mix(value)
 		hud.muted=audio.muted
@@ -1572,6 +2076,8 @@ func handle_action(kind: String, value: Variant) -> void:
 		set_depth_of_field(bool(value));save_preferences()
 	elif kind=="debug_enabled":
 		set_debug_enabled(bool(value));save_preferences()
+	elif kind=="audio_browser_enabled":
+		set_audio_browser_enabled(bool(value));save_preferences()
 	elif kind=="ambient_occlusion":
 		environment.ssao_enabled=bool(value);save_preferences()
 	elif kind=="shadows":
@@ -1580,19 +2086,21 @@ func handle_action(kind: String, value: Variant) -> void:
 		get_window().mode=Window.MODE_FULLSCREEN if bool(value) else Window.MODE_WINDOWED
 		save_preferences()
 	elif kind=="entry_play":
-		hud.show_entry(false)
-		hud.show_menu(true)
-		if started:pve_paused=entry_pause_before
+		_open_match_setup()
 	elif kind=="entry_campaign":
 		await start_match_with_loading("campaign", 1, "kestrel")
 	elif kind=="campaign_target":
 		if value is Vector2: focus = value
 	elif kind=="entry_home":
+		_close_match_setup()
+		_close_settings()
+		if hud.entry_menu.visible: return
 		audio.reset_field()
 		entry_pause_before=pve_paused
 		if started:pve_paused=true
 		hud.show_entry(true)
 	elif kind=="entry_resume":
+		if not started or not sim.result.is_empty(): return
 		hud.show_entry(false)
 		hud.show_menu(false)
 		pve_paused=entry_pause_before
@@ -1607,17 +2115,22 @@ func handle_action(kind: String, value: Variant) -> void:
 			var message: String="军团档案读取失败："+"; ".join(RulesLoader.errors)
 			if hud.entry_menu.visible:hud.entry_menu.show_notice(message)
 			report(message);return
+		wiki_return_to_settings=hud.settings.visible
+		wiki_return_to_menu=hud.menu.visible
+		_close_settings()
 		wiki_return_to_entry=hud.entry_menu.visible
 		wiki_pause_before=pve_paused
 		if started:pve_paused=true
 		dragging=false;middle_drag=false;overlay.active=false
 		hud.show_entry(false);hud.show_menu(false);hud.help_panel.hide()
 		hud.wiki.configure(catalog_rules)
+		hud.wiki.configure_audio_browser(audio,audio_browser_enabled)
 		hud.wiki.open_catalog()
 	elif kind=="wiki_closed":
 		pve_paused=wiki_pause_before
 		if wiki_return_to_entry:hud.show_entry(true)
-		else:hud.show_menu(true)
+		elif wiki_return_to_menu:hud.show_menu(true)
+		if wiki_return_to_settings:_open_settings()
 		hud.pause_button.text="继续" if pve_paused else "暂停"
 	elif kind=="start":
 		if not await start_match_with_loading(value.mode,value.seed,value.faction,value.get("match_options",{})):return
@@ -1630,9 +2143,18 @@ func handle_action(kind: String, value: Variant) -> void:
 		if debug_available:set_debug_visible(not debug_panel.visible)
 	elif kind=="mute":audio.muted=value;save_preferences()
 	elif kind=="pitch":
+		var from: float = effective_camera_pitch()
 		camera_pitch=clampf(float(value),20,45)
-		hud.pitch_slider.set_value_no_signal(camera_pitch)
-		hud.pitch_label.text="镜头俯角 %.0f°" % camera_pitch
+		_start_camera_pitch_transition(from)
+		_sync_pitch_controls()
+		update_camera()
+		save_preferences()
+	elif kind=="camera_pitch_mode":
+		var from: float = effective_camera_pitch()
+		camera_pitch_mode="fixed" if str(value)=="fixed" else "dynamic"
+		_start_camera_pitch_transition(from)
+		_sync_pitch_controls()
+		update_camera()
 		save_preferences()
 	elif kind=="save":
 		if not started:report("尚未开始对局。");return
@@ -1647,26 +2169,29 @@ func handle_action(kind: String, value: Variant) -> void:
 		if not bo.is_empty() and bo.spec==spec and bo.get("ready",false):
 			placement_channel=channel
 			placing=true
-			post("选择分基地部署位置；工程兵随后前往建造。" if int(bo.get("builder",-1))>=0 else "选择绿色标记的合法位置；右键退出放置。")
+			post("选择建筑施工位置；R旋转90°，工程兵随后前往建造。" if int(bo.get("builder",-1))>=0 else "选择绿色标记的合法位置；R旋转90°，右键退出放置。")
 		else:
-			var builder:int=hud.selected_engineer() if sim.data_for(spec).get("role", "") == "outpost" else -1
+			var builder:int=hud.selected_engineer() if sim.TechAvailability.engineer_building(sim, 0, sim.data_for(spec)) else -1
 			var error:String=sim.build(0,spec,builder)
-			if error.is_empty() and sim.data_for(spec).get("role", "") == "outpost":
+			if error.is_empty():audio.play("queue_build")
+			if error.is_empty() and builder >= 0:
 				placement_channel=channel
 				placing=true
-				post("左键选择分基地位置；工程兵到达后搭起脚手架，施工时逐步付款。")
+				post("左键选择建筑位置，R旋转90°；工程兵到达后搭起脚手架，施工时逐步付款。")
 			else:report(error,"已付款并进入%s建造队列。" % ("防御" if channel == "defense" else "常规"))
 	elif kind=="produce":
 		var spec: String = str(value.get("spec", "")) if value is Dictionary else str(value)
 		var producer:int=hud.production_building(spec)
 		if producer<0:report("先建设相应的兵营、工厂或机场。");return
-		report(sim.produce(producer,spec),"订单已付款，进入该生产设施的独立队列。")
+		var order_error: String=sim.produce(producer,spec)
+		if order_error.is_empty():audio.play("queue_unit")
+		report(order_error,"订单已付款，进入该生产设施的独立队列。")
 	elif kind=="cancel_build":
 		var channel: String = str(value.get("channel", "normal")) if value is Dictionary else (str(value) if value is String else "normal")
 		var bo:Dictionary=sim.order_for_team(0,channel)
 		var ready:bool=not bo.is_empty() and bo.get("ready",false)
 		var choosing_site:bool=int(bo.get("builder",-1))>=0
-		report(sim.cancel_build(0,channel),"已取消分基地选址；尚未花费资金。" if choosing_site else ("已取消。就绪建筑不退款。" if ready else "已按未完成进度退款。"))
+		report(sim.cancel_build(0,channel),"已取消建筑选址；尚未花费资金。" if choosing_site else ("已取消。就绪建筑不退款。" if ready else "已按未完成进度退款。"))
 		if channel==placement_channel:placing=false
 	elif kind=="cancel_unit":
 		var p:=hud.production_building()
@@ -1674,23 +2199,30 @@ func handle_action(kind: String, value: Variant) -> void:
 	elif kind=="cancel_queue":report(sim.cancel_production(value.building,value.index),"订单已取消并按规则退款。")
 	elif kind=="pause":
 		pve_paused = not pve_paused
+		_player_music_paused=pve_paused
+		if audio.music.has_method("set_playback_paused"):audio.music.set_playback_paused(pve_paused)
 		hud.pause_button.text = "继续" if pve_paused else "暂停"
 		post("PVE 已暂停 · 按 P 或继续按钮恢复" if pve_paused else "对局继续")
 	elif kind in ["attack_move","patrol","waypoint","force_attack","force_move"]:
 		command_mode=kind
-		post({"attack_move":"左键指定进攻终点。","patrol":"左键指定巡逻终点；单位往返巡逻并沿路索敌。","waypoint":"连续左键追加路径点；右键或 Esc 完成。","force_attack":"左键目标或地面强制攻击，可攻击友方与中立障碍。","force_move":"左键目标或地面强制移动；坦克可碾压所指步兵，包括友方。"}[kind])
+		post({"attack_move":"左键指定进攻终点。","patrol":"左键指定巡逻终点；单位往返巡逻并沿路索敌。","waypoint":"连续左键追加路径点；右键或 Esc 完成。","force_attack":"左键目标或地面强制攻击，可攻击友方与中立障碍。","force_move":"左键目标或地面强制移动；坦克可碾压敌方步兵，友方步兵会避让。"}[kind])
 	elif kind in ["stop","hold"]:
 		sim.issue(friendly_units(),kind,Vector2.ZERO)
 		command_mode=""
 		audio.play("command")
 	elif kind == "return":
-		var aircraft: Array = friendly_units().filter(func(id): return str(sim.data_for(sim.entities[id].spec).get("domain", "ground")) == "air")
-		if aircraft.is_empty(): report("先选择己方飞机。")
-		else:
+		var miners:Array=friendly_units().filter(func(id):return sim.data_for(sim.entities[id].spec).get("art","")=="harvester")
+		if not miners.is_empty():sim.issue(miners,"return_miner",Vector2.ZERO,-1);post("矿车立即返回矿厂卸矿。")
+		var aircraft: Array = friendly_units().filter(func(id): return str(sim.data_for(sim.entities[id].spec).get("domain", "ground")) == "air" and not bool(sim.data_for(sim.entities[id].spec).get("permanent_air",false)))
+		if aircraft.is_empty() and miners.is_empty(): report("选择矿车回厂，或选择固定翼飞机返航。")
+		elif not aircraft.is_empty():
 			sim.issue(aircraft, "return", Vector2.ZERO)
 			audio.play("command")
 			post("飞机返航补给维修，完成后停机；移动命令可再次起飞。")
 	elif kind=="unload":
+		if inspected_ruin<=sim.RUIN_TARGET_BASE:
+			report(sim.GarrisonOperations.unload(sim,inspected_ruin,false,0),"驻军撤出。")
+			return
 		var carriers:Array=friendly_units().filter(func(id):return not sim.entities[id].get("passengers",[]).is_empty())
 		if carriers.is_empty():report("先选择搭载步兵的己方运输载具。")
 		for id in carriers:report(sim.unload(int(id)),"步兵已在运输载具附近下车。")
@@ -1729,6 +2261,7 @@ func handle_action(kind: String, value: Variant) -> void:
 	elif kind=="debug" and debug_available:set_debug_visible(not debug_panel.visible)
 
 func report(error: String, success: String="") -> void:
+	if hud.settings.visible: hud.settings.show_notice(success if error.is_empty() else error)
 	if error.is_empty():
 		if not success.is_empty():post(success)
 	else:post(error);audio.play("error")
@@ -1745,6 +2278,10 @@ func make_debug_panel() -> void:
 	debug_panel.custom_minimum_size=Vector2(390,0)
 	debug_panel.visible=false
 	hud.add_child(debug_panel)
+	# F2 belongs to this viewport. Treat its paper as HUD input, never a
+	# separate desktop Window or a click-through battlefield region.
+	debug_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	hud.ui_panels.append(debug_panel)
 	var c:=VBoxContainer.new()
 	c.add_theme_constant_override("separation",6)
 	debug_panel.add_child(c)
@@ -1757,9 +2294,32 @@ func make_debug_panel() -> void:
 	render_scale_option=hud.settings.resolution
 	debug_tools=VBoxContainer.new()
 	debug_tools.visible=dev_mode
-	c.add_child(debug_tools)
+	debug_tools_scroll = ScrollContainer.new()
+	debug_tools_scroll.custom_minimum_size = Vector2(0,310)
+	debug_tools_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	debug_tools_scroll.visible = dev_mode and debug_available
+	c.add_child(debug_tools_scroll)
+	debug_tools.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	debug_tools_scroll.add_child(debug_tools)
 	debug_tools.add_child(hud.label("开发场景 · 规则工具",13))
-	debug_tools.add_child(hud.button("重置 48×48 试验场",func():if dev_mode and debug_available:start_match("dev",73026,menu_config.faction);spawn_roster();set_debug_visible(false)))
+	debug_tools.add_child(hud.button("重置 100×100 试验场",func():if dev_mode and debug_available:start_match("dev",73026,menu_config.faction);spawn_roster();set_debug_visible(false)))
+	var faction_row := HBoxContainer.new()
+	debug_tools.add_child(faction_row)
+	faction_row.add_child(hud.label("展示阵营",12))
+	debug_faction_picker = OptionButton.new()
+	for faction: String in ["kestrel","rivet","iron","sky"]:
+		debug_faction_picker.add_item(str(rules.factions.get(faction,{}).get("name",faction)))
+		debug_faction_picker.set_item_metadata(debug_faction_picker.item_count-1,faction)
+	faction_row.add_child(debug_faction_picker)
+	faction_row.add_child(hud.button("切换并重置",_debug_switch_faction))
+	debug_tools.add_child(hud.button("一键生成本阵营所有建筑",_debug_generate_buildings))
+	debug_instant_toggle = CheckBox.new()
+	debug_instant_toggle.text = "立即施工 / 生产（仍扣费与检查出口）"
+	debug_instant_toggle.toggled.connect(func(value: bool): debug_instant_build=value;_sync_developer_options())
+	debug_tools.add_child(debug_instant_toggle)
+	debug_building_report = hud.label("建筑工具遵守真实占地，保留两格通道。",12)
+	debug_building_report.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	debug_tools.add_child(debug_building_report)
 	debug_tools.add_child(hud.button("补充资金 +10000",func():if dev_mode and debug_available:sim.money[0]+=10000;post("开发资金已补充。")))
 	debug_tools.add_child(hud.button("双方生成全部兵种",func():if dev_mode and debug_available:spawn_roster()))
 	debug_tools.add_child(hud.button("显示 / 隐藏真实占地",func():if dev_mode and debug_available:overlay.collisions=not overlay.collisions))
@@ -1769,10 +2329,17 @@ func make_debug_panel() -> void:
 
 func set_debug_enabled(enabled: bool) -> void:
 	debug_available=enabled
+	_sync_developer_options()
 	hud.set_debug_available(enabled)
 	hud.dev_button.visible=enabled and started and not hud.entry_menu.visible
 	if not enabled:set_debug_visible(false)
 	if debug_tools!=null:debug_tools.visible=dev_mode and enabled
+	if debug_tools_scroll!=null:debug_tools_scroll.visible=dev_mode and enabled
+
+func set_audio_browser_enabled(enabled: bool) -> void:
+	audio_browser_enabled = enabled
+	if hud != null and hud.wiki != null and hud.wiki.has_method("configure_audio_browser"):
+		hud.wiki.configure_audio_browser(audio,enabled)
 
 func set_debug_visible(show: bool) -> void:
 	debug_panel.visible=show and debug_available
@@ -1783,11 +2350,47 @@ func set_debug_visible(show: bool) -> void:
 
 func refresh_debug_metrics() -> void:
 	debug_tools.visible=dev_mode and debug_available
+	debug_tools_scroll.visible=dev_mode and debug_available
+	_sync_developer_options()
 	var gpu_ms: float = RenderingServer.viewport_get_measured_render_time_gpu(battlefield_viewport.get_viewport_rid())+RenderingServer.viewport_get_measured_render_time_gpu(get_viewport().get_viewport_rid())
 	var cpu_ms: float = RenderingServer.viewport_get_measured_render_time_cpu(battlefield_viewport.get_viewport_rid())+RenderingServer.viewport_get_measured_render_time_cpu(get_viewport().get_viewport_rid())+RenderingServer.get_frame_setup_time_cpu()
 	var render_size: Vector2i = battlefield_viewport.size
 	var window_size: Vector2i = get_window().size
-	debug_metrics.text="窗口 %d×%d · 战场 %d×%d\n模拟 %.2f ms · 画面同步 %.2f ms\n渲染CPU %.2f ms · GPU %.2f ms\n实体 %d · 绘制调用 %d\n镜头 距离 %.1f · 俯角 %.0f°\n3D倍率 %.0f%% · UI保持原生分辨率\n地图种子 %d · 实时对局，不暂停" % [window_size.x,window_size.y,render_size.x,render_size.y,sim_cpu_ms,world_cpu_ms,cpu_ms,gpu_ms,sim.entities.size(),int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),distance,camera_pitch,render_scale*100.0,sim.map.seed]
+	debug_metrics.text="窗口 %d×%d · 战场 %d×%d\n模拟 %.2f ms · 画面同步 %.2f ms\n渲染CPU %.2f ms · GPU %.2f ms\n实体 %d · 绘制调用 %d\n镜头 距离 %.1f · 俯角 %.0f°\n3D倍率 %.0f%% · UI保持原生分辨率\n地图种子 %d · 实时对局，不暂停" % [window_size.x,window_size.y,render_size.x,render_size.y,sim_cpu_ms,world_cpu_ms,cpu_ms,gpu_ms,sim.entities.size(),int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),distance,effective_camera_pitch(),render_scale*100.0,sim.map.seed]
+
+func _sync_developer_options() -> void:
+	if sim == null: return
+	var available: bool = dev_mode and debug_available and str(sim.map.get("mode","")) == "dev"
+	var instant: bool = available and debug_instant_build
+	if bool(sim.match_options.get("developer_debug_enabled",false)) != available or bool(sim.match_options.get("developer_instant_build",false)) != instant:
+		_flush_render_simulation()
+		sim.match_options.developer_debug_enabled = available
+		sim.match_options.developer_instant_build = instant
+	if debug_instant_toggle != null: debug_instant_toggle.set_pressed_no_signal(debug_instant_build)
+	if debug_faction_picker != null and not sim.factions.is_empty():
+		for index: int in debug_faction_picker.item_count:
+			if str(debug_faction_picker.get_item_metadata(index)) == str(sim.factions[0]):
+				# Preserve an actively selected next faction while the panel is open.
+				if not debug_panel.visible: debug_faction_picker.select(index)
+				break
+
+func _debug_switch_faction() -> void:
+	if not dev_mode or not debug_available: return
+	var faction: String = str(debug_faction_picker.get_item_metadata(debug_faction_picker.selected))
+	if start_match("dev",73026,faction):
+		set_debug_visible(true)
+		_debug_generate_buildings()
+
+func _debug_generate_buildings() -> void:
+	if not dev_mode or not debug_available: return
+	_flush_render_simulation()
+	_sync_developer_options()
+	var report: Dictionary = DeveloperTools.generate_all_buildings(sim,0)
+	var message: String = DeveloperTools.report_text(sim,report)
+	debug_building_report.text = message
+	post(message)
+	world.sync(0.0,selected,{})
+	hud.cache_key = ""
 
 func standable_near(pos: Vector2, radius: float=0.8) -> Vector2:
 	for ring in range(0,16):
@@ -1795,6 +2398,9 @@ func standable_near(pos: Vector2, radius: float=0.8) -> Vector2:
 			var p:Vector2=pos+Vector2.from_angle(float(j)/maxi(1,ring*8)*TAU)*ring*1.8
 			if p.x<2 or p.y<2 or p.x>sim.map.size-2 or p.y>sim.map.size-2:continue
 			if MapData.terrain_at(sim.map,p) in [1,4]:continue
+			# Reserve the requested footprint against forests, mines and cliffs too.
+			# A small point-sized forest pocket can have no usable exit.
+			if not sim._standing(p,radius,-1,false):continue
 			var available:bool=true
 			for e in sim.entities.values():
 				var d:Dictionary=sim.data_for(e.spec)
@@ -1837,7 +2443,7 @@ func setup_benchmark() -> void:
 		for i in range(15):
 			var role:String=["power","refinery","barracks","factory","tower"][i%5]
 			var p:=standable_near(base+Vector2((i%5-2)*7,(i/5+1)*7),3.0)
-			var id:int=sim.debug_spawn(team,sim.factions[team]+"_"+role,p)
+			var id:int=sim.debug_spawn(team,sim.building_spec(team,role),p)
 			if sim.entities.has(id):
 				sim.entities[id].construct_remaining=0.0
 				sim.entities[id].gift_pending=false
@@ -1855,7 +2461,7 @@ func setup_benchmark() -> void:
 		for e in sim.entities.values():
 			if e.team==team and e.kind=="building":
 				var role:String=sim.data_for(e.spec).role
-				if role=="barracks":sim.produce(e.id,sim.factions[team]+"_rifle")
+				if sim.TechAvailability.producer_matches(sim, e, "barracks"):sim.produce(e.id,sim.factions[team]+"_rifle")
 				if role=="factory":sim.produce(e.id,sim.factions[team]+"_tank")
 	# Both bases must exist before formation goals are chosen.
 	for team in range(2):
@@ -1918,7 +2524,7 @@ func finish_benchmark() -> void:
 	result_data["battlefield_render_pixels"]=battlefield_viewport.size
 	result_data["render_scale"]=render_scale
 	result_data["internal_3d_pixels"]=Vector2i(Vector2(battlefield_viewport.size)*render_scale)
-	result_data["camera"]={"distance":distance,"pitch":camera_pitch,"yaw":yaw,"focus":[focus.x,focus.y],"input_locked":get_viewport().gui_disable_input}
+	result_data["camera"]={"distance":distance,"pitch":effective_camera_pitch(),"pitch_mode":camera_pitch_mode,"fixed_pitch":camera_pitch,"yaw":yaw,"focus":[focus.x,focus.y],"input_locked":get_viewport().gui_disable_input}
 	result_data["lighting"]={"key_color":key_light.light_color.to_html(),"key_energy":key_light.light_energy,"rotation_degrees":key_light.rotation_degrees,"ambient_energy":environment.ambient_light_energy,"ssao_enabled":environment.ssao_enabled,"shadow_enabled":key_light.shadow_enabled}
 	var file:=FileAccess.open(out_path,FileAccess.WRITE)
 	if file:file.store_string(JSON.stringify(result_data,"  "))
@@ -1930,9 +2536,15 @@ func load_preferences() -> void:
 	var settings:=ConfigFile.new()
 	if settings.load("user://settings.cfg")!=OK:return
 	set_debug_enabled(bool(settings.get_value("debug","enabled",debug_available)))
+	set_audio_browser_enabled(bool(settings.get_value("debug","audio_browser_enabled",true)))
 	var mix:Dictionary=audio.get_mix()
+	var old_default_mix: Dictionary={"master":.85,"music":.45,"sfx":.90,"voice":.85}
+	var legacy_defaults: bool=int(settings.get_value("audio","baseline_version",0))<11
+	for key:String in old_default_mix:
+		legacy_defaults=legacy_defaults and settings.has_section_key("audio",key) and is_equal_approx(float(settings.get_value("audio",key,-1.0)),float(old_default_mix[key]))
 	for key:String in ["master","music","sfx","voice"]:
-		mix[key]=clampf(float(settings.get_value("audio",key,mix[key])),0.0,1.0)
+		mix[key]=1.0 if legacy_defaults else clampf(float(settings.get_value("audio",key,mix[key])),0.0,2.0)
+	mix["commander"] = clampf(float(settings.get_value("audio", "commander", .6)), 0.0, 2.0)
 	mix["muted"]=bool(settings.get_value("audio","muted",false))
 	audio.set_mix(mix)
 	hud.muted=audio.muted
@@ -1949,8 +2561,8 @@ func load_preferences() -> void:
 	# Loading a preference must not fire the live slider's save handler before
 	# the graphics preferences below have been read.
 	camera_pitch=clampf(float(settings.get_value("camera","pitch",30.0)),20.0,45.0)
-	hud.pitch_slider.set_value_no_signal(camera_pitch)
-	hud.pitch_label.text="镜头俯角 %.0f°" % camera_pitch
+	camera_pitch_mode="fixed" if str(settings.get_value("camera","pitch_mode","dynamic"))=="fixed" else "dynamic"
+	_sync_pitch_controls()
 	set_render_scale(float(settings.get_value("graphics","render_scale",1.0)))
 	dof_override = int(bool(settings.get_value("graphics", "depth_of_field", true))) if settings.has_section_key("graphics", "depth_of_field") else -1
 	set_graphics_quality(str(settings.get_value("graphics", "quality", "balanced")))
@@ -1963,13 +2575,16 @@ func save_preferences() -> void:
 	if quit_pending:return
 	var settings:=ConfigFile.new()
 	for key:String in audio.get_mix():settings.set_value("audio",key,audio.get_mix()[key])
+	settings.set_value("audio","baseline_version",11)
 	settings.set_value("graphics","fullscreen",get_window().mode in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN])
 	settings.set_value("camera","pitch",camera_pitch)
+	settings.set_value("camera","pitch_mode",camera_pitch_mode)
 	settings.set_value("graphics","render_scale",render_scale)
 	settings.set_value("graphics", "quality", graphics_quality)
 	settings.set_value("graphics","ambient_occlusion",environment.ssao_enabled)
 	settings.set_value("graphics","shadows",key_light.shadow_enabled)
 	settings.set_value("debug","enabled",debug_available)
+	settings.set_value("debug","audio_browser_enabled",audio_browser_enabled)
 	if dof_override >= 0: settings.set_value("graphics", "depth_of_field", dof_override == 1)
 	settings.set_value("game", "faction_id", hud.selected_faction())
 	settings.set_value("game","map_mode",hud.selected_map())
@@ -1986,7 +2601,7 @@ func showcase_base() -> void:
 		for item in [["power",Vector2(-4,4)],["barracks",Vector2(0,10)],["refinery",Vector2(6,10)],["tower",Vector2(5,-5)]]:
 			var desired:=Vector2(sx+item[1].x*sign_x,float(sim.map.starts[team][1])+item[1].y)
 			var p:=standable_near(desired,2.5)
-			var id:int=sim.debug_spawn(team,sim.factions[team]+"_"+item[0],p)
+			var id:int=sim.debug_spawn(team,sim.building_spec(team,str(item[0])),p)
 			sim.entities[id].gift_pending=false
 		var fighters:Array=[]
 		for e in sim.entities.values():
@@ -2000,8 +2615,8 @@ func showcase_diorama(ready_preview: bool=false) -> void:
 		var mirror:float=1.0 if team==0 else -1.0
 		var base:=Vector2(63 if team==0 else 97,92)
 		for item in [["hq",Vector2(-5,-3)],["power",Vector2(-8,5)],["barracks",Vector2(-5,14)],["refinery",Vector2(1,15)],["factory",Vector2(1,5)],["tower",Vector2(7,-5)]]:
-			var spot:Vector2=standable_near(base+Vector2(item[1].x*mirror,item[1].y),float(sim.rules.buildings[sim.factions[team]+"_"+item[0]].size)*.6)
-			var id:int=sim.debug_spawn(team,sim.factions[team]+"_"+item[0],spot)
+			var spot:Vector2=standable_near(base+Vector2(item[1].x*mirror,item[1].y),float(sim.rules.buildings[sim.building_spec(team,str(item[0]))].size)*.6)
+			var id:int=sim.debug_spawn(team,sim.building_spec(team,str(item[0])),spot)
 			sim.entities[id].construct_remaining=0.0
 			sim.entities[id].gift_pending=false
 		var mine_pos:Vector2=standable_near(base+Vector2(0,21),1.4)

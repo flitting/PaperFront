@@ -71,6 +71,16 @@ static func check(snapshot: Dictionary) -> String:
 			return "存档资金无效"
 	if not _number(snapshot.get("time")) or float(snapshot.time) < 0.0 or not _number(snapshot.get("next_id")) or int(snapshot.next_id) < 1:
 		return "存档时间或实体编号无效"
+	if snapshot.has("match_statistics"):
+		var ledger: Variant=snapshot.match_statistics
+		if not ledger is Dictionary or not ledger.get("teams") is Array or not ledger.get("initial_money") is Array or ledger.teams.size()!=team_count or ledger.initial_money.size()!=team_count:
+			return "存档战局统计长度无效"
+		if not _number(ledger.get("since_time")) or float(ledger.since_time)<0.0 or float(ledger.since_time)>float(snapshot.time):return "存档战局统计时间无效"
+		for team: int in team_count:
+			var row: Variant=ledger.teams[team]
+			if not row is Dictionary or row.get("faction")!=snapshot.factions[team] or not _number(ledger.initial_money[team]) or float(ledger.initial_money[team])<0.0:return "存档战局统计阵营无效"
+			for field: String in ["funds_earned","sales_income","units_produced","buildings_built","units_killed","units_lost","buildings_destroyed","buildings_lost","damage_dealt"]:
+				if not _number(row.get(field)) or float(row[field])<0.0:return "存档战局统计数值无效"
 	if snapshot.get("result", "") not in ["", "win", "lose", "draw"]:
 		return "存档胜负状态无效"
 	for category in ["economy", "factions", "units", "buildings", "weapons"]:
@@ -156,9 +166,17 @@ static func check(snapshot: Dictionary) -> String:
 			unique_counts[unique_key] = int(unique_counts.get(unique_key, 0)) + 1
 		if e.has("captured") and (not e.captured is bool or (e.captured and e.kind != "building")):
 			return "存档建筑占领标记无效"
-		if e.kind == "building" and info.get("role") == "hq":
+		if e.kind == "building" and info.get("role") == "hq" and not bool(info.get("rebuildable", false)):
 			headquarters_counts[int(e.team)] += 1
 			if headquarters_counts[int(e.team)] > 1: return "存档每个势力只能拥有一个总部"
+		if e.has("veteran") and not e.veteran is bool:return "存档星级标记无效"
+		if e.has("experience_value") and (not _number(e.experience_value) or float(e.experience_value)<0):return "存档经验价值无效"
+		if bool(e.get("veteran",false)) and (e.kind!="unit" or float(e.get("experience_value",0))<=float(info.get("experience_cost",info.cost))*float(snapshot.rules.get("experience",{}).get("threshold_cost_multiplier",3))):return "存档星级经验不足"
+		for carrier_field:String in ["carrier_ready","carrier_pending_count"]:
+			if e.has(carrier_field) and (not bool(info.get("carrier",false)) or not e[carrier_field] is int or int(e[carrier_field])<0 or int(e[carrier_field])>2):return "存档航母机组计数无效"
+		if e.has("carrier_next_launch") and (not bool(info.get("carrier",false)) or not _number(e.carrier_next_launch) or float(e.carrier_next_launch)<0):return "存档航母起飞时钟无效"
+		if e.has("carrier_pending_target") and (not bool(info.get("carrier",false)) or not e.carrier_pending_target is int or int(e.carrier_pending_target)==0):return "存档航母起飞目标无效"
+		if e.has("carrier_rebuild") and (not bool(info.get("carrier",false)) or not _number(e.carrier_rebuild) or float(e.carrier_rebuild)<0 or float(e.carrier_rebuild)>20.0):return "存档航母飞机补充状态无效"
 		var aircraft: bool = e.kind == "unit" and info.get("domain", "ground") == "air"
 		if aircraft:
 			if not e.get("ammo") is int or int(e.ammo) < 0 or int(e.ammo) > int(info.ammo_capacity):
@@ -169,11 +187,19 @@ static func check(snapshot: Dictionary) -> String:
 				return "存档飞机状态无效"
 			if not _number(e.get("rearm_remaining")) or float(e.rearm_remaining) < 0.0 or float(e.rearm_remaining) > float(info.rearm_time) or not _number(e.get("flight_height")):
 				return "存档飞机补给或高度无效"
+			var launch:Variant=e.get("carrier_launch",null)
+			var launching:bool=launch!=null
+			if launching:
+				if not launch is Dictionary or not bool(info.get("carrier_plane",false)) or not _number(launch.get("elapsed")) or float(launch.elapsed)<0 or float(launch.elapsed)>2.5 or not e.get("carrier_id") is int or int(e.carrier_id)<1 or int(e.home_airfield)!=-1 or not bool(e.airborne) or e.flight_state!="airborne":return "存档舰载机起飞状态无效"
+				var carrier:Variant=snapshot.entities.get(int(e.carrier_id),{})
+				if not carrier is Dictionary:return "存档舰载机起飞母舰无效"
+				if not carrier.is_empty() and (carrier.get("team")!=e.team or not bool(snapshot.rules.units.get(str(carrier.get("spec","")),{}).get("carrier",false))):return "存档舰载机起飞母舰无效"
+				if float(e.flight_height)<-64.0 or float(e.flight_height)>float(info.flight_height)+.001:return "存档舰载机起飞高度无效"
 			var servicing: bool = e.flight_state == "rearming"
 			var grounded: bool = servicing or e.flight_state == "landed"
-			if e.airborne == grounded or absf(float(e.flight_height) - (0.35 if grounded else float(info.flight_height))) > 0.001 or (not servicing and float(e.rearm_remaining) != 0.0):
+			if e.airborne == grounded or (not launching and absf(float(e.flight_height) - (0.35 if grounded else float(info.flight_height))) > 0.001) or (not servicing and float(e.rearm_remaining) != 0.0):
 				return "存档飞机飞行与补给状态不匹配"
-			if servicing and int(e.home_airfield) < 1:
+			if servicing and int(e.home_airfield)<1 and not bool(info.get("carrier_plane",false)):
 				return "存档补给飞机缺少机场"
 			if int(e.home_airfield) > 0:
 				var field: Variant = snapshot.entities.get(int(e.home_airfield))
@@ -189,6 +215,8 @@ static func check(snapshot: Dictionary) -> String:
 			return "存档实体阵营不匹配"
 		if e.has("turret_alpha") and not _number(e.turret_alpha):
 			return "存档炮塔朝向无效"
+		if e.has("rotation_quarters") and (e.kind!="building" or not _quarter_turn(e.rotation_quarters)):return "存档建筑朝向必须为四个直角方向"
+		if e.has("rail_rotation") and not _quarter_turn(e.rail_rotation):return "存档铁路朝向必须为四个直角方向"
 		for field in ["hand_contact_height","hand_ground_height"]:
 			if e.has(field) and (e.kind != "unit" or not bool(info.get("hero",false)) or not _number(e[field])):
 				return "存档手掌接触高度无效："+field
@@ -221,9 +249,12 @@ static func check(snapshot: Dictionary) -> String:
 		for field in ["mine_search", "refinery_search"]:
 			if e.has(field) and not _resource_search(e[field], snapshot.mines.size() if field == "mine_search" else -1):
 				return "存档采矿目标搜索无效：" + field
+		for field in ["zeppelin_mg_cooldown","zeppelin_mg_flash","zeppelin_bomb_flash","zeppelin_mg_alpha","zeppelin_mg_pitch"]:
+			if e.has(field) and (not _number(e[field]) or (field.ends_with("cooldown") and float(e[field])<0)): return "存档飞艇独立武器数值无效"
 		for field in ["hp", "alpha", "cooldown", "construct_remaining", "cargo", "hit_flash", "path_wait", "stuck", "motion", "attack_flash"]:
 			if not _number(e.get(field)):
 				return "存档实体数值无效：" + field
+		if e.kind=="unit" and float(e.hp)>float(info.hp)*(float(snapshot.rules.get("experience",{}).get("max_hp_multiplier",1.15)) if bool(e.get("veteran",false)) else 1.0)+.01:return "存档单位生命超过星级上限"
 		if float(e.hp) <= 0.0 or float(e.cooldown) < 0.0 or float(e.cargo) < 0.0 or float(e.construct_remaining) < 0.0:
 			return "存档实体数值范围无效"
 		if e.has("construction"):
@@ -248,7 +279,8 @@ static func check(snapshot: Dictionary) -> String:
 			if not _position(point, size):
 				return "存档路径包含无效位置"
 		for command in e.commands:
-			if not command is Dictionary or command.get("kind", "") not in ["move", "force_move", "attack_move", "patrol", "attack", "force_attack", "repair_bridge", "repair_unit", "repair_building", "capture", "deploy_outpost", "resume_outpost", "board", "return", "harvest", "rescue", "land", "unload_move"] or not _position(command.get("pos"), size) or not _number(command.get("target")):
+			if command is Dictionary and command.has("rotation_quarters") and not _quarter_turn(command.rotation_quarters):return "存档施工命令朝向无效"
+			if not command is Dictionary or command.get("kind", "") not in ["move", "force_move", "attack_move", "patrol", "attack", "force_attack", "repair_bridge", "repair_unit", "repair_building", "capture", "deploy_outpost", "resume_outpost", "board", "return", "harvest", "rescue", "land", "unload_move", "service", "garrison", "return_miner"] or not _position(command.get("pos"), size) or not _number(command.get("target")):
 				return "存档单位命令无效"
 			if e.kind != "unit": return "存档建筑不可持有单位命令"
 			if aircraft and command.has("formation"): return "存档飞机不可加入地面编队"
@@ -261,18 +293,18 @@ static func check(snapshot: Dictionary) -> String:
 			if command.kind == "resume_outpost":
 				if not command.target is int or int(command.target) < 1: return "存档接手施工目标无效"
 				if snapshot.entities.has(int(command.target)):
-					var site: Dictionary = snapshot.entities[int(command.target)]
-					if site.kind != "building" or site.team != e.team or snapshot.rules.buildings[site.spec].get("role") != "outpost": return "存档接手施工建筑无效"
+					var site: Variant = snapshot.entities[int(command.target)]
+					if not site is Dictionary or site.get("kind") != "building" or site.get("team") != e.team or not snapshot.rules.buildings.has(str(site.get("spec", ""))) or not _engineer_building(snapshot, int(e.team), snapshot.rules.buildings[site.spec]): return "存档接手施工建筑无效"
 			if command.kind == "capture":
 				if not command.target is int or int(command.target) < 1: return "存档占领目标无效"
 				if snapshot.entities.has(int(command.target)):
 					var capture_target: Variant = snapshot.entities[int(command.target)]
-					if not capture_target is Dictionary or capture_target.get("kind") != "building" or not snapshot.rules.buildings.has(str(capture_target.get("spec", ""))) or snapshot.rules.buildings[capture_target.spec].get("role") in ["wall", "barricade"]:
+					if not capture_target is Dictionary or capture_target.get("kind") != "building" or not snapshot.rules.buildings.has(str(capture_target.get("spec", ""))) or snapshot.rules.buildings[capture_target.spec].get("role") in ["wall", "barricade", "rail", "rail_junction"]:
 						return "存档占领建筑类型无效"
 			if command.kind == "deploy_outpost":
-				if command.target != -1 or not command.get("spec") is String or not snapshot.rules.buildings.has(command.spec): return "存档分基地部署规则无效"
-				var outpost: Dictionary = snapshot.rules.buildings[command.spec]
-				if outpost.get("role") != "outpost" or outpost.faction != snapshot.factions[int(e.team)] or not _number(command.get("cost")) or float(command.cost) not in [0.0, float(outpost.cost)]: return "存档分基地部署费用无效"
+				if command.target != -1 or not command.get("spec") is String or not snapshot.rules.buildings.has(command.spec): return "存档现场施工规则无效"
+				var field_building: Dictionary = snapshot.rules.buildings[command.spec]
+				if not _engineer_building(snapshot, int(e.team), field_building) or not _number(command.get("cost")) or float(command.cost) not in [0.0, float(field_building.cost)]: return "存档现场施工费用无效"
 			if command.kind == "board":
 				if info.get("armor_class") != "infantry" or aircraft or not command.target is int or int(command.target) < 1: return "存档上车命令单位无效"
 				if snapshot.entities.has(int(command.target)):
@@ -283,7 +315,7 @@ static func check(snapshot: Dictionary) -> String:
 		for order in e.queue:
 			if not _order(order, snapshot.rules.units, false):
 				return "存档单位生产订单无效"
-			if e.kind != "building" or snapshot.rules.units[order.spec].faction != snapshot.factions[int(e.team)] or snapshot.rules.units[order.spec].producer != group[e.spec].role:
+			if e.kind != "building" or snapshot.rules.units[order.spec].faction != snapshot.factions[int(e.team)] or not _producer_matches(info, str(snapshot.rules.units[order.spec].producer)):
 				return "存档生产设施与订单不匹配"
 			if int(snapshot.rules.units[order.spec].get("max_active", 0)) > 0:
 				var unique_key: String = "%d:%s" % [int(e.team), str(order.spec)]
@@ -292,6 +324,8 @@ static func check(snapshot: Dictionary) -> String:
 	for unique_key in unique_counts:
 		var unique_spec: String = str(unique_key).split(":", false, 1)[1]
 		if int(unique_counts[unique_key]) > int(snapshot.rules.units[unique_spec].max_active): return "存档英雄数量超过上限"
+	var garrison_error:String=preload("res://scripts/garrison_operations.gd").validate_snapshot(snapshot)
+	if not garrison_error.is_empty():return garrison_error
 	var transport_error: String = _transports(snapshot)
 	if not transport_error.is_empty(): return transport_error
 	for id in snapshot.entities:
@@ -309,17 +343,23 @@ static func check(snapshot: Dictionary) -> String:
 			if not order.is_empty() and snapshot.rules.buildings[order.spec].faction != snapshot.factions[team]:
 				return "存档建筑订单阵营无效"
 			if not order.is_empty():
-				var role: String = str(snapshot.rules.buildings[order.spec].role)
-				if role == "hq": return "存档总部不可建造"
-				if (role in ["tower", "wall", "barricade"]) != (channel == "defense"): return "存档建筑订单通道无效"
-				if role == "outpost" and not order.has("builder"): return "存档分基地缺少工兵"
+				var building_info: Dictionary = snapshot.rules.buildings[order.spec]
+				var role: String = str(building_info.role)
+				if role == "hq" and not bool(building_info.get("rebuildable", false)): return "存档总部不可建造"
+				if (role in ["tower", "wall", "barricade", "rail", "rail_junction"]) != (channel == "defense"): return "存档建筑订单通道无效"
+				if _engineer_building(snapshot, team, building_info) and building_info.get("role","") not in ["rail","rail_junction"] and not order.has("builder"): return "存档现场施工缺少工兵"
 				if order.has("builder"):
-					if role != "outpost" or not order.builder is int or not snapshot.entities.has(order.builder): return "存档分基地建造者无效"
+					if not _engineer_building(snapshot, team, building_info) or not order.builder is int or not snapshot.entities.has(order.builder): return "存档现场施工建造者无效"
 					var builder: Dictionary = snapshot.entities[order.builder]
-					if builder.kind != "unit" or builder.team != team or snapshot.rules.units[builder.spec].get("art") != "engineer" or int(builder.get("transport_id", -1)) > 0: return "存档分基地建造者无效"
+					if builder.kind != "unit" or builder.team != team or snapshot.rules.units[builder.spec].get("art") != "engineer" or int(builder.get("transport_id", -1)) > 0: return "存档现场施工建造者无效"
 	for shell in snapshot.projectiles:
 		if not shell is Dictionary:
 			return "存档炮弹类型无效"
+		if shell.has("trajectory"):
+			if str(shell.trajectory)!="gravity_bomb": return "存档自由落体弹道无效"
+			for field in ["gravity_origin_y","gravity_y","gravity_velocity","gravity"]:
+				if not _number(shell.get(field)): return "存档自由落体数值无效"
+			if float(shell.gravity)<=0 or not shell.get("horizontal_velocity") is Vector2 or not (shell.horizontal_velocity as Vector2).is_finite(): return "存档炸弹速度无效"
 		if shell.has("force") and not shell.force is bool: return "存档强制攻击标记无效"
 		if (shell.has("heading") and not _number(shell.heading)) or (shell.has("body_heading") and not _number(shell.body_heading)):
 			return "存档炮弹发射朝向无效"
@@ -357,21 +397,33 @@ static func check(snapshot: Dictionary) -> String:
 		var mine: Variant = snapshot.mines[index]
 		if not mine is Dictionary or not _position(mine.get("pos"), size) or not _number(mine.get("amount")) or not _number(mine.get("capacity")) or float(mine.amount) < 0.0 or float(mine.capacity) <= 0.0 or float(mine.amount) > float(mine.capacity):
 			return "存档矿点状态无效"
+		if mine.has("drill") and int(mine.drill) > 0:
+			var drill_id: int = int(mine.drill)
+			if not snapshot.entities.has(drill_id): return "存档矿点钻机占用失效"
+			var drill: Dictionary = snapshot.entities[drill_id]
+			if drill.kind != "building" or snapshot.rules.buildings.get(drill.spec, {}).get("role", "") != "drill" or int(drill.get("drill_mine", -1)) != index: return "存档矿点与钻机关系无效"
 		if mine.has("miner"):
 			var miner: Variant = mine.miner
 			if not miner is int or (miner != -1 and miner < 1): return "存档矿柱占用者无效"
 			if miner > 0:
 				if miners.has(miner) or not snapshot.entities.has(miner): return "存档矿柱占用重复或失效"
 				var unit: Dictionary = snapshot.entities[miner]
-				if unit.kind != "unit" or not str(unit.spec).ends_with("_harvester") or int(unit.harvest_mine) != index or (unit.pos as Vector2).distance_to(mine.pos) > 1.9: return "存档矿柱采矿关系无效"
+				if unit.kind != "unit" or not str(unit.spec).ends_with("_harvester") or int(unit.harvest_mine) != index or (unit.pos as Vector2).distance_to(mine.pos) > float(snapshot.rules.units[unit.spec].radius) + float(snapshot.rules.economy.get("harvester_mining_margin", 1.4)): return "存档矿柱采矿关系无效"
 				miners[miner] = true
 	for bridge in snapshot.bridges:
 		if not _bridge_shape(bridge) or not bridge.get("alive") is bool or not _number(bridge.get("hp")) or not _number(bridge.get("repair_progress")) or float(bridge.repair_progress) < 0.0 or float(bridge.repair_progress) > 1.0:
 			return "存档桥梁状态无效"
 	return ""
 
+static func _engineer_building(snapshot: Dictionary, team: int, info: Dictionary) -> bool:
+	if str(info.get("faction", "")) != snapshot.factions[team] or (str(info.get("role", "")) == "hq" and not bool(info.get("rebuildable", false))): return false
+	return (snapshot.factions[team]=="iron" and info.get("role","") in ["rail","rail_junction"]) or str(info.get("role", "")) == "outpost" or snapshot.rules.factions[snapshot.factions[team]].get("building_method", "") == "engineer"
+
+static func _producer_matches(info: Dictionary, role: String) -> bool:
+	return (role=="amphibious" and info.get("role","") in ["factory","shipyard"]) or str(info.get("role", "")) == role or role in info.get("production_roles", [])
+
 static func _construction(snapshot: Dictionary, e: Dictionary, info: Dictionary) -> String:
-	if e.kind != "building" or info.get("role") != "outpost" or not e.construction is Dictionary: return "存档脚手架类型无效"
+	if e.kind != "building" or not _engineer_building(snapshot, int(e.team), info) or not e.construction is Dictionary: return "存档脚手架类型无效"
 	var c: Dictionary = e.construction
 	if not c.get("builder") is int or (c.builder != -1 and c.builder < 1): return "存档施工工程兵编号无效"
 	for field in ["progress", "spent", "initial_hp", "repair_spent"]:
@@ -456,7 +508,12 @@ static func _order(value: Variant, group: Dictionary, building: bool) -> bool:
 			return false
 	if not building and not value.get("started") is bool:
 		return false
+	for field in ["rotation_quarters","rail_rotation"]:
+		if value.has(field) and not _quarter_turn(value[field]):return false
 	return float(value.total) > 0.0 and float(value.remaining) >= 0.0 and float(value.remaining) <= float(value.total) and float(value.cost) >= 0.0 and float(value.progress) >= 0.0 and float(value.progress) <= 1.0
+
+static func _quarter_turn(value: Variant) -> bool:
+	return value is int and value>=0 and value<4
 
 static func _resource_search(value: Variant, mine_count: int) -> bool:
 	if not value is Dictionary:

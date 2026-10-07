@@ -58,7 +58,7 @@ func run() -> void:
 	press_key(game,KEY_F)
 	check(game.command_mode=="force_move","F进入强制移动光标")
 	click_at(game,friend_screen)
-	check(command_is(sim,tank,"force_move",friend),"F左键步兵携带目标以指定碾压")
+	check(command_is(sim,tank,"force_move",friend),"F左键步兵携带强制移动目标，友方步兵仍受保护")
 	var ground:=Vector2(20.5,42.5)
 	game.focus=ground
 	game.update_camera()
@@ -97,7 +97,7 @@ func run() -> void:
 	var deployment_press := InputEventMouseButton.new()
 	deployment_press.button_index = MOUSE_BUTTON_LEFT
 	deployment_press.pressed = true
-	deployment_press.position = game.hud.deploy_outpost_button.get_global_rect().get_center()
+	deployment_press.position = game.hud.entry_widgets.rivet_hq.button.get_global_rect().get_center()
 	root.push_input(deployment_press, true)
 	var deployment_release: InputEventMouseButton = deployment_press.duplicate()
 	deployment_release.pressed = false
@@ -107,12 +107,12 @@ func run() -> void:
 	var site:=Vector2.INF
 	for z in range(7,43):
 		for x in range(7,43):
-			var candidate:=Vector2(x+.5,z+.5)
+			var candidate:=sim.snap_build_position(0,Vector2(x+.5,z+.5))
 			if sim.placement_error(0,candidate).is_empty():site=candidate;break
 		if site.is_finite():break
-	check(site.is_finite(),"分基地存在合法部署位置")
+	check(site.is_finite(),"基地兵营存在合法部署位置")
 	if site.is_finite():
-		sim.entities[engineer].pos=site+Vector2(2.2,0)
+		sim.entities[engineer].pos=site+Vector2(2.6,0)
 		game.focus=site
 		game.update_camera()
 		click_at(game,game.project_world_to_screen(Vector3(site.x,MapData.height_at(sim.map,site)+.003,site.y)))
@@ -126,18 +126,19 @@ func run() -> void:
 			await process_frame
 		check(scaffold>=0,"工兵抵达后生成未完工脚手架")
 		if scaffold>=0:
+			check(sim.entities[scaffold].spec==sim.entities[1].spec,"建造卡部署与初始基地相同的基地兵营蓝图")
 			game.selected=[scaffold]
 			game.hud.refresh(sim,game.selected,game.camera,true,"",0)
-			check(game.hud.dismantle_button.visible and not game.hud.maintenance_row.visible and not game.hud.production_panel.visible,"未完工分基地提供拆除且不显示生产目录")
+			check(game.hud.dismantle_button.visible and not game.hud.maintenance_row.visible and not game.hud.production_panel.visible,"未完工基地兵营提供拆除且不显示生产目录")
 			check(game.hud.info_label.text.contains("施工") and game.hud.info_label.text.contains("已付"),"脚手架显示施工进度与已付资金")
-			var replacement:int=sim.debug_spawn(0,"rivet_engineer",site+Vector2(-2.2,0))
+			var replacement:int=sim.debug_spawn(0,"rivet_engineer",site+Vector2(-2.6,0))
 			game.selected=[replacement]
 			game.right_command(sim.entities[scaffold].pos,scaffold,false)
 			check(command_is(sim,replacement,"resume_outpost",scaffold),"另一工程兵右键己方脚手架接手施工")
 			game.selected=[scaffold]
 			game.hud.refresh(sim,game.selected,game.camera,true,"",0)
 			game.handle_action("dismantle_outpost",null)
-			check(not sim.entities.has(scaffold),"拆除脚手架按钮移除未完工分基地")
+			check(not sim.entities.has(scaffold),"拆除脚手架按钮移除未完工基地兵营")
 	print("CONSTRUCTION_FORCE_INPUT ","PASS" if errors.is_empty() else errors)
 	for error in errors:push_error(error)
 	game.queue_free()

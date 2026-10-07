@@ -15,11 +15,15 @@ Godot Engine 为 MIT 许可，版权属于其作者及贡献者。引擎与第�
 
 `audio/fire_air.wav`、`audio/bomb_release.wav`、`audio/rearm.wav`、`audio/aircraft_loop.wav` 由 `tools/generate_unit_voices.py` 使用确定性振荡器、噪声及包络独立合成，属于上述 CC0 原创音效；格式为 22.05 kHz、单声道、16-bit PCM WAV。
 
-`audio/voices/*.wav` 为 Microsoft Edge 在线中文语音合成服务生成的**合成语音**，通过开源 `edge-tts` 客户端调用，随后用 FFmpeg 转为 22.05 kHz 单声道 16-bit PCM WAV。语音文本来自项目的 `data/rules.json`，每个单位分别配置选择、移动、攻击、完成及飞机返航文案；没有使用真人配音录音。正典使用 `zh-CN-YunxiNeural`，重锤使用 `zh-CN-YunyangNeural`。逐条文本、供应方、客户端版本、时长及 SHA-256 保存在 `audio/voices/manifest.json`。
+历史 `audio/voices/*.wav` 来自 Microsoft Edge 在线中文语音合成服务，通过开源 `edge-tts` 客户端和 FFmpeg 制作，不是本项目真人配音。该银行及旧 `audio/radio/` 应答已于2026-10-06从活动游戏资源移除，来源和许可记录仅保留为历史资料。
 
-上述合成语音与供应商语音模型、服务不属于本项目原创 CC0 音效，不对供应商内容另行声明 CC0 授权；服务条款见 <https://www.microsoft.com/servicesagreement>，客户端来源见 <https://github.com/rany2/edge-tts>。这些文件保留为历史开发资料。**本次可商业分发 Demo 不播放或打包这些 TTS 录音及其导入音频**；只保留本项目原创的中文应答文案元数据，运行时使用下述离线合成的简短中文应答。没有商业再分发授权证明之前，不将旧 TTS 录音重新接入发行包。
+上述历史合成语音与供应商模型、服务不属于本项目原创 CC0 音效；原服务条款见 <https://www.microsoft.com/servicesagreement>，客户端来源见 <https://github.com/rany2/edge-tts>。当前游戏不加载或打包该旧银行，也不回退到旧机械应答。
 
-## Demo 配乐与单位应答（v7）
+## 当前配音、声效与菜单／交战配乐（v8）
+
+`audio/revision_v8/` 当前活动清单为381项：300条单位语音、2条系统语音、74个声效和5首配乐。语音使用经 OpenRouter 制作的 Microsoft MAI、xAI Grok 与 Qwen 十二个固定基础演员；59个声效通过 Seed Audio 制作，五首活动配乐通过 Google Lyria 制作。供应商生成素材按相应服务条款使用，不宣称 CC0 或真人录音。15条本地DSP声效、项目作者编写的台词及生成工具属于项目原创 CC0；旧地图/结果音乐和实验声音不进入活动试听清单。每个素材的实际来源、模型、提示词及 SHA-256 在对应清单记录，完整说明见 [音频来源](audio/revision_v8/README.md)。下列历史许可不会重新给新版素材改标。
+
+## Demo 配乐与单位应答（v7，历史）
 
 `audio/music/*.wav` 共十二首原创低音区配乐：菜单、通用战局、六张现有地图、战役教程，以及胜利、失败和平局。`tools/generate_demo_music.py` 独立制作旋律、和声、软起音与纸盒节奏，没有外部歌曲、录音或样本；音乐 PCM 按 CC0 1.0 提供。
 

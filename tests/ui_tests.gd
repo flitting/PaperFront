@@ -18,6 +18,10 @@ func run() -> void:
 	game.start_match("dev",73026,"rivet",true)
 	game.hud.show_menu(false)
 	await process_frame
+	var path_layer: CanvasLayer = game.overlay.get_parent()
+	var scene_layer: CanvasLayer = game.battlefield_display.get_parent()
+	check(scene_layer.layer < path_layer.layer and path_layer.layer < game.hud.layer,"路径和选择标记位于战场上方且不覆盖HUD")
+	check(game.overlay.clip_contents and Rect2(game.overlay.position,game.overlay.size)==game.battlefield_rect(),"路径绘制限定在战场区域内")
 	var p:=Vector2(15.5,31.5)
 	for pitch in [20.0,24.0,30.0,36.0,45.0]:
 		game.camera_pitch=pitch
@@ -73,12 +77,13 @@ func run() -> void:
 	check(game.key_light.shadow_enabled and game.environment.ssao_enabled and game.key_light.light_energy>1.0,"暖色方向光、阴影及SSAO启用")
 	game.selected=[hq]
 	game.hud.refresh(game.sim,[hq],game.camera,true,"",0)
-	check(not game.hud.entry_widgets.has("rivet_hq") and not game.hud.entry_widgets.has("rivet_outpost"),"总部目录隐藏不可重造总部与工兵专属分基地")
+	check(not game.hud.entry_widgets.has("rivet_hq") and not game.hud.entry_widgets.has("rivet_outpost") and not game.hud.entry_widgets.has("rivet_barracks"),"基地兵营仅提供步兵目录")
 	game.sim.debug_spawn(0,"rivet_power",Vector2(26.5,42.5))
 	var engineer_id:int=game.sim.debug_spawn(0,"rivet_engineer",Vector2(15.5,33.5))
 	game.hud.refresh(game.sim,[hq,engineer_id],game.camera,true,"",0)
-	check(game.hud.production_panel.visible and not game.hud.entry_widgets.has("rivet_outpost") and game.hud.deploy_outpost_button.visible and game.hud.selected_engineer()==engineer_id,"总部与工兵混选保留总部目录并独立提供分基地部署按钮")
+	check(game.hud.production_panel.visible and not game.hud.entry_widgets.has("rivet_outpost") and not game.hud.entry_widgets.has("rivet_barracks") and game.hud.entry_widgets.has("rivet_hq") and not game.hud.deploy_outpost_button.visible and game.hud.selected_engineer()==engineer_id,"基地兵营与工兵混选提供唯一基地兵营建造卡，移除分基地按钮")
 	game.hud.refresh(game.sim,[hq],game.camera,true,"",0)
+	check(game.sim.data_for("rivet_hq").name=="基地兵营" and game.hud.info_label.text.contains("基地兵营"),"初始基地使用基地兵营名称")
 	for i in range(3): await process_frame
 	var old_distance:float=game.distance
 	var wheel:=InputEventMouseButton.new()
@@ -86,7 +91,7 @@ func run() -> void:
 	wheel.pressed=true
 	wheel.position=game.hud.build_scroll.get_global_rect().get_center()
 	game._unhandled_input(wheel)
-	check(is_equal_approx(game.distance,old_distance),"建造栏滚轮不缩放地图")
+	check(is_equal_approx(game.distance,old_distance) and is_equal_approx(game.zoom_target_distance,old_distance),"建造栏滚轮不缩放地图或改动后台目标")
 	# The compact dock can fit all current buildings. Force an overflowing
 	# list so this check still exercises real GUI scrolling on tall windows.
 	var scroll_spacer := Control.new()
@@ -103,25 +108,27 @@ func run() -> void:
 	root.push_input(wheel,true)
 	await process_frame
 	await process_frame
-	check(game.hud.build_scroll.scroll_horizontal>scroll_before and is_equal_approx(game.distance,old_distance),"真实GUI滚轮滚动建筑条目且不穿透缩放")
+	check(game.hud.build_scroll.scroll_horizontal>scroll_before and is_equal_approx(game.distance,old_distance) and is_equal_approx(game.zoom_target_distance,old_distance),"真实GUI滚轮滚动建筑条目且不穿透缩放目标")
 	game.hud.list_box.remove_child(scroll_spacer)
 	scroll_spacer.queue_free()
 	wheel.position=game.battlefield_rect().get_center()
 	game._unhandled_input(wheel)
-	check(game.distance>old_distance,"战场滚轮仍可正常缩放")
+	check(is_equal_approx(game.distance,old_distance) and game.zoom_target_distance>old_distance,"战场滚轮设定平滑目标，不立即跳变")
+	game._advance_camera_zoom(.016);game.update_camera()
+	check(game.distance>old_distance and game.distance<game.zoom_target_distance,"战场滚轮随后逐帧平滑缩放")
 	game.distance=old_distance
 	var power_info:Dictionary=game.sim.rules.buildings.rivet_power
 	game.sim.building_orders[0]={"spec":"rivet_power","progress":0.37,"ready":false,"remaining":float(power_info.build_time)*0.63,"total":float(power_info.build_time),"cost":float(power_info.cost)}
 	game.hud.tab="build"
-	game.hud.refresh(game.sim,[hq],game.camera,true,"",0)
+	game.hud.refresh(game.sim,[engineer_id],game.camera,true,"",0)
 	var entry:Dictionary=game.hud.entry_widgets.rivet_power
 	check(entry.progress.visible and is_equal_approx(entry.progress.value,37.0),"建造进度显示在对应建筑条目内")
 	game.sim.building_orders[0].ready=true
-	game.hud.refresh(game.sim,[hq],game.camera,true,"",0)
+	game.hud.refresh(game.sim,[engineer_id],game.camera,true,"",0)
 	check(entry.ready and entry.progress.value==100.0 and entry.price_label.text.contains("放置"),"准备完成的条目加深并显示放置提示")
 	check(entry.button.get_theme_stylebox("normal").bg_color.get_luminance()<PaperHUD.CREAM.get_luminance(),"就绪条目的底色确实加深")
 	game.sim.building_orders[0]={}
-	game.hud.refresh(game.sim,[hq],game.camera,true,"",0)
+	game.hud.refresh(game.sim,[engineer_id],game.camera,true,"",0)
 	check(not entry.ready and not entry.progress.visible,"队列清空后条目恢复颜色并隐藏进度")
 	var factory_id:int=game.sim.debug_spawn(0,"rivet_factory",Vector2(14.5,42.5))
 	var tank_info:Dictionary=game.sim.rules.units.rivet_tank
@@ -152,10 +159,13 @@ func run() -> void:
 	await process_frame
 	check(not game.dragging and game.selected.is_empty(),"UI鼠标操作不穿透为地面选择")
 	var before:float=game.sim.time
-	game.hud.show_menu(true)
+	game.handle_action("new_game",null)
 	for i in range(5):game._physics_process(1.0/30.0)
-	check(game.sim.time>before,"打开菜单继续实时模拟")
-	game.hud.show_menu(false)
+	check(game.hud.menu.visible and game.pve_paused and game.sim.time==before,"新战局配置暂停现有对局")
+	game.handle_action("setup_resume",null)
+	check(not game.hud.menu.visible and not game.pve_paused,"取消新战局配置恢复原运行状态")
+	for i in range(5):game._physics_process(1.0/30.0)
+	check(game.sim.time>before,"关闭配置后模拟继续推进")
 	game.command_mode="attack_move"
 	var stop:=InputEventKey.new()
 	stop.keycode=KEY_X

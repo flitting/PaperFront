@@ -1,0 +1,166 @@
+{
+  "roles": {
+    "rivet": [
+      {
+        "id": "rivet_rifle",
+        "weapon": "assault",
+        "headgear": "flat",
+        "width": 106,
+        "backgear": "plate"
+      },
+      {
+        "id": "rivet_anti",
+        "weapon": "double_tube",
+        "headgear": "visor",
+        "width": 100,
+        "backgear": "rockets"
+      },
+      {
+        "id": "rivet_engineer",
+        "weapon": "wrench",
+        "headgear": "hardhat",
+        "width": 100,
+        "backgear": "tools"
+      },
+      {
+        "id": "rivet_gunner",
+        "weapon": "rotary",
+        "headgear": "bucket",
+        "width": 126,
+        "backgear": "ammo"
+      },
+      {
+        "id": "rivet_grenadier",
+        "weapon": "lobber",
+        "headgear": "round",
+        "width": 82,
+        "backgear": "canisters"
+      }
+    ],
+    "kestrel": [
+      {
+        "id": "kestrel_rifle",
+        "weapon": "carbine",
+        "headgear": "combat",
+        "width": 80,
+        "backgear": "roll"
+      },
+      {
+        "id": "kestrel_anti",
+        "weapon": "rocket",
+        "headgear": "combat_high",
+        "width": 86,
+        "backgear": "rocket_pair"
+      },
+      {
+        "id": "kestrel_engineer",
+        "weapon": "scanner",
+        "headgear": "cap",
+        "width": 74,
+        "backgear": "radio"
+      },
+      {
+        "id": "kestrel_demolition",
+        "weapon": "detonator",
+        "headgear": "eod",
+        "width": 112,
+        "backgear": "bombs"
+      },
+      {
+        "id": "kestrel_gunner",
+        "weapon": "machinegun",
+        "headgear": "visor",
+        "width": 92,
+        "backgear": "ammo_box"
+      },
+      {
+        "id": "kestrel_marksman",
+        "weapon": "sniper",
+        "headgear": "beret",
+        "width": 72,
+        "backgear": "cloak"
+      },
+      {
+        "id": "kestrel_aa_infantry",
+        "weapon": "missile",
+        "headgear": "sensor",
+        "width": 84,
+        "backgear": "missile_pack"
+      }
+    ],
+    "iron": [
+      {
+        "id": "iron_rifle",
+        "weapon": "nailer",
+        "headgear": "stovepipe",
+        "width": 85,
+        "backgear": "boiler"
+      },
+      {
+        "id": "iron_anti",
+        "weapon": "harpoon",
+        "headgear": "widebrim",
+        "width": 98,
+        "backgear": "shells"
+      },
+      {
+        "id": "iron_engineer",
+        "weapon": "pickaxe",
+        "headgear": "railcap",
+        "width": 83,
+        "backgear": "rails"
+      },
+      {
+        "id": "iron_marksman",
+        "weapon": "longrifle",
+        "headgear": "highhat",
+        "width": 70,
+        "backgear": "longcoat"
+      },
+      {
+        "id": "iron_mortar",
+        "weapon": "mortar",
+        "headgear": "roundbrim",
+        "width": 103,
+        "backgear": "mortar_plate"
+      }
+    ],
+    "sky": [
+      {
+        "id": "sky_rifle",
+        "weapon": "foldgun",
+        "headgear": "hood",
+        "width": 70,
+        "backgear": "cape"
+      },
+      {
+        "id": "sky_anti",
+        "weapon": "foldlauncher",
+        "headgear": "crest",
+        "width": 82,
+        "backgear": "fold_shield"
+      },
+      {
+        "id": "sky_engineer",
+        "weapon": "foldtools",
+        "headgear": "openhood",
+        "width": 72,
+        "backgear": "fold_tools"
+      },
+      {
+        "id": "sky_storm",
+        "weapon": "pulse",
+        "headgear": "crown",
+        "width": 85,
+        "backgear": "coil"
+      },
+      {
+        "id": "sky_aa_infantry",
+        "weapon": "winglauncher",
+        "headgear": "winghood",
+        "width": 76,
+        "backgear": "fold_wings"
+      }
+    ]
+  }
+}

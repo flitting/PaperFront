@@ -24,15 +24,16 @@ func _check(ok: bool, message: String) -> void:
 	if not ok: failures.append(message)
 
 func _check_stats() -> void:
-	var iron_reduction: float = float(rules.factions.iron.traits.damage_reduction)
-	_check(is_equal_approx(iron_reduction, 0.1), "iron damage reduction is 10 percent")
+	_check(not rules.factions.iron.traits.has("damage_reduction"), "Iron has no faction-wide damage reduction")
+	for faction in FACTIONS:
+		var traits: Dictionary = rules.factions[faction].get("traits", {})
+		_check(not traits.has("cohesion_damage_bonus") and not traits.has("breakthrough_damage_bonus"), faction + " has no faction-wide offensive bonus")
 	_check(is_equal_approx(float(rules.factions.iron.traits.regen_delay), 6.0) and is_equal_approx(float(rules.factions.iron.traits.regen_fraction_per_second), 0.012), "iron regeneration cadence")
 	for role in ["rifle", "anti", "engineer", "harvester", "scout", "tank", "aa", "fighter", "advanced"]:
 		var canonical: Dictionary = rules.units["kestrel_" + role]
 		var hammer: Dictionary = rules.units["rivet_" + role]
 		var iron: Dictionary = rules.units["iron_" + role]
-		var effective: float = float(iron.hp) / (1.0 - iron_reduction)
-		_check(float(canonical.hp) < effective and effective < float(hammer.hp), "%s iron effective HP between canonical and hammer" % role)
+		_check(float(canonical.hp) <= float(iron.hp) and float(iron.hp) < float(hammer.hp), "%s Iron roster HP between canonical and hammer" % role)
 		_check(float(canonical.cost) <= float(iron.cost) and float(iron.cost) <= float(hammer.cost), "%s iron cost between canonical and hammer" % role)
 	for role in ["rifle", "anti", "engineer", "harvester", "scout", "tank", "aa", "fighter"]:
 		_check(float(rules.units["sky_" + role].hp) < float(rules.units["kestrel_" + role].hp), "%s sky has low HP" % role)

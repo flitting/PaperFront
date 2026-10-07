@@ -140,6 +140,15 @@ func write_report(complete: bool, seconds: float) -> void:
 	file.close()
 
 func fixture(width: int, walls: bool, positions: Array[Vector2], spec: String, reverse_ids: bool = false) -> Dictionary:
+	# Keep historical case identifiers, but report the actual gate width under
+	# the active footprints. A 2-cell vehicle needs a 3-cell single-file throat
+	# once the ordinary nonzero collision clearance is included.
+	var old_width: int = width
+	width = maxi(width, ceili(float(rules.units[spec].radius)*2.0 + .04))
+	positions = positions.duplicate()
+	for index in range(positions.size()):
+		if positions[index].x >= 21 and positions[index].x < 27:
+			positions[index] += Vector2(0,float(width-old_width)*.5)
 	var started := Time.get_ticks_usec()
 	var checks_before := checks
 	var failures_before := failures.size()
@@ -154,8 +163,8 @@ func fixture(width: int, walls: bool, positions: Array[Vector2], spec: String, r
 	sim.ruins.clear()
 	sim._refresh_ruin_spatial()
 	for id in sim.entities.keys(): sim._kill_entity(id, false)
-	sim.debug_spawn(0, "rivet_hq", Vector2(4, 44))
-	sim.debug_spawn(1, "kestrel_hq", Vector2(44, 44))
+	sim.debug_spawn(0, "rivet_hq", Vector2(5, 43))
+	sim.debug_spawn(1, "kestrel_hq", Vector2(43, 43))
 	# Both ends stay wide open. A width2/width1 opposing case is physically
 	# solvable by retreating out of the six-meter throat into either chamber.
 	for z in range(48):
@@ -203,7 +212,8 @@ func unit_state(sim, id: int) -> Dictionary:
 		commands.append({"kind": command.kind, "pos": point(command.pos), "target": command.get("target", -1)})
 	return {"id": id, "pos": point(entity.pos), "alpha": entity.alpha, "state": entity.state, "commands": commands,
 		"yield_goal": point(entity.get("yield_goal", Vector2.INF)), "yield_until": entity.get("yield_until", 0.0),
-		"hold": entity.get("hold_position", false), "stuck": entity.stuck, "planning_wait": entity.get("planning_wait", 0.0)}
+		"hold": entity.get("hold_position", false), "stuck": entity.stuck, "planning_wait": entity.get("planning_wait", 0.0),
+		"path":entity.path,"path_goal":point(entity.path_goal),"avoid_dir":point(entity.get("avoid_dir",Vector2.INF)),"avoid_until":entity.get("avoid_until",0.0),"reversing":entity.get("reversing",false),"yield_root":entity.get("yield_root",-1)}
 
 func move(ctx: Dictionary, id: int, goal: Vector2, append: bool = false) -> void:
 	var sim = ctx.sim
@@ -327,7 +337,7 @@ func fifo(count: int, spec: String, reverse_ids: bool) -> void:
 	var width := 1 if spec == "rivet_rifle" else 2
 	var positions: Array[Vector2] = []
 	for index in range(count):
-		if spec == "rivet_rifle": positions.append(Vector2(13+index*.9, 23.5))
+		if spec == "rivet_rifle": positions.append(Vector2(13+index*(float(rules.units[spec].radius)*2.0+.2), 23.5))
 		else: positions.append(Vector2(16.5+(index%2)*2.5, 20.4+floorf(float(index)/2.0)*2.4))
 	var ctx := fixture(width, false, positions, spec, reverse_ids)
 	for index in range(count):
@@ -384,10 +394,11 @@ func held_gap(action: String) -> void:
 	finish(ctx, expected)
 
 func queued_yield() -> void:
-	var positions: Array[Vector2] = [Vector2(18, 24), Vector2(19.52, 24), Vector2(15, 19), Vector2(15, 29)]
+	var positions: Array[Vector2] = [Vector2(18, 24), Vector2(18+float(rules.units.rivet_tank.radius)*2.0+.08, 24), Vector2(15, 19), Vector2(15, 29)]
 	var ctx := fixture(2, false, positions, "rivet_tank")
 	var requester: int = ctx.ids[0]
 	var blocker: int = ctx.ids[1]
+	ctx.sim.set_player_navigation_priority([requester])
 	ctx.sim.entities[requester].alpha = 0.0
 	ctx.sim.entities[blocker].alpha = 180.0
 	move(ctx, requester, Vector2(35, 24))

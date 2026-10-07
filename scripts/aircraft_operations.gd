@@ -1,59 +1,86 @@
 extends RefCounted
+const Orientation=preload("res://scripts/building_orientation.gd")
+
+const AirNavigation = preload("res://scripts/air_navigation.gd")
 
 ## A landed aircraft is a stationary transport. Airfield service remains in the
 ## simulation; landing here never repairs, rearms, or changes its home airfield.
 static func land_error(sim, aircraft: Dictionary, pos: Vector2) -> String:
 	if aircraft.get("kind", "") != "unit" or not sim._is_air(aircraft): return "只有飞机可以降落"
+	if bool(sim.data_for(aircraft.spec).get("permanent_air",false)): return "该航空单位始终留空，无需降落补给"
 	if not pos.is_finite() or not sim._in_bounds(pos): return "降落地点超出地图"
 	if not sim._standing(pos, sim._radius(aircraft), int(aircraft.id)): return "降落地点没有足够的空地"
+	for other in sim.entities.values():
+		if int(other.get("id", -1)) == int(aircraft.id) or other.get("kind", "") != "unit" or float(other.get("hp", 0.0)) <= 0.0 or not sim._is_air(other) or bool(other.get("airborne", true)): continue
+		if pos.distance_to(other.pos) < _parking_radius(sim, aircraft) + _parking_radius(sim, other) + 0.18: return "降落地点已被其他飞机占用"
 	return ""
 
-## Aircraft wings extend beyond their navigation radius. Reserve a tabletop
-## footprint large enough for every current model while sharing one airport.
+## Four concrete apron positions inside the airport footprint.
 static func _parking_radius(sim, aircraft: Dictionary) -> float:
-	return maxf(sim._radius(aircraft), 2.25)
+	return sim._radius(aircraft)
 
-## Keep a returning aircraft's first legal apron reservation across ticks.
-## Four side-center slots serve a full airport before the wider side slots.
-static func service_position(sim, aircraft: Dictionary, field: Dictionary) -> Vector2:
-	var half: float = float(sim.data_for(field.spec).get("size", 1)) * 0.5
-	var largest_radius: float = _parking_radius(sim, aircraft)
-	for other in sim.entities.values():
-		if int(other.get("id", -1)) != int(aircraft.id) and int(other.get("home_airfield", -1)) == int(field.id) and other.get("kind", "") == "unit" and float(other.get("hp", 0.0)) > 0.0 and sim._is_air(other):
-			largest_radius = maxf(largest_radius, _parking_radius(sim, other))
-	var clearance: float = largest_radius + 0.25
-	var spacing: float = largest_radius * 2.0 + 0.3
-	var old_goal: Vector2 = aircraft.get("service_goal", Vector2.INF)
-	var apron_limit: float = half + largest_radius + 3.8
-	if old_goal.is_finite() and old_goal.distance_to(field.pos) <= apron_limit and _service_clear(sim, aircraft, old_goal): return old_goal
-	var preferred: int = posmod(int(aircraft.id), 4)
-	for ring in range(3):
-		var distance: float = half + clearance + float(ring) * 0.8
-		for candidate in range(12):
-			var slot: int = (preferred + candidate) % 12
-			var along: float = 0.0 if slot < 4 else (spacing if slot < 8 else -spacing)
-			var side: int = slot % 4
-			var offset: Vector2
-			match side:
-				0: offset = Vector2(distance, along)
-				1: offset = Vector2(-distance, along)
-				2: offset = Vector2(along, distance)
-				_: offset = Vector2(along, -distance)
-			var point: Vector2 = field.pos + offset
-			if _service_clear(sim, aircraft, point): return point
+static func slots(sim, field: Dictionary) -> Array[Vector2]:
+	var span: float = minf(1.6, float(sim.data_for(field.spec).size) * .25)
+	return [Orientation.point(field,Vector2(-span,-span)),Orientation.point(field,Vector2(span,-span)),Orientation.point(field,Vector2(-span,span)),Orientation.point(field,Vector2(span,span))]
+
+static func production_slot(sim, field: Dictionary) -> Vector2:
+	for point in slots(sim, field):
+		if _slot_clear(sim, point, -1): return point
 	return Vector2.INF
 
-static func _service_clear(sim, aircraft: Dictionary, point: Vector2) -> bool:
-	if not land_error(sim, aircraft, point).is_empty(): return false
-	var radius: float = _parking_radius(sim, aircraft)
+static func service_position(sim, aircraft: Dictionary, field: Dictionary) -> Vector2:
+	var old_goal: Vector2 = aircraft.get("service_goal", Vector2.INF)
+	var positions: Array[Vector2] = slots(sim, field)
+	if old_goal in positions and _slot_clear(sim, old_goal, int(aircraft.id)): return old_goal
+	for point in positions:
+		if _slot_clear(sim, point, int(aircraft.id)): return point
+	return Vector2.INF
+
+static func _slot_clear(sim, point: Vector2, ignore: int) -> bool:
+	if not sim._in_bounds(point): return false
+	var radius: float = sim._radius(sim.entities[ignore]) if sim.entities.has(ignore) else 1.0
 	for other in sim.entities.values():
-		if int(other.get("id", -1)) == int(aircraft.id) or other.get("kind", "") != "unit" or float(other.get("hp", 0.0)) <= 0.0 or not sim._is_air(other): continue
-		var other_radius: float = _parking_radius(sim, other)
-		if not bool(other.get("airborne", true)) and point.distance_to(other.pos) < radius + other_radius + 0.18: return false
-		if other.get("flight_state", "") == "returning":
-			var reserved: Vector2 = other.get("service_goal", Vector2.INF)
-			if reserved.is_finite() and point.distance_to(reserved) < radius + other_radius + 0.18: return false
+		if int(other.id) == ignore or other.kind != "unit" or float(other.hp) <= 0 or not sim._is_air(other): continue
+		if point.distance_to(other.pos) < sim._radius(other)+radius+.06: return false
+		if str(other.get("flight_state", "")) in ["returning", "rearming"]:
+			var goal: Vector2 = other.get("service_goal", Vector2.INF)
+			if goal.is_finite() and point.distance_to(goal) < sim._radius(other)+radius+.06: return false
 	return true
+
+static func _service_clear(sim, aircraft: Dictionary, point: Vector2) -> bool:
+	return _slot_clear(sim, point, int(aircraft.id))
+
+## Holding a waypoint means circling that waypoint for fixed-wing aircraft.
+## Service traffic and explicit routes retain sole ownership of their movement.
+static func step_idle(sim, delta: float) -> void:
+	for aircraft in sim.entities.values():
+		if aircraft.kind != "unit" or not sim._is_air(aircraft) or str(aircraft.get("flight_state", "")) != "airborne": continue
+		var info: Dictionary=sim.data_for(aircraft.spec)
+		if bool(info.get("rotorcraft",false)) or bool(info.get("carrier_plane",false)): continue
+		if not aircraft.commands.is_empty():
+			aircraft.erase("loiter_center")
+			aircraft.erase("air_loiter_direction")
+			continue
+		var weapon: Dictionary=sim.rules.weapons.get(str(info.get("weapon","")),{})
+		if not weapon.is_empty() and sim._nearest_enemy(aircraft,float(weapon.range)+2.0)>=0:
+			aircraft.erase("loiter_center")
+			aircraft.erase("air_loiter_direction")
+			continue
+		var radius: float=3.4+float(int(aircraft.id)%3)*.6
+		if not aircraft.has("loiter_center"):
+			var radial:Vector2=Vector2.from_angle(deg_to_rad(float(aircraft.alpha))-PI*.5)
+			aircraft.loiter_center=((aircraft.pos as Vector2)-radial*radius).clamp(Vector2.ONE*(radius+1.1),Vector2.ONE*(float(sim.map.size)-radius-1.1))
+			aircraft.loiter_phase=((aircraft.pos as Vector2)-(aircraft.loiter_center as Vector2)).angle()
+		var phase:float=float(aircraft.get("loiter_phase",0.0))+float(info.speed)*.65/radius*delta
+		# Steer along the circuit from our actual position. A clock-driven point
+		# can run past a blocked plane and pull it backwards on alternate ticks.
+		var radial: Vector2 = (aircraft.pos as Vector2) - (aircraft.loiter_center as Vector2)
+		if radial.length_squared() < .0001: radial = Vector2.from_angle(phase) * radius
+		var direction: Vector2 = (-radial.normalized().orthogonal() + radial.normalized() * clampf((radius-radial.length())*3.0, -.85, .85)).normalized()
+		var waypoint: Vector2 = aircraft.pos + direction * maxf(2.0, float(info.speed)*.4)
+		aircraft.loiter_phase=phase
+		AirNavigation.fly_to(sim,aircraft,waypoint,delta,true)
+		aircraft.air_idle_time=0.0
 
 static func step_landed(sim, aircraft: Dictionary) -> bool:
 	if aircraft.get("flight_state", "") != "landed": return false
@@ -68,16 +95,20 @@ static func step_landed(sim, aircraft: Dictionary) -> bool:
 	if kind in ["stop", "hold"]:
 		aircraft.state = "landed"
 		return true
-	takeoff(sim, aircraft)
+	if not takeoff(sim, aircraft): return true
 	return false
 
-static func takeoff(sim, aircraft: Dictionary) -> void:
-	if aircraft.get("flight_state", "") != "landed": return
+static func takeoff(sim, aircraft: Dictionary) -> bool:
+	if aircraft.get("flight_state", "") != "landed": return bool(aircraft.get("airborne", true))
+	if not AirNavigation.point_clear(sim, aircraft, aircraft.pos):
+		aircraft.state = "waiting"
+		return false
 	aircraft.flight_state = "airborne"
 	aircraft.flight_height = float(sim.data_for(aircraft.spec).get("flight_height", 4.0))
-	aircraft.airborne = true
+	sim._set_airborne(aircraft, true)
 	aircraft.state = "move"
 	sim.events.append({"kind": "takeoff", "id": aircraft.id, "team": aircraft.team, "pos": aircraft.pos})
+	return true
 
 ## complete_command=false lets unload_move land and unload in one order.
 static func step_land(sim, aircraft: Dictionary, command: Dictionary, delta: float, complete_command: bool = true) -> bool:
@@ -90,12 +121,12 @@ static func step_land(sim, aircraft: Dictionary, command: Dictionary, delta: flo
 			command.blocked_notice = true
 		return false
 	if (aircraft.pos as Vector2).distance_to(goal) > 0.1:
-		if not bool(aircraft.get("airborne", true)): takeoff(sim, aircraft)
+		if not bool(aircraft.get("airborne", true)) and not takeoff(sim, aircraft): return false
 		if not sim._fly_to(aircraft, goal, delta): return false
 	if aircraft.get("flight_state", "") != "landed":
 		aircraft.flight_state = "landed"
 		aircraft.flight_height = 0.35
-		aircraft.airborne = false
+		sim._set_airborne(aircraft, false)
 		aircraft.motion = 0.0
 		aircraft.state = "landed"
 		sim.events.append({"kind": "land", "id": aircraft.id, "team": aircraft.team, "pos": aircraft.pos})

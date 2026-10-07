@@ -1,5 +1,6 @@
 extends RefCounted
 class_name BackgroundPaths
+const TerrainGeometry=preload("res://scripts/path_terrain_geometry.gd")
 
 # Owns every AStar object it touches. Jobs contain immutable value snapshots;
 # this thread never reads the live simulation or accesses rendering nodes.
@@ -9,19 +10,48 @@ var _wake:=Semaphore.new()
 var _jobs:Array[Dictionary]=[]
 var _results:Array[Dictionary]=[]
 var _stopping:bool=false
+var _minimum_revision:int=-1
 var _data:Dictionary
 var _graphs:Dictionary={}
+var _terrain_collision:Dictionary={}
+var _flat_safe:=PackedByteArray()
+var _flat_wide_safe:=PackedByteArray()
+var route_cache_enabled:bool=true
+var _metrics:Dictionary={"astar_searches":0,"corridor_hits":0,"connector_checks":0,"smoothing_probes":0}
+const CORRIDOR_CELL_SIZE:float=8.0
+const MAX_CORRIDOR_GOALS:int=256
+const MAX_CORRIDORS_PER_GOAL:int=4
+const CLEARANCE_OFFSETS: Array[Vector2] = [Vector2.ZERO, Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN, Vector2(.707,.707), Vector2(-.707,.707), Vector2(.707,-.707), Vector2(-.707,-.707)]
 
 func start(data:Dictionary)->void:
 	_data=data
+	_flat_safe=data.get("flat",PackedByteArray())
+	_flat_wide_safe=data.get("flat_wide",PackedByteArray())
+	route_cache_enabled=bool(data.get("route_cache_enabled",route_cache_enabled))
 	_thread.start(_run,Thread.PRIORITY_LOW)
 
 func submit(job:Dictionary)->bool:
 	if not _mutex.try_lock():return false
+	_minimum_revision=maxi(_minimum_revision,int(job.revision))
 	_jobs.append(job)
+	_jobs.sort_custom(func(a,b):return int(a.get("priority",0))>int(b.get("priority",0)) if int(a.get("priority",0))!=int(b.get("priority",0)) else int(a.token)<int(b.token))
 	_mutex.unlock()
 	_wake.post()
 	return true
+
+func prioritize(ids:Dictionary)->void:
+	if not _mutex.try_lock():return
+	for job:Dictionary in _jobs:
+		job.priority=3 if ids.has(int(job.id)) else int(job.get("base_priority",job.get("priority",0)))
+	_jobs.sort_custom(func(a,b):return int(a.get("priority",0))>int(b.get("priority",0)) if int(a.get("priority",0))!=int(b.get("priority",0)) else int(a.token)<int(b.token))
+	_mutex.unlock()
+
+func invalidate(revision:int)->void:
+	# Queued obsolete geometry must not delay a new command burst. Running
+	# searches finish normally; skipped jobs still return a counted result.
+	if not _mutex.try_lock():return
+	_minimum_revision=maxi(_minimum_revision,revision)
+	_mutex.unlock()
 
 func collect()->Array[Dictionary]:
 	if not _mutex.try_lock():return []
@@ -41,19 +71,27 @@ func _run()->void:
 		_wake.wait()
 		_mutex.lock()
 		var stop:bool=_stopping
+		var minimum_revision:int=_minimum_revision
 		var job:Dictionary={} if _jobs.is_empty() else _jobs.pop_front()
 		_mutex.unlock()
 		if stop:return
 		if job.is_empty():continue
 		var before:int=Time.get_ticks_usec()
-		var path:Array=_search(job)
+		var previous_metrics:Dictionary=_metrics.duplicate()
+		var path:Array=[] if int(job.revision)<minimum_revision else _search(job)
+		if path.size()>1 and int(job.get("navigation_lane",-1))>=0:path=_spread_group_corners(job,path,_graph(float(job.radius),bool(job.get("vehicle",true))))
 		var result:Dictionary={"id":job.id,"token":job.token,"revision":job.revision,"path":path,"worker_us":Time.get_ticks_usec()-before}
+		var metrics:Dictionary={}
+		for key in _metrics:metrics[key]=int(_metrics[key])-int(previous_metrics[key])
+		result.worker_stats=metrics
 		_mutex.lock();_results.append(result);_mutex.unlock()
-		# Leave CPU time for rendering even during a sustained command burst.
-		OS.delay_usec(1000)
+		# Low thread priority and the bounded pool leave scheduling to the OS.
+		# Sleeping after every path imposed a fixed delay on large command bursts.
 
-func _graph(radius:float)->Dictionary:
-	if _graphs.has(radius):return _graphs[radius]
+func _graph(radius:float, vehicle:bool=true)->Dictionary:
+	var key:=Vector2(radius,1 if vehicle else 0)
+	if _graphs.has(key):return _graphs[key]
+	if _terrain_collision.is_empty():_terrain_collision=_collision_buckets(TerrainGeometry.build(_data))
 	var nav:=AStar2D.new()
 	nav.reserve_space(_data.ids.size())
 	var size:int=int(_data.size)
@@ -66,15 +104,21 @@ func _graph(radius:float)->Dictionary:
 	for id in terrain:nav.set_point_disabled(id,true)
 	var terrain_set: Dictionary = {}
 	for id in terrain: terrain_set[id] = true
-	var entry:Dictionary={"nav":nav,"revision":-1,"terrain":terrain,"terrain_set":terrain_set,"dynamic":[],"ruin_chunks":{},"ruin_occupancy":{},"extra_positions":_data.extra_positions.duplicate(),"extra_cells":_data.extra_cells.duplicate(true),"detail_rectangles":{},"collision_hard":{},"collision_vehicles":{}}
-	_graphs[radius]=entry
+	var entry:Dictionary={"nav":nav,"vehicle":vehicle,"revision":-1,"terrain":terrain,"terrain_set":terrain_set,"dynamic":[],"ruin_chunks":{},"ruin_occupancy":{},"extra_positions":_data.extra_positions.duplicate(),"extra_cells":_data.extra_cells.duplicate(true),"detail_rectangles":{},"collision_hard":{},"collision_vehicles":{},"collision_ruins":{},"rejected_edges":[],"edge_clear":{},"corridors":{},"endpoint_details":{}}
+	_graphs[key]=entry
 	return entry
 
 func _search(job:Dictionary)->Array:
 	var radius:float=job.radius
-	var graph:Dictionary=_graph(radius)
+	var graph:Dictionary=_graph(radius,bool(job.get("vehicle",true)))
 	var nav:AStar2D=graph.nav
 	if int(graph.revision)!=int(job.revision):
+		# Rejected edges belong to one collision snapshot. A demolished wall or
+		# tree must be able to reopen a previously blocked connection.
+		for edge:Array in graph.rejected_edges:nav.connect_points(edge[0],edge[1])
+		graph.rejected_edges.clear()
+		graph.edge_clear.clear()
+		graph.corridors.clear()
 		# New buildings/mines gain local samples entirely on this worker. Their
 		# real footprint still disables points with radius+.02 clearance.
 		if _detail_hard_obstacles(graph, job.geometry.hard, radius):
@@ -85,10 +129,22 @@ func _search(job:Dictionary)->Array:
 		# Forest chunks keep reference-counted occupancy: removing a tree cannot
 		# accidentally reopen a node still covered by a neighboring tree or wall.
 		var chunks: Array = job.geometry.get("ruin_chunks", [])
+		var ruins_changed: bool = false
+		for raw_index in graph.ruin_chunks.keys():
+			if int(raw_index)<chunks.size():continue
+			ruins_changed=true
+			for id in graph.ruin_chunks[raw_index].nodes:
+				var remaining:int=int(graph.ruin_occupancy[id])-1
+				if remaining>0:graph.ruin_occupancy[id]=remaining
+				else:
+					graph.ruin_occupancy.erase(id)
+					if not graph.terrain_set.has(id):nav.set_point_disabled(id,false)
+			graph.ruin_chunks.erase(raw_index)
 		for index in range(chunks.size()):
 			var chunk: Dictionary = chunks[index]
 			var old: Dictionary = graph.ruin_chunks.get(index, {})
 			if int(old.get("revision", -1)) == int(chunk.revision): continue
+			ruins_changed = true
 			for id in old.get("nodes", []):
 				var remaining: int = int(graph.ruin_occupancy[id]) - 1
 				if remaining > 0: graph.ruin_occupancy[id] = remaining
@@ -100,24 +156,173 @@ func _search(job:Dictionary)->Array:
 				graph.ruin_occupancy[id] = int(graph.ruin_occupancy.get(id, 0)) + 1
 				nav.set_point_disabled(id, true)
 			graph.ruin_chunks[index] = {"revision": chunk.revision, "nodes": nodes, "collision":_collision_buckets(chunk.rectangles)}
+		if ruins_changed:
+			var ruins: Array = []
+			for chunk: Dictionary in chunks: ruins.append_array(chunk.rectangles)
+			graph.collision_ruins = _collision_buckets(ruins)
 		var rectangles:Array=job.geometry.hard
-		if radius>.5:rectangles=rectangles+job.geometry.vehicles
+		if bool(graph.vehicle):rectangles=rectangles+job.geometry.vehicles
 		graph.dynamic=_rectangle_nodes(nav, rectangles, radius, graph)
 		for id in graph.dynamic:nav.set_point_disabled(id,true)
 		graph.collision_hard=_collision_buckets(job.geometry.hard)
 		graph.collision_vehicles=_collision_buckets(job.geometry.vehicles)
 		graph.revision=job.revision
+	# The graph supplies detour candidates; it does not constrain travel to cell
+	# axes. Open terrain uses the exact requested positions in one straight leg.
+	if _connector_clear(job.start,job.goal,radius,graph):return [job.goal]
+	if route_cache_enabled:
+		var reused:Array=_reuse_corridor(job,graph)
+		if not reused.is_empty():
+			_metrics.corridor_hits+=1
+			return reused
 	var start:int=_nearest(nav,job.start,float(job.start_height),graph,radius)
 	var finish:int=_nearest(nav,job.goal,float(job.goal_height),graph,radius)
-	if start<0 or finish<0:return []
-	var points:PackedVector2Array=nav.get_point_path(start,finish)
-	if points.is_empty():return []
-	# Only remove collinear points. No main-thread ray casting or lane search.
+	if start<0 or finish<0:
+		return _search(job) if _refine_endpoints(job,graph,radius) else []
+	while true:
+		_metrics.astar_searches+=1
+		var nodes:PackedInt64Array=nav.get_id_path(start,finish)
+		if nodes.is_empty():return _search(job) if _refine_endpoints(job,graph,radius) else []
+		var candidates:Array=[]
+		for id:int in nodes:candidates.append(nav.get_point_position(id))
+		# Keep the exact endpoint in string pulling so it receives the same swept
+		# footprint validation as every detour leg, including rounded corners.
+		if (candidates.back() as Vector2)!=job.goal:candidates.append(job.goal)
+		var path:Array=_smooth_path(job.start,candidates,radius,graph)
+		if not path.is_empty():
+			if route_cache_enabled:_remember_corridor(job,path,graph)
+			return path
+		# A narrow volume can intersect an edge while leaving both graph centers
+		# clear. Remove those connections and let AStar find a safe alternative.
+		# Each unsuccessful retry removes at least one edge, so this terminates.
+		var rejected:bool=false
+		for index in range(1,nodes.size()):
+			var from:int=nodes[index-1]
+			var to:int=nodes[index]
+			var edge_key:=Vector2i(mini(from,to),maxi(from,to))
+			if not graph.edge_clear.has(edge_key):
+				graph.edge_clear[edge_key]=_connector_clear(nav.get_point_position(from),nav.get_point_position(to),radius,graph)
+			if bool(graph.edge_clear[edge_key]):continue
+			nav.disconnect_points(from,to)
+			graph.rejected_edges.append([from,to])
+			rejected=true
+		if not rejected:return _search(job) if _refine_endpoints(job,graph,radius) else []
+	return []
+
+func _spread_group_corners(job:Dictionary,path:Array,graph:Dictionary)->Array:
+	# Shared string-pulled routes used to funnel every body into one corner.
+	# Give group columns separate, verified connectors inside the same passage.
+	# This runs on immutable worker geometry, never on the gameplay thread.
+	var answer:Array=path.duplicate()
+	var phase:int=int(job.navigation_lane)
+	if phase==0:return answer
+	var radius:float=float(job.radius)
+	var previous:Vector2=job.start
+	for index in range(mini(3,answer.size()-1)):
+		var point:Vector2=answer[index]
+		var following:Vector2=answer[index+1]
+		var tangent:Vector2=(following-previous).normalized().orthogonal()
+		var distance:float=(radius*2.0+.08)*phase
+		for sign_value:float in [1.0,-1.0]:
+			var candidate:Vector2=point+tangent*distance*sign_value
+			if _connector_clear(previous,candidate,radius,graph) and _connector_clear(candidate,following,radius,graph):
+				answer[index]=candidate;break
+		previous=answer[index]
+	return answer
+
+func _refine_endpoints(job:Dictionary,graph:Dictionary,radius:float)->bool:
+	# A legal forest gap can have no connected whole-cell center. Refine
+	# disconnected endpoints on demand rather than densifying the whole map.
+	var added:bool=false
+	for point:Vector2 in [job.start,job.goal]:
+		var key:=Vector2i(floori(point.x*2),floori(point.y*2))
+		if graph.endpoint_details.has(key):continue
+		graph.endpoint_details[key]=true
+		added=_detail_hard_obstacles(graph,[Rect2(point-Vector2.ONE*.01,Vector2.ONE*.02)],radius,3.0) or added
+	if added:
+		# Every new sample must inherit unchanged forest and building masks.
+		graph.revision=-1
+		for chunk:Dictionary in graph.ruin_chunks.values():chunk.revision=-1
+	return added
+
+func _corridor_key(goal:Vector2)->Vector2i:
+	return Vector2i(floori(goal.x/CORRIDOR_CELL_SIZE),floori(goal.y/CORRIDOR_CELL_SIZE))
+
+func _remember_corridor(job:Dictionary,path:Array,graph:Dictionary)->void:
+	var key:Vector2i=_corridor_key(job.goal)
+	if not graph.corridors.has(key):
+		if graph.corridors.size()>=MAX_CORRIDOR_GOALS:graph.corridors.clear()
+		graph.corridors[key]=[]
+	var routes:Array=graph.corridors[key]
+	var route:Array=[job.start]
+	route.append_array(path)
+	routes.push_front(route)
+	if routes.size()>MAX_CORRIDORS_PER_GOAL:routes.pop_back()
+
+func _reuse_corridor(job:Dictionary,graph:Dictionary)->Array:
+	# Units headed into the same small destination region can enter an already
+	# validated corridor from a nearby point. Interior legs retain their exact
+	# radius and geometry revision; only entrance/exit connections are new.
+	for route:Array in graph.corridors.get(_corridor_key(job.goal),[]):
+		var segment:int=-1
+		var join:=Vector2.ZERO
+		var distance:float=CORRIDOR_CELL_SIZE*CORRIDOR_CELL_SIZE
+		for index in range(route.size()-1):
+			var point:Vector2=Geometry2D.get_closest_point_to_segment(job.start,route[index],route[index+1])
+			var d:float=(job.start as Vector2).distance_squared_to(point)
+			if d<distance:distance=d;segment=index;join=point
+		if segment<0 or not _connector_clear(job.start,join,job.radius,graph):continue
+		var answer:Array=[]
+		if job.start!=join:answer.append(join)
+		for index in range(segment+1,route.size()):answer.append(route[index])
+		# Prefer connecting the final turn directly to the new formation spot.
+		var tail:Vector2=join if answer.size()<2 else answer[answer.size()-2]
+		if _connector_clear(tail,job.goal,job.radius,graph):
+			if not answer.is_empty():answer.pop_back()
+			answer.append(job.goal)
+			return answer
+		if _connector_clear(route.back(),job.goal,job.radius,graph):
+			if route.back()!=job.goal:answer.append(job.goal)
+			return answer
+	return []
+
+func _smooth_path(start:Vector2,points:Array,radius:float,graph:Dictionary)->Array:
 	var path:Array=[]
-	for i in range(points.size()):
-		if i>0 and i<points.size()-1 and (points[i]-points[i-1]).normalized().is_equal_approx((points[i+1]-points[i]).normalized()):continue
-		path.append(points[i])
-	if (path.back() as Vector2).distance_to(job.goal)>.05:path.append(job.goal)
+	var position:Vector2=start
+	var index:int=0
+	while index<points.size():
+		# Probe forward at exponentially increasing distances. Reverse scans of
+		# every remaining node multiplied long cliff/bridge routes by their length.
+		# Visibility need not be monotone: every chosen leg is checked, and a
+		# missed shortcut only leaves additional safe waypoints.
+		var chosen:int=-1
+		var stride:int=1
+		var failed:int=-1
+		while true:
+			var candidate:int=mini(points.size()-1,index+stride-1)
+			_metrics.smoothing_probes+=1
+			if not _connector_clear(position,points[candidate],radius,graph):
+				failed=candidate
+				break
+			chosen=candidate
+			if candidate==points.size()-1:break
+			stride*=2
+		if chosen<0:return []
+		if failed>chosen+1:
+			var low:int=chosen+1
+			var high:int=failed-1
+			for probe in range(4):
+				if low>high:break
+				var candidate:int=(low+high)/2
+				_metrics.smoothing_probes+=1
+				if _connector_clear(position,points[candidate],radius,graph):
+					chosen=candidate
+					low=candidate+1
+				else:high=candidate-1
+		var point:Vector2=points[chosen]
+		if position!=point:path.append(point)
+		position=point
+		index=chosen+1
 	return path
 
 func _rectangle_nodes(nav: AStar2D, rectangles: Array, radius: float, graph: Dictionary) -> Array:
@@ -168,8 +373,16 @@ func _height_at(point: Vector2) -> float:
 
 func _terrain_clear(point: Vector2, radius: float) -> bool:
 	var size: int = int(_data.size)
+	if point.x<0 or point.y<0 or point.x>=size or point.y>=size:return false
+	var center:int=floori(point.y)*size+floori(point.x)
+	if int(_data.land[center])==0:return false
+	# The immutable simulation mask excludes shorelines, ramps and height
+	# changes across the surrounding 3x3 cells. Keep detailed checks elsewhere.
+	if radius<=.99 and not _flat_safe.is_empty() and _flat_safe[center]!=0:return true
+	if radius<=1.99 and center<_flat_wide_safe.size() and _flat_wide_safe[center]!=0:return true
+	if radius==0.0:return true
 	var height: float = _height_at(point)
-	for offset in [Vector2.ZERO, Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN, Vector2(.707,.707), Vector2(-.707,.707), Vector2(.707,-.707), Vector2(-.707,-.707)]:
+	for offset: Vector2 in CLEARANCE_OFFSETS:
 		var sample: Vector2 = point + offset*radius
 		if sample.x<0 or sample.y<0 or sample.x>=size or sample.y>=size: return false
 		var id: int = floori(sample.y)*size+floori(sample.x)
@@ -180,14 +393,14 @@ func _detail_id(point: Vector2) -> int:
 	var size: int = int(_data.size)
 	return size*size + roundi(point.y*2.0)*(size*2+1) + roundi(point.x*2.0)
 
-func _detail_hard_obstacles(graph: Dictionary, rectangles: Array, radius: float) -> bool:
+func _detail_hard_obstacles(graph: Dictionary, rectangles: Array, radius: float, padding:float=1.5) -> bool:
 	var nav: AStar2D = graph.nav
 	var size: int = int(_data.size)
 	var added: Array[int] = []
 	for rect: Rect2 in rectangles:
 		if graph.detail_rectangles.has(rect): continue
 		graph.detail_rectangles[rect] = true
-		var bounds: Rect2 = rect.grow(1.5)
+		var bounds: Rect2 = rect.grow(padding)
 		for z in range(maxi(1,ceili(bounds.position.y*2)), mini(size*2,floori(bounds.end.y*2))+1):
 			for x in range(maxi(1,ceili(bounds.position.x*2)), mini(size*2,floori(bounds.end.x*2))+1):
 				var point := Vector2(x,z)*.5
@@ -240,7 +453,34 @@ func _collision_buckets(rectangles: Array) -> Dictionary:
 				buckets[key].append(rectangle)
 	return {"bounds":bounds,"buckets":buckets}
 
-func _connector_rectangles_clear(start: Vector2, finish: Vector2, radius: float, cache: Dictionary) -> bool:
+func _connector_cells(start: Vector2, finish: Vector2, radius: float) -> Array[Vector2i]:
+	var cells: Array[Vector2i]=[]
+	var padding: float=sqrt((radius+.02)*(radius+.02)+.00001)
+	var first:=Vector2i(floori((minf(start.x,finish.x)-padding)/2.0),floori((minf(start.y,finish.y)-padding)/2.0))
+	var last:=Vector2i(floori((maxf(start.x,finish.x)+padding)/2.0),floori((maxf(start.y,finish.y)+padding)/2.0))
+	if (last.x-first.x+1)*(last.y-first.y+1)<=16:
+		for z in range(first.y,last.y+1):
+			for x in range(first.x,last.x+1):cells.append(Vector2i(x,z))
+		return cells
+	# Every point on the swept segment lies within .5m of one of these
+	# samples. Expanding each sample by clearance+.5 conservatively covers
+	# its capsule, while visiting O(length) buckets rather than the AABB area.
+	var visited:Dictionary={}
+	var count:int=maxi(1,ceili(start.distance_to(finish)))
+	padding+=.5
+	for sample in range(count+1):
+		var point:Vector2=start.lerp(finish,float(sample)/count)
+		first=Vector2i(floori((point.x-padding)/2.0),floori((point.y-padding)/2.0))
+		last=Vector2i(floori((point.x+padding)/2.0),floori((point.y+padding)/2.0))
+		for z in range(first.y,last.y+1):
+			for x in range(first.x,last.x+1):
+				var key:=Vector2i(x,z)
+				if visited.has(key):continue
+				visited[key]=true
+				cells.append(key)
+	return cells
+
+func _connector_rectangles_clear(start: Vector2, finish: Vector2, radius: float, cache: Dictionary, cells: Array[Vector2i]=[]) -> bool:
 	if cache.is_empty() or (cache.buckets as Dictionary).is_empty():return true
 	var clearance: float=radius+.02
 	var padded: float=sqrt(clearance*clearance+.00001)
@@ -248,29 +488,32 @@ func _connector_rectangles_clear(start: Vector2, finish: Vector2, radius: float,
 	var high: Vector2=start.max(finish)+Vector2.ONE*padded
 	var bounds: Rect2=cache.bounds
 	if high.x<bounds.position.x or high.y<bounds.position.y or low.x>bounds.end.x or low.y>bounds.end.y:return true
-	var first:=Vector2i(floori(low.x/2.0),floori(low.y/2.0))
-	var last:=Vector2i(floori(high.x/2.0),floori(high.y/2.0))
+	if cells.is_empty():cells.assign(_connector_cells(start,finish,radius))
 	var checked: Dictionary={}
-	for z in range(first.y,last.y+1):
-		for x in range(first.x,last.x+1):
-			for rectangle: Rect2 in cache.buckets.get(Vector2i(x,z),[]):
-				if checked.has(rectangle):continue
-				checked[rectangle]=true
-				if _swept_circle_rect(start,finish,clearance,rectangle):return false
+	for key:Vector2i in cells:
+		for rectangle: Rect2 in cache.buckets.get(key,[]):
+			if checked.has(rectangle):continue
+			checked[rectangle]=true
+			if _swept_circle_rect(start,finish,clearance,rectangle):return false
 	return true
 
 func _connector_clear(start: Vector2, finish: Vector2, radius: float, graph: Dictionary) -> bool:
-	if not _connector_rectangles_clear(start,finish,radius,graph.collision_hard):return false
-	if radius>.5 and not _connector_rectangles_clear(start,finish,radius,graph.collision_vehicles):return false
-	for chunk in graph.ruin_chunks.values():
-		if not _connector_rectangles_clear(start,finish,radius,chunk.collision):return false
+	_metrics.connector_checks+=1
+	var cells:Array[Vector2i]=[]
+	if not _connector_rectangles_clear(start,finish,radius,graph.collision_hard,cells):return false
+	if bool(graph.vehicle) and not _connector_rectangles_clear(start,finish,radius,graph.collision_vehicles,cells):return false
+	if not _connector_rectangles_clear(start,finish,radius,graph.collision_ruins,cells):return false
+	# Continuous water/cliff boundaries prevent tiny sampled corner cuts that
+	# otherwise produce a path the per-stride collision guard cannot follow.
+	if not _connector_rectangles_clear(start,finish,radius-.02,_terrain_collision,cells):return false
 	var distance: float=start.distance_to(finish)
 	var checks: int=maxi(1,ceili(distance/.25))
-	var previous:=start
+	var previous_height:float=_height_at(start)
 	for n in range(1,checks+1):
 		var point: Vector2=start.lerp(finish,float(n)/float(checks))
-		if not _terrain_clear(point,0.0) or absf(_height_at(point)-_height_at(previous))>.8:return false
-		previous=point
+		var height:float=_height_at(point)
+		if not _terrain_clear(point,0.0) or absf(height-previous_height)>.8:return false
+		previous_height=height
 	checks=maxi(1,ceili(distance/.4))
 	for n in range(checks+1):
 		if not _terrain_clear(start.lerp(finish,float(n)/float(checks)),radius):return false

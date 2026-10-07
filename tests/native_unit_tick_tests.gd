@@ -14,7 +14,9 @@ func fixture(all_types:bool=false):
 		sim.money[team]=100000.0
 		var faction:String=sim.factions[team]
 		for role in ["power","airfield","repair","barracks"]:
-			var id:int=sim._spawn(team,faction+"_"+role,Vector2(3.5+5*team,18.5+3*["power","airfield","repair","barracks"].find(role)),true)
+			var building_id:String=sim.building_spec(team,role)
+			if building_id.is_empty(): continue # Removed support buildings have no current blueprint.
+			var id:int=sim._spawn(team,building_id,Vector2(3.5+5*team,18.5+3*["power","airfield","repair","barracks"].find(role)),true)
 			sim.entities[id].gift_pending=false
 		var roles:Array=[]
 		if all_types:
@@ -25,6 +27,7 @@ func fixture(all_types:bool=false):
 			var role:String=roles[i]
 			if role=="attacker" and sim.rules.units.has(faction+"_bomber"):role="bomber"
 			if role=="artillery" and not sim.rules.units.has(faction+"_artillery"):role="advanced"
+			if not sim.rules.units.has(faction+"_"+role): continue # Rivet economy has no harvester.
 			var id:int=sim._spawn(team,faction+"_"+role,Vector2(3.5+5*team,33.5+float(i%6)*1.4),true)
 			sim.entities[id].alpha=wrapf(float(id*31),-180,180)
 			sim.entities[id].turret_alpha=wrapf(float(id*17),-180,180)

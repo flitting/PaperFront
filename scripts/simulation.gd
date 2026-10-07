@@ -3,23 +3,40 @@ extends RefCounted
 
 # One simulation is shared by every map, the player, the AI, and rule tests.
 const SAVE_VERSION := 1
+const BuildingOrientation = preload("res://scripts/building_orientation.gd")
+const RailNetwork = preload("res://scripts/rail_network.gd")
+const ResponsiveNavigation = preload("res://scripts/responsive_navigation.gd")
+var _rail_network = RailNetwork.new()
 const SaveValidator = preload("res://scripts/sim_save_validator.gd")
 const Transport = preload("res://scripts/unit_transport.gd")
 const AircraftOperations = preload("res://scripts/aircraft_operations.gd")
+const AirNavigation = preload("res://scripts/air_navigation.gd")
 const Construction = preload("res://scripts/outpost_construction.gd")
+const FieldConstruction = preload("res://scripts/field_construction.gd")
+const MiningDrills = preload("res://scripts/mining_drills.gd")
+const BeamWeapons = preload("res://scripts/beam_weapons.gd")
+const ZeppelinWeapons = preload("res://scripts/zeppelin_weapons.gd")
+const ProductionLifecycle = preload("res://scripts/production_lifecycle.gd")
+const ProductionClearance = preload("res://scripts/production_clearance.gd")
+const RefineryDocking = preload("res://scripts/refinery_docking.gd")
+const RepairDepot=preload("res://scripts/repair_depot.gd")
 const BuildingConstruction = preload("res://scripts/building_construction.gd")
 const TechAvailability = preload("res://scripts/tech_availability.gd")
 const FactionSupport = preload("res://scripts/faction_support.gd")
 const FactionTraits = preload("res://scripts/faction_traits.gd")
+const LocalPower = preload("res://scripts/local_power.gd")
 const TeamVision = preload("res://scripts/team_vision.gd")
 const NavalOperations = preload("res://scripts/naval_operations.gd")
 const AIController = preload("res://scripts/ai_controller.gd")
 const HeroRules = preload("res://scripts/hero_rules.gd")
+const Veterancy=preload("res://scripts/veterancy.gd")
+const GarrisonOperations=preload("res://scripts/garrison_operations.gd")
+const AirNavalExpansion=preload("res://scripts/air_naval_expansion.gd")
+const ArmorCombat = preload("res://scripts/armor_combat.gd")
+const DeveloperTools = preload("res://scripts/developer_tools.gd")
 const UniqueUnitRules = preload("res://scripts/unique_unit_rules.gd")
 const CampaignController = preload("res://scripts/campaign_controller.gd")
 var _designation_bonuses: Dictionary = {}
-var _overcharge_bonuses: Dictionary = {}
-var _support_power: Dictionary = {}
 const BRIDGE_TARGET_BASE := -1000
 const RUIN_TARGET_BASE := -100000
 const MINE_HALF := Vector2(0.55, 0.55)
@@ -32,6 +49,7 @@ var _power_cache: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
 var _role_cache: Array = [{}, {}]
 var _vision_cache: Array[float] = [0.0, 0.0]
 var _max_entity_extent: float = 1.0
+var _max_ground_radius: float = 1.0
 const RUIN_GEOMETRY_CHUNK_SIZE: int = 256
 var _ruin_geometry_chunks: Array = []
 var _ruin_geometry_dirty: Dictionary = {}
@@ -56,6 +74,8 @@ var native_kernels_enabled: bool = OS.get_environment("PAPER_FRONT_DISABLE_NATIV
 var native_unit_dispatch_enabled: bool = OS.get_environment("PAPER_FRONT_SCRIPT_UNITS") != "1"
 var native_geometry_enabled: bool = OS.get_environment("PAPER_FRONT_SCRIPT_GEOMETRY") != "1"
 var native_movement_enabled: bool = OS.get_environment("PAPER_FRONT_SCRIPT_MOVEMENT") != "1"
+var responsive_navigation_enabled: bool = true
+var crowd_overlap_enabled: bool = true
 # Explicit diagnostic instrumentation; required collision queries retain their
 # original call sites and are never skipped because a local probe budget ran out.
 var geometry_profiling_enabled: bool = false
@@ -72,8 +92,9 @@ var _terrain_nav_extra_cells: Dictionary = {}
 var _nav_detail_rectangles: Dictionary = {}
 const NAV_EDGE_DIRECTIONS: Array[Vector2i] = [Vector2i(1, 0), Vector2i(0, 1)]
 # Bounded deterministic planner work; economy/combat/time still run every tick.
-const PATH_PLANS_PER_TICK := 2
-const PATH_IN_FLIGHT := 2
+const PATH_PLANS_PER_TICK := 32
+const PATH_SYNC_PLANS_PER_TICK := 2 # Deterministic rule fixtures still bound synchronous AStar work.
+const PATH_IN_FLIGHT := 32
 const PATH_ADMIN_BUDGET_US := 750
 const LOCAL_NAV_BUDGET_US := 1000
 const AVOIDANCE_PROBES_PER_TICK := 96
@@ -81,8 +102,8 @@ const YIELD_REQUESTS_PER_TICK := 3
 var _local_nav_us:int=0
 var _avoidance_probes:int=0
 var _yield_requests:int=0
-var synchronous_path_tests: bool = false # Only explicit rule-test adapters use this.
-const PATH_WORKER=preload("res://scripts/path_worker.gd")
+var synchronous_path_tests: bool = false # Deterministic rule fixtures and the logic-only runner use this.
+const PATH_WORKER=preload("res://scripts/path_worker_pool.gd")
 var _path_worker
 var _path_requests: Dictionary = {}
 var _path_revision: int = 0
@@ -90,11 +111,12 @@ var _path_token: int = 0
 var _path_in_flight: int = 0
 var _path_geometry: Dictionary = {}
 var _native_masks_dirty: bool = false
-var navigation_stats: Dictionary = {"submitted":0,"completed":0,"discarded":0,"main_us":0,"max_main_us":0,"max_worker_us":0}
+var navigation_stats: Dictionary = {"submitted":0,"completed":0,"discarded":0,"queued":0,"max_queued":0,"in_flight":0,"max_in_flight":0,"main_us":0,"max_main_us":0,"max_worker_us":0}
 
 const CLEARANCE_DIRECTIONS: Array[Vector2] = [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN, Vector2(0.707, 0.707), Vector2(-0.707, 0.707), Vector2(0.707, -0.707), Vector2(-0.707, -0.707)]
 var startup_profile:Dictionary={}
 var map: Dictionary = {}
+var map_generation_config: Dictionary = {}
 var rules: Dictionary = {}
 var factions: Array[String] = ["rivet", "kestrel"]
 var money: Array[float] = [0.0, 0.0]
@@ -122,9 +144,13 @@ var _nav: AStar2D = AStar2D.new()
 var _nav_dirty: bool = true
 var _spatial: Dictionary = {}
 var _neighbor_cache: Dictionary = {}
+var _ground_motion_spatial: Dictionary = {}
 var _team_spatial: Array = [{}, {}]
 var _combat_spatial: Dictionary = {}
 var _damage: Dictionary = {}
+var _damage_causes: Dictionary = {}
+var statistics = preload("res://scripts/match_statistics.gd").new()
+var _damage_voice_next: Dictionary = {}
 var _execute_buildings: Dictionary = {}
 var _crush_targets: Dictionary = {}
 var _building_entities: Array = []
@@ -133,6 +159,7 @@ var _terrain_masks: Dictionary = {}
 var _nav_disabled: Array[int] = []
 var _nav_initialized: bool = false
 var _flat_safe: PackedByteArray = PackedByteArray()
+var _flat_wide_safe: PackedByteArray = PackedByteArray()
 var _size: int = 0
 var _building_spatial: Dictionary = {}
 var profile_enabled: bool = false
@@ -140,6 +167,7 @@ var profile: Dictionary = {}
 var _ai_clock: float = 0.0
 var _ai_attack_clock: float = 0.0
 var _low_power: Array[bool] = [false, false]
+var _power_details: Array[Dictionary] = []
 var _bridge_repairers: Dictionary = {}
 var _field_repairers: Dictionary = {}
 var _mine_tick_budget: Dictionary = {}
@@ -151,6 +179,11 @@ var _planning_queue: Array[int] = []
 var _planning_requested_ids: Dictionary = {}
 var _plan_was_deferred: bool = false
 var _planning_max_wait: float = 0.0
+var _player_navigation_ids: Dictionary = {}
+var _navigation_command_until: Dictionary = {}
+var navigation_priority_grants := 0
+var navigation_vehicle_yields := 0
+var navigation_pursuit_refreshes := 0
 var _step_delta: float = 0.0
 
 func _notification(what: int) -> void:
@@ -190,7 +223,7 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	factions.assign(faction_ids)
 	match_options = options.duplicate(true)
 	match_options.players = factions.size()
-	match_options.modern = mode in ["forest", "desert", "snow", "city", "random_city", "islands", "campaign"]
+	match_options.modern = mode in ["forest", "desert", "snow", "city", "random_city", "islands", "symmetric", "campaign"]
 	vision_enabled = bool(match_options.get("vision_enabled", match_options.modern))
 	match_options.vision_enabled = vision_enabled
 	if not match_options.has("slots") or match_options.slots.size() != factions.size():
@@ -205,7 +238,9 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	_resize_team_caches()
 	if progress.is_valid(): await progress.call(0.05, "生成地图")
 	var map_started:int=Time.get_ticks_usec()
-	map = MapData.generate(mode, seed_value, {"players": factions.size()}) if mode in ["forest", "desert", "snow", "city", "random_city", "islands", "campaign"] else MapData.generate(mode, seed_value)
+	var generation_options: Dictionary=map_generation_config.duplicate(true)
+	generation_options.players=factions.size()
+	map = MapData.generate(mode,seed_value,generation_options)
 	var map_finished:int=Time.get_ticks_usec()
 	if progress.is_valid(): await progress.call(0.32, "整理地形与资源")
 	ruins = map.get("ruins",[]).duplicate(true)
@@ -217,15 +252,17 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	if progress.is_valid(): await progress.call(0.42, "部署基地与资源")
 	money.resize(factions.size())
 	money.fill(float(_eco("initial_money", 4000)))
+	statistics.reset(factions,money)
 	time = 0.0
 	result = ""
 	campaign_controller = null
 	entities.clear()
+	_damage_voice_next.clear()
+	_ground_motion_spatial.clear()
 	visual_memory = {}
 	_designation_bonuses.clear()
-	_overcharge_bonuses.clear()
-	_support_power.clear()
 	_max_entity_extent = 1.0
+	_max_ground_radius = 1.0
 	_building_entities.clear()
 	_building_spatial.clear()
 	_wide_masks.clear()
@@ -234,7 +271,7 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	_nav_initialized = false
 	_nav_regions.clear()
 	_in_step = false
-	_path_plans_remaining = PATH_PLANS_PER_TICK
+	_path_plans_remaining = PATH_SYNC_PLANS_PER_TICK if synchronous_path_tests else PATH_PLANS_PER_TICK
 	_planning_max_wait = 0.0
 	_planning_deferred_ids.clear()
 	_planning_queue.clear()
@@ -285,6 +322,7 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	NavalOperations.initialize(self)
 	if mode == "campaign":
 		_setup_campaign_scenario()
+	statistics.begin(self)
 	startup_profile={"rules_and_owners_ms":(map_started-setup_started)/1000.0,"map_generation_ms":(map_finished-map_started)/1000.0,"simulation_data_ms":(nav_started-map_finished)/1000.0,"navigation_ms":(nav_finished-nav_started)/1000.0,"spatial_ms":(Time.get_ticks_usec()-nav_finished)/1000.0,"total_ms":(Time.get_ticks_usec()-setup_started)/1000.0}
 	if progress.is_valid(): await progress.call(1.0, "战场准备完成")
 
@@ -309,6 +347,7 @@ func _resize_team_caches() -> void:
 	_role_cache.resize(factions.size())
 	_power_cache.resize(factions.size())
 	_power_cache.fill(Vector2.ZERO)
+	_power_details.resize(factions.size())
 	_vision_cache.resize(factions.size())
 	_vision_cache.fill(0.0)
 	for team in range(factions.size()):
@@ -356,7 +395,18 @@ func _vec(value: Variant) -> Vector2:
 
 func power(team: int) -> Vector2:
 	_ensure_base_cache()
-	return _power_cache[team] + Vector2(0.0, float(_support_power.get(team, 0.0)))
+	return _power_cache[team]
+
+func local_power_summary(team: int) -> Dictionary:
+	_ensure_base_cache()
+	return _power_details[team]
+
+func building_low_power(e: Dictionary) -> bool:
+	_ensure_base_cache()
+	var team: int = int(e.team)
+	if LocalPower.is_locally_powered(self, e, _power_details[team]): return false
+	var energy: Vector2 = power(team)
+	return energy.y > energy.x
 
 func _invalidate_base_cache() -> void:
 	_base_cache_dirty = true
@@ -367,6 +417,7 @@ func _ensure_base_cache() -> void:
 	if not _base_cache_dirty and _in_step: return
 	_power_cache.resize(factions.size())
 	_power_cache.fill(Vector2.ZERO)
+	_power_details.resize(factions.size())
 	_role_cache.resize(factions.size())
 	_vision_cache.resize(factions.size())
 	_vision_cache.fill(0.0)
@@ -381,7 +432,11 @@ func _ensure_base_cache() -> void:
 			else: _power_cache[team].y -= value
 		_role_cache[team][str(e.spec)] = true
 		_role_cache[team][str(info.get("role", ""))] = true
+		for role in info.get("prerequisite_roles", []): _role_cache[team][str(role)] = true
 		_vision_cache[team] = maxf(_vision_cache[team], float(info.get("vision_bonus", 0.0)))
+	for team in range(factions.size()):
+		_power_details[team] = LocalPower.summary(self, team)
+		_power_cache[team] = _power_details[team].display
 	_base_cache_dirty = false
 
 func counts(team: int) -> Vector2i:
@@ -411,6 +466,7 @@ func _is_naval(e: Dictionary) -> bool:
 	return data_for(str(e.spec)).get("domain", "ground") == "naval"
 
 func _target_domain(e: Dictionary) -> String:
+	if bool(data_for(e.spec).get("amphibious",false)) and _terrain(e.pos)!=MapData.WATER:return "ground"
 	if _is_air(e): return "air"
 	if _is_naval(e): return "naval"
 	return "ground"
@@ -429,6 +485,9 @@ func availability(team: int, spec: String, builder: int = -1, producer: int = -1
 
 func order_for_team(team: int, channel: String = "normal") -> Dictionary:
 	return BuildingConstruction.order_for(self, team, channel)
+
+func building_spec(team: int, role: String) -> String:
+	return TechAvailability.building_id(self, team, role)
 
 func construction_channel(spec: String) -> String:
 	return BuildingConstruction.channel_for(data_for(spec))
@@ -472,7 +531,11 @@ func snap_build_position(team: int, pos: Vector2, channel: String = "auto") -> V
 	if channel not in ["normal", "defense"]: return pos
 	if order_for_team(team, channel).is_empty():
 		return pos
-	var half: float = float(data_for(order_for_team(team, channel).spec).size) * 0.5
+	var spec: Dictionary = data_for(order_for_team(team, channel).spec)
+	if spec.get("role", "") == "drill":
+		var index: int = MiningDrills.mine_index(self, pos)
+		return mines[index].pos if index >= 0 else pos
+	var half: float = float(spec.size) * 0.5
 	return Vector2(roundf(pos.x - half) + half, roundf(pos.y - half) + half)
 
 func defense_extension(team: int, pos: Vector2, channel: String = "auto") -> Array[Vector2]:
@@ -480,15 +543,18 @@ func defense_extension(team: int, pos: Vector2, channel: String = "auto") -> Arr
 	if channel not in ["normal", "defense"]: return [pos]
 	pos = snap_build_position(team, pos, channel)
 	var points: Array[Vector2] = [pos]
-	if order_for_team(team, channel).is_empty() or data_for(order_for_team(team, channel).spec).get("role", "") not in ["wall", "barricade"]:
+	if order_for_team(team, channel).is_empty() or int(order_for_team(team, channel).get("builder", -1)) >= 0 or data_for(order_for_team(team, channel).spec).get("role", "") not in ["wall", "barricade", "rail"]:
 		return points
+	var rail_order: bool = str(data_for(order_for_team(team,channel).spec).get("role","")) == "rail"
+	var extension_direction: Vector2 = BuildingOrientation.offset(Vector2.RIGHT,BuildingOrientation.quarters(order_for_team(team,channel)))
 	var nearest: Vector2 = Vector2.INF
 	var distance: float = 7.0
 	for e in _building_entities:
-		if int(e.team) != team or float(e.construct_remaining) > 0 or data_for(e.spec).get("role", "") not in ["wall", "barricade"]:
+		if int(e.team) != team or float(e.construct_remaining) > 0 or data_for(e.spec).get("role", "") not in (["rail", "rail_junction"] if RailNetwork.is_rail(data_for(order_for_team(team, channel).spec)) else ["wall", "barricade"]):
 			continue
 		var offset: Vector2 = pos - e.pos
 		var length: float = offset.length()
+		if rail_order and (offset.dot(extension_direction) <= 0 or absf(offset.cross(extension_direction)) > .01): continue
 		if (absf(offset.x) < .01 or absf(offset.y) < .01) and length >= 1 and length <= 6 and length < distance:
 			nearest = e.pos
 			distance = length
@@ -502,6 +568,10 @@ func placement_error(team: int, pos: Vector2, channel: String = "auto") -> Strin
 	channel = _effective_construction_channel(team, channel)
 	if channel not in ["normal", "defense"]: return "无效建筑队列通道"
 	var points: Array[Vector2] = defense_extension(team, pos, channel)
+	var order: Dictionary = order_for_team(team, channel)
+	if not order.is_empty() and RailNetwork.is_rail(data_for(order.spec)):
+		var rail_error: String = _rail_network.batch_error(self, team, data_for(order.spec), points, int(order.get("rail_rotation", 0)))
+		if not rail_error.is_empty(): return rail_error
 	for point in points:
 		var error: String = _placement_cell_error(team, point, channel)
 		if not error.is_empty(): return error
@@ -523,12 +593,19 @@ func _placement_cell_error(team: int, pos: Vector2, channel: String = "auto") ->
 		return "放置需要已完成的总部或前哨基地"
 	pos = snap_build_position(team, pos, channel)
 	var info: Dictionary = data_for(order_for_team(team, channel).spec)
-	if info.get("role", "") == "hq": return "总部不能建造"
+	if info.get("role", "") == "hq" and not bool(info.get("rebuildable", false)): return "总部不能建造"
 	if info.get("role", "") == "outpost" and builder < 0: return "分基地需要工程兵现场部署"
-	return _building_site_error(team, info, pos, builder)
+	return _building_site_error(team, info, pos, builder,BuildingOrientation.quarters(order_for_team(team,channel)))
 
-func _building_site_error(team: int, info: Dictionary, pos: Vector2, builder: int = -1) -> String:
-	if info.get("role", "") == "shipyard": return NavalOperations.shipyard_site_error(self, team, info, pos, builder)
+func _building_site_error(team: int, info: Dictionary, pos: Vector2, builder: int = -1, rotation_quarters: int = -1) -> String:
+	var turns: int = rotation_quarters if rotation_quarters >= 0 else (posmod(roundi(NavalOperations.shipyard_heading(self,pos)/90.0),4) if info.get("role","")=="shipyard" else 0)
+	var exit_error: String = ProductionClearance.site_error(self, info, pos,turns)
+	if not exit_error.is_empty(): return exit_error
+	if info.get("role", "") == "drill": return MiningDrills.site_error(self, team, pos, builder)
+	if RailNetwork.is_rail(info):
+		var order: Dictionary = order_for_team(team, BuildingConstruction.channel_for(info))
+		return _rail_network.site_error(self, team, info, pos, turns)
+	if info.get("role", "") == "shipyard": return NavalOperations.shipyard_site_error(self, team, info, pos, builder,turns)
 	var size: float = float(info.size)
 	var half: float = size * 0.5
 	var origin := Vector2i(roundi(pos.x - half), roundi(pos.y - half))
@@ -558,7 +635,9 @@ func _building_site_error(team: int, info: Dictionary, pos: Vector2, builder: in
 	for ore in mines:
 		if _circle_rect(ore.pos, 1.2, pos, Vector2(half, half)):
 			return "不能覆盖矿点"
-	if builder >= 0: return ""
+	if builder >= 0:
+		if rules.factions.get(factions[team], {}).get("building_method", "") == "engineer" and info.get("role", "") not in ["barracks", "outpost"] and not bool(info.get("rebuildable", false)) and not in_construction_range(team, pos): return "超出基地兵营的建设范围；请先搭建新的基地兵营"
+		return ""
 	var covered: bool = in_construction_range(team, pos)
 	if not covered and info.get("role", "") in ["wall", "barricade"]:
 		for e in _building_entities:
@@ -577,6 +656,7 @@ func place_building(team: int, pos: Vector2, channel: String = "auto") -> String
 		return problem
 	pos = snap_build_position(team, pos, channel)
 	var spec: String = str(order_for_team(team, channel).spec)
+	var rail_rotation: int = BuildingOrientation.quarters(order_for_team(team, channel))
 	var builder: int = int(order_for_team(team, channel).get("builder", -1))
 	if builder >= 0:
 		var cost: float = float(order_for_team(team, channel).cost)
@@ -584,13 +664,17 @@ func place_building(team: int, pos: Vector2, channel: String = "auto") -> String
 		issue([builder], "deploy_outpost", pos)
 		entities[builder].commands.back().spec = spec
 		entities[builder].commands.back().cost = cost
+		entities[builder].commands.back().rotation_quarters = rail_rotation
 		return ""
 	var points: Array[Vector2] = defense_extension(team, pos, channel)
 	money[team] -= (points.size() - 1) * float(data_for(spec).cost)
 	_set_building_order(team, channel, {})
 	for point in points:
-		var id: int = _spawn(team, spec, point, false)
-		events.append({"kind": "build", "pos": point, "id": id})
+		var id: int = _spawn(team, spec, point, false,rail_rotation)
+		if RailNetwork.is_rail(data_for(spec)):
+			entities[id].rail_rotation = rail_rotation
+			_rail_network.rebuild(self)
+		events.append({"kind": "build", "pos": point, "id": id, "team": team, "spec": spec, "entity_kind": "building"})
 	_nav_dirty = true
 	return ""
 
@@ -602,10 +686,10 @@ func capture_error(engineer_id: int, target_id: int) -> String:
 	if target.team == entities[engineer_id].team: return "不能占领友方建筑"
 	if float(target.construct_remaining) > 0.0: return "建筑尚未完成，无法占领"
 	var role: String = str(data_for(target.spec).get("role", ""))
-	if role in ["wall", "barricade"]: return "围墙和拒马不能占领"
-	if role == "hq":
+	if role in ["wall", "barricade", "rail", "rail_junction"]: return "围墙、拒马、铁路和岔道口不能占领"
+	if role == "hq" and not bool(data_for(target.spec).get("rebuildable", false)):
 		for building in _building_entities:
-			if building.team == entities[engineer_id].team and float(building.hp) > 0.0 and data_for(building.spec).get("role", "") == "hq": return "每个势力只能拥有一个总部"
+			if building.team == entities[engineer_id].team and float(building.hp) > 0.0 and data_for(building.spec).get("role", "") == "hq" and not bool(data_for(building.spec).get("rebuildable", false)): return "每个势力只能拥有一个总部"
 	return ""
 
 func cancel_build(team: int, channel: String = "auto") -> String:
@@ -629,7 +713,7 @@ func produce(building_id: int, spec: String) -> String:
 	var info: Dictionary = data_for(spec)
 	if e.kind != "building" or float(e.hp) <= 0.0 or float(e.construct_remaining) > 0.0:
 		return "生产建筑尚未完成或已被摧毁"
-	if info.get("faction", "") != factions[int(e.team)] or info.get("producer", "") != data_for(e.spec).get("role", ""):
+	if info.get("faction", "") != factions[int(e.team)] or not TechAvailability.producer_matches(self, e, str(info.get("producer", ""))):
 		return "该设施不能生产此单位"
 	var problem: String = availability(int(e.team), spec, -1, building_id)
 	if not problem.is_empty(): return problem
@@ -657,11 +741,18 @@ func sell(id: int, confirmed: bool = false) -> String:
 	if not entities.has(id) or entities[id].kind != "building" or float(entities[id].hp) <= 0.0:
 		return "只能出售存活建筑"
 	var e: Dictionary = entities[id]
-	if e.has("construction"): return "未完工分基地请使用拆除脚手架"
-	if counts(int(e.team)).y == 1 and not confirmed:
-		return "CONFIRM_LAST_BUILDING"
-	money[int(e.team)] += float(data_for(e.spec).cost) * float(_eco("sell_ratio", 0.5))
-	events.append({"kind": "sell", "pos": e.pos, "id": id})
+	if e.has("construction"): return "未完工建筑请使用拆除脚手架"
+	if _is_victory_building(e) and not confirmed:
+		var other_base: bool = false
+		for building: Dictionary in _building_entities:
+			if int(building.id) != id and int(building.team) == int(e.team) and _is_victory_building(building):
+				other_base = true
+				break
+		if not other_base: return "CONFIRM_LAST_BUILDING"
+	var sales_income: float=float(data_for(e.spec).cost) * float(_eco("sell_ratio", 0.5))
+	money[int(e.team)] += sales_income
+	statistics.add(int(e.team),"sales_income",sales_income)
+	events.append({"kind": "sell", "pos": e.pos, "id": id,"spec":e.spec,"team":int(e.team),"entity_kind":"building"})
 	_kill_entity(id, false)
 	_check_result()
 	return ""
@@ -686,6 +777,84 @@ func resume_outpost_error(engineer_id: int, target_id: int) -> String:
 
 func dismantle_outpost(id: int) -> String:
 	return Construction.dismantle(self, id)
+
+# UI selection affects navigation service, never ownership, costs or damage.
+func set_player_navigation_priority(ids: Array) -> void:
+	_player_navigation_ids.clear()
+	for raw: Variant in ids:
+		var id: int = int(raw)
+		if entities.has(id) and int(entities[id].team) == 0: _player_navigation_ids[id] = true
+	if _path_worker != null and _path_worker.has_method("prioritize"):
+		_path_worker.prioritize(_player_navigation_ids)
+
+func _navigation_priority(id: int) -> int:
+	if _player_navigation_ids.has(id): return 3
+	if time < float(_navigation_command_until.get(id, -1.0)): return 2
+	return 1 if entities.has(id) and float(entities[id].get("planning_wait", 0.0)) > 4.0 else 0
+
+func _navigation_queue_index() -> int:
+	var best := 0
+	var priority := -1
+	for i in range(_planning_queue.size()):
+		var value: int = _navigation_priority(_planning_queue[i])
+		if value > priority: best = i; priority = value
+	return best
+
+func _complete_movement_yield(e: Dictionary) -> void:
+	e.yield_goal=Vector2.INF; e.erase("yield_root")
+	e.avoid_until=0.0;e.reversing=false
+	var saved:Array=e.get("yield_saved_path",[])
+	var valid:bool=false
+	if int(e.get("yield_saved_revision",-1))==_static_geometry_revision:
+		# Rejoin the farthest visible suffix rather than steering back to an
+		# already-passed pre-yield waypoint in the middle of the queue.
+		for index in range(saved.size()-1,-1,-1):
+			if _yield_route_connector(e.pos,saved[index],_radius(e),int(e.id)):
+				saved=saved.slice(index);valid=true;break
+	if valid:
+		e.path=saved; e.path_goal=e.get("yield_saved_goal",e.path_goal); e.path_wait=0.0
+	else:
+		e.path.clear(); e.path_goal=Vector2.INF; e.path_wait=0.0
+	for key in ["yield_saved_path","yield_saved_goal","yield_saved_revision"]:e.erase(key)
+
+func _yield_route_connector(start:Vector2,finish:Vector2,radius:float,id:int)->bool:
+	# Rejoining a saved path is optional. Near water/cliff/blocked-terrain
+	# corners the worker has stricter continuous terrain validation than the
+	# legacy mover, so obtain a fresh worker connector instead of shortcutting
+	# that corner with the mover's sampled standing test.
+	if not _fast_flat(start,radius):return false
+	var checks:int=maxi(1,ceili(start.distance_to(finish)/.4))
+	for n in range(1,checks+1):
+		if not _fast_flat(start.lerp(finish,float(n)/checks),radius):return false
+	return _segment_static(start,finish,radius,id)
+
+func _traffic_priority(e: Dictionary) -> int:
+	# Active vehicles take road precedence; an idle vehicle can still yield to
+	# a player-controlled pedestrian. Same-class ties retain the existing
+	# bounded retreat propagation and ID arbitration.
+	var active: bool = not e.commands.is_empty()
+	var vehicle: bool = _is_ground_vehicle(e)
+	return (40 if vehicle else 20)+_navigation_priority(int(e.id)) if active else (10 if vehicle else 0)
+
+func _traffic_may_yield(e: Dictionary, other: Dictionary) -> bool:
+	# A yielded blocker may propagate the same request, but must never ask
+	# its root requester to retreat in return: that creates an endless two-way
+	# shuttle at a crowded destination even though a legal side exit exists.
+	if (e.get("yield_goal", Vector2.INF) as Vector2).is_finite() and int(e.get("yield_root", -1)) == int(other.id): return false
+	if int(e.team) != int(other.team) or bool(other.get("hold_position", false)): return false
+	if absf(_height(e.pos) - _height(other.pos)) > .8: return false
+	if other.commands.is_empty(): return true
+	var source: Dictionary = entities.get(int(e.get("yield_root", -1)), e) if (e.get("yield_goal",Vector2.INF) as Vector2).is_finite() else e
+	var a: int = _traffic_priority(source)
+	var b: int = _traffic_priority(other)
+	# Keep the established same-class retreat propagation and ID tie break.
+	# Experimental spatial headway ranking did not remain stable at narrow
+	# terrain entrances. Vehicle/infantry and explicit player precedence are
+	# the intended new priorities; same-class propagation retains its limits.
+	if _is_ground_vehicle(source)!=_is_ground_vehicle(other):return _is_ground_vehicle(source)
+	if (e.get("yield_goal",Vector2.INF) as Vector2).is_finite():return true
+	if a!=b:return a>b
+	return int(source.id)<int(other.id)
 
 func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: bool = false) -> void:
 	if result != "":
@@ -712,18 +881,47 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			selected.append(id)
 	var ground_selected: Array = selected.filter(func(id): return not _is_air(entities[id]) and not _is_naval(entities[id]))
 	var reserved: Dictionary = {}
+	var air_reserved: Array = []
 	var formation_spacing: float = 1.0
+	var maximum_radius: float=.35
+	for id in ground_selected:maximum_radius=maxf(maximum_radius,_radius(entities[id]))
+	# Parking rows leave a swept-body-width access lane between columns.
+	# The old2.4R square grid became physically impassable once front units parked.
+	var formation_lane_spacing: float=maximum_radius*4.0+.06
 	for id in ground_selected: formation_spacing = maxf(formation_spacing, _radius(entities[id]) * 2.4)
+	var formation_forward := Vector2.RIGHT
+	if not ground_selected.is_empty():
+		var center := Vector2.ZERO
+		for id in ground_selected: center += entities[id].pos
+		center /= float(ground_selected.size())
+		formation_forward = (pos - center).normalized()
+		if formation_forward.length_squared() < .5: formation_forward = Vector2.RIGHT
+	var formation_side: Vector2 = formation_forward.orthogonal()
+	ground_selected.sort_custom(func(a,b):
+		var da: float=(entities[a].pos as Vector2).dot(formation_side)
+		var db: float=(entities[b].pos as Vector2).dot(formation_side)
+		return da < db if not is_equal_approx(da,db) else int(a)<int(b))
 	var ground_indices: Dictionary={}
-	for i in range(ground_selected.size()):ground_indices[ground_selected[i]]=i
+	var columns: int = ceili(sqrt(float(ground_selected.size()))) if not ground_selected.is_empty() else 1
+	var rows: int = ceili(float(ground_selected.size())/columns)
+	for column in range(columns):
+		var members: Array=ground_selected.slice(column*rows,mini((column+1)*rows,ground_selected.size()))
+		members.sort_custom(func(a,b):
+			var da: float=(entities[a].pos as Vector2).distance_to(pos)/maxf(.1,float(data_for(entities[a].spec).speed))
+			var db: float=(entities[b].pos as Vector2).distance_to(pos)/maxf(.1,float(data_for(entities[b].spec).speed))
+			return da<db if not is_equal_approx(da,db) else int(a)<int(b))
+		for row in range(members.size()):ground_indices[members[row]]=row*columns+column
 	for index in range(selected.size()):
 		var e: Dictionary = entities[selected[index]]
 		var air: bool = _is_air(e)
+		if kind == "garrison" and not GarrisonOperations.board_error(self,int(e.id),target).is_empty():continue
+		if kind == "return_miner" and str(data_for(e.spec).get("art",""))!="harvester":continue
 		if kind == "return" and not air: continue
 		if kind == "land" and (not air or not AircraftOperations.land_error(self, e, pos).is_empty()): continue
 		if kind == "unload_move" and (int(data_for(e.spec).get("transport_capacity", 0)) <= 0 or e.get("passengers", []).is_empty() or (air and not AircraftOperations.land_error(self, e, pos).is_empty())): continue
 		if kind in ["repair_building", "repair_bridge", "capture", "deploy_outpost", "resume_outpost"] and not _builder_valid(int(e.team), int(e.id)): continue
 		if kind == "repair_unit" and (not entities.has(target) or not FactionSupport.repairer(self, e, entities[target])): continue
+		if kind == "service" and not service_error(int(e.id),target).is_empty(): continue
 		if kind == "rescue" and not FactionSupport.rescue_error(self, int(e.id), target).is_empty(): continue
 		if kind == "resume_outpost" and not resume_outpost_error(int(e.id), target).is_empty(): continue
 		if kind == "capture" and not capture_error(int(e.id), target).is_empty(): continue
@@ -734,8 +932,11 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 		if air:
 			if kind == "return": e.park_after_service = true
 			elif kind not in ["stop", "hold"]:
+				if bool(e.get("takeoff_pending", false)): e.takeoff_returning = false
 				e.park_after_service = false
 				if e.flight_state == "rearming": e.service_interrupt = true
+			elif bool(e.get("takeoff_pending", false)):
+				e.takeoff_pending = false
 		if not append or kind in ["stop", "hold"]:
 			if bool(data_for(str(e.spec)).get("hero", false)) and float(e.get("hand_strike", 0.0)) > 0.0: HeroRules.cancel(e)
 			_release_mine(int(e.id))
@@ -755,6 +956,9 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			e.refinery_search = {}
 			e.planning_wait = 0.0
 			_planning_queue.erase(int(e.id))
+		if int(e.team)==0 and kind not in ["stop","hold"]: _navigation_command_until[int(e.id)]=time+3.0
+		e.erase("pursuit_goal");e.erase("pursuit_target");e.erase("yield_root")
+		for key in ["yield_saved_path","yield_saved_goal","yield_saved_revision"]:e.erase(key)
 		e.hold_position = kind in ["hold", "resume_outpost"]
 		if kind == "return":
 			_begin_return(e)
@@ -767,13 +971,14 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			e.state = "idle"
 			continue
 		var destination: Vector2 = _air_goal(pos) if air else pos
+		if air and kind in ["move", "attack_move", "patrol"]:
+			destination = AirNavigation.destination(self, e, pos, air_reserved)
 		var ground_index: int = int(ground_indices.get(int(e.id),-1))
 		if not air and not _is_naval(e) and kind in ["move", "attack_move", "patrol"] and ground_selected.size() == 1:
 			destination = _near_stand(pos, _radius(e), e.id, 5.0)
 		if not air and not _is_naval(e) and kind in ["move", "attack_move", "patrol"] and ground_selected.size() > 1:
-			var columns: int = ceili(sqrt(float(ground_selected.size())))
 			var spacing: float = formation_spacing
-			destination += Vector2(float(ground_index % columns) - float(columns - 1) * 0.5, float(ground_index / columns) - float(columns - 1) * 0.5) * spacing
+			destination += (formation_side * (float(ground_index % columns) - float(columns - 1) * .5) * formation_lane_spacing - formation_forward * (float(ground_index / columns) - float(columns - 1) * .5) * spacing)
 			destination = _near_stand(destination, _radius(e), e.id, 8.0, false)
 		if not air and not _is_naval(e) and kind in ["move", "attack_move", "patrol"] and destination.is_finite():
 			var ideal: Vector2 = destination
@@ -792,8 +997,13 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 				var bucket:=Vector2i(floori(destination.x/formation_spacing),floori(destination.y/formation_spacing))
 				if not reserved.has(bucket):reserved[bucket]=[]
 				reserved[bucket].append(destination)
+		if kind in ["move", "attack_move", "patrol"] and not air and not _is_naval(e):
+			if RailNetwork.rail_only(data_for(e.spec)):
+				destination = RailNetwork.center(RailNetwork.key(pos)) if not _rail_network.path(int(e.team), e.pos, pos).is_empty() else _rail_network.nearest_connected(self, e, pos, 3.0)
+			elif not _rail_network.at(int(e.team), pos).is_empty():
+				destination = RailNetwork.center(RailNetwork.key(pos))
 		if not destination.is_finite():
-			_notice("目的地附近没有可站立位置")
+			_notice("铁路目的地没有连通的己方轨道" if RailNetwork.rail_only(data_for(e.spec)) else "目的地附近没有可站立位置")
 			continue
 		if kind == "patrol":
 			var origin: Vector2 = e.pos if e.commands.is_empty() else e.commands.back().pos
@@ -802,9 +1012,10 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 		else:
 			e.commands.append({"kind": kind, "pos": destination, "target": target})
 		if kind == "resume_outpost" and not append: Construction.assign_builder(self, int(e.id), target)
+		if ground_selected.size()>1 and kind in ["move","attack_move","patrol"] and not air and not _is_naval(e):e.commands.back().navigation_lane=ground_index%3
 		e.auto_target = -1
-		e.harvest_override = not (kind in ["harvest", "stop"])
-		events.append({"kind": "command", "pos": destination, "id": e.id})
+		e.harvest_override = not (kind in ["harvest", "stop", "return_miner"])
+		events.append({"kind": "command", "pos": destination, "id": e.id,"team":int(e.team),"spec":str(e.spec)})
 
 func debug_spawn(team: int, spec: String, pos: Vector2, force_spawn: bool = false) -> int:
 	if data_for(spec).is_empty():
@@ -819,32 +1030,44 @@ func debug_spawn(team: int, spec: String, pos: Vector2, force_spawn: bool = fals
 		if not pos.is_finite(): return -1
 	elif rules.get("units", {}).has(spec) and info.get("domain", "ground") == "air":
 		if not _in_bounds(pos): return -1
+		pos = AirNavigation.spawn_point(self, spec, pos)
+		if not pos.is_finite(): return -1
 	elif rules.get("units", {}).has(spec):
 		pos = _near_stand(pos, float(info.radius), -1, 8.0)
 		if not pos.is_finite():
 			return -1
 	return _spawn(team, spec, pos, true)
 
-func _spawn(team: int, spec: String, pos: Vector2, completed: bool) -> int:
+func _spawn(team: int, spec: String, pos: Vector2, completed: bool, rotation_quarters: int = -1) -> int:
 	var id: int = _next_id
 	_next_id += 1
 	var info: Dictionary = data_for(spec)
 	var is_building: bool = rules.get("buildings", {}).has(spec)
 	_max_entity_extent = maxf(_max_entity_extent, float(info.size) * 0.5 if is_building else float(info.get("radius", 0.35)))
+	if not is_building and str(info.get("domain", "ground")) == "ground":
+		_max_ground_radius = maxf(_max_ground_radius, float(info.get("radius", 0.35)))
 	if is_building:
-		var half: float = float(info.size) * 0.5
-		pos = Vector2(roundf(pos.x - half) + half, roundf(pos.y - half) + half)
-	entities[id] = {"radius": float(info.get("radius", 0.35)), "can_crush": bool(info.get("crush", false)), "crushable": bool(info.get("crushable", false)), "id": id, "kind": "building" if is_building else "unit", "spec": spec, "team": team, "pos": pos, "hp": float(info.hp), "alpha": 0.0 if team == 0 else 180.0, "turret_alpha": 0.0 if team == 0 else 180.0, "turret_target": -1, "state": "idle", "cooldown": 0.0, "commands": [], "queue": [], "construct_remaining": 0.0 if completed or not is_building else float(_eco("construction_animation", 1.5)), "cargo": 0.0, "hit_flash": 0.0, "rally": pos + Vector2(0, float(info.get("size", 1)) * 0.5 + 3), "path": [], "path_goal": Vector2.INF, "path_wait": 0.0, "stuck": 0.0, "auto_target": -1, "harvest_override": false, "harvest_mine": -1, "harvest_refinery": -1, "repairing": false, "gift_pending": is_building and info.get("role", "") == "refinery", "blocked_notice": false, "motion": 0.0, "attack_flash": 0.0}
-	if is_building and info.get("role", "") == "shipyard":
-		var heading: float = NavalOperations.shipyard_heading(self, pos)
-		entities[id].alpha = heading
-		entities[id].turret_alpha = heading
+		if info.get("role", "") == "drill":
+			var mine_index: int = MiningDrills.mine_index(self, pos)
+			if mine_index >= 0: pos = mines[mine_index].pos
+		else:
+			var half: float = float(info.size) * 0.5
+			pos = Vector2(roundf(pos.x - half) + half, roundf(pos.y - half) + half)
+	entities[id] = {"radius": float(info.get("radius", 0.35)), "can_crush": bool(info.get("crush", false)), "crushable": bool(info.get("crushable", false)), "id": id, "kind": "building" if is_building else "unit", "spec": spec, "team": team, "pos": pos, "hp": float(info.hp), "alpha": 0.0 if team == 0 else 180.0, "turret_alpha": 0.0 if team == 0 else 180.0, "turret_target": -1, "state": "idle", "cooldown": 0.0, "commands": [], "queue": [], "construct_remaining": 0.0 if completed or not is_building else float(_eco("construction_animation", 1.5)), "cargo": 0.0, "hit_flash": 0.0, "rally": pos + Vector2(0, float(info.get("size", 1)) * 0.5 + (4.0 if str(info.get("role", "")) in ["factory", "refinery"] else 3.0)), "path": [], "path_goal": Vector2.INF, "path_wait": 0.0, "stuck": 0.0, "auto_target": -1, "harvest_override": false, "harvest_mine": -1, "harvest_refinery": -1, "repairing": false, "gift_pending": is_building and info.get("role", "") == "refinery", "blocked_notice": false, "motion": 0.0, "attack_flash": 0.0}
+	_configure_crushing(entities[id], info)
+	if is_building:
+		var turns: int = posmod(rotation_quarters,4) if rotation_quarters >= 0 else (posmod(roundi(NavalOperations.shipyard_heading(self,pos)/90.0),4) if info.get("role","")=="shipyard" else 0)
+		entities[id].rotation_quarters = turns
+		entities[id].alpha = float(turns)*90.0
+		entities[id].turret_alpha = entities[id].alpha
+		entities[id].rally = BuildingOrientation.point(entities[id],Vector2(float(info.size)*.5+4.0,0) if info.get("role","")=="shipyard" else Vector2(0,float(info.size)*.5+(4.0 if info.get("role","") in ["factory","refinery"] else 3.0)))
+		if RailNetwork.is_rail(info): entities[id].rail_rotation = turns
+
 	entities[id].visible_to = 1 << team if vision_enabled else (1 << factions.size()) - 1
 	Transport.initialize(entities[id])
 	if not is_building:
 		entities[id].last_damage_time = time
 		entities[id].last_attack_time = time
-		entities[id].breakthrough_last_pos = pos
 		if bool(info.get("hero", false)):
 			entities[id].hand_strike = 0.0
 			entities[id].hand_recover = 0.0
@@ -864,9 +1087,11 @@ func _spawn(team: int, spec: String, pos: Vector2, completed: bool) -> int:
 		_building_entities.append(entities[id])
 		_spatial_add(id, pos)
 		_refresh_building_spatial()
+		if info.get("role", "") == "drill": MiningDrills.claim(self, entities[id])
 		_mark_nav_region(Rect2(pos - Vector2.ONE * float(info.size) * 0.5, Vector2.ONE * float(info.size)))
 	else:
 		_spatial_add(id, pos)
+	if _is_air(entities[id]):AirNavalExpansion.initialize_air(self,entities[id])
 	return id
 
 func step(delta: float) -> void:
@@ -874,6 +1099,7 @@ func step(delta: float) -> void:
 		return
 	var profile_start: int = Time.get_ticks_usec() if profile_enabled else 0
 	_in_step = true
+	_ground_motion_spatial.clear()
 	_geometry_queries=0;_geometry_us=0;_geometry_rectangles=0
 	if _kernels!=null:_kernels.begin_geometry_measurement(geometry_profiling_enabled)
 	_spec_cache = rules.get("units", {}).duplicate()
@@ -895,7 +1121,7 @@ func step(delta: float) -> void:
 	_yield_requests=YIELD_REQUESTS_PER_TICK
 	_collect_path_results()
 	_step_delta = delta
-	_path_plans_remaining = PATH_PLANS_PER_TICK
+	_path_plans_remaining = PATH_SYNC_PLANS_PER_TICK if synchronous_path_tests else PATH_PLANS_PER_TICK
 	_planning_deferred_ids.clear()
 	_planning_requested_ids.clear()
 	time += delta
@@ -904,6 +1130,7 @@ func step(delta: float) -> void:
 	_rebuild_spatial()
 	_prepare_native_queries()
 	_damage.clear()
+	_damage_causes.clear()
 	_execute_buildings.clear()
 	_crush_targets.clear()
 	TeamVision.refresh(self)
@@ -913,7 +1140,7 @@ func step(delta: float) -> void:
 	_mine_tick_budget.clear()
 	for index in range(mines.size()): _mine_tick_budget[index] = float(_eco("harvest_rate", 25)) * delta
 	FactionSupport.prepare(self, delta)
-	FactionTraits.step_breakthrough(self)
+	AircraftOperations.step_idle(self, delta)
 	var multipliers: Array[float] = []
 	multipliers.resize(factions.size())
 	multipliers.fill(1.0)
@@ -927,17 +1154,24 @@ func step(delta: float) -> void:
 				events.append({"kind": "low_power", "pos": _team_start(team), "team": team})
 				if team == 0:
 					_notice("电力不足：建造与生产减速，防御塔停机")
+			else:
+				events.append({"kind":"power_restored","pos":_team_start(team),"team":team})
+				if team==0:_notice("电力恢复：生产与防御设施已恢复运行")
 		for channel in ["normal", "defense"]:
 			BuildingConstruction.advance(self, team, channel, delta, multipliers[team])
+	DeveloperTools.finish_pending(self,0)
 	var profile_units_start: int = Time.get_ticks_usec() if profile_enabled else 0
-	if native_kernels_enabled and native_unit_dispatch_enabled and _kernels != null:
+	if native_kernels_enabled and native_unit_dispatch_enabled and _kernels != null and not ProductionLifecycle.active(self) and not RefineryDocking.active(self) and not GarrisonOperations.active(self) and not Veterancy.active(self):
 		_kernels.step_entities(self,entities,_spec_cache,rules.weapons,_air_specs,_naval_specs,_weapon_target_masks,multipliers,delta,float(_eco("fire_angle",15)))
 	else:
 		_step_entities_script(delta,multipliers)
 	Transport.sync_passengers(self)
+	GarrisonOperations.step(self,delta)
+	AirNavalExpansion.step_fleet(self,delta)
 	var profile_units_end: int = Time.get_ticks_usec() if profile_enabled else 0
 	_step_support(delta, multipliers)
 	_step_projectiles(delta)
+	BeamWeapons.step(self, delta)
 	_apply_damage()
 	TeamVision.refresh(self)
 	_damage.clear()
@@ -948,6 +1182,7 @@ func step(delta: float) -> void:
 		_apply_damage()
 		TeamVision.refresh(self)
 	FactionTraits.step_regeneration(self, delta)
+	Veterancy.step(self,delta)
 	if campaign_controller != null: campaign_controller.step(self, delta)
 	_check_result()
 	if profile_enabled:
@@ -974,6 +1209,7 @@ func step(delta: float) -> void:
 		if _kernels!=null:_kernels.begin_geometry_measurement(false)
 	_in_step = false
 	_native_geometry_ready = false
+	statistics.sample(self)
 
 func _step_entities_script(delta: float, multipliers: Array[float]) -> void:
 	for raw_id in entities.keys():
@@ -993,6 +1229,7 @@ func _step_entities_script(delta: float, multipliers: Array[float]) -> void:
 			_step_unit(e, delta)
 
 func _step_building(e: Dictionary, delta: float, multiplier: float) -> void:
+	ProductionLifecycle.building_step(self, e, delta)
 	if float(e.get("emp_until", 0.0)) > time:
 		e.state = "emp"
 		return
@@ -1001,28 +1238,38 @@ func _step_building(e: Dictionary, delta: float, multiplier: float) -> void:
 		return
 	if float(e.construct_remaining) > 0.0:
 		e.construct_remaining = maxf(0.0, float(e.construct_remaining) - delta)
-		if float(e.construct_remaining) <= 0.0: _invalidate_base_cache()
+		if float(e.construct_remaining) <= 0.0:
+			_invalidate_base_cache()
+			if not RailNetwork.is_rail(data_for(e.spec)): statistics.add(int(e.team),"buildings_built")
+			else: _rail_network.rebuild(self)
+			events.append({"kind": "deploy", "pos": e.pos, "id": e.id, "team": e.team, "spec": e.spec, "entity_kind": "building"})
 		e.state = "build" if float(e.construct_remaining) > 0.0 else "idle"
 		return
+	if e.state == "emp": e.state = "idle"
 	var info: Dictionary = data_for(e.spec)
-	if bool(e.repairing) and float(e.hp) < float(info.hp):
+	if info.get("role", "") == "drill": MiningDrills.step(self, e, delta)
+	multiplier = float(_eco("low_power_multiplier", 0.5)) if building_low_power(e) else 1.0
+	if bool(e.repairing) and float(e.hp) < max_hp(e):
 		var rate: float = float(_eco("repair_rate", 0.02)) * float(info.hp)
 		var cost: float = float(_eco("repair_cost", 0.2))
-		var healed: float = minf(rate * delta, float(info.hp) - float(e.hp))
+		var healed: float = minf(rate * delta, max_hp(e) - float(e.hp))
 		if cost > 0.0:
 			healed = minf(healed, money[int(e.team)] / cost)
 		e.hp += healed
 		money[int(e.team)] = maxf(0.0, money[int(e.team)] - healed * cost)
 	if bool(e.gift_pending):
+		_rail_network.auto_refinery(self, e)
 		var gift: String = factions[int(e.team)] + "_harvester"
 		var gift_pos: Vector2 = _spawn_point(e, gift)
 		if gift_pos.is_finite():
 			e.gift_pending = false
 			var gift_id: int = _spawn(int(e.team), gift, gift_pos, true)
+			ProductionLifecycle.begin(self, e, entities[gift_id], gift_pos)
 			events.append({"kind": "produce", "pos": gift_pos, "id": gift_id, "team": int(e.team), "spec": gift})
+			statistics.add(int(e.team),"units_produced")
 		else:
 			_blocked(e)
-	if not e.queue.is_empty():
+	if not e.queue.is_empty() and not entities.has(int(e.get("production_unit", -1))):
 		var order: Dictionary = e.queue[0]
 		order.started = true
 		order.remaining = maxf(0.0, float(order.remaining) - delta * multiplier)
@@ -1032,21 +1279,22 @@ func _step_building(e: Dictionary, delta: float, multiplier: float) -> void:
 			var spawn_pos: Vector2 = _spawn_point(e, str(order.spec))
 			if spawn_pos.is_finite():
 				var unit_id: int = _spawn(int(e.team), str(order.spec), spawn_pos, true)
-				if _is_air(entities[unit_id]): _set_home_airfield(entities[unit_id], int(e.id))
+				ProductionLifecycle.begin(self, e, entities[unit_id], spawn_pos)
 				e.queue.pop_front()
 				e.blocked_notice = false
-				if not str(order.spec).ends_with("_harvester"):
+				if not str(order.spec).ends_with("_harvester") and not _is_air(entities[unit_id]):
 					var rally_goal: Vector2 = _air_goal(e.rally) if _is_air(entities[unit_id]) else (e.rally if _is_naval(entities[unit_id]) else _near_stand(e.rally, _radius(entities[unit_id]), unit_id, 6.0))
 					if rally_goal.is_finite():
 						issue([unit_id], "move", rally_goal)
 				events.append({"kind": "produce", "pos": spawn_pos, "id": unit_id, "team": int(e.team), "spec": str(order.spec)})
+				statistics.add(int(e.team),"units_produced")
 			else:
 				_blocked(e)
 	var weapon_id: String = str(info.get("weapon", ""))
-	if weapon_id != "" and not _low_power[int(e.team)]:
-		var weapon: Dictionary = rules.weapons[weapon_id]
+	if weapon_id != "" and not building_low_power(e):
+		var weapon: Dictionary = weapon_for(e,weapon_id)
 		var target: int = _nearest_enemy(e, float(weapon.range))
-		if target >= 0:
+		if target != -1:
 			e.turret_target = target
 			e.turret_alpha = rad_to_deg((_target_position(target) - (e.pos as Vector2)).angle())
 			_fire(e, target)
@@ -1055,55 +1303,49 @@ func _blocked(e: Dictionary) -> void:
 	if not bool(e.blocked_notice):
 		e.blocked_notice = true
 		if int(e.team) == 0:
-			_notice("生产出口堵塞：成品等待合法位置")
+			_notice("等待铁路连接：请在工厂实际出口铺设己方铁路" if bool(e.get("rail_waiting", false)) else "生产出口堵塞：成品等待合法位置")
 
 func _spawn_point(building: Dictionary, spec: String) -> Vector2:
+	if RailNetwork.rail_only(data_for(spec)): return _rail_network.spawn_point(self, building, spec)
+	if bool(data_for(spec).get("amphibious",false)) and data_for(building.spec).get("role","")!="shipyard":
+		var point:Vector2=BuildingOrientation.point(building,Vector2(0,float(data_for(building.spec).size)*.5+float(data_for(spec).radius)+.15))
+		return point if _standing(point,float(data_for(spec).radius),-1,true) else Vector2.INF
 	if data_for(spec).get("domain", "ground") == "naval": return NavalOperations.spawn_point(self, building, spec)
 	if data_for(spec).get("domain", "ground") == "air":
+		if bool(data_for(spec).get("permanent_air",false)):return AirNavigation.spawn_point(self,spec,BuildingOrientation.point(building,Vector2(0,float(data_for(building.spec).size)*.5+2)))
 		var capacity: int = int(data_for(building.spec).get("aircraft_capacity", 4))
 		if _airfield_load(int(building.id), false) >= capacity: return Vector2.INF
-		return building.pos
+		return AircraftOperations.production_slot(self, building)
 	var radius: float = float(data_for(spec).get("radius", 0.35))
 	var half: float = float(data_for(building.spec).size) * 0.5
-	# An exit is physically attached to this building; never teleport across the map.
-	for ring in range(3):
-		var offset: float = half + radius + 0.15 + ring * 0.65
-		var choices: Array[Vector2] = []
-		for n in range(7):
-			var side: float = (float(n) - 3.0) * 0.65
-			choices.append(building.pos + Vector2(side, offset))
-			choices.append(building.pos + Vector2(offset, side))
-			choices.append(building.pos + Vector2(side, -offset))
-			choices.append(building.pos + Vector2(-offset, side))
-		for point in choices:
-			if _standing(point, radius, -1, true):
-				return point
-	return Vector2.INF
+	# Every ground producer uses its authored central +Z doorway. A blocked
+	# door retains the ready order instead of moving the exit to a solid wall.
+	var point: Vector2 = BuildingOrientation.point(building,Vector2(0, half + radius + .15))
+	return point if _standing(point, radius, -1, true) else Vector2.INF
 
 func _step_unit(e: Dictionary, delta: float) -> void:
 	if Transport.is_loaded(e): return
 	if float(e.get("emp_until", 0.0)) > time:
 		e.state = "emp"
 		return
+	if ProductionLifecycle.step_unit(self, e, delta): return
+	if RefineryDocking.step_unit(self,e,delta): return
 	if _is_air(e) and _step_aircraft_service(e, delta): return
 	_step_unit_after_service(e,delta)
+
+func service_error(unit_id:int,depot_id:int)->String:
+	return RepairDepot.error(self,unit_id,depot_id)
 
 func _step_unit_after_service(e: Dictionary, delta: float) -> void:
 	var spec: Dictionary = data_for(e.spec)
 	var yielding: Vector2 = e.get("yield_goal", Vector2.INF)
 	if yielding.is_finite() and time >= float(e.get("yield_until",time+3.0)):
-		e.yield_goal=Vector2.INF
-		e.path.clear()
-		e.path_goal=Vector2.INF
-		e.path_wait=0.0
+		_complete_movement_yield(e)
 		yielding=Vector2.INF
 	if yielding.is_finite():
 		if not e.has("yield_until"): e.yield_until=time+3.0
 		if _move_to(e, yielding, delta):
-			e.yield_goal = Vector2.INF
-			e.path.clear()
-			e.path_goal=Vector2.INF
-			e.path_wait=0.0
+			_complete_movement_yield(e)
 		if _has_turret(spec):
 			var yield_command: Dictionary = e.commands[0] if not e.commands.is_empty() else {}
 			if _can_move_fire(spec) and yield_command.get("kind", "") in ["attack", "attack_move"]:
@@ -1120,6 +1362,19 @@ func _step_unit_after_service(e: Dictionary, delta: float) -> void:
 	var command: Dictionary = e.commands[0] if not e.commands.is_empty() else {}
 	if not command.is_empty():
 		var kind: String = str(command.kind)
+		if kind == "garrison":
+			GarrisonOperations.step_board(self,e,command,delta)
+			return
+		if kind == "return_miner":
+			if not bool(command.get("started",false)):
+				_release_mine(int(e.id));e.manual_unload=true
+				e.harvest_refinery=int(command.target) if entities.has(int(command.target)) else _find_refinery(e)
+				command.started=true
+			_step_harvester(e,delta)
+			return
+		if kind == "service":
+			RepairDepot.step(self,e,command,delta)
+			return
 		if kind == "land":
 			AircraftOperations.step_land(self, e, command, delta)
 			return
@@ -1196,10 +1451,10 @@ func _step_unit_after_service(e: Dictionary, delta: float) -> void:
 			var target: int = int(e.auto_target)
 			if not _target_alive(target) or not _weapon_can_target(e, target) or _target_position(target).distance_to(e.pos) > 14.0:
 				target = -1
-			if target < 0 and weapon_id != "":
-				target = _nearest_enemy(e, float(rules.weapons[weapon_id].range) + 2.0)
+			if target == -1 and weapon_id != "":
+				target = _nearest_enemy(e, float(weapon_for(e,weapon_id).range) + 2.0)
 			e.auto_target = target
-			if target >= 0:
+			if target != -1:
 				_engage(e, target, delta, true)
 			elif _move_order(e, command, delta):
 				_finish_command(e)
@@ -1207,8 +1462,8 @@ func _step_unit_after_service(e: Dictionary, delta: float) -> void:
 	var weapon_id: String = str(spec.get("weapon", ""))
 	e.state = "idle"
 	if weapon_id != "":
-		var target: int = _nearest_enemy(e, float(rules.weapons[weapon_id].range))
-		if target >= 0:
+		var target: int = _nearest_enemy(e, float(weapon_for(e,weapon_id).range))
+		if target != -1:
 			_engage(e, target, delta, false)
 		elif _has_turret(spec):
 			_turret_forward(e, delta)
@@ -1217,21 +1472,15 @@ func _step_unit_after_service(e: Dictionary, delta: float) -> void:
 func _air_goal(pos: Vector2) -> Vector2:
 	return pos.clamp(Vector2(0.05, 0.05), Vector2.ONE * (float(map.size) - 0.05)) if pos.is_finite() else Vector2.INF
 
+func _set_airborne(e: Dictionary, value: bool) -> void:
+	if bool(e.get("airborne", true)) == value: return
+	_spatial_remove(int(e.id), e.pos)
+	e.airborne = value
+	_spatial_add(int(e.id), e.pos)
+	_neighbor_cache.clear()
+
 func _fly_to(e: Dictionary, goal: Vector2, delta: float) -> bool:
-	goal = _air_goal(goal)
-	if not goal.is_finite(): return false
-	var offset: Vector2 = goal - e.pos
-	if offset.length() <= 0.1:
-		e.state = "idle"
-		return true
-	_turn(e, rad_to_deg(offset.angle()), delta)
-	var next: Vector2 = (e.pos as Vector2).move_toward(goal, float(data_for(e.spec).speed) * delta)
-	var original: Vector2 = e.pos
-	e.motion = (e.pos as Vector2).distance_to(next) / maxf(delta, 0.001)
-	e.pos = next
-	e.state = "move"
-	_spatial_move(e, original, next)
-	return next.distance_to(goal) <= 0.1
+	return AirNavigation.fly_to(self, e, goal, delta)
 
 func _airfield_load(id: int, include_queue: bool = true) -> int:
 	if _airfield_counts_dirty:
@@ -1244,12 +1493,14 @@ func _airfield_load(id: int, include_queue: bool = true) -> int:
 			for spec_id in rules.get("units",{}):
 				if rules.units[spec_id].get("domain","ground")=="air":air_ids[spec_id]=true
 		for e in entities.values():
-			if e.get("kind","unit")=="unit" and air_ids.has(e.spec) and float(e.hp) > 0.0:
+			if e.get("kind","unit")=="unit" and air_ids.has(e.spec) and float(e.hp)>0 and not AirNavalExpansion.permanent(self,e) and not bool(data_for(e.spec).get("carrier_plane",false)):
 				var home: int = int(e.get("home_airfield", -1))
 				if home >= 0: _airfield_counts[home] = int(_airfield_counts.get(home, 0)) + 1
 		_airfield_counts_dirty = false
 	var amount: int = int(_airfield_counts.get(id, 0))
-	if include_queue and entities.has(id): amount += entities[id].queue.size()
+	if include_queue and entities.has(id):
+		for order in entities[id].queue:
+			if not bool(data_for(order.spec).get("permanent_air",false)):amount+=1
 	return amount
 
 func _set_home_airfield(e: Dictionary, id: int) -> void:
@@ -1283,41 +1534,73 @@ func _find_airfield(e: Dictionary) -> int:
 	return answer
 
 func _begin_return(e: Dictionary) -> void:
+	if AirNavalExpansion.permanent(self,e) or bool(data_for(e.spec).get("carrier_plane",false)):return
 	if e.flight_state != "returning":
-		e.flight_state = "returning"
+		if bool(e.get("airborne", true)): e.flight_state = "returning"
+		else: _wait_for_takeoff(e, true)
 		events.append({"kind": "return", "id": e.id, "team": e.team, "spec": e.spec, "pos": e.pos})
 	e.path.clear()
 	e.path_goal = Vector2.INF
 
+func _wait_for_takeoff(e: Dictionary, returning: bool) -> void:
+	e.flight_state = "landed"
+	e.flight_height = .35
+	e.rearm_remaining = 0.0
+	e.takeoff_pending = true
+	e.takeoff_returning = returning
+	e.state = "waiting"
+	_set_airborne(e, false)
+
 func _step_aircraft_service(e: Dictionary, delta: float) -> bool:
+	if bool(data_for(e.spec).get("carrier_plane",false)):return AirNavalExpansion.service(self,e,delta)
+	if AirNavalExpansion.permanent(self,e):
+		AirNavalExpansion.initialize_air(self,e)
+		return false
+	if bool(e.get("takeoff_pending", false)):
+		if not AirNavigation.point_clear(self, e, e.pos):
+			e.state = "waiting"
+			return true
+		e.takeoff_pending = false
+		e.flight_state = "returning" if bool(e.get("takeoff_returning", false)) or int(e.ammo) <= 0 else "airborne"
+		e.flight_height = float(data_for(e.spec).flight_height)
+		_set_airborne(e, true)
 	if AircraftOperations.step_landed(self, e): return true
 	var info: Dictionary = data_for(e.spec)
 	if e.flight_state == "rearming" and bool(e.get("service_interrupt", false)):
+		if not AirNavigation.point_clear(self, e, e.pos):
+			e.state = "waiting"
+			return true
 		e.service_interrupt = false
 		e.flight_state = "airborne"
 		e.flight_height = float(info.flight_height)
-		e.airborne = true
+		_set_airborne(e, true)
 		e.rearm_remaining = 0.0
 		return false
 	if not _airfield_valid(int(e.home_airfield), int(e.team)):
 		_set_home_airfield(e, _find_airfield(e))
 		if e.flight_state == "rearming":
-			e.flight_state = "returning"
-			e.rearm_remaining = 0.0
+			_wait_for_takeoff(e, true)
+			return true
 	if int(e.ammo) <= 0 and e.flight_state == "airborne": _begin_return(e)
 	if e.flight_state == "stranded" and int(e.home_airfield) > 0: _begin_return(e)
 	if e.flight_state == "stranded" and not e.commands.is_empty() and str(e.commands[0].get("kind", "")) in ["land", "unload_move"]: return false
 	if e.flight_state not in ["returning", "rearming", "stranded"]: return false
 	if int(e.home_airfield) < 0:
+		if not bool(e.get("airborne", true)) and not AirNavigation.point_clear(self, e, e.pos):
+			e.state = "waiting"
+			return true
 		e.flight_state = "stranded"
 		e.flight_height = float(info.flight_height)
-		e.airborne = true
+		_set_airborne(e, true)
 		e.state = "waiting"
 		return true
 	var field: Dictionary = entities[int(e.home_airfield)]
 	if e.flight_state == "returning":
+		if not bool(e.get("airborne", true)) and not AirNavigation.point_clear(self, e, e.pos):
+			e.state = "waiting"
+			return true
 		e.flight_height = float(info.flight_height)
-		e.airborne = true
+		_set_airborne(e, true)
 		var service_goal: Vector2 = AircraftOperations.service_position(self, e, field)
 		e.service_goal = service_goal
 		if not service_goal.is_finite():
@@ -1328,29 +1611,34 @@ func _step_aircraft_service(e: Dictionary, delta: float) -> bool:
 		e.rearm_remaining = float(info.rearm_time)
 		events.append({"kind": "rearm_start", "id": e.id, "team": e.team, "pos": e.pos})
 	if e.flight_state == "rearming":
+		e.alpha=float(BuildingOrientation.quarters(field))*90.0
+		e.turret_alpha=e.alpha
 		e.flight_height = 0.35
-		e.airborne = false
+		_set_airborne(e, false)
 		e.state = "rearm"
 		var maintenance: float = float(data_for(field.spec).get("aircraft_repair_rate", 0.0))
-		if maintenance > 0.0 and not _low_power[int(e.team)] and float(e.hp) < float(info.hp):
-			var heal: float = minf(maintenance * delta, float(info.hp) - float(e.hp))
+		if maintenance > 0.0 and not building_low_power(field) and float(e.hp) < max_hp(e):
+			var heal: float = minf(maintenance * delta, max_hp(e) - float(e.hp))
 			var price: float = float(_eco("repair_cost", 0.0))
 			if price > 0.0: heal = minf(heal, money[int(e.team)] / price)
 			if heal > 0.0:
 				_repair_health(e, heal)
-		var service_speed: float = float(_eco("low_power_multiplier", 0.5)) if _low_power[int(e.team)] else 1.0
+		var service_speed: float = float(_eco("low_power_multiplier", 0.5)) if building_low_power(field) else 1.0
 		e.rearm_remaining = maxf(0.0, float(e.rearm_remaining) - delta * service_speed)
 		if float(e.rearm_remaining) <= 0.0:
 			e.ammo = int(info.ammo_capacity)
-			if float(e.hp) < float(info.hp) - 0.001:
+			if float(e.hp) < max_hp(e) - 0.001:
 				e.state = "repair"
 				return true
-			if e.commands.is_empty() and (bool(e.get("park_after_service", false)) or int(info.get("transport_capacity", 0)) > 0):
+			if e.commands.is_empty():
 				e.state = "parked"
+				return true
+			if not AirNavigation.point_clear(self, e, e.pos):
+				e.state = "waiting"
 				return true
 			e.flight_state = "airborne"
 			e.flight_height = float(info.flight_height)
-			e.airborne = true
+			_set_airborne(e, true)
 			events.append({"kind": "rearm", "id": e.id, "team": e.team, "spec": e.spec, "pos": e.pos})
 	return true
 
@@ -1363,6 +1651,7 @@ func _target_height(target: int) -> float:
 	return 0.0
 
 func _source_height(e: Dictionary) -> float:
+	if e.has("garrison_fire_height"):return float(e.garrison_fire_height)
 	if _is_naval(e): return MapData.entity_surface_y(map,e.pos,"naval") - _height(e.pos)
 	if e.kind == "building" and str(data_for(e.spec).get("domain", "ground")) == "naval": return MapData.entity_surface_y(map,e.pos,"naval") - _height(e.pos)
 	return float(e.get("flight_height", 0.0))
@@ -1389,6 +1678,8 @@ func _lost_target_order(e: Dictionary, target: int) -> bool:
 	return true
 
 func _weapon_can_target(e: Dictionary, target: int, force: bool = false) -> bool:
+	if not AirNavalExpansion.can_target(self,e,target):return false
+	if ZeppelinWeapons.is_zeppelin(self,e) and ZeppelinWeapons.can_target(self,e,target,force): return true
 	if target >= 0 and not entity_visible_to(int(e.team), target): return false
 	if _in_step and _weapon_target_masks.has(e.spec):
 		var mask: int = int(_weapon_target_masks[e.spec])
@@ -1400,13 +1691,13 @@ func _weapon_can_target(e: Dictionary, target: int, force: bool = false) -> bool
 			var other: Dictionary = entities.get(target, {})
 			if other.is_empty() or float(other.hp) <= 0.0 or Transport.is_loaded(other): return false
 			if other.team == e.team and not force: return false
-			return (mask & (2 if _is_air(other) else (4 if _is_naval(other) else 1))) != 0
-		if target <= RUIN_TARGET_BASE and not force: return false
+			return (mask & (2 if _is_air(other) else (4 if _target_domain(other)=="naval" else 1))) != 0
+		if target <= RUIN_TARGET_BASE and not force and not GarrisonOperations.hostile(self,int(e.team),target): return false
 		return (mask & 1) != 0 and _target_alive(target)
 	var weapon_id: String = str(data_for(e.spec).get("weapon", ""))
 	if Transport.is_loaded(e) or weapon_id.is_empty() or not _target_alive(target): return false
 	force = force or _force_attack_active(e, target)
-	if target <= RUIN_TARGET_BASE and not force: return false
+	if target <= RUIN_TARGET_BASE and not force and not GarrisonOperations.hostile(self,int(e.team),target): return false
 	if entities.has(target) and entities[target].team == e.team and not force: return false
 	var domain: String = _target_domain(entities[target]) if entities.has(target) else "ground"
 	return domain in rules.weapons[weapon_id].get("targets", ["ground"])
@@ -1418,13 +1709,21 @@ func _scaled_damage(base: float, target: int, multipliers: Dictionary) -> float:
 		armor = str(info.get("armor_class", "infantry" if info.get("crushable", false) else "armored"))
 	return base * float(multipliers.get(armor, 1.0))
 
+func max_hp(e:Dictionary)->float:return Veterancy.max_hp(self,e)
+func armor_for(e:Dictionary)->float:return Veterancy.armor(self,e)
+func weapon_for(e:Dictionary,id:String="")->Dictionary:return Veterancy.weapon(self,e,id if not id.is_empty() else str(data_for(e.spec).get("weapon","")))
+
+func _weapon_damage(base: float,target: int,weapon: Dictionary,factor: float=1.0) -> float:
+	var info: Dictionary=ArmorCombat.weapon(self,weapon)
+	return ArmorCombat.damage(self,base,target,info.get("multipliers",{}),info,factor)
+
 func _step_entity_repair(e: Dictionary, command: Dictionary, delta: float) -> void:
 	var target: int = int(command.target)
 	if not entities.has(target) or not FactionSupport.repairer(self, e, entities[target]):
 		_finish_command(e)
 		return
 	var repaired: Dictionary = entities[target]
-	if repaired.team != e.team or float(repaired.hp) <= 0.0 or _is_air(repaired) or Transport.is_loaded(repaired) or float(repaired.construct_remaining) > 0.0 or float(repaired.hp) >= float(data_for(repaired.spec).hp) or (repaired.kind == "building" and data_for(e.spec).get("art", "") != "engineer"):
+	if repaired.team != e.team or float(repaired.hp) <= 0.0 or _is_air(repaired) or Transport.is_loaded(repaired) or float(repaired.construct_remaining) > 0.0 or float(repaired.hp) >= max_hp(repaired) or (repaired.kind == "building" and data_for(e.spec).get("art", "") != "engineer"):
 		_finish_command(e)
 		return
 	var info: Dictionary = data_for(e.spec)
@@ -1439,13 +1738,13 @@ func _step_entity_repair(e: Dictionary, command: Dictionary, delta: float) -> vo
 		e.state = "waiting"
 		return
 	if repaired.kind == "building":
-		var healed: float = float(data_for(repaired.spec).hp) - float(repaired.hp)
+		var healed: float = max_hp(repaired) - float(repaired.hp)
 		var cost: float = healed * float(_eco("repair_cost", 0.2))
 		if money[int(e.team)] + 0.000001 < cost:
 			e.state = "waiting"
 			return
 		money[int(e.team)] = maxf(0.0, money[int(e.team)] - cost)
-		repaired.hp = float(data_for(repaired.spec).hp)
+		repaired.hp = max_hp(repaired)
 		events.append({"kind": "repair", "id": target, "pos": repaired.pos, "team": e.team})
 		_finish_command(e)
 		return
@@ -1496,7 +1795,7 @@ func _step_capture(e: Dictionary, command: Dictionary, delta: float) -> void:
 
 func _step_deploy_outpost(e: Dictionary, command: Dictionary, delta: float) -> void:
 	var spec: String = str(command.get("spec", ""))
-	if not _builder_valid(int(e.team), int(e.id)) or data_for(spec).get("role", "") != "outpost":
+	if not _builder_valid(int(e.team), int(e.id)) or not rules.buildings.has(spec) or not TechAvailability.engineer_building(self, int(e.team), data_for(spec)):
 		_finish_command(e)
 		return
 	var pos: Vector2 = command.pos
@@ -1505,18 +1804,21 @@ func _step_deploy_outpost(e: Dictionary, command: Dictionary, delta: float) -> v
 	var edge_distance: float = (e.pos as Vector2).distance_to((e.pos as Vector2).clamp(pos - half, pos + half))
 	# _move_to accepts arrival within 0.25 of the perimeter approach point.
 	if edge_distance > _radius(e) + 0.5 or _circle_rect(e.pos, _radius(e), pos, half):
-		var goal: Vector2 = _refinery_approach(e, {"pos": pos, "spec": spec})
+		var goal: Vector2 = FieldConstruction.approach(self, e, {"pos": pos, "spec": spec,"rotation_quarters":BuildingOrientation.quarters(command)})
 		if goal.is_finite(): _move_to(e, goal, delta)
 		else: e.state = "unreachable"
 		return
-	var error: String = _building_site_error(int(e.team), info, pos, int(e.id))
+	var error: String = _requirements(int(e.team), info)
+	if error.is_empty(): error = _building_site_error(int(e.team), info, pos, int(e.id),BuildingOrientation.quarters(command))
 	if not error.is_empty():
 		e.state = "waiting"
+		if error == "单位占据建筑位置" and ai_enabled and int(e.team) > 0:
+			_ai_clear_construction_site(e, info, pos)
 		if not bool(command.get("blocked_notice", false)) and int(e.team) == 0:
 			command.blocked_notice = true
-			_notice("分基地等待部署：" + error)
+			_notice("建筑等待施工：" + error)
 		return
-	var id: int = _spawn(int(e.team), spec, pos, false)
+	var id: int = _spawn(int(e.team), spec, pos, false,BuildingOrientation.quarters(command))
 	Construction.initialize(self, entities[id], int(e.id))
 	command.kind = "resume_outpost"
 	command.target = id
@@ -1524,7 +1826,20 @@ func _step_deploy_outpost(e: Dictionary, command: Dictionary, delta: float) -> v
 	command.erase("spec")
 	command.erase("cost")
 	e.hold_position = true
-	events.append({"kind": "build", "pos": pos, "id": id})
+	events.append({"kind": "build", "pos": pos, "id": id, "team": e.team, "spec": spec, "entity_kind": "building", "construction_method": "scaffold"})
+
+func _ai_clear_construction_site(builder: Dictionary, info: Dictionary, pos: Vector2) -> void:
+	var half: float = float(info.size) * 0.5
+	for unit in entities.values():
+		if int(unit.id) == int(builder.id) or int(unit.team) != int(builder.team) or unit.kind != "unit" or Transport.is_loaded(unit) or _is_air(unit) or _is_naval(unit): continue
+		if not _circle_rect(unit.pos, _radius(unit), pos, Vector2.ONE * half): continue
+		if not unit.commands.is_empty():
+			if unit.commands[0].kind != "move" or not _circle_rect(unit.commands[0].pos, _radius(unit), pos, Vector2.ONE * half): continue
+		var direction: Vector2 = (unit.pos as Vector2) - pos
+		if direction.length_squared() < .01: direction = Vector2.from_angle(float(unit.id) * 2.4)
+		var wanted: Vector2 = pos + direction.normalized() * (half * 1.42 + _radius(unit) + 2.0)
+		var goal: Vector2 = _near_stand(wanted, _radius(unit), int(unit.id), 2.0)
+		if goal.is_finite() and not _circle_rect(goal, _radius(unit), pos, Vector2.ONE * half): issue([int(unit.id)], "move", goal)
 
 func _step_resume_outpost(e: Dictionary, command: Dictionary, delta: float) -> void:
 	var id: int = int(command.target)
@@ -1534,43 +1849,19 @@ func _step_resume_outpost(e: Dictionary, command: Dictionary, delta: float) -> v
 	var construction: Dictionary = entities[id].construction
 	if int(construction.builder) != int(e.id): Construction.assign_builder(self, int(e.id), id)
 	if _engineering_distance(e, entities[id]) > _radius(e) + 0.5:
-		var goal: Vector2 = _refinery_approach(e, entities[id])
+		var goal: Vector2 = FieldConstruction.approach(self, e, entities[id])
 		if goal.is_finite(): _move_to(e, goal, delta)
 		else: e.state = "unreachable"
 
 func _step_support(delta: float, _multipliers: Array[float]) -> void:
-	# Build a small, tick-local owner index after construction/capture updates.
-	# Keep entity iteration order: limited funds must repair the same units first.
-	var stations: Dictionary = {}
-	for building in _building_entities:
-		var team: int = int(building.team)
-		if float(building.construct_remaining) > 0.0 or _low_power[team] or float(building.get("emp_until", 0.0)) > time: continue
-		var info: Dictionary = data_for(building.spec)
-		if info.get("role", "") != "repair": continue
-		if not stations.has(team): stations[team] = []
-		stations[team].append([building.pos, float(info.get("repair_radius", 5.0)), float(info.get("repair_rate", 12.0))])
-	if stations.is_empty() and _field_repairers.is_empty(): return
-	if _in_step and native_kernels_enabled and _kernels != null and not _spec_cache.is_empty():
-		_kernels.repair_support(entities,stations,_field_repairers,_spec_cache,money,_air_specs,delta,float(_eco("repair_cost",0.2)))
-		return
-	# Multiple stations and engineers cannot multiply the same repair aura.
-	for e in entities.values():
-		if e.kind != "unit" or _is_air(e) or Transport.is_loaded(e) or float(e.hp) <= 0.0: continue
-		var rate: float = float(_field_repairers.get(int(e.id), 0.0))
-		var team: int = int(e.team)
-		if stations.has(team) and data_for(e.spec).get("armor_class", "infantry" if e.crushable else "armored") == "armored":
-			for station in stations[team]:
-				if (e.pos as Vector2).distance_to(station[0]) <= float(station[1]):
-					rate = maxf(rate, float(station[2]))
-		if rate > 0.0: _repair_health(e, rate * delta)
 	for id in _field_repairers:
-		if entities.has(id) and entities[id].kind == "building":
-			var e: Dictionary = entities[id]
-			_repair_health(e, float(_field_repairers[id]) * delta)
+		if not entities.has(id): continue
+		var target: Dictionary = entities[id]
+		if float(target.hp) > 0: _repair_health(target, float(_field_repairers[id]) * delta)
 
 func _repair_health(e: Dictionary, amount: float) -> void:
 	var cost: float = float(_eco("repair_cost", 0.2))
-	var healed: float = minf(amount, float(data_for(e.spec).hp) - float(e.hp))
+	var healed: float = minf(amount, max_hp(e) - float(e.hp))
 	if cost > 0.0: healed = minf(healed, money[int(e.team)] / cost)
 	e.hp += healed
 	money[int(e.team)] = maxf(0.0, money[int(e.team)] - healed * cost)
@@ -1587,12 +1878,12 @@ func _mobile_acquire_and_fire(e: Dictionary, delta: float) -> void:
 	if weapon_id == "":
 		_turret_forward(e, delta)
 		return
-	var range_value: float = float(rules.weapons[weapon_id].range)
+	var range_value: float = float(weapon_for(e,weapon_id).range)
 	var target: int = int(e.auto_target)
 	if not _target_alive(target) or not _weapon_can_target(e, target) or _target_position(target).distance_to(e.pos) > range_value:
 		target = _nearest_enemy(e, range_value)
 	e.auto_target = target
-	if target >= 0:
+	if target != -1:
 		_aim_turret(e, target, delta)
 	else:
 		_turret_forward(e, delta)
@@ -1631,13 +1922,48 @@ func _finish_command(e: Dictionary) -> void:
 	e.turret_target = -1
 	e.state = "idle"
 
-func _force_move_active(e: Dictionary) -> bool:
-	return not e.commands.is_empty() and e.commands[0].kind == "force_move"
+func _configure_crushing(e: Dictionary, info: Dictionary) -> void:
+	e.surface_domain="ground" if bool(info.get("amphibious",false)) and _terrain(e.pos)!=MapData.WATER else str(info.get("domain","ground"))
+	e.submarine=bool(info.get("submarine",false));e.anti_submarine=bool(info.get("anti_submarine",false))
+	e.veteran=bool(e.get("veteran",false));e.experience_value=float(e.get("experience_value",0))
+	e.max_hp=max_hp(e)
+	# Cache the rule classes with the collision radius, both on spawn and load.
+	# Rail-only units and non-ground domains never take part in ground crushing.
+	e.ground_infantry = e.kind == "unit" and str(info.get("domain","ground")) == "ground" and str(info.get("armor_class","infantry" if bool(info.get("crushable",false)) else "armored")) == "infantry"
+	e.ground_vehicle = e.kind == "unit" and str(info.get("domain","ground")) == "ground" and not bool(e.ground_infantry) and not RailNetwork.rail_only(info)
+	e.ground_crush_eligible = e.kind == "unit" and str(info.get("domain","ground")) == "ground" and not RailNetwork.rail_only(info)
+	e.crush_strength = int(info.get("crush_strength",1 if bool(info.get("crush",false)) else 0))
+	e.crush_resistance = int(info.get("crush_resistance",0 if bool(info.get("crushable",false)) else 99))
+	e.can_crush = bool(e.ground_crush_eligible) and bool(info.get("crush",false)) and int(e.crush_strength)>0
+
+func _is_ground_vehicle(e: Dictionary) -> bool:
+	if e.has("ground_vehicle"): return bool(e.ground_vehicle)
+	var info: Dictionary = data_for(str(e.spec))
+	return e.kind == "unit" and str(info.get("domain","ground")) == "ground" and str(info.get("armor_class","infantry" if bool(info.get("crushable",false)) else "armored")) != "infantry" and not RailNetwork.rail_only(info)
+
+func _query_is_infantry(ignore: int) -> bool:
+	# Unidentified factory-placement queries are conservative. A real infantry
+	# id is required to pass the vehicle-only barricade collider.
+	if not entities.has(ignore): return false
+	var e: Dictionary = entities[ignore]
+	if e.has("ground_infantry"): return bool(e.ground_infantry)
+	var info: Dictionary = data_for(str(e.spec))
+	return e.kind == "unit" and str(info.get("domain","ground")) == "ground" and str(info.get("armor_class","infantry" if bool(info.get("crushable",false)) else "armored")) == "infantry"
 
 func _can_crush_target(e: Dictionary, other: Dictionary) -> bool:
-	if not bool(e.can_crush) or not bool(other.crushable): return false
-	if other.team != e.team: return true
-	return _force_move_active(e) and int(e.commands[0].target) == int(other.id)
+	return bool(e.get("can_crush",false)) and bool(e.get("ground_crush_eligible",false)) and bool(other.get("ground_crush_eligible",false)) and int(other.team) != int(e.team) and int(e.get("crush_strength",0))>int(other.get("crush_resistance",99))
+
+func _apply_ground_crush(source: Dictionary, target: Dictionary) -> void:
+	# Contact is swept by movement before arrival; no teleport or ranged damage.
+	var damage: float = maxf(0,float(target.hp))
+	if damage<=0: return
+	target.last_damage_cause = {"source":int(source.id),"source_team":int(source.team),"weapon":"ground_crush","explosive":false}
+	_damage_causes[int(target.id)] = target.last_damage_cause.duplicate()
+	statistics.add(int(source.team),"damage_dealt",maxf(0,damage-float(_damage.get(int(target.id),0))))
+	statistics.add(int(target.team),"damage_received",maxf(0,damage-float(_damage.get(int(target.id),0))))
+	target.hp = 0.0
+	events.append({"kind":"crush","id":int(source.id),"target":int(target.id),"pos":target.pos,"team":int(source.team),"damage":damage})
+	_update_contact(target)
 
 func _step_force_move(e: Dictionary, command: Dictionary, delta: float) -> void:
 	var target: int = int(command.target)
@@ -1656,7 +1982,7 @@ func _step_ground_attack(e: Dictionary, command: Dictionary, delta: float) -> vo
 		_finish_command(e)
 		return
 	var landing: Vector2 = command.pos
-	var reach: float = float(rules.weapons[weapon_id].range)
+	var reach: float = float(weapon_for(e,weapon_id).range)
 	if (e.pos as Vector2).distance_to(landing) > reach:
 		var goal: Vector2 = _combat_approach(e, landing, reach)
 		if goal.is_finite(): _move_to(e, goal, delta)
@@ -1671,21 +1997,18 @@ func _step_ground_attack(e: Dictionary, command: Dictionary, delta: float) -> vo
 
 func _engage(e: Dictionary, target: int, delta: float, pursue: bool) -> void:
 	if not _weapon_can_target(e, target): return
+	if ZeppelinWeapons.is_zeppelin(self,e) and ZeppelinWeapons.engage_air(self,e,target,delta,pursue): return
 	var spec: Dictionary = data_for(e.spec)
 	var weapon_id: String = str(spec.get("weapon", ""))
 	if weapon_id == "":
 		e.state = "waiting"
 		return
-	var weapon: Dictionary = rules.weapons[weapon_id]
+	var weapon: Dictionary = weapon_for(e,weapon_id)
 	var target_pos: Vector2 = _target_position(target)
 	var distance: float = e.pos.distance_to(target_pos)
 	if distance > float(weapon.range):
 		if pursue:
-			var goal: Vector2 = _combat_approach(e, target_pos, float(weapon.range))
-			if goal.is_finite():
-				_move_to(e, goal, delta)
-			else:
-				e.state = "unreachable"
+			_pursue_target(e, target, target_pos, float(weapon.range), delta)
 		if _has_turret(spec):
 			_aim_turret(e, target, delta)
 		return
@@ -1698,7 +2021,39 @@ func _engage(e: Dictionary, target: int, delta: float, pursue: bool) -> void:
 		if absf(wrapf(wanted - float(e.alpha), -180.0, 180.0)) <= float(_eco("fire_angle", 15)):
 			_fire(e, target)
 
+func _pursue_target(e: Dictionary, target: int, target_pos: Vector2, reach: float, delta: float) -> void:
+	var goal: Vector2 = e.get("pursuit_goal", Vector2.INF)
+	if int(e.get("pursuit_target", -1)) != target or not goal.is_finite() or (time >= float(e.get("pursuit_refresh_at", 0.0)) and (target_pos as Vector2).distance_squared_to(e.get("pursuit_target_pos", Vector2.INF)) > .25):
+		goal = _combat_approach(e, target_pos, reach)
+		e.pursuit_goal = goal; e.pursuit_target = target; e.pursuit_target_pos = target_pos
+		e.pursuit_refresh_at = time + .2
+		navigation_pursuit_refreshes += 1
+	if not goal.is_finite(): e.state = "unreachable"; return
+	if _is_air(e) or _is_naval(e):
+		_move_to(e,goal,delta);return
+	var radius: float = _radius(e)
+	# A continuously moving target must not make the original path_wait stop
+	# the pursuer. Direct safe approaches update the last leg without AStar.
+	if _segment_static(e.pos, goal, radius, int(e.id)):
+		_cancel_path_request(int(e.id))
+		e.path = [goal]; e.path_goal = goal
+		_move_to(e, goal, delta)
+		return
+	if not e.path.is_empty() and (e.path_goal as Vector2).distance_to(goal) > 1.0:
+		# Keep advancing the old checked corridor while its replacement is
+		# queued/running; only swap a path after a usable connector is proven.
+		if float(e.path_wait) <= 0.0:
+			e.pursuit_request = true
+			var replacement: Array = _path_between(e.pos, goal, radius, int(e.id))
+			e.pursuit_request = false
+			if not _plan_was_deferred and not replacement.is_empty() and _segment_static(e.pos, replacement[0], radius, int(e.id)):
+				e.path = replacement; e.path_goal = goal; e.path_wait = .4
+		_move_to(e, e.path_goal, delta)
+	else: _move_to(e, goal, delta)
+
 func _combat_approach(e: Dictionary, target_pos: Vector2, reach: float) -> Vector2:
+	if RailNetwork.rail_only(data_for(e.spec)):
+		return _rail_network.nearest_connected(self, e, target_pos, maxf(0.0, reach - .5))
 	# Movement may report arrival up to a fraction of the hull radius before
 	# its destination. Place the destination farther inside weapon range, and
 	# reject nearby legal positions that would put that arrival band outside it.
@@ -1747,13 +2102,19 @@ func _fire(e: Dictionary, target: int) -> void:
 
 func _launch_shot(e: Dictionary, landing: Vector2, target: int, force: bool) -> void:
 	if float(e.get("emp_until", 0.0)) > time or float(e.cooldown) > 0.0 or Transport.is_loaded(e): return
+	if AirNavalExpansion.carrier_fire(self,e,target):return
 	if not bool(e.get("hand_resolving", false)) and HeroRules.begin(self, e, target, landing, force): return
 	var weapon_id: String = str(data_for(e.spec).get("weapon", ""))
 	if weapon_id == "":
 		return
-	var weapon: Dictionary = rules.weapons[weapon_id]
+	var weapon: Dictionary = weapon_for(e,weapon_id)
+	weapon.weapon=weapon_id
+	weapon.source=int(e.id)
+	if str(weapon.get("trajectory","")) == "gravity_bomb":
+		if not bool(e.get("airborne",true)): return
+		if target > 0 and entities.has(target) and _target_domain(entities[target]) not in weapon.get("targets",["ground","naval"]): return
 	var shot_damage: float = float(weapon.damage)
-	if _is_air(e) and (int(e.ammo) <= 0 or e.flight_state in ["returning", "rearming"]): return
+	if _is_air(e) and not AirNavalExpansion.permanent(self,e) and (int(e.ammo) <= 0 or e.flight_state in ["returning", "rearming"]): return
 	if e.pos.distance_to(landing) > float(weapon.range) + 0.001:
 		return
 	var heading: float = float(e.turret_alpha) if e.kind == "building" or _has_turret(data_for(e.spec)) else float(e.alpha)
@@ -1761,24 +2122,32 @@ func _launch_shot(e: Dictionary, landing: Vector2, target: int, force: bool) -> 
 		var wanted: float = rad_to_deg((landing - (e.pos as Vector2)).angle())
 		if absf(wrapf(wanted - heading, -180.0, 180.0)) > float(_eco("fire_angle", 15)) or (float(e.motion) > 0.0 and not _can_move_fire(data_for(e.spec))):
 			return
-	shot_damage *= FactionSupport.damage_scale(self, e, target) * FactionTraits.outgoing_scale(self, e) * FactionTraits.breakthrough_scale(self, e)
+	shot_damage *= FactionSupport.damage_scale(self, e, target)
 	FactionTraits.record_attack(self, e)
-	if _is_air(e):
+	if _is_air(e) and not AirNavalExpansion.permanent(self,e):
 		e.ammo = maxi(0, int(e.ammo) - 1)
 		if int(e.ammo) == 0: _begin_return(e)
+	AirNavalExpansion.record_fire(self,e)
 	e.cooldown = float(weapon.interval)
 	e.attack_flash = 0.25
 	e.state = "move" if float(e.motion) > 0.0 else "attack"
-	events.append({"kind": "fire", "pos": e.pos, "landing": landing, "id": e.id, "team": e.team, "weapon": weapon_id, "spec": e.spec, "heading": heading, "body_heading": float(e.alpha), "height": _source_height(e), "target_height": _target_height(target), "moving": float(e.motion) > 0.0})
-	if weapon.kind == "instant":
-		if target != -1:
-			_add_damage(target, _scaled_damage(shot_damage, target, weapon.get("multipliers", {})), force)
+	if str(weapon.get("trajectory","")) == "gravity_bomb":
+		ZeppelinWeapons.launch_bomb(self,e,weapon_id,shot_damage,target,force)
+		return
+	events.append({"kind": "fire", "pos": e.pos, "landing": landing, "target": target, "id": e.id, "team": e.team, "weapon": weapon_id, "spec": e.spec, "heading": heading, "body_heading": float(e.alpha), "height": _source_height(e), "target_height": _target_height(target), "moving": float(e.motion) > 0.0})
+	if weapon.kind == "beam":
+		if target != -1: BeamWeapons.begin(self, e, target, weapon_id, force)
+	elif weapon.kind in ["instant", "laser"]:
+		if float(weapon.get("blast", 0.0)) > 0:
+			_impact_damage(landing, float(weapon.blast), shot_damage, weapon.get("multipliers", {}), weapon.get("targets", ["ground"]), force, weapon, int(e.team))
+		elif target != -1:
+			_add_damage(target, _weapon_damage(shot_damage,target,weapon), force, {"source":int(e.id),"source_team":int(e.team),"weapon":weapon_id,"explosive":float(weapon.get("blast",0.0))>0.0})
 			_mark_creator_contact(e,target)
 			if bool(weapon.get("execute_building", false)) and entities.has(target) and entities[target].kind == "building": _execute_buildings[target] = true
 			FactionTraits.apply_emp(self, target, weapon, int(e.team))
 		else:
 			_impact_damage(landing, float(weapon.blast), shot_damage, weapon.get("multipliers", {}), weapon.get("targets", ["ground"]), force, weapon, int(e.team))
-		events.append({"kind":"impact", "pos":landing, "blast":float(weapon.blast), "team":int(e.team), "height":_impact_event_height(landing,weapon.get("targets",["ground"]),target)})
+		events.append({"kind":"impact", "pos":landing, "blast":float(weapon.blast), "team":int(e.team), "source_id":int(e.id), "target":target, "weapon":weapon_id, "spec":e.spec, "projectile":false, "height":_impact_event_height(landing,weapon.get("targets",["ground"]),target)})
 	else:
 		var duration: float = maxf(0.2, e.pos.distance_to(landing) / maxf(float(weapon.get("speed", 18)), 0.001))
 		projectiles.append({"pos": e.pos, "start": e.pos, "landing": landing, "elapsed": 0.0, "duration": duration, "damage": shot_damage, "blast": float(weapon.blast), "team": int(e.team), "source": int(e.id), "spec": str(e.spec), "weapon": weapon_id, "emp_vehicle_duration": float(weapon.get("emp_vehicle_duration", 0.0)), "emp_building_duration": float(weapon.get("emp_building_duration", 0.0)), "heading": heading, "body_heading": float(e.alpha), "targets": weapon.get("targets", ["ground"]).duplicate(), "multipliers": weapon.get("multipliers", {}).duplicate(), "target": target, "source_height": _source_height(e), "target_height": _target_height(target), "force": force})
@@ -1788,37 +2157,58 @@ func _mark_creator_contact(source: Dictionary, target: int) -> void:
 		_crush_targets[target] = true
 
 func _impact_damage(center: Vector2, blast: float, damage: float, multipliers: Dictionary, targets: Array, force: bool, weapon: Dictionary = {}, source_team: int = -1) -> void:
+	var info: Dictionary=ArmorCombat.weapon(self,weapon)
+	info=info.duplicate()
+	info.multipliers=multipliers
 	for e in _nearby_entities(center, blast + _max_entity_extent):
 		if float(e.hp) <= 0.0 or Transport.is_loaded(e) or _target_domain(e) not in targets: continue
+		if not bool(info.get("friendly_fire",true)) and int(e.team)==source_team and not force: continue
+		if entities.has(int(info.get("source",-1))) and not AirNavalExpansion.can_target(self,entities[int(info.source)],int(e.id)):continue
 		var hit: bool = _circle_rect(center, blast, e.pos, Vector2.ONE * float(data_for(e.spec).size) * 0.5) if e.kind == "building" else center.distance_to(e.pos) <= blast + _radius(e)
 		if hit:
-			_add_damage(int(e.id), _scaled_damage(damage, int(e.id), multipliers), force)
+			var factor: float=ArmorCombat.falloff(info,ArmorCombat.distance_to_body(self,center,e),blast)
+			_add_damage(int(e.id), _weapon_damage(damage,int(e.id),info,factor), force, {"source":int(info.get("source",-1)),"source_team":source_team,"weapon":str(info.get("weapon","")),"explosive":blast>0.0 or str(info.get("kind",""))=="shell" or info.has("duration")})
+			if int(info.get("source",-1))>0 and entities.has(int(info.source)): _mark_creator_contact(entities[int(info.source)],int(e.id))
 			if bool(weapon.get("execute_building", false)) and e.kind == "building": _execute_buildings[int(e.id)] = true
 			FactionTraits.apply_emp(self, int(e.id), weapon, source_team)
-	if force and "ground" in targets:
+	if "ground" in targets:
 		for ruin in _nearby_ruins(center, blast):
-			if float(ruin.hp) > 0.0 and _circle_rect(center, blast, ruin.pos, ruin.half): _add_damage(RUIN_TARGET_BASE - int(ruin.id), damage, true)
+			if (force or GarrisonOperations.hostile(self,source_team,RUIN_TARGET_BASE-int(ruin.id))) and float(ruin.hp) > 0.0 and _circle_rect(center, blast, ruin.pos, ruin.half):
+				var factor: float=ArmorCombat.falloff(info,ArmorCombat.distance_to_rectangle(center,ruin.pos,ruin.half),blast)
+				_add_damage(RUIN_TARGET_BASE-int(ruin.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor),force,{"source":int(info.get("source",-1)),"source_team":source_team,"weapon":str(info.get("weapon",""))})
 	for bridge in bridges:
-		if "ground" in targets and bool(bridge.alive) and _circle_bounds(center, blast, bridge.bounds): _add_damage(BRIDGE_TARGET_BASE - int(bridge.id), damage)
+		if "ground" in targets and bool(bridge.alive) and _circle_bounds(center, blast, bridge.bounds):
+			var bounds: Array=bridge.bounds
+			var half: Vector2=Vector2(float(bounds[2]),float(bounds[3]))*.5
+			var pos: Vector2=Vector2(float(bounds[0]),float(bounds[1]))+half
+			var factor: float=ArmorCombat.falloff(info,ArmorCombat.distance_to_rectangle(center,pos,half),blast)
+			_add_damage(BRIDGE_TARGET_BASE-int(bridge.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor))
 
 func _step_projectiles(delta: float) -> void:
+	ZeppelinWeapons.step_secondary(self,delta)
 	for index in range(projectiles.size() - 1, -1, -1):
 		var shell: Dictionary = projectiles[index]
-		if "air" in shell.get("targets", ["ground"]) and _target_alive(int(shell.get("target", -1))):
-			shell.landing = _target_position(int(shell.target))
-			shell.target_height = _target_height(int(shell.target))
-		shell.elapsed = float(shell.elapsed) + delta
-		shell.pos = (shell.start as Vector2).lerp(shell.landing, minf(1.0, float(shell.elapsed) / float(shell.duration)))
-		if float(shell.elapsed) < float(shell.duration):
-			continue
+		if str(shell.get("trajectory","")) == "gravity_bomb":
+			if not ZeppelinWeapons.step_bomb(self,shell,delta): continue
+		else:
+			if "air" in shell.get("targets", ["ground"]) and _target_alive(int(shell.get("target", -1))):
+				shell.landing = _target_position(int(shell.target))
+				shell.target_height = _target_height(int(shell.target))
+			shell.elapsed = float(shell.elapsed) + delta
+			shell.pos = (shell.start as Vector2).lerp(shell.landing, minf(1.0, float(shell.elapsed) / float(shell.duration)))
+			if float(shell.elapsed) < float(shell.duration): continue
 		var center: Vector2 = shell.landing
 		var blast: float = float(shell.blast)
 		_impact_damage(center, blast, float(shell.damage), shell.get("multipliers", {}), shell.get("targets", ["ground"]), bool(shell.get("force", false)), shell, int(shell.get("team", -1)))
-		events.append({"kind": "impact", "pos": center, "blast": blast, "team":int(shell.get("team", -1)), "height": _impact_event_height(center,shell.get("targets",["ground"]),int(shell.get("target",-1)))})
+		events.append({"kind": "impact", "pos": center, "blast": blast, "team":int(shell.get("team", -1)), "source_id":int(shell.get("source",-1)), "target":int(shell.get("target",-1)), "weapon":str(shell.get("weapon", "")), "spec":str(shell.get("spec", "")), "projectile":true, "height": _impact_event_height(center,shell.get("targets",["ground"]),int(shell.get("target",-1)))})
 		projectiles.remove_at(index)
 
-func _add_damage(id: int, amount: float, force: bool = false) -> void:
-	if id <= RUIN_TARGET_BASE and not force: return
+func _add_damage(id: int, amount: float, force: bool = false, cause: Dictionary = {}) -> void:
+	if id <= RUIN_TARGET_BASE and not force and not GarrisonOperations.hostile(self,int(cause.get("source_team",-1)),id): return
+	if entities.has(id) and float(_damage.get(id,0.0))<float(entities[id].hp):
+		_damage_causes[id]=cause.duplicate()
+		statistics.add(int(cause.get("source_team",-1)),"damage_dealt",minf(amount,maxf(0,float(entities[id].hp)-float(_damage.get(id,0.0)))))
+		statistics.add(int(entities[id].team),"damage_received",minf(amount,maxf(0,float(entities[id].hp)-float(_damage.get(id,0.0)))))
 	_damage[id] = float(_damage.get(id, 0.0)) + amount
 
 func _apply_damage() -> void:
@@ -1829,6 +2219,7 @@ func _apply_damage() -> void:
 			var ruin: Dictionary = ruin_by_target(id)
 			if not ruin.is_empty() and float(ruin.hp)>0:
 				ruin.hp=maxf(0,float(ruin.hp)-float(_damage[id]))
+				if float(ruin.hp)<float(ruin.max_hp)*.2:GarrisonOperations.unload(self,id,true)
 				if float(ruin.hp)<=0:
 					_ruin_geometry_dirty[int(ruin.id) / RUIN_GEOMETRY_CHUNK_SIZE] = true
 					_mark_nav_region(Rect2(ruin.pos-ruin.half,ruin.half*2))
@@ -1839,6 +2230,7 @@ func _apply_damage() -> void:
 				bridge.hp = maxf(0.0, float(bridge.hp) - float(_damage[id]))
 				if float(bridge.hp) <= 0.0:
 					bridge.alive = false
+					_rail_network.destroy_bridge(self, bridge.bounds)
 					bridge.repair_progress = 0.0
 					var bounds: Array = bridge.bounds
 					_mark_nav_region(Rect2(float(bounds[0]), float(bounds[1]), float(bounds[2]), float(bounds[3])))
@@ -1848,10 +2240,14 @@ func _apply_damage() -> void:
 					events.append({"kind": "impact", "pos": _bridge_center(bridge), "blast": 3.0, "team":-1, "height":_impact_event_height(_bridge_center(bridge),["ground"])})
 		elif entities.has(id) and not Transport.is_loaded(entities[id]):
 			var e: Dictionary = entities[id]
-			var settled: float = FactionTraits.incoming_damage(self, e, float(_damage[id]))
+			var settled: float = float(_damage[id])
+			e.last_damage_cause=_damage_causes.get(id,{}).duplicate()
 			e.hp = 0.0 if bool(_execute_buildings.get(id, false)) else maxf(0.0, float(e.hp) - settled)
 			if settled > 0.0: FactionTraits.record_damage(self, e)
 			e.hit_flash = 0.18
+			if settled > 0.0 and float(e.hp) > 0.0 and time >= float(_damage_voice_next.get(id, -INF)):
+				_damage_voice_next[id] = time + 4.5
+				events.append({"kind": "under_attack", "id": id, "spec": e.spec, "team": e.team, "pos": e.pos, "height": _source_height(e), "damage": settled})
 	for raw_id in entities.keys():
 		var id: int = int(raw_id)
 		if entities.has(id) and float(entities[id].hp) <= 0.0:
@@ -1863,14 +2259,18 @@ func _detach_aircraft(building_id: int) -> void:
 		if _is_air(aircraft) and int(aircraft.home_airfield) == building_id:
 			_set_home_airfield(aircraft, -1)
 			aircraft.rearm_remaining = 0.0
-			aircraft.flight_state = "returning" if int(aircraft.ammo) == 0 else "airborne"
-			aircraft.flight_height = float(data_for(aircraft.spec).flight_height)
-			aircraft.airborne = true
+			if not bool(aircraft.get("airborne", true)):
+				_wait_for_takeoff(aircraft, int(aircraft.ammo) == 0)
+			else:
+				aircraft.flight_state = "returning" if int(aircraft.ammo) == 0 else "airborne"
+				aircraft.flight_height = float(data_for(aircraft.spec).flight_height)
 
 func _kill_entity(id: int, destroyed: bool) -> void:
 	if not entities.has(id):
 		return
 	var e: Dictionary = entities[id]
+	RefineryDocking.release(self,e)
+	if data_for(e.spec).get("role", "") == "drill": MiningDrills.release(self, e)
 	_invalidate_base_cache()
 	_goal_standing_cache.erase(id)
 	if _is_air(e): _airfield_counts_dirty = true
@@ -1891,15 +2291,40 @@ func _kill_entity(id: int, destroyed: bool) -> void:
 		for order in e.queue:
 			_refund_order(int(e.team), order)
 		_detach_aircraft(id)
-		_nav_dirty = true
+		var half: Vector2 = Vector2.ONE * float(data_for(e.spec).size) * 0.5
+		_mark_nav_region(Rect2(e.pos - half, half * 2.0))
 	else:
 		_spatial_remove(id, e.pos)
-	var death_event: Dictionary = {"kind": "death", "pos": e.pos, "spec": e.spec, "alpha": e.alpha, "id": id, "team": e.team, "destroyed": destroyed, "height": _source_height(e)}
+	var death_info: Dictionary = data_for(e.spec)
+	var death_cause: Dictionary = e.get("last_damage_cause",_damage_causes.get(id,{}))
+	var death_event: Dictionary = {"kind": "death", "pos": e.pos, "spec": e.spec, "alpha": e.alpha, "id": id, "team": e.team, "destroyed": destroyed, "height": _source_height(e), "entity_kind": e.kind, "domain": str(death_info.get("domain", "ground")), "size": float(death_info.get("size", 1.0)), "radius": float(death_info.get("radius", .35))}
+	if str(death_info.get("domain","ground"))=="air":
+		var flight_velocity: Vector2=Vector2.from_angle(deg_to_rad(float(e.alpha)))*maxf(0.0,float(e.get("motion",0.0)))
+		if e.get("air_motion_from") is Vector2 and is_equal_approx(float(e.get("air_motion_time",-1.0)),time):
+			flight_velocity=((e.pos as Vector2)-(e.air_motion_from as Vector2))/maxf(_step_delta,.001)
+		death_event.merge({"velocity":flight_velocity,"heading":float(e.alpha),"flight_height":float(e.get("flight_height",death_info.get("flight_height",4.0))),"airborne":bool(e.get("airborne",true))})
+	death_event.cause=death_cause.duplicate()
+	if destroyed:
+		Veterancy.destroyed(self,e,death_cause)
+		if not RailNetwork.is_rail(death_info): statistics.destroyed(e,death_cause,death_info)
+		if e.kind=="unit" and str(death_info.get("armor_class",""))=="infantry":
+			death_event.death_style="infantry_shatter" if bool(death_cause.get("explosive",false)) else "infantry_fall"
 	if destroyed and bool(_crush_targets.get(id,false)): death_event.death_style = "creator_crush"
 	events.append(death_event)
 	_planning_queue.erase(id)
 	_cancel_path_request(id)
 	entities.erase(id)
+	_damage_causes.erase(id)
+	_damage_voice_next.erase(id)
+
+func _is_victory_building(entity: Dictionary) -> bool:
+	# Physical obstacles still belong to their owner and retain their economy,
+	# collision and sale behavior, but cannot keep an eliminated base alive.
+	return str(entity.get("kind", "")) == "building" and float(entity.get("hp", 0.0)) > 0.0 and str(data_for(str(entity.spec)).get("role", "")) not in ["wall", "barricade", "rail", "rail_junction"]
+
+func match_statistics() -> Dictionary:
+	return statistics.snapshot(self)
+
 
 func _check_result() -> void:
 	if result != "":
@@ -1918,7 +2343,7 @@ func _check_result() -> void:
 	buildings.resize(factions.size())
 	buildings.fill(false)
 	for e in _building_entities:
-		if float(e.hp) > 0.0: buildings[int(e.team)] = true
+		if _is_victory_building(e): buildings[int(e.team)] = true
 	var player_dead: bool = not buildings[0]
 	var enemy_dead: bool = true
 	for team in range(1, factions.size()):
@@ -1929,6 +2354,7 @@ func _check_result() -> void:
 	events.append({"kind": "result", "pos": Vector2.ZERO, "result": result})
 
 func _nearest_enemy(e: Dictionary, range_value: float) -> int:
+	if GarrisonOperations.active(self) or entities.values().any(func(candidate):return bool(candidate.get("submarine",false))):return _nearest_enemy_reference(e,range_value)
 	if not _in_step: return _nearest_enemy_reference(e, range_value)
 	if Transport.is_loaded(e): return -1
 	var mask: int = int(_weapon_target_masks.get(str(e.spec), -1))
@@ -1979,6 +2405,8 @@ func _target_mask_for_spec(spec: Dictionary) -> int:
 	var mask: int = 0
 	for domain in rules.weapons.get(weapon_id, {}).get("targets", ["ground"]):
 		mask |= 2 if str(domain) == "air" else (4 if str(domain) == "naval" else 1)
+	for domain in rules.weapons.get(str(spec.get("secondary_weapon","")),{}).get("targets",[]):
+		mask |= 2 if str(domain) == "air" else (4 if str(domain) == "naval" else 1)
 	return mask
 
 func _nearest_enemy_reference(e: Dictionary, range_value: float) -> int:
@@ -1995,12 +2423,16 @@ func _nearest_enemy_reference(e: Dictionary, range_value: float) -> int:
 				if not entities.has(id):
 					continue
 				var other: Dictionary = entities[id]
-				if int(other.team) == int(e.team) or float(other.hp) <= 0.0:
+				if int(other.team) == int(e.team) or float(other.hp) <= 0.0 or RailNetwork.is_rail(data_for(other.spec)):
 					continue
 				var candidate: float = (e.pos as Vector2).distance_squared_to(other.pos)
 				if candidate <= distance and _weapon_can_target(e, id):
 					distance = candidate
 					nearest = id
+	for ruin in _nearby_ruins(e.pos,range_value):
+		var id:int=RUIN_TARGET_BASE-int(ruin.id)
+		var candidate:float=(e.pos as Vector2).distance_squared_to(ruin.pos)
+		if candidate<=distance and GarrisonOperations.hostile(self,int(e.team),id) and position_visible_to(int(e.team),ruin.pos) and _weapon_can_target(e,id):nearest=id;distance=candidate
 	return nearest
 
 func _target_alive(target: int) -> bool:
@@ -2084,7 +2516,7 @@ func _prepare_native_queries() -> void:
 	_native_geometry_ready = false
 	if not native_kernels_enabled or not native_geometry_enabled or _kernels == null or _spec_cache.is_empty(): return
 	if mines.size() > 8 and _mine_spatial_count != mines.size(): _refresh_mine_spatial()
-	_kernels.configure_geometry({"map":map,"flat":_flat_safe,"bridges":bridges,"mines":mines,"ruins":_ruin_spatial,"buildings":_building_spatial,"mine_buckets":_mine_spatial,"spatial":_spatial,"neighbors":_neighbor_cache,"specs":_spec_cache})
+	_kernels.configure_geometry({"map":map,"flat":_flat_safe,"flat_wide":_flat_wide_safe,"bridges":bridges,"mines":mines,"ruins":_ruin_spatial,"buildings":_building_spatial,"mine_buckets":_mine_spatial,"spatial":_spatial,"neighbors":_neighbor_cache,"specs":_spec_cache,"max_ground_radius":_max_ground_radius,"ground_motion":_ground_motion_spatial,"entities":entities})
 	_native_geometry_ready = true
 
 func _standing(pos: Vector2, radius: float, ignore: int, dynamic: bool = true) -> bool:
@@ -2092,6 +2524,7 @@ func _standing(pos: Vector2, radius: float, ignore: int, dynamic: bool = true) -
 	if not _land(pos):
 		return false
 	if not _fast_flat(pos, radius):
+		if not _terrain_shape_clear(pos, pos, radius): return false
 		var level: float = _height(pos)
 		for direction in CLEARANCE_DIRECTIONS:
 			var edge: Vector2 = pos + direction * radius
@@ -2117,7 +2550,7 @@ func _building_clear(pos: Vector2, radius: float, ignore: int) -> bool:
 	for e in _building_spatial.get(_bucket(pos), []):
 		if int(e.id) == ignore or float(e.hp) <= 0.0:
 			continue
-		if radius <= 0.5 and data_for(e.spec).get("role", "") == "barricade": continue
+		if _query_is_infantry(ignore) and data_for(e.spec).get("role", "") == "barricade": continue
 		var half: float = float(data_for(e.spec).size) * 0.5
 		if _circle_rect(pos, radius + 0.02, e.pos, Vector2(half, half)):
 			return false
@@ -2273,7 +2706,7 @@ func _navigation_hard_rectangles() -> Array[Rect2]:
 	var answer: Array[Rect2] = []
 	for mine in mines: answer.append(Rect2(mine.pos - MINE_HALF, MINE_HALF * 2.0))
 	for building in _building_entities:
-		if float(building.hp) <= 0.0 or data_for(building.spec).get("role", "") == "barricade": continue
+		if float(building.hp) <= 0.0 or data_for(building.spec).get("role", "") in ["barricade", "rail", "rail_junction"]: continue
 		var half := Vector2.ONE * float(data_for(building.spec).size) * .5
 		answer.append(Rect2(building.pos - half, half * 2.0))
 	return answer
@@ -2330,7 +2763,7 @@ func _segment_obstacles_clear(start: Vector2, finish: Vector2, radius: float, ig
 			checked[int(e.id)]=true
 			if int(e.id)==ignore or float(e.hp)<=0:continue
 			var info: Dictionary=data_for(e.spec)
-			if radius<=.5 and info.get("role","")=="barricade":continue
+			if _query_is_infantry(ignore) and info.get("role","")=="barricade":continue
 			var half: Vector2=Vector2.ONE*float(info.size)*.5
 			if geometry_profiling_enabled and _in_step:_geometry_rectangles+=1
 			if _swept_circle_rect(start,finish,clearance,Rect2(e.pos-half,half*2.0)):return false
@@ -2352,11 +2785,31 @@ func _segment_static_sampled(start: Vector2, end: Vector2, radius: float, ignore
 				return false
 		if flat:
 			return true
-	if not _segment_terrain(start, end):
+	if not _terrain_shape_clear(start, end, radius) or not _segment_terrain(start, end):
 		return false
 	for n in range(1, checks + 1):
 		if not _standing(start.lerp(end, float(n) / float(checks)), radius, ignore, false):
 			return false
+	return true
+
+func _terrain_shape_clear(start: Vector2, finish: Vector2, radius: float, original_terrain: bool = false) -> bool:
+	# The worker uses continuous water rectangles and cliff boundary lines.
+	# Match that exact footprint here; eight circumference samples alone can
+	# accept a corner overlap and strand a unit at an impossible path origin.
+	var low: Vector2 = start.min(finish) - Vector2.ONE * radius
+	var high: Vector2 = start.max(finish) + Vector2.ONE * radius
+	if low.x < 0 or low.y < 0 or high.x >= _size or high.y >= _size: return false
+	for bucket: Vector2i in _segment_bucket_keys(start, finish, radius):
+		for z in range(maxi(0, bucket.y * 2), mini(_size, bucket.y * 2 + 2)):
+			for x in range(maxi(0, bucket.x * 2), mini(_size, bucket.x * 2 + 2)):
+				var pos := Vector2(x + .5, z + .5)
+				if not (_original_land(pos) if original_terrain else _land(pos)):
+					if _swept_circle_rect(start, finish, radius, Rect2(Vector2(x, z), Vector2.ONE)): return false
+					continue
+				if x > 0 and (_original_land(pos - Vector2.RIGHT) if original_terrain else _land(pos - Vector2.RIGHT)) and absf(float(map.heights[z][x]) - float(map.heights[z][x - 1])) > .8:
+					if _swept_circle_rect(start, finish, radius, Rect2(Vector2(x, z), Vector2(0, 1))): return false
+				if z > 0 and (_original_land(pos - Vector2.DOWN) if original_terrain else _land(pos - Vector2.DOWN)) and absf(float(map.heights[z][x]) - float(map.heights[z - 1][x])) > .8:
+					if _swept_circle_rect(start, finish, radius, Rect2(Vector2(x, z), Vector2(1, 0))): return false
 	return true
 
 func _prepare_terrain_cache(progress: Callable = Callable()) -> void:
@@ -2364,6 +2817,7 @@ func _prepare_terrain_cache(progress: Callable = Callable()) -> void:
 	_size = int(map.size)
 	if native_kernels_enabled and _kernels != null:
 		_flat_safe=_kernels.build_flat_terrain_mask(map)
+		_prepare_wide_flat_cache()
 		return
 	_flat_safe.resize(_size * _size)
 	_flat_safe.fill(0)
@@ -2382,11 +2836,29 @@ func _prepare_terrain_cache(progress: Callable = Callable()) -> void:
 				_flat_safe[z * _size + x] = 1
 		if progress.is_valid() and z % 32 == 0:
 			await progress.call(0.32 + 0.1 * float(z) / float(_size), "整理地形与资源")
+	_prepare_wide_flat_cache()
+
+func _prepare_wide_flat_cache() -> void:
+	if native_kernels_enabled and _kernels != null and _kernels.has_method("build_wide_flat_terrain_mask"):
+		_flat_wide_safe = _kernels.build_wide_flat_terrain_mask(_flat_safe, _size)
+		return
+	_flat_wide_safe.resize(_size * _size)
+	_flat_wide_safe.fill(0)
+	for z in range(2, _size - 2):
+		for x in range(2, _size - 2):
+			var safe: bool = true
+			for dz in range(-1, 2):
+				for dx in range(-1, 2):
+					if _flat_safe[(z + dz) * _size + x + dx] == 0: safe = false; break
+				if not safe: break
+			if safe: _flat_wide_safe[z * _size + x] = 1
 
 func _fast_flat(pos: Vector2, radius: float) -> bool:
-	if radius > 0.99 or not _in_bounds(pos):
+	if radius > 1.99 or not _in_bounds(pos):
 		return false
-	return _flat_safe[floori(pos.y) * _size + floori(pos.x)] == 1
+	var index: int = floori(pos.y) * _size + floori(pos.x)
+	if radius <= .99: return index < _flat_safe.size() and _flat_safe[index] == 1
+	return index < _flat_wide_safe.size() and _flat_wide_safe[index] == 1
 
 func _terrain(pos: Vector2) -> int:
 	return int(map.terrain[clampi(floori(pos.y), 0, _size - 1)][clampi(floori(pos.x), 0, _size - 1)])
@@ -2405,10 +2877,12 @@ func _height(pos: Vector2) -> float:
 	return level
 
 func _refresh_building_spatial() -> void:
+	_rail_network.rebuild(self)
 	_invalidate_static_geometry()
 	_invalidate_base_cache()
 	_building_spatial.clear()
 	for e in _building_entities:
+		if RailNetwork.is_rail(data_for(e.spec)): continue
 		var half: float = float(data_for(e.spec).size) * 0.5 + 1.1
 		var first: Vector2i = _bucket(e.pos - Vector2(half, half))
 		var last: Vector2i = _bucket(e.pos + Vector2(half, half))
@@ -2428,6 +2902,7 @@ func _original_land(pos: Vector2) -> bool:
 func _terrain_clear(pos: Vector2, radius: float) -> bool:
 	if _fast_flat(pos, radius):
 		return true
+	if not _terrain_shape_clear(pos, pos, radius, true): return false
 	if not _original_land(pos):
 		return false
 	for direction in CLEARANCE_DIRECTIONS:
@@ -2441,7 +2916,7 @@ func _rebuild_nav(progress: Callable = Callable()) -> void:
 	if _in_step and _nav_initialized and not synchronous_path_tests:
 		_publish_path_geometry()
 		for e in entities.values():
-			if e.kind=="unit" and not _is_air(e):
+			if e.kind=="unit" and not _is_air(e) and not _is_naval(e) and (_nav_regions.is_empty() or _path_crosses_changed_region(e)):
 				e.path.clear();e.path_goal=Vector2.INF
 				e.path_wait=float(int(e.id)%11)*.025
 		_native_masks_dirty=true
@@ -2533,7 +3008,7 @@ func _rebuild_nav(progress: Callable = Callable()) -> void:
 	if progress.is_valid(): await progress.call(0.92, "准备动态导航")
 	for id in _nav_disabled:
 		_nav.set_point_disabled(id, false)
-	_nav_disabled = _dynamic_nav_blocks(0.35)
+	_nav_disabled = _dynamic_nav_blocks(0.35, false)
 	for id in _nav_disabled:
 		_nav.set_point_disabled(id, true)
 	_nav_dirty = false
@@ -2619,14 +3094,15 @@ func _defer_planning(id: int) -> void:
 func _claim_path_plan(id: int) -> bool:
 	if entities.has(id):
 		_planning_requested_ids[id] = true
-	# FIFO callers resume before a repeatedly failing early entity gets another turn.
-	if _path_plans_remaining <= 0 or (not _planning_queue.is_empty() and _planning_queue[0] != id):
+	# Equal-priority callers preserve FIFO; selected/recent player commands
+	# claim a slot before background/AI work without changing search budgets.
+	if _path_plans_remaining <= 0 or (not _planning_queue.is_empty() and _planning_queue[_navigation_queue_index()] != id):
 		if entities.has(id) and not _planning_queue.has(id):
 			_planning_queue.append(id)
 		_defer_planning(id)
 		return false
 	if not _planning_queue.is_empty():
-		_planning_queue.pop_front()
+		_planning_queue.remove_at(_planning_queue.find(id))
 	_path_plans_remaining -= 1
 	if entities.has(id):
 		entities[id].planning_wait = 0.0
@@ -2634,6 +3110,8 @@ func _claim_path_plan(id: int) -> bool:
 	return true
 
 func _prune_planning_queue() -> void:
+	for id in _navigation_command_until.keys():
+		if not entities.has(id) or time>=float(_navigation_command_until[id]):_navigation_command_until.erase(id)
 	for id in _path_requests.keys():
 		if not entities.has(id) or not _planning_requested_ids.has(id):_path_requests.erase(id)
 	# A stopped, dead, already-arrived or newly engaged unit must not hold the queue.
@@ -2642,7 +3120,7 @@ func _prune_planning_queue() -> void:
 		if not entities.has(id) or not _planning_requested_ids.has(id):
 			_planning_queue.remove_at(index)
 
-func _dynamic_nav_blocks(radius: float) -> Array[int]:
+func _dynamic_nav_blocks(radius: float, vehicle: bool = true) -> Array[int]:
 	var blocked: Dictionary = {}
 	for mine in mines:
 		var reach: Vector2 = MINE_HALF + Vector2.ONE * (radius + 0.02)
@@ -2658,7 +3136,8 @@ func _dynamic_nav_blocks(radius: float) -> Array[int]:
 				for id in _nav_nodes_in_cell(Vector2i(x,z)):
 					if _circle_rect(_nav.get_point_position(id),radius+.02,ruin.pos,ruin.half):blocked[id]=true
 	for e in _building_entities:
-		if radius <= 0.5 and data_for(e.spec).get("role", "") == "barricade": continue
+		if RailNetwork.is_rail(data_for(e.spec)): continue
+		if not vehicle and data_for(e.spec).get("role", "") == "barricade": continue
 		var half: float = float(data_for(e.spec).size) * 0.5
 		for z in range(maxi(0, floori(e.pos.y - half - radius)), mini(int(map.size), ceili(e.pos.y + half + radius))):
 			for x in range(maxi(0, floori(e.pos.x - half - radius)), mini(int(map.size), ceili(e.pos.x + half + radius))):
@@ -2681,15 +3160,20 @@ func _dynamic_nav_blocks(radius: float) -> Array[int]:
 
 func _path_between(start: Vector2, goal: Vector2, radius: float, ignore: int) -> Array:
 	_plan_was_deferred = false
+	if entities.has(ignore) and RailNetwork.rail_only(data_for(entities[ignore].spec)):
+		return _rail_network.traversable_path(self, entities[ignore], start, goal)
 	if _in_step and not synchronous_path_tests:return _background_path(start,goal,radius,ignore)
 	if _native_masks_dirty:
 		for id in _nav_disabled:_nav.set_point_disabled(id,false)
-		_nav_disabled=_dynamic_nav_blocks(.35)
+		_nav_disabled=_dynamic_nav_blocks(.35, false)
 		for id in _nav_disabled:_nav.set_point_disabled(id,true)
 		_wide_masks.clear();_native_masks_dirty=false
 	if _in_step and not _claim_path_plan(ignore):
 		_plan_was_deferred = true
 		return []
+	# Clear routes use their exact endpoints, independent of navigation cells.
+	if _standing(start, radius, ignore, false) and _segment_static(start, goal, radius, ignore):
+		return [goal]
 	var start_id: int = _nav_point_for_radius(start, radius, ignore)
 	var goal_id: int = _nav_point_for_radius(goal, radius, ignore)
 	if start_id < 0 or goal_id < 0:
@@ -2704,22 +3188,28 @@ func _path_between(start: Vector2, goal: Vector2, radius: float, ignore: int) ->
 			# Narrow passages need a vehicle-safe graph rather than cutting corners.
 			return _wide_path(start_id, goal_id, radius, ignore, goal, start)
 		answer.append(point)
+	packed = _validated_graph_path(start_id, goal_id, radius, ignore, packed)
+	if packed.is_empty(): return []
+	answer.assign(packed)
 	if answer.is_empty() or (answer.back() as Vector2).distance_to(goal) > 0.05:
 		answer.append(goal)
 	return _smooth_path(start, answer, radius, ignore)
 
 func _wide_path(start_id: int, goal_id: int, radius: float, ignore: int, goal: Vector2, start: Vector2) -> Array:
-	var key: float = snappedf(radius, 0.01)
+	var terrain_key: float = snappedf(radius, 0.01)
+	var vehicle: bool = not _query_is_infantry(ignore)
+	var key := Vector2(terrain_key,1 if vehicle else 0)
 	if not _wide_masks.has(key):
-		_cache_terrain_mask(key, radius)
-		var blocked: Array = _terrain_masks[key].duplicate()
-		blocked.append_array(_dynamic_nav_blocks(radius))
+		_cache_terrain_mask(terrain_key, radius)
+		var blocked: Array = _terrain_masks[terrain_key].duplicate()
+		blocked.append_array(_dynamic_nav_blocks(radius,vehicle))
 		_wide_masks[key] = blocked
 	var disabled: Array = _wide_masks[key]
 	for id in disabled:
 		if int(id) != start_id:
 			_nav.set_point_disabled(int(id), true)
 	var packed: PackedVector2Array = _nav.get_point_path(start_id, goal_id)
+	packed = _validated_graph_path(start_id, goal_id, radius, ignore, packed)
 	for id in disabled:
 		_nav.set_point_disabled(id, false)
 	for id in _nav_disabled:
@@ -2731,18 +3221,42 @@ func _wide_path(start_id: int, goal_id: int, radius: float, ignore: int, goal: V
 		answer.append(goal)
 	return _smooth_path(start, answer, radius, ignore)
 
+func _validated_graph_path(start_id: int, goal_id: int, radius: float, ignore: int, packed: PackedVector2Array) -> PackedVector2Array:
+	# A thin obstacle can block an edge while both node centers remain legal.
+	# Remove such edges for this search and find the available detour.
+	var rejected: Array[Vector2i] = []
+	while not packed.is_empty():
+		var changed: bool = false
+		for index in range(1, packed.size()):
+			if _segment_static(packed[index-1], packed[index], radius, ignore): continue
+			var a: int = _graph_point_id(packed[index-1])
+			var b: int = _graph_point_id(packed[index])
+			_nav.disconnect_points(a, b)
+			rejected.append(Vector2i(a, b))
+			changed = true
+		if not changed: break
+		packed = _nav.get_point_path(start_id, goal_id)
+	for edge in rejected: _nav.connect_points(edge.x, edge.y)
+	return packed
+
+func _graph_point_id(point: Vector2) -> int:
+	if is_equal_approx(fposmod(point.x, 1.0), .5) and is_equal_approx(fposmod(point.y, 1.0), .5):
+		return _cell_id(Vector2i(floori(point.x), floori(point.y)))
+	return _nav_detail_id(point)
+
 func _smooth_path(start: Vector2, points: Array, radius: float, ignore: int) -> Array:
 	var answer: Array = []
 	var position: Vector2 = start
 	var index: int = 0
 	while index < points.size():
-		var chosen: int = index
-		for candidate in range(mini(points.size() - 1, index + 5), index, -1):
+		var chosen: int = -1
+		for candidate in range(points.size() - 1, index - 1, -1):
 			if _segment_static(position, points[candidate], radius, ignore):
 				chosen = candidate
 				break
+		if chosen < 0: return []
 		var point: Vector2 = points[chosen]
-		if position.distance_to(point) > 0.05:
+		if position != point:
 			answer.append(point)
 		position = point
 		index = chosen + 1
@@ -2756,9 +3270,17 @@ func _move_to(e: Dictionary, goal: Vector2, delta: float) -> bool:
 	if _is_naval(e): return NavalOperations.move_to(self, e, goal, delta)
 	if _is_air(e): return _fly_to(e, goal, delta)
 	delta *= float(e.get("rescue_speed_scale", 1.0))
-	if _in_step and _native_geometry_ready and native_movement_enabled:
+	var rail_move: Dictionary = _rail_network.movement(self, e, goal, delta)
+	if bool(rail_move.handled): return bool(rail_move.arrived)
+	if _in_step and _native_geometry_ready and native_movement_enabled and not _rail_network.usable(self, e, e.pos):
 		return _kernels.move_ground(self, e, goal, delta)
 	return _move_ground_reference(e, goal, delta)
+
+func _move_pending_path(e: Dictionary, goal: Vector2, delta: float) -> bool:
+	if not responsive_navigation_enabled or synchronous_path_tests:
+		e.state = "waiting"
+		return false
+	return ResponsiveNavigation.advance(self, e, goal, delta)
 
 func _move_ground_reference(e: Dictionary, goal: Vector2, delta: float) -> bool:
 	var radius: float = _radius(e)
@@ -2788,8 +3310,7 @@ func _move_ground_reference(e: Dictionary, goal: Vector2, delta: float) -> bool:
 			return false
 		var planned: Array = _path_between(e.pos, goal, radius, int(e.id))
 		if _plan_was_deferred:
-			e.state = "waiting"
-			return false
+			return _move_pending_path(e, goal, delta)
 		e.path = planned
 		e.path_goal = goal
 		e.path_wait = 2.0+float(int(e.id)%7)*.07
@@ -2829,7 +3350,7 @@ func _move_ground_reference(e: Dictionary, goal: Vector2, delta: float) -> bool:
 	var waypoint: Vector2 = e.path[0]
 	var direction: Vector2 = (waypoint - e.pos).normalized()
 	var stride: float = minf(float(data_for(e.spec).speed) * delta, e.pos.distance_to(waypoint))
-	if radius <= .5:
+	if _query_is_infantry(int(e.id)):
 		for building in _building_spatial.get(_bucket(e.pos), []):
 			if data_for(building.spec).get("role", "") == "barricade" and _circle_rect(e.pos, radius, building.pos, Vector2(.5, .5)):
 				stride *= .35
@@ -2854,11 +3375,15 @@ func _move_ground_reference(e: Dictionary, goal: Vector2, delta: float) -> bool:
 	if can_move:
 		var wanted: float = rad_to_deg((next - original).angle())
 		# Vehicles may reverse out of a jam without a blocked 180-degree turn.
-		if radius>.5 and bool(e.get("reversing",false)) and ((e.get("yield_goal",Vector2.INF) as Vector2).is_finite() or time<float(e.get("avoid_until",0))):
+		if _is_ground_vehicle(e) and bool(e.get("reversing",false)) and ((e.get("yield_goal",Vector2.INF) as Vector2).is_finite() or time<float(e.get("avoid_until",0))):
 			wanted=wrapf(wanted+180,-180,180)
 		_turn(e, wanted, delta)
-		var tolerance: float = 10.0 if radius > 0.5 else 25.0
+		var tolerance: float = 10.0 if _is_ground_vehicle(e) else 25.0
 		if absf(wrapf(wanted - float(e.alpha), -180.0, 180.0)) > tolerance:
+			# Align vehicles in place so a clear arbitrary-angle route stays straight.
+			if _is_ground_vehicle(e):
+				e.state = "waiting"
+				return false
 			var forward: Vector2=Vector2.from_angle(deg_to_rad(float(e.alpha)))
 			if bool(e.get("reversing",false)) and ((e.get("yield_goal",Vector2.INF) as Vector2).is_finite() or time<float(e.get("avoid_until",0))):forward=-forward
 			var turning_step: Vector2=original+forward*stride*.55
@@ -2928,7 +3453,7 @@ func _movement_detour(e: Dictionary, original: Vector2, direction: Vector2, stri
 		if _movement_clear(e, original, candidate):
 			e.avoid_dir = (candidate-original).normalized()
 			e.avoid_until = time+.55
-			e.reversing = radius>.5 and absf(wrapf(rad_to_deg((candidate-original).angle())-float(e.alpha),-180,180))>100
+			e.reversing = _is_ground_vehicle(e) and absf(wrapf(rad_to_deg((candidate-original).angle())-float(e.alpha),-180,180))>100
 			answer = candidate
 			break
 	_local_nav_us+=Time.get_ticks_usec()-avoid_start
@@ -2951,19 +3476,20 @@ func _goal_standing(e: Dictionary, goal: Vector2, radius: float) -> bool:
 
 
 func _movement_clear(e: Dictionary, start: Vector2, next: Vector2, request_yield: bool = false) -> bool:
-	if _in_step and _native_geometry_ready and native_movement_enabled:
+	if _in_step and _native_geometry_ready and native_movement_enabled and not (_rail_network.usable(self, e, start) and _rail_network.usable(self, e, next)):
 		return _kernels.movement_clear(self, e, start, next, request_yield)
 	var radius: float = _radius(e)
 	if not _segment_static(start, next, radius, int(e.id)):
 		return false
-	for other in _neighbors(next):
+	var on_rail: bool = _rail_network.usable(self, e, start) and _rail_network.usable(self, e, next)
+	for other in _movement_neighbors(start, next, radius):
 		var id: int = int(other.id)
-		if id == int(e.id) or float(other.hp) <= 0.0:
+		if id == int(e.id) or float(other.hp) <= 0.0 or Transport.is_loaded(other):
 			continue
-		var combined: float = radius + float(other.radius) + 0.02
-		if next.distance_squared_to(other.pos) >= combined * combined:
-			continue
-		if start.distance_squared_to(other.pos) < combined * combined and next.distance_squared_to(other.pos) > start.distance_squared_to(other.pos) + .00001:
+		if on_rail and _rail_network.usable(self, other, other.pos): continue
+		var combined: float = _movement_pair_radius(e, other)
+		var other_start: Vector2 = _ground_motion_start(other)
+		if not _swept_unit_contact(start-other_start, next-other.pos, Vector2.ZERO, combined):
 			continue
 		if _can_crush_target(e, other):
 			continue
@@ -2971,12 +3497,49 @@ func _movement_clear(e: Dictionary, start: Vector2, next: Vector2, request_yield
 		return false
 	return true
 
+func _movement_pair_radius(e: Dictionary, other: Dictionary) -> float:
+	var a: float = _radius(e)
+	var b: float = float(other.radius)
+	if crowd_overlap_enabled and int(e.team) == int(other.team) and bool(e.get("ground_crush_eligible", false)) and bool(other.get("ground_crush_eligible", false)) and not bool(e.get("hold_position", false)) and not bool(other.get("hold_position", false)):
+		return a + b - minf(.12, minf(a, b) * .12)
+	return a + b + .02
+
+func _movement_neighbors(start: Vector2, finish: Vector2, radius: float) -> Array:
+	var reach: float = radius + _max_ground_radius + .02
+	var local: bool = start.distance_to(finish) + reach <= 2.0
+	if local and _ground_motion_spatial.is_empty(): return _neighbors(finish)
+	var answer: Array = []
+	var checked: Dictionary = {}
+	var keys: Dictionary = {}
+	if local:
+		for z in range(-1, 2):
+			for x in range(-1, 2): keys[_bucket(finish) + Vector2i(x, z)] = true
+	else: keys = _segment_bucket_keys(start, finish, reach)
+	for key in keys:
+		for other in _spatial.get(key, []) + _ground_motion_spatial.get(key, []):
+			if checked.has(int(other.id)): continue
+			checked[int(other.id)] = true
+			answer.append(other)
+	return answer
+
+func _ground_motion_start(e: Dictionary) -> Vector2:
+	return e.ground_motion_from if _in_step and float(e.get("ground_motion_time", -1.0)) == time and e.get("ground_motion_from") is Vector2 else e.pos
+
+func _swept_unit_contact(start: Vector2, finish: Vector2, center: Vector2, radius: float) -> bool:
+	var before: float = start.distance_squared_to(center)
+	# Recover old overlapping spawns only when the entire step separates them.
+	if before < radius * radius and (finish-start).dot(start-center) >= 0.0 and finish.distance_squared_to(center) > before + .00001:
+		return false
+	var closest: Vector2 = Geometry2D.get_closest_point_to_segment(center, start, finish)
+	return closest.distance_squared_to(center) < radius * radius
+
 
 
 func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, next: Vector2) -> void:
+	if _is_air(other): return # Parked aircraft remain stationary on the ground.
 	var id: int = int(other.id)
 	var propagating: bool = (e.get("yield_goal",Vector2.INF) as Vector2).is_finite()
-	if (synchronous_path_tests or (_yield_requests>0 and _local_nav_us<LOCAL_NAV_BUDGET_US)) and time>=float(e.get("yield_request_at",0)) and int(e.team)==int(other.team) and not bool(other.get("hold_position",false)) and (other.commands.is_empty() or int(other.id)>int(e.id) or propagating) and not (other.get("yield_goal",Vector2.INF) as Vector2).is_finite():
+	if (synchronous_path_tests or (_yield_requests>0 and _local_nav_us<LOCAL_NAV_BUDGET_US)) and time>=float(e.get("yield_request_at",0)) and int(e.team)==int(other.team) and not bool(other.get("hold_position",false)) and _traffic_may_yield(e,other) and not (other.get("yield_goal",Vector2.INF) as Vector2).is_finite():
 		var yield_start:int=Time.get_ticks_usec()
 		_yield_requests-=1
 		e.yield_request_at=time+1.0
@@ -2984,7 +3547,7 @@ func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, n
 		# Preserve an active front unit's route when it can already advance.
 		# Stealing that path forces a needless worker replan; propagated
 		# retreats can otherwise repeatedly push same-route traffic away.
-		if not other.commands.is_empty() and not other.path.is_empty():
+		if not other.commands.is_empty() and not other.path.is_empty() and not (_is_ground_vehicle(e) and _query_is_infantry(int(other.id))) and _navigation_priority(int(e.get("yield_root",e.id)))<=_navigation_priority(id):
 			var waypoint_index:=0
 			var other_radius: float=_radius(other)
 			# Read the same effective waypoint that both movement backends will
@@ -3019,18 +3582,24 @@ func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, n
 						return
 		var side: Vector2=forward.orthogonal()
 		var retreat:=Vector2.INF
+		var near_retreat:=Vector2.INF
 		var retreat_seconds:=4.0
+		var corridor_end:Vector2=start+forward*maxf(3.0,(other.pos as Vector2).distance_to(start)+_radius(e)+_radius(other))
+		var clearance:float=_radius(e)+_radius(other)+.02+maxf(.25,_radius(other)*.4)
+		var distances:Array=[1.2,1.8,2.4,.6]
 		var speed: float=float(data_for(other.spec).speed)*maxf(_step_delta,1.0/30.0)*float(other.get("rescue_speed_scale",1.0))
-		for distance in [1.2,1.8,2.4,.6]:
+		for distance in distances:
 			for offset in [side,-side,forward,-forward,(side-forward).normalized(),(-side-forward).normalized()]:
 				if not synchronous_path_tests and _local_nav_us+Time.get_ticks_usec()-yield_start>=LOCAL_NAV_BUDGET_US:break
 				var point: Vector2=other.pos+offset*distance
 				if _standing(point,_radius(other),id) and _segment_static(other.pos,point,_radius(other),id):
 					if not _claim_yield_probe(yield_start):break
 					if _movement_clear(other,other.pos,(other.pos as Vector2).move_toward(point,speed),false):
-						retreat=point
-						break
+						if not near_retreat.is_finite():near_retreat=point
+						if not (_is_ground_vehicle(e) and _query_is_infantry(int(other.id))) or Geometry2D.get_closest_point_to_segment(point,start,corridor_end).distance_to(point)>=clearance:
+							retreat=point;break
 			if retreat.is_finite():break
+		if not retreat.is_finite() and near_retreat.is_finite():retreat=near_retreat
 		if not retreat.is_finite():
 			# Prefer a legal first stride over creating another blocked retreat.
 			# If every first stride is occupied, keep the original distributed
@@ -3049,10 +3618,18 @@ func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, n
 			if not retreat.is_finite():retreat=occupied_fallback
 			retreat_seconds=8.0
 		if retreat.is_finite():
+			other.yield_saved_path=other.path.duplicate()
+			other.yield_saved_goal=other.path_goal
+			other.yield_saved_revision=_static_geometry_revision
+			other.yield_root=int(e.get("yield_root",e.id))
+			if _is_ground_vehicle(e) and _query_is_infantry(int(other.id)):navigation_vehicle_yields+=1
 			other.yield_goal=retreat
 			other.yield_until=time+retreat_seconds
-			other.reversing=_radius(other)>.5 and absf(wrapf(rad_to_deg((retreat-other.pos).angle())-float(other.alpha),-180,180))>100
-			other.path.clear();other.path_goal=Vector2.INF;other.path_wait=0.0
+			other.reversing=_is_ground_vehicle(other) and absf(wrapf(rad_to_deg((retreat-other.pos).angle())-float(other.alpha),-180,180))>100
+			# The retreat's full static connector was already checked above.
+			# Reuse it immediately instead of queueing another search for the same leg.
+			_cancel_path_request(id)
+			other.path=[retreat];other.path_goal=retreat;other.path_wait=0.0
 			other.progress_clock=0.0
 			other.progress_anchor=other.pos
 		_local_nav_us+=Time.get_ticks_usec()-yield_start
@@ -3063,13 +3640,15 @@ func _claim_yield_probe(yield_start: int) -> bool:
 	return true
 
 func _settle_crushing(e: Dictionary, next: Vector2) -> void:
+	if _rail_network.usable(self, e, e.pos): return
 	if not bool(e.can_crush):
 		return
-	for other in _neighbors(next):
+	var start: Vector2 = e.pos
+	for other in _movement_neighbors(start, next, float(e.radius)):
 		var combined: float = float(e.radius) + float(other.radius)
-		if _can_crush_target(e, other) and next.distance_squared_to(other.pos) < combined * combined:
-			other.hp = 0.0
-			_update_contact(other)
+		var closest: Vector2 = Geometry2D.get_closest_point_to_segment(Vector2.ZERO, start-_ground_motion_start(other), next-other.pos)
+		if float(other.hp) > 0.0 and not Transport.is_loaded(other) and _can_crush_target(e, other) and closest.length_squared() < combined * combined:
+			_apply_ground_crush(e, other)
 
 func _bucket(pos: Vector2) -> Vector2i:
 	return Vector2i(floori(pos.x / 2.0), floori(pos.y / 2.0))
@@ -3088,6 +3667,11 @@ func _rebuild_spatial() -> void:
 		_contact_teams = index.teams
 		_contact_domains = index.domains
 		_contacts_used = index.used
+		# Rails remain in combat spatial buckets for AOE/forced targeting, but
+		# zero acquisition masks keep the native nearest-target query fast.
+		for rail: Dictionary in _rail_network.cells.values():
+			var slot: int = int(_contact_indices.get(int(rail.id), -1))
+			if slot >= 0: _contact_domains[slot] = 0
 		return
 	_spatial.clear()
 	_combat_spatial.clear()
@@ -3113,7 +3697,7 @@ func _rebuild_spatial() -> void:
 		_contact_ids[slot] = id
 		_contact_positions[slot] = pos
 		_contact_teams[slot] = team
-		_contact_domains[slot] = 2 if air else (4 if _is_naval(e) else 1)
+		_contact_domains[slot] = 0 if RailNetwork.is_rail(data_for(e.spec)) else (2 if air else (4 if _target_domain(e)=="naval" else 1))
 		var combat_key: Vector2i = _combat_bucket(pos)
 		if not _team_spatial[team].has(combat_key): _team_spatial[team][combat_key] = []
 		_team_spatial[team][combat_key].append(id)
@@ -3121,7 +3705,7 @@ func _rebuild_spatial() -> void:
 		_combat_spatial[combat_key].append(id)
 		if not _contact_spatial.has(combat_key): _contact_spatial[combat_key] = []
 		_contact_spatial[combat_key].append(slot)
-		if e.kind != "unit" or air or _is_naval(e): continue
+		if e.kind != "unit" or (air and bool(e.get("airborne", true))) or _target_domain(e)=="naval": continue
 		var key: Vector2i = _bucket(pos)
 		if not _spatial.has(key): _spatial[key] = []
 		_spatial[key].append(e)
@@ -3141,7 +3725,7 @@ func _spatial_add(id: int, pos: Vector2) -> void:
 	_combat_spatial[combat_key].append(id)
 	if not _contact_spatial.has(combat_key): _contact_spatial[combat_key] = []
 	_contact_spatial[combat_key].append(slot)
-	if entities[id].kind != "unit" or _is_air(entities[id]) or _is_naval(entities[id]):
+	if entities[id].kind != "unit" or (_is_air(entities[id]) and bool(entities[id].get("airborne", true))) or _target_domain(entities[id])=="naval":
 		return
 	var key: Vector2i = _bucket(pos)
 	_invalidate_neighbors(key)
@@ -3188,7 +3772,13 @@ func _spatial_move(e: Dictionary, original: Vector2, next: Vector2) -> void:
 			if _contact_spatial.has(old_combat): _contact_spatial[old_combat].erase(slot)
 			if not _contact_spatial.has(new_combat): _contact_spatial[new_combat] = []
 			_contact_spatial[new_combat].append(slot)
-	if _is_air(e) or _is_naval(e) or Transport.is_loaded(e): return
+	if (_is_air(e) and bool(e.get("airborne", true))) or _target_domain(e)=="naval" or Transport.is_loaded(e): return
+	if _in_step:
+		e.ground_motion_from = original
+		e.ground_motion_time = time
+		for key in _segment_bucket_keys(original, next, .5):
+			if not _ground_motion_spatial.has(key): _ground_motion_spatial[key] = []
+			_ground_motion_spatial[key].append(e)
 	var old_key: Vector2i = _bucket(original)
 	var new_key: Vector2i = _bucket(next)
 	if old_key == new_key: return
@@ -3214,7 +3804,7 @@ func _update_contact(e: Dictionary) -> int:
 	_contact_ids[slot] = id
 	_contact_positions[slot] = e.pos
 	_contact_teams[slot] = int(e.team)
-	_contact_domains[slot] = 0 if float(e.hp) <= 0.0 or Transport.is_loaded(e) else (2 if _is_air(e) else (4 if _is_naval(e) else 1))
+	_contact_domains[slot] = 0 if float(e.hp) <= 0.0 or Transport.is_loaded(e) or RailNetwork.is_rail(data_for(e.spec)) else (2 if _is_air(e) else (4 if _target_domain(e)=="naval" else 1))
 	_contact_visibility[slot] = int(e.get("visible_to", (1 << factions.size()) - 1 if not vision_enabled else 1 << int(e.team)))
 	return slot
 
@@ -3246,7 +3836,7 @@ func _neighbors(pos: Vector2) -> Array:
 
 func _step_harvester(e: Dictionary, delta: float) -> void:
 	var capacity: float = float(_eco("harvester_capacity", 500))
-	if float(e.cargo) >= capacity - 0.001 or (float(e.cargo) > 0.0 and _available_ore() == 0):
+	if bool(e.get("manual_unload",false)) or float(e.cargo) >= capacity - 0.001 or (float(e.cargo) > 0.0 and _available_ore() == 0):
 		_release_mine(int(e.id))
 		var refinery_id: int = int(e.harvest_refinery)
 		if not entities.has(refinery_id) or int(entities[refinery_id].team) != int(e.team) or float(entities[refinery_id].construct_remaining) > 0.0:
@@ -3256,22 +3846,7 @@ func _step_harvester(e: Dictionary, delta: float) -> void:
 			e.state = "waiting"
 			return
 		var refinery: Dictionary = entities[refinery_id]
-		var approach: Vector2 = _refinery_approach(e, refinery)
-		if not approach.is_finite():
-			e.harvest_refinery = -1
-			e.state = "waiting"
-			return
-		if e.pos.distance_to(approach) < 1.0:
-			money[int(e.team)] += float(e.cargo)
-			events.append({"kind": "delivery", "pos": e.pos, "amount": e.cargo, "team": e.team})
-			e.cargo = 0.0
-			e.harvest_mine = int(e.get("preferred_mine",-1))
-			e.mining_goal = Vector2.INF
-			if e.commands.size() > 1 and e.commands[0].kind == "harvest": _finish_command(e)
-			e.path.clear()
-			e.path_goal = Vector2.INF
-		else:
-			_move_to(e, approach, delta)
+		RefineryDocking.approach(self,e,refinery,delta)
 		return
 	var mine_index: int = int(e.harvest_mine)
 	if mine_index < 0 or mine_index >= mines.size():
@@ -3287,10 +3862,13 @@ func _step_harvester(e: Dictionary, delta: float) -> void:
 			e.harvest_mine = -1
 			e.mining_goal = Vector2.INF
 		return
-	if e.pos.distance_to(mine.pos) <= 1.9:
+	if e.pos.distance_to(mine.pos) <= _radius(e) + float(_eco("harvester_mining_margin", 1.4)):
 		mine.miner = int(e.id)
 		var budget: float = float(_mine_tick_budget.get(mine_index, float(_eco("harvest_rate", 25)) * delta))
 		var ore: float = minf(budget, capacity - float(e.cargo))
+		if bool(_eco("finite_ore", false)):
+			ore = minf(ore, float(mine.amount))
+			mine.amount = maxf(0, float(mine.amount) - ore)
 		_mine_tick_budget[mine_index] = maxf(0.0, budget - ore)
 		e.cargo += ore
 		e.state = "harvest"
@@ -3384,7 +3962,8 @@ func _release_mine(unit_id: int) -> void:
 func _refresh_mine_claims() -> void:
 	for index in range(mines.size()):
 		var mine: Dictionary = mines[index]
-		mine.amount = float(mine.capacity)
+		var drill_id: int = int(mine.get("drill", -1))
+		if drill_id > 0 and not entities.has(drill_id): mine.drill = -1
 		var id: int = int(mine.get("miner", -1))
 		mine.miner = id
 		if id < 0: continue
@@ -3394,21 +3973,26 @@ func _refresh_mine_claims() -> void:
 		var e: Dictionary = entities[id]
 		var harvesting: bool = e.commands.is_empty() and not bool(e.harvest_override)
 		if not e.commands.is_empty(): harvesting = e.commands[0].kind == "harvest"
-		if float(e.hp) <= 0.0 or not str(e.spec).ends_with("_harvester") or not harvesting or int(e.harvest_mine) != index or float(e.cargo) >= float(_eco("harvester_capacity", 500)) - 0.001 or (e.pos as Vector2).distance_to(mine.pos) > 1.9:
+		if float(e.hp) <= 0.0 or not str(e.spec).ends_with("_harvester") or not harvesting or int(e.harvest_mine) != index or float(e.cargo) >= float(_eco("harvester_capacity", 500)) - 0.001 or (e.pos as Vector2).distance_to(mine.pos) > _radius(e) + float(_eco("harvester_mining_margin", 1.4)):
 			mine.miner = -1
 
 func _mine_available(index: int, unit_id: int) -> bool:
-	return int(mines[index].get("miner", -1)) in [-1, unit_id]
+	return int(mines[index].get("drill", -1)) < 0 and int(mines[index].get("miner", -1)) in [-1, unit_id] and (not bool(_eco("finite_ore", false)) or float(mines[index].amount) > 0)
 
 func _mining_approach(e: Dictionary, index: int) -> Vector2:
+	if RailNetwork.rail_only(data_for(e.spec)): return _rail_network.nearest_connected(self, e, mines[index].pos, _radius(e) + float(_eco("harvester_mining_margin", 1.4)))
 	var center: Vector2 = mines[index].pos
+	var radius: float = _radius(e)
+	var arrival: float = maxf(.25, radius*.4)
+	var contact: float = radius + float(_eco("harvester_mining_margin",1.4))
+	var approach_distance: float = contact-arrival-.1
 	var previous: Vector2 = e.get("mining_goal",Vector2.INF)
-	if previous.is_finite() and previous.distance_to(center) < 1.9 and _standing(previous,_radius(e),int(e.id)):
+	if previous.is_finite() and previous.distance_to(center) <= approach_distance+.0001 and _standing(previous,radius,int(e.id)):
 		return previous
 	var candidates: Array[Vector2]=[]
 	for offset in range(6):
 		var angle: float = ((int(e.id)+offset)%6) * TAU/6.0
-		var point: Vector2 = center + Vector2.from_angle(angle)*1.55
+		var point: Vector2 = center + Vector2.from_angle(angle)*approach_distance
 		if not _standing(point,_radius(e),int(e.id)): continue
 		var reserved: bool = false
 		for other in _neighbors(center):
@@ -3424,7 +4008,10 @@ func _mining_approach(e: Dictionary, index: int) -> Vector2:
 	return Vector2.INF
 
 func _available_ore() -> int:
-	return mines.size()
+	var count: int = 0
+	for index in range(mines.size()):
+		if int(mines[index].get("drill", -1)) < 0 and (not bool(_eco("finite_ore", false)) or float(mines[index].amount) > 0): count += 1
+	return count
 
 func _find_mine(e: Dictionary) -> int:
 	return _find_resource_target(e, false)
@@ -3483,6 +4070,10 @@ func _find_resource_target(e: Dictionary, refinery_search: bool) -> int:
 	return -1
 
 func _refinery_approach(e: Dictionary, refinery: Dictionary) -> Vector2:
+	if str(e.spec).ends_with("_harvester") and data_for(refinery.spec).get("role", "") == "refinery": return RefineryDocking.entrance(self,e,refinery)
+	if RailNetwork.rail_only(data_for(e.spec)):
+		var exit: Vector2 = _rail_network.exit_cell(self, refinery)
+		return exit if not _rail_network.traversable_path(self, e, e.pos, exit).is_empty() else Vector2.INF
 	var half: float = float(data_for(refinery.spec).size) * 0.5 + _radius(e) + 0.25
 	var best := Vector2.INF
 	var distance: float = INF
@@ -3545,7 +4136,8 @@ func _step_bridge_repair(e: Dictionary, command: Dictionary, delta: float) -> vo
 		bridge.repair_progress = 1.0
 		bridge.hp = float(_eco("bridge_hp", 1200))
 		bridge.alive = true
-		_nav_dirty = true
+		var changed_bounds: Array = bridge.bounds
+		_mark_nav_region(Rect2(float(changed_bounds[0]), float(changed_bounds[1]), float(changed_bounds[2]), float(changed_bounds[3])))
 		events.append({"kind": "build", "pos": _bridge_center(bridge), "bridge": bridge.id})
 		_finish_command(e)
 
@@ -3553,6 +4145,7 @@ func _step_ai() -> void:
 	if factions.size() != 2: return
 	var team: int = 1
 	var faction: String = factions[team]
+	ai_rebuild_base(team)
 	var order: Dictionary = building_orders[team]
 	for channel in ["normal", "defense"]:
 		if not order_for_team(team, channel).is_empty() and bool(order_for_team(team, channel).ready): _ai_place(team, channel)
@@ -3561,7 +4154,9 @@ func _step_ai() -> void:
 		var energy: Vector2 = power(team)
 		if not _has_role(team, "power") or energy.x < energy.y + 70.0:
 			next = "power"
-		elif not _has_role(team, "refinery"):
+		elif faction == "rivet" and not _has_role(team, "drill"):
+			MiningDrills.ai_build(self, team)
+		elif faction != "rivet" and not _has_role(team, "refinery"):
 			next = "refinery"
 		elif not _has_role(team, "barracks"):
 			next = "barracks"
@@ -3571,24 +4166,25 @@ func _step_ai() -> void:
 			next = "command"
 		elif _has_role(team, "command") and not _has_role(team, "airfield") and rules.buildings.has(faction + "_airfield") and money[team] > 2000.0:
 			next = "airfield"
-		elif not _has_role(team, "repair") and rules.buildings.has(faction + "_repair") and money[team] > 1500.0:
-			next = "repair"
 		elif not _has_role(team, "tech") and money[team] > 1400.0:
 			next = "tech"
 		elif money[team] > 3300.0 and _role_count(team, "factory") < 3:
 			next = "factory"
-		elif money[team] > 2500.0 and _role_count(team, "refinery") < 2:
+		elif faction != "rivet" and money[team] > 2500.0 and _role_count(team, "refinery") < 2:
 			next = "refinery"
 		if next != "":
-			build(team, faction + "_" + next)
+			ai_build(team, building_spec(team, next))
 	if defense_orders[team].is_empty() and _has_construction_base(team) and not _has_role(team, "tower") and money[team] > 1000.0:
-		build(team, faction + "_tower")
+		ai_build(team, faction + "_tower")
 	var reserve: float = 0.0
 	if building_orders[team].is_empty():
-		for role in ["power", "refinery", "barracks", "factory", "command", "airfield", "repair", "tech"]:
+		for role in ["power", "refinery", "barracks", "factory", "command", "airfield", "tech"]:
 			if rules.buildings.has(faction + "_" + role) and not _has_role(team, role):
 				reserve = float(data_for(faction + "_" + role).cost)
 				break
+	var rebuilding_base: bool = not _has_construction_base(team) and bool(data_for(faction+"_hq").get("rebuildable", false))
+	if rebuilding_base:
+		reserve = maxf(reserve, float(data_for(faction+"_hq").cost))
 	var infrastructure_reserve: float = reserve
 	# Reserve one aviation order before ground queues consume each ore delivery.
 	for building in _building_entities:
@@ -3608,8 +4204,8 @@ func _step_ai() -> void:
 			var role: String = str(data_for(e.spec).get("role", ""))
 			if e.queue.size() < 2:
 				if role == "factory":
-					if harvesters < maxi(2, _role_count(team, "refinery")):
-						if produce(int(e.id), faction + "_harvester") == "":
+					if faction != "rivet" and harvesters < maxi(2, _role_count(team, "refinery")) and (faction != "iron" or _rail_network.ai_connect_factory(self, e)):
+						if (not rebuilding_base or money[team] >= reserve + float(data_for(faction + "_harvester").cost)) and produce(int(e.id), faction + "_harvester") == "":
 							harvesters += 1
 					elif money[team] > reserve + 1050.0:
 						var choice: String = faction + "_tank"
@@ -3622,12 +4218,12 @@ func _step_ai() -> void:
 				elif role == "airfield":
 					var aircraft: String = _ai_aircraft_choice(team)
 					if rules.units.has(aircraft) and money[team] >= infrastructure_reserve + float(data_for(aircraft).cost): produce(int(e.id), aircraft)
-				elif role == "barracks" and money[team] > reserve + 350.0:
+				elif TechAvailability.producer_matches(self, e, "barracks") and money[team] > reserve + 350.0:
 					var unit_spec: String = faction + ("_anti" if int(time) % 3 == 0 else "_rifle")
 					if faction == "kestrel" and _has_role(team, "tech") and int(time) % 5 == 0:
 						unit_spec = faction + "_demolition"
 					produce(int(e.id), unit_spec)
-			if float(e.hp) < float(data_for(e.spec).hp) * 0.65 and money[team] > 250.0:
+			if float(e.hp) < max_hp(e) * 0.65 and money[team] > 250.0:
 				e.repairing = true
 		elif e.kind == "unit" and str(data_for(e.spec).get("weapon", "")) != "":
 			combat_ids.append(int(e.id))
@@ -3694,9 +4290,24 @@ func _enemy_air_count(team: int) -> int:
 func _role_count(team: int, role: String) -> int:
 	var amount: int = 0
 	for e in entities.values():
-		if int(e.team) == team and e.kind == "building" and data_for(e.spec).get("role", "") == role:
+		if int(e.team) == team and e.kind == "building" and (data_for(e.spec).get("role", "") == role or role in data_for(e.spec).get("production_roles", [])):
 			amount += 1
 	return amount
+
+func ai_rebuild_base(team: int) -> void:
+	var base_spec: String = building_spec(team, "hq")
+	if not base_spec.is_empty() and bool(data_for(base_spec).get("rebuildable", false)) and not _has_construction_base(team) and order_for_team(team).is_empty(): ai_build(team, base_spec)
+
+func ai_build(team: int, spec: String) -> String:
+	if not TechAvailability.engineer_building(self, team, data_for(spec)): return build(team, spec)
+	for e in entities.values():
+		if _builder_valid(team, int(e.id)) and e.commands.is_empty() and not [order_for_team(team, "normal"), order_for_team(team, "defense")].any(func(order): return int(order.get("builder", -1)) == int(e.id)): return build(team, spec, int(e.id))
+	var engineer_spec: String = factions[team] + "_engineer"
+	if _unit_spec_count(team, engineer_spec) < 1:
+		for e in _building_entities:
+			if int(e.team) == team and TechAvailability.producer_matches(self, e, "barracks") and availability(team, engineer_spec, -1, int(e.id)).is_empty():
+				return produce(int(e.id), engineer_spec)
+	return "等待空闲工程兵"
 
 func _ai_enemy_building(origin: Vector2) -> int:
 	var answer: int = -1
@@ -3710,7 +4321,16 @@ func _ai_enemy_building(origin: Vector2) -> int:
 	return answer
 
 func _ai_place(team: int, channel: String = "normal") -> void:
-	for zone: Dictionary in construction_zones(team):
+	var pending_rail_order: Dictionary = order_for_team(team, channel)
+	if factions[team] == "iron" and not pending_rail_order.is_empty() and data_for(pending_rail_order.spec).get("role", "") == "refinery":
+		_rail_network.ai_place_refinery(self, team, channel)
+		return
+	var zones: Array[Dictionary] = construction_zones(team)
+	var order: Dictionary = order_for_team(team, channel)
+	if zones.is_empty() and not order.is_empty() and bool(data_for(order.spec).get("rebuildable", false)):
+		var builder: int = int(order.get("builder", -1))
+		zones.append({"pos":entities[builder].pos if _builder_valid(team, builder) else _team_start(team), "radius":24.0})
+	for zone: Dictionary in zones:
 		var origin: Vector2 = zone.pos
 		# Keep the established search for large zones, and also sample tiny
 		# completed wall/barricade zones instead of skipping them entirely.
@@ -3728,7 +4348,9 @@ func _notice(message: String) -> void:
 		notices.pop_front()
 
 func save_game(path: String, visual_memory_snapshot: Dictionary = {}) -> String:
-	var snapshot: Dictionary = {"format": "paper_war", "version": SAVE_VERSION, "rules": rules.duplicate(true), "map": map.duplicate(true), "factions": factions.duplicate(), "money": money.duplicate(), "time": time, "result": result, "entities": entities.duplicate(true), "projectiles": projectiles.duplicate(true), "mines": mines.duplicate(true), "bridges": bridges.duplicate(true), "ruins": ruins.duplicate(true), "building_orders": building_orders.duplicate(true), "defense_orders": defense_orders.duplicate(true), "next_id": _next_id, "ai_enabled": ai_enabled, "ai_clock": _ai_clock, "ai_attack_clock": _ai_attack_clock, "ai_state":ai_state.duplicate(true), "low_power": _low_power.duplicate(), "nav_dirty": _nav_dirty, "nav_regions": _nav_regions.duplicate(), "planning_max_wait": _planning_max_wait, "planning_queue": _planning_queue.duplicate(), "match_options":match_options.duplicate(true), "team_vision":team_vision.duplicate(true)}
+	statistics.sample(self,true)
+	var snapshot: Dictionary = {"format": "paper_war", "version": SAVE_VERSION, "rules": rules.duplicate(true), "map": map.duplicate(true), "factions": factions.duplicate(), "money": money.duplicate(), "time": time, "result": result, "entities": entities.duplicate(true), "projectiles": projectiles.duplicate(true), "mines": mines.duplicate(true), "bridges": bridges.duplicate(true), "ruins": ruins.duplicate(true), "building_orders": building_orders.duplicate(true), "defense_orders": defense_orders.duplicate(true), "next_id": _next_id, "ai_enabled": ai_enabled, "ai_clock": _ai_clock, "ai_attack_clock": _ai_attack_clock, "ai_state":ai_state.duplicate(true), "low_power": _low_power.duplicate(), "nav_dirty": _nav_dirty, "nav_regions": _nav_regions.duplicate(), "planning_max_wait": _planning_max_wait, "planning_queue": _planning_queue.duplicate(), "navigation_command_until":_navigation_command_until.duplicate(), "static_geometry_revision":_static_geometry_revision, "match_options":match_options.duplicate(true), "team_vision":team_vision.duplicate(true)}
+	snapshot.match_statistics=statistics.to_dict()
 	if not visual_memory_snapshot.is_empty(): snapshot.visual_memory = visual_memory_snapshot.duplicate(true)
 	if campaign_controller != null: snapshot.campaign = campaign_controller.to_dict()
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
@@ -3788,18 +4410,20 @@ func load_game(path: String) -> String:
 		campaign_controller = CampaignController.new()
 		campaign_controller.from_dict(snapshot.campaign)
 	entities = snapshot.entities
+	statistics.restore(snapshot.get("match_statistics",{}),self)
+	_ground_motion_spatial.clear()
 	_designation_bonuses.clear()
-	_overcharge_bonuses.clear()
-	_support_power.clear()
 	_building_entities.clear()
+	_max_ground_radius = 1.0
 	for e in entities.values():
 		var info: Dictionary = data_for(e.spec)
+		if e.kind == "unit" and str(info.get("domain", "ground")) == "ground":
+			_max_ground_radius = maxf(_max_ground_radius, float(info.get("radius", 0.35)))
 		_max_entity_extent = maxf(_max_entity_extent, float(info.get("size", 1)) * 0.5 if e.kind == "building" else float(info.get("radius", 0.35)))
 		Transport.initialize(e)
 		if e.kind == "unit":
 			e.last_damage_time = float(e.get("last_damage_time", time))
 			e.last_attack_time = float(e.get("last_attack_time", time))
-			e.breakthrough_last_pos = e.get("breakthrough_last_pos", e.pos)
 			if bool(info.get("hero", false)):
 				e.hand_strike = float(e.get("hand_strike", 0.0))
 				e.hand_recover = float(e.get("hand_recover", 0.0))
@@ -3812,6 +4436,7 @@ func load_game(path: String) -> String:
 		e.turret_target = int(e.get("turret_target", -1))
 		e.can_crush = bool(info.get("crush", false))
 		e.crushable = bool(info.get("crushable", false))
+		_configure_crushing(e, info)
 		if _is_air(e):
 			e.ammo = int(e.get("ammo", info.ammo_capacity))
 			e.home_airfield = int(e.get("home_airfield", -1))
@@ -3825,7 +4450,8 @@ func load_game(path: String) -> String:
 	mines = snapshot.mines
 	for mine in mines:
 		mine.miner = int(mine.get("miner", -1))
-		mine.amount = float(mine.capacity)
+		mine.amount = float(mine.get("amount", mine.capacity))
+		mine.drill = int(mine.get("drill", -1))
 	bridges = snapshot.bridges
 	building_orders = snapshot.building_orders
 	defense_orders = snapshot.get("defense_orders", [])
@@ -3860,6 +4486,7 @@ func load_game(path: String) -> String:
 	notices.clear()
 	events.clear()
 	_damage.clear()
+	_damage_voice_next.clear()
 	_execute_buildings.clear()
 	_crush_targets.clear()
 	# Navigation is derived, but saved commands/cooldowns/projectiles are authoritative.
@@ -3875,10 +4502,16 @@ func load_game(path: String) -> String:
 		e.path_goal = saved_paths[int(e.id)].goal
 	_nav_regions.assign(snapshot.get("nav_regions", []))
 	_nav_dirty = bool(snapshot.get("nav_dirty", false))
+	# Saved yield corridors refer to this geometry epoch. The loaded world is
+	# identical, so retain its epoch while rebuilding all physical query caches.
+	_static_geometry_revision=int(snapshot.get("static_geometry_revision",_static_geometry_revision))
+	_goal_standing_cache.clear()
 	_planning_max_wait = float(snapshot.get("planning_max_wait", 0.0))
-	_path_plans_remaining = PATH_PLANS_PER_TICK
+	_path_plans_remaining = PATH_SYNC_PLANS_PER_TICK if synchronous_path_tests else PATH_PLANS_PER_TICK
 	_planning_deferred_ids.clear()
 	_planning_queue.assign(snapshot.get("planning_queue", []))
+	_navigation_command_until=snapshot.get("navigation_command_until",{}).duplicate()
+	_player_navigation_ids.clear()
 	_planning_requested_ids.clear()
 	NavalOperations.initialize(self)
 	_rebuild_spatial()
@@ -3893,6 +4526,7 @@ func load_game(path: String) -> String:
 		entity.path.clear();entity.path_goal=Vector2.INF;entity.path_wait=0.0
 		for command in entity.commands:
 			command.erase("formation");command.erase("formation_goal")
+	statistics.sample(self,true)
 	return ""
 
 func _publish_path_geometry() -> void:
@@ -3902,7 +4536,7 @@ func _publish_path_geometry() -> void:
 	for mine in mines:
 		hard.append(Rect2(mine.pos - MINE_HALF, MINE_HALF * 2.0))
 	for e in _building_entities:
-		if float(e.hp)<=0:continue
+		if float(e.hp)<=0 or RailNetwork.is_rail(data_for(e.spec)):continue
 		var half:=Vector2.ONE*float(data_for(e.spec).size)*.5
 		var rect:=Rect2(e.pos-half,half*2)
 		if data_for(e.spec).get("role","")=="barricade":vehicles.append(rect)
@@ -3923,6 +4557,7 @@ func _publish_path_geometry() -> void:
 	# every in-flight worker snapshot without copying the entire forest again.
 	_path_geometry={"hard":hard,"vehicles":vehicles,"ruin_chunks":_ruin_geometry_chunks.duplicate()}
 	_path_requests.clear();_planning_queue.clear()
+	if _path_worker!=null and _path_worker.has_method("invalidate"):_path_worker.invalidate(_path_revision)
 	navigation_stats.main_us+=Time.get_ticks_usec()-before
 
 func _start_path_worker() -> void:
@@ -3942,7 +4577,7 @@ func _start_path_worker() -> void:
 			terrain[z*_size+x]=int(map.terrain[z][x])
 			original_land[z*_size+x]=1 if _original_land(Vector2(x+.5,z+.5)) else 0
 	_path_worker=_create_path_worker()
-	_path_worker.start({"size":_size,"ids":ids,"edges":edges,"heights":heights,"terrain":terrain,"land":original_land,"masks":_terrain_masks.duplicate(true),"extra_positions":_terrain_nav_extra_positions.duplicate(),"extra_cells":_terrain_nav_extra_cells.duplicate(true)})
+	_path_worker.start({"size":_size,"ids":ids,"edges":edges,"heights":heights,"terrain":terrain,"land":original_land,"flat":_flat_safe,"flat_wide":_flat_wide_safe,"masks":_terrain_masks.duplicate(true),"extra_positions":_terrain_nav_extra_positions.duplicate(),"extra_cells":_terrain_nav_extra_cells.duplicate(true)})
 
 func _cancel_path_request(id: int) -> void:
 	_path_requests.erase(id)
@@ -3952,17 +4587,25 @@ func _background_path(start: Vector2, goal: Vector2, radius: float, id: int) -> 
 	_planning_requested_ids[id]=true
 	var job: Dictionary=_path_requests.get(id,{})
 	var key: float=snappedf(radius,.01)
-	if not job.is_empty() and (job.goal.distance_to(goal)>.6 or job.start.distance_to(start)>1.2 or job.radius!=key or job.revision!=_path_revision):
+	var vehicle: bool=not _query_is_infantry(id)
+	var pursuit: bool=entities.has(id) and bool(entities[id].get("pursuit_request",false))
+	if not job.is_empty() and ((not pursuit and (job.goal.distance_to(goal)>.6 or (not responsive_navigation_enabled and job.start.distance_to(start)>1.2))) or job.radius!=key or bool(job.get("vehicle",true))!=vehicle or job.revision!=_path_revision):
 		_cancel_path_request(id);job={}
 	if not job.is_empty() and job.status=="ready":
 		var path: Array=job.path
 		_cancel_path_request(id)
 		if entities.has(id):entities[id].planning_wait=0.0
+		if responsive_navigation_enabled and not path.is_empty() and job.start.distance_squared_to(start) > .0225:
+			path = ResponsiveNavigation.join_route(self, start, path, radius, id)
+			if path.is_empty():
+				# The moving start may have crossed into another corridor. Queue a
+				# fresh snapshot without reporting this stale connector as no route.
+				return _background_path(start, goal, radius, id)
 		if not path.is_empty() and (path.back() as Vector2).distance_to(goal)>.05 and _segment_static(path.back(),goal,radius,id):path.append(goal)
 		return path
 	if job.is_empty():
 		_path_token+=1
-		_path_requests[id]={"id":id,"token":_path_token,"revision":_path_revision,"start":start,"goal":goal,"radius":key,"start_height":_height(start),"goal_height":_height(goal),"status":"queued"}
+		_path_requests[id]={"id":id,"token":_path_token,"revision":_path_revision,"start":start,"goal":goal,"radius":key,"vehicle":vehicle,"start_height":_height(start),"goal_height":_height(goal),"status":"queued"}
 		if not _planning_queue.has(id):_planning_queue.append(id)
 	_plan_was_deferred=true
 	_defer_planning(id)
@@ -3974,6 +4617,7 @@ func _collect_path_results() -> void:
 	for result in _path_worker.collect():
 		_path_in_flight=maxi(0,_path_in_flight-1)
 		navigation_stats.max_worker_us=maxi(int(navigation_stats.max_worker_us),int(result.worker_us))
+		for key in result.get("worker_stats",{}):navigation_stats[key]=int(navigation_stats.get(key,0))+int(result.worker_stats[key])
 		var job: Dictionary=_path_requests.get(int(result.id),{})
 		if job.is_empty() or job.token!=result.token or result.revision!=_path_revision:
 			navigation_stats.discarded+=1
@@ -3985,18 +4629,41 @@ func _collect_path_results() -> void:
 func _submit_path_jobs() -> void:
 	if _path_worker==null:return
 	var before: int=Time.get_ticks_usec()
+	navigation_stats.max_queued=maxi(int(navigation_stats.max_queued),_planning_queue.size())
 	while _path_plans_remaining>0 and _path_in_flight<PATH_IN_FLIGHT and not _planning_queue.is_empty():
 		if Time.get_ticks_usec()-before>=PATH_ADMIN_BUDGET_US:break
-		var id: int=_planning_queue[0]
+		var queue_index:int=_navigation_queue_index()
+		var id: int=_planning_queue[queue_index]
+		var priority:int=_navigation_priority(id)
+		if priority<2 and _path_in_flight>=PATH_IN_FLIGHT-4:break
 		var job: Dictionary=_path_requests.get(id,{})
-		if job.is_empty() or not _planning_requested_ids.has(id):_planning_queue.pop_front();continue
+		if job.is_empty() or not _planning_requested_ids.has(id):_planning_queue.remove_at(queue_index);continue
 		var work: Dictionary=job.duplicate()
 		work.geometry=_path_geometry
+		work.priority=priority
+		work.base_priority=2 if float(_navigation_command_until.get(id,0.0))>time else 0
+		if entities.has(id) and not entities[id].commands.is_empty():work.navigation_lane=int(entities[id].commands[0].get("navigation_lane",-1))
 		if not _path_worker.submit(work):break
 		job.status="running"
-		_planning_queue.pop_front();_path_in_flight+=1;_path_plans_remaining-=1
+		_planning_queue.remove_at(queue_index);_path_in_flight+=1;_path_plans_remaining-=1
+		if priority>=2:navigation_priority_grants+=1
 		navigation_stats.submitted+=1
+	navigation_stats.queued=_planning_queue.size()
+	navigation_stats.in_flight=_path_in_flight
+	navigation_stats.max_in_flight=maxi(int(navigation_stats.max_in_flight),_path_in_flight)
 	navigation_stats.main_us+=Time.get_ticks_usec()-before
 
 func _create_path_worker():
 	return PATH_WORKER.new()
+
+func rotate_build_order(team: int, quarter_turns: int = 1, channel: String = "auto") -> String:
+	channel = _effective_construction_channel(team, channel)
+	var order: Dictionary = order_for_team(team, channel)
+	if order.is_empty(): return "当前没有待放置的建筑"
+	order.rotation_quarters = posmod(BuildingOrientation.quarters(order)+quarter_turns,4)
+	if RailNetwork.is_rail(data_for(str(order.spec))): order.rail_rotation = order.rotation_quarters
+	return ""
+
+func rotate_rail_order(team: int, quarter_turns: int = 1, channel: String = "auto") -> String:
+	# Compatibility for the previous V shortcut and older tools.
+	return rotate_build_order(team,quarter_turns,channel)

@@ -3,28 +3,31 @@ extends RefCounted
 
 const TraitText = preload("res://scripts/faction_trait_text.gd")
 const Construction = preload("res://scripts/building_construction.gd")
+const TierAvailability = preload("res://scripts/tier_availability.gd")
 
 ## Read-only presentation of the live rules. Every numeric / boolean leaf is
 ## retained, including future nested fields; asset paths never enter the tables.
-const TECHNICAL_FIELDS: Array[String] = ["id", "art", "animations", "legacy_id", "portrait", "model", "model_path", "icon", "icon_path"]
-const BASE_FIELDS: Array[String] = ["cost", "hp", "build_time"]
-const UNIT_FIELDS: Array[String] = ["speed", "radius", "turn_speed", "has_turret", "turret_turn_speed", "fire_while_moving", "crush", "crushable", "flight_height", "ammo_capacity", "rearm_time", "repair_radius", "repair_rate", "transport_capacity"]
-const BUILDING_FIELDS: Array[String] = ["power", "size", "expands", "aircraft_capacity", "repair_radius", "repair_rate", "vision_bonus"]
-const WEAPON_FIELDS: Array[String] = ["damage", "interval", "range", "kind", "blast", "speed", "targets", "multipliers"]
+const TECHNICAL_FIELDS: Array[String] = ["id", "art", "animations", "legacy_id", "portrait", "model", "model_path", "icon", "icon_path", "roster_hidden", "naval_role"]
+const BASE_FIELDS: Array[String] = ["tier", "cost", "hp", "armor", "build_time"]
+const UNIT_FIELDS: Array[String] = ["speed", "radius", "turn_speed", "has_turret", "turret_turn_speed", "fire_while_moving", "crush", "crushable", "crush_strength", "crush_resistance", "flight_height", "ammo_capacity", "rearm_time", "repair_radius", "repair_rate", "transport_capacity", "logical_size", "rail_only", "self_heal_rate", "self_heal_delay", "vision_radius"]
+const BUILDING_FIELDS: Array[String] = ["power", "local_power", "local_power_radius", "construction_radius", "size", "expands", "aircraft_capacity", "repair_radius", "repair_rate", "service_rate", "unlocks_tier", "vision_radius", "vision_bonus"]
+const WEAPON_FIELDS: Array[String] = ["damage", "penetration", "interval", "range", "kind", "blast", "speed", "targets", "multipliers", "trajectory", "gravity", "inherited_velocity", "beam_duration", "emp_vehicle_duration", "emp_building_duration", "emp_air_duration"]
 const LABELS: Dictionary = {
-	"cost": "造价", "hp": "最大生命", "build_time": "生产时间", "speed": "移动速度",
+	"tier": "科技等级", "cost": "造价", "hp": "最大生命", "build_time": "生产时间", "speed": "移动速度",
 	"radius": "碰撞半径", "turn_speed": "车体 / 身体转向速度", "has_turret": "独立炮塔",
-	"turret_turn_speed": "炮塔转向速度", "fire_while_moving": "行进中射击", "crush": "可碾压步兵",
+	"turret_turn_speed": "炮塔转向速度", "fire_while_moving": "行进中射击", "crush": "可执行地面碾压", "crush_strength": "碾压等级", "crush_resistance": "抗碾压等级",
 	"crushable": "可被载具碾压", "flight_height": "巡航高度", "ammo_capacity": "弹药容量",
 	"rearm_time": "机场补给时间", "repair_radius": "维修范围", "repair_rate": "维修速度",
+	"service_rate": "车间维修速度", "unlocks_tier": "完工解锁科技",
 	"transport_capacity": "步兵运输容量",
 	"rescue_radius": "拖救协助范围", "rescue_speed_bonus": "受损友军撤离速度增量",
 	"designation_radius": "目标标定范围", "designation_track_time": "持续追踪时间", "damage_bonus": "伤害增量",
-	"overcharge_radius": "蓄能增压范围", "overcharge_window": "增压窗口", "overcharge_recharge": "散热充能时间",
-	"overcharge_cost": "每次增压资金", "overcharge_power": "增压额外电力", "aircraft_repair_rate": "停机飞机维修速度",
+	"aircraft_repair_rate": "停机飞机维修速度",
 	"power": "电力收支", "size": "占地尺寸", "expands": "扩展建设范围",
-	"aircraft_capacity": "机场机位", "vision_bonus": "友军自动索敌范围增量",
+	"aircraft_capacity": "机场机位", "vision_radius": "视野半径", "vision_bonus": "友军自动索敌范围增量",
 	"damage": "单次基础伤害", "interval": "攻击间隔", "range": "射程", "kind": "弹种",
+	"permanent_air":"永久留空", "rotorcraft":"旋翼机", "amphibious":"两栖通行", "submarine":"潜航", "sonar_range":"声呐范围", "anti_submarine":"反潜武器", "carrier":"航空母舰", "internal_only":"舰载自动单位", "armor": "护甲数值", "penetration": "武器穿透", "friendly_fire": "伤及友军",
+	"trajectory": "弹道", "gravity": "重力加速度", "inherited_velocity": "继承载具速度比例",
 	"blast": "爆炸半径", "targets": "可攻击目标", "multipliers": "护甲伤害倍率",
 	"infantry": "步兵", "armored": "装甲", "building": "建筑", "ground": "地面", "air": "空中", "naval": "海上",
 	"draft": "吃水", "air_draft": "水面以上净空", "waterline": "模型水线", "coast_split": "岸水占地比例", "harbor_depth": "港湾水深要求",
@@ -36,16 +39,27 @@ const LABELS: Dictionary = {
 	"build_radius": "扩建半径", "construction_radii": "完工设施建设半径", "fire_angle": "开火允许偏角", "cell_size": "格子尺寸参数",
 	"minimum_shell_time": "炮弹最短飞行时间参数",
 	"select": "选中", "move": "移动", "attack": "攻击", "ready": "生产完成", "return": "返航",
-	"damage_reduction": "单位伤害减免", "regen_delay": "自动恢复等待", "regen_fraction_per_second": "自动恢复最大生命比例 / 秒",
-	"cohesion_radius": "同域协同范围", "cohesion_min_allies": "协同所需其他友方作战单位", "cohesion_damage_bonus": "协同伤害增量",
-	"breakthrough_distance": "攻击移动突破距离", "breakthrough_window": "突破首击有效时间", "breakthrough_damage_bonus": "突破首击伤害增量",
-	"emp_vehicle_duration": "装甲单位失控时间", "emp_building_duration": "建筑失控时间"
+	"local_power": "基地局部供电容量", "local_power_radius": "基地局部供电半径", "construction_radius": "基地建设半径",
+	"production_roles": "生产职能", "prerequisite_roles": "科技前置职能", "building_method": "建设方式",
+	"rebuildable": "允许重复建造",
+	"regen_delay": "自动恢复等待", "regen_fraction_per_second": "自动恢复最大生命比例 / 秒",
+	"emp_vehicle_duration": "装甲单位失控时间", "emp_building_duration": "建筑失控时间", "emp_air_duration": "空军失控时间",
+	"beam_duration": "持续束流时长", "logical_size": "逻辑占地边长", "rail_only": "仅沿己方铁路通行",
+	"self_heal_rate": "自身恢复生命 / 秒", "self_heal_delay": "自身恢复脱战等待", "drill_income_rate": "钻机资金收入 / 秒",
+	"harvester_unload_time": "矿车卸矿时间", "air_idle_return_delay": "空闲返航等待", "rail_transition_cost": "铁路上下轨选路惩罚"
 }
 const ROLE_NAMES: Dictionary = {
 	"hq": "总部", "power": "发电站", "refinery": "精炼厂", "barracks": "兵营", "factory": "载具工厂",
 	"tower": "防御塔", "tech": "研究所", "wall": "围墙", "barricade": "拒马", "outpost": "分基地",
-	"repair": "维修站", "command": "指挥中心", "airfield": "机场", "shipyard": "船厂"
+	"repair": "修理厂", "advanced_power": "高级发电站", "airfield": "机场", "shipyard": "船坞", "drill": "采矿钻机", "rail": "铁路", "rail_junction": "三向铁路岔道"
 }
+
+static func tier_label(spec: Dictionary) -> String:
+	return "T%d" % TierAvailability.tier(spec)
+
+
+static func tier_description(spec: Dictionary) -> String:
+	return TierAvailability.requirement_text(spec).get_slice(" · ", 1)
 
 
 static func entries(rules: Dictionary, faction: String = "", kind: String = "", query: String = "") -> Array[Dictionary]:
@@ -62,6 +76,7 @@ static func entries(rules: Dictionary, faction: String = "", kind: String = "", 
 				continue
 			var id: String = str(raw_id)
 			var spec: Dictionary = specs[raw_id]
+			if bool(spec.get("roster_hidden",false)):continue
 			var spec_faction: String = str(spec.get("faction", ""))
 			if not faction.is_empty() and faction != spec_faction:
 				continue
@@ -74,7 +89,7 @@ static func entries(rules: Dictionary, faction: String = "", kind: String = "", 
 			}
 			var search_text: String = " ".join([id, entry.name, entry.formal_name, entry.description, faction_name,
 				ROLE_NAMES.get(str(spec.get("role", spec.get("producer", ""))), ""),
-				"单位" if entry_kind == "unit" else "建筑", _names(rules, spec.get("requires", [])),
+				"单位" if entry_kind == "unit" else "建筑", tier_label(spec), tier_description(spec), _names(rules, spec.get("requires", [])),
 				" ".join(TraitText.spec_lines(rules, spec))]).to_lower()
 			var matches: bool = true
 			for term: String in search.split(" ", false):
@@ -102,23 +117,31 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 	var faction: String = str(spec.get("faction", ""))
 	var base: Array[Dictionary] = []
 	base.append(_row("所属阵营", str(rules.get("factions", {}).get(faction, {}).get("name", faction))))
+	base.append(_row("科技解锁", tier_label(spec) + " · " + tier_description(spec)))
 	base.append(_row("前置设施", _names(rules, spec.get("requires", []))))
 	if unit:
 		var producer: String = _producer(rules, spec)
 		base.append(_row("生产设施", producer))
 	else:
-		base.append(_row("设施用途", str(ROLE_NAMES.get(str(spec.get("role", "")), "其他设施"))))
+		base.append(_row("设施用途", "基地兵营" if _is_base_barracks(spec) else str(ROLE_NAMES.get(str(spec.get("role", "")), "其他设施"))))
 	for key: String in BASE_FIELDS:
 		_append_field(base, spec, key, prefix, "entity")
-		if key=="build_time" and spec.get("role","")=="outpost":base.back().label="现场施工时间"
+		if key == "build_time" and not unit and _field_building(rules, spec): base.back().label = "现场施工时间"
 	_add_section(result, "生产与基础", base)
 	var trait_rows: Array[Dictionary] = []
 	for line: String in TraitText.spec_lines(rules, spec): trait_rows.append(_row("作战特性", line))
 	if unit or spec.get("role", "") == "hq":
-		var traits: Dictionary = rules.get("factions", {}).get(faction, {}).get("traits", {})
+		var traits: Dictionary = {}
+		if faction == "iron" and (not unit or spec.get("armor_class", "") == "armored"):
+			for key in ["regen_delay", "regen_fraction_per_second"]:
+				var configured: Dictionary = rules.get("factions", {}).get(faction, {}).get("traits", {})
+				if configured.has(key): traits[key] = configured[key]
 		_flatten_numeric(traits, "factions." + faction + ".traits", "阵营特性", trait_rows, "trait")
 	_add_section(result, "阵营与作战特性", trait_rows)
 	var capabilities: Array[Dictionary] = []
+	if bool(spec.get("permanent_air",false)):capabilities.append(_row("飞行与补给","永久留空，不消耗弹药，不需要机场停靠。"))
+	if bool(spec.get("amphibious",false)):capabilities.append(_row("生产与通行","战车工厂和船坞均可生产；可跨越可通行海岸。"))
+	if bool(spec.get("internal_only",false)):capabilities.append(_row("生产方式","由航母自动调度，不可单独购买。"))
 	if unit:
 		capabilities.append(_row("行动领域", _domain(str(spec.get("domain", "ground")))))
 		capabilities.append(_row("护甲类别", str(LABELS.get(str(spec.get("armor_class", "infantry" if spec.get("crushable", false) else "armored")), "其他护甲"))))
@@ -143,6 +166,9 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 	if weapon.is_empty():
 		weapon_rows.append(_row("武装", "无"))
 	else:
+		if weapon.get("trajectory", "") == "gravity_bomb":
+			weapon_rows.append(_row("主武器", "短程自由落体炸弹"))
+			weapon_rows.append(_row("投弹方式", "飞临目标附近，从吊舱向下投放；炸弹受重力下落，短程投弹只攻击地面与海上目标。背部机枪独立瞄准与开火。"))
 		for key: String in WEAPON_FIELDS:
 			_append_field(weapon_rows, weapon, key, "weapons." + weapon_id, "weapon")
 		if not weapon.has("targets"):
@@ -155,12 +181,28 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 			if float(weapon.get("interval", 0.0)) > 0.0:
 				weapon_rows.append(_row("对" + str(LABELS[armor]) + "理论每秒伤害", _number(float(weapon.get("damage", 0.0)) * multiplier / float(weapon.interval)) + " 生命/秒"))
 		if float(weapon.get("interval", 0.0)) > 0.0:
+			weapon_rows.append(_row("射速", _number(1.0 / float(weapon.interval)) + " 发/秒"))
 			weapon_rows.append(_row("基础理论每秒伤害", _number(float(weapon.get("damage", 0.0)) / float(weapon.interval)) + " 生命/秒"))
 		weapon_rows.append(_row("理论伤害说明", "只对可攻击目标生效，假设连续命中单个目标；不计转向、移动、飞行与返航补给，范围伤害不重复计入。"))
+		if weapon.has("penetration"):
+			weapon_rows.append(_row("穿甲规则", "穿透严格大于护甲时正常伤害；小于或等于护甲时仅造成四分之一。表中理论值按成功穿甲计算，并保留兵种伤害倍率。"))
+			if weapon.get("aoe_falloff","")=="linear": weapon_rows.append(_row("范围衰减", "从爆心至受击表面，伤害与穿透同时线性递减；边缘降至零。"))
 		var additional_weapon: Array[Dictionary] = []
 		_extra_numeric(weapon, WEAPON_FIELDS, "weapons." + weapon_id, additional_weapon, "weapon")
 		weapon_rows.append_array(additional_weapon)
 	_add_section(result, "武器与伤害", weapon_rows)
+	var secondary_id: String = str(spec.get("secondary_weapon", ""))
+	var secondary: Dictionary = rules.get("weapons", {}).get(secondary_id, {})
+	if not secondary.is_empty():
+		var secondary_rows: Array[Dictionary] = [_row("副武器", "独立背部机枪")]
+		for key: String in WEAPON_FIELDS:
+			_append_field(secondary_rows, secondary, key, "weapons." + secondary_id, "weapon")
+		if float(secondary.get("interval", 0.0)) > 0.0:
+			secondary_rows.append(_row("射速", _number(1.0 / float(secondary.interval)) + " 发/秒"))
+			secondary_rows.append(_row("基础理论每秒伤害", _number(float(secondary.get("damage", 0.0)) / float(secondary.interval)) + " 生命/秒"))
+		secondary_rows.append(_row("独立开火", "机枪独立转向、瞄准与射击，可攻击空中、地面与海上目标；可在主武器投弹时同时防御，不消耗炸弹弹药。"))
+		_extra_numeric(secondary, WEAPON_FIELDS, "weapons." + secondary_id, secondary_rows, "weapon")
+		_add_section(result, "独立副武器 · 背部机枪", secondary_rows)
 	_add_section(result, "经济与支援", _economy_rows(rules, spec, unit))
 	var extras: Array[Dictionary] = []
 	var known: Array[String] = BASE_FIELDS.duplicate()
@@ -178,12 +220,29 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 	return result
 
 
+static func _is_base_barracks(spec: Dictionary) -> bool:
+	return spec.get("faction", "") == "rivet" and spec.get("role", "") == "hq" and bool(spec.get("rebuildable", false))
+
+
+static func _unified_rivet_base(rules: Dictionary) -> bool:
+	return _is_base_barracks(rules.get("buildings", {}).get("rivet_hq", {}))
+
+
+static func _field_building(rules: Dictionary, spec: Dictionary) -> bool:
+	return spec.get("role", "") == "outpost" or (rules.factions.get(spec.get("faction", ""), {}).get("building_method", "") == "engineer" and (spec.get("role", "") != "hq" or bool(spec.get("rebuildable", false))))
+
+
 static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
 	var eco: Dictionary = rules.get("economy", {})
 	var low: float = float(eco.get("low_power_multiplier", 0.5))
 	_append_field(rows, eco, "low_power_multiplier", "economy", "economy")
-	if spec.has("build_time"):
+	var field_building: bool = not unit and _field_building(rules, spec)
+	var engineer_faction: bool = rules.factions.get(spec.get("faction", ""), {}).get("building_method", "") == "engineer"
+	var unified_base: bool = engineer_faction and _unified_rivet_base(rules)
+	if field_building:
+		rows.append(_row("现场施工速度", "按建筑设定的施工时间推进，不受全域缺电影响；资金不足或工程兵离开时暂停。"))
+	elif spec.has("build_time"):
 		rows.append(_row("低电时生产时间", _number(float(spec.build_time) / low) + " 秒" if low > 0.0 else "暂停生产"))
 	_append_field(rows, eco, "repair_cost", "economy", "economy")
 	if not unit:
@@ -192,7 +251,8 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 		rows.append(_row("出售回收资金", _number(float(spec.get("cost", 0.0)) * float(eco.get("sell_ratio", 0.5))) + " 资金"))
 		if eco.has("construction_radii"):
 			rows.append(_row("扩建半径", _number(Construction.radius_in_rules(rules, spec)) + " 格"))
-			rows.append(_row("完工建设范围", "每座己方建筑完成后都提供周围建设范围，围墙和拒马也提供小范围；同方设施的范围连成建设区，放置仍需满足前置、地形和占地要求。" if Construction.radius_in_rules(rules, spec) > 0.0 else "本对局规则未给该类设施配置建设范围。"))
+			var coverage: String = "重锤只有基地兵营提供基地建设范围；开局与工兵新建的是同一种建筑，新建基地兵营可以在已有范围外扩张。" if unified_base else "重锤只有主基地和大兵营提供基地建设范围；须由工程兵在范围内施工，新的大兵营可以远程扩张。" if engineer_faction else "每座己方建筑完成后都提供周围建设范围，围墙和拒马也提供小范围；同方设施的范围连成建设区，放置仍需满足前置、地形和占地要求。"
+			rows.append(_row("完工建设范围", coverage if Construction.radius_in_rules(rules, spec) > 0.0 else "本对局规则未给该类设施配置建设范围。"))
 		elif bool(spec.get("expands", false)):
 			_append_field(rows, eco, "build_radius", "economy", "economy")
 		_append_field(rows, eco, "repair_rate", "economy", "economy")
@@ -202,26 +262,30 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 		rows.append(_row("从零生命修至满血的理论费用", _number(float(spec.get("hp", 0.0)) * float(eco.get("repair_cost", 0.2))) + " 资金"))
 		if spec.get("role", "") == "refinery":
 			rows.append(_row("建成赠送", "1 辆" + _name(rules, str(spec.get("faction", "")) + "_harvester")))
-		if spec.get("role", "") in ["barracks", "factory", "airfield", "shipyard"]:
+		if spec.get("role", "") in ["barracks", "factory", "airfield", "shipyard"] or not spec.get("production_roles", []).is_empty():
 			var produced: Array[String] = []
 			for id: Variant in rules.get("units", {}):
 				var candidate: Dictionary = rules.units[id]
-				if candidate.get("faction", "") == spec.get("faction", "") and candidate.get("producer", "") == spec.get("role", ""):
+				if candidate.get("faction", "") == spec.get("faction", "") and (candidate.get("producer", "") == spec.get("role", "") or candidate.get("producer", "") in spec.get("production_roles", [])):
 					produced.append(_name(rules, str(id)))
 			rows.append(_row("可生产单位", "、".join(produced)))
 		if spec.get("role", "") in ["hq", "outpost"]:
-			rows.append(_row("基地存续与授权", "任意一座己方总部或分基地存活，即可维持基地存续与建筑生产；分基地可代替总部前置。"))
+			rows.append(_row("基地存续与授权", "每座基地兵营只训练步兵，不建造建筑；工程兵可继续现场建造基地兵营与其他建筑，每座完工基地兵营均满足基地和兵营前置。" if unified_base else "重锤建筑由工程兵现场施工；主基地只训练步兵，分基地也不提供远程建筑生产。" if engineer_faction else "任意一座己方总部或分基地存活，即可维持基地存续与建筑生产；分基地可代替总部前置。"))
+		if float(spec.get("local_power", 0.0)) > 0.0:
+			rows.append(_row("局部供电规则", "只供应半径内的己方已完成建筑，按距离分配并受总容量限制；不向远处建筑供电。供电建筑被EMP压制或摧毁后停止供电。"))
 		if spec.get("role", "") == "hq":
-			rows.append(_row("总部数量限制", "每方同时最多拥有一座总部；总部不能建造其他总部，失守后也不能重新建造。"))
-		if spec.get("role", "") == "outpost":
-			rows.append(_row("工程兵施工", "选中己方工程兵点击分基地卡立即选址，无需预付款或等订单；工程兵抵达后搭起脚手架，资金随现场施工进度支付，不消耗工程兵。"))
-			rows.append(_row("前线建设范围", "无需己方总部或已有扩建覆盖；仍遵守前置、地形及占地规则，资金不足时保留进度并暂停。"))
+			rows.append(_row("基地兵营数量" if _is_base_barracks(spec) else "总部数量限制", "可建造多座；开局与工程兵新建的基地兵营共用同一建筑类型和全部数值，失守后可重新建造。" if _is_base_barracks(spec) else "每方同时最多拥有一座总部；总部不能建造其他总部，失守后也不能重新建造。"))
+		if field_building:
+			rows.append(_row("工程兵施工", "选中己方工程兵点击建筑卡立即选址，无需预付款或等订单；工程兵抵达后搭起脚手架，资金随现场施工进度支付，不消耗工程兵。"))
+			rows.append(_row("前线建设范围", "钻机可以在已有建设范围之外的合法矿脉上施工。" if spec.get("role", "") == "drill" else "基地兵营可以在已有建设范围外选址扩张；其他重锤建筑须在已完成基地兵营的建设范围内施工。" if unified_base else "额外大兵营可以远程选址扩张；其他重锤建筑须在已完成主基地或大兵营的建设范围内施工。" if engineer_faction else "无需己方总部或已有扩建覆盖；仍遵守前置、地形及占地规则，资金不足时保留进度并暂停。"))
 			rows.append(_row("受损与接手", "脚手架受伤后工程兵先维修再继续建造，额外维修费会拖慢施工；工程兵阵亡或离开则暂停，其他工程兵可右键接手。"))
-			rows.append(_row("主动拆除", "选中未完工分基地点击拆除脚手架；释放占地，已花施工及维修资金不退款。"))
-		if spec.get("role", "") == "command":
-			rows.append(_row("索敌加成规则", "全体友军生效；多个指挥设施取最高值，低电时停用。加成只影响自动索敌，不提高武器射程。"))
+			rows.append(_row("主动拆除", "选中未完工建筑点击拆除脚手架；释放占地，已花施工及维修资金不退款。"))
 		if spec.get("role", "") in ["tower", "repair"]:
 			rows.append(_row("电力要求", "低电时停止自动攻击或维修。"))
+		if spec.has("service_rate"):
+			rows.append(_row("入厂维修", "选中受损己方地面装甲载具，右键修理厂；载具自行寻路进入车间，再按实际恢复生命付费。离开车间、资金不足或停电时停止维修。"))
+			rows.append(_row("维修对象", "地面装甲载具；飞机由机场检修，舰船使用海上维修。"))
+			rows.append(_row("车间满速耗费", _number(float(spec.service_rate) * float(eco.get("repair_cost", 0.2))) + " 资金/秒"))
 		if spec.get("role", "") == "airfield":
 			rows.append(_row("机位规则", "已造飞机与生产队列共同占用机位；飞机补给不花资金，低电时补给减速。"))
 		if spec.get("role", "") == "shipyard": rows.append(_row("港湾建设", shipyard_instructions()))
@@ -229,6 +293,11 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 			rows.append(_row("通行规则", "阻挡所有地面单位；飞机可越过。延伸线上的每格独立计费。"))
 		if spec.get("role", "") == "barricade":
 			rows.append(_row("通行规则", "阻挡车辆；步兵穿越速度为正常的 35%；飞机可越过。"))
+	if spec.get("role", "") == "drill":
+		rows.append(_row("钻机收入", _number(float(eco.get("drill_income_rate",16)))+" 资金/秒（正常供电、已完工）"))
+		rows.append(_row("矿点占用", "钻机与矿脉是独立对象，脚手架开工即独占该矿脉；摧毁后释放原矿脉，不重置储量或复制矿物。"))
+	if bool(spec.get("rail_only",false)):
+		rows.append(_row("铁路专用通行", "只能沿所属玩家的合法铁路运行，速度为地面基准两倍；断轨立即更新路径，工厂无轨则等待连接。"))
 	if str(spec.get("art", "")) == "harvester" or (not unit and spec.get("role", "") == "refinery"):
 		for key: String in ["harvester_capacity", "harvest_rate", "ore_capacity", "ore_regen"]:
 			_append_field(rows, eco, key, "economy", "economy")
@@ -243,8 +312,8 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 		rows.append(_row("支援维修目标", "己方地面单位（不含飞机）；建筑使用立即修复规则。" if unit and spec.get("art", "") == "engineer" else "己方地面装甲载具；维修车不能修步兵、建筑或飞机。" if unit else "地面装甲载具"))
 	if str(spec.get("art", "")) == "engineer":
 		rows.append(_row("立即修复建筑", "右键己方受损建筑；到达建筑边缘后一次恢复全部缺失生命，按实际恢复生命收费，资金不足时等待整次修复，不消耗工程兵。"))
-		rows.append(_row("修建分基地", "点击建造卡立即选址；工程兵抵达后搭建脚手架，随施工进度扣款，不受扩建范围限制。受损先修复，工兵阵亡或离开则暂停，其他工兵右键接手，也可主动拆除。"))
-		rows.append(_row("立即占领建筑", "右键敌方建筑，到达边缘后立即转为己方，不消耗工程兵。包括防御塔；不包括围墙、拒马。已有总部时不能占领另一座总部。"))
+		rows.append(_row("现场建设" if engineer_faction else "修建分基地", ("可搭建全部建筑；基地兵营可在已有建设范围外选址扩张，开局与新建的是同一种建筑。" if unified_base else "可搭建所有非总部建筑；须先建大兵营拓展基地建设范围。" if engineer_faction else "可搭建分基地。") + "点击建造卡立即选址；工程兵抵达后搭建脚手架，随施工进度扣款。受损先修复，工兵阵亡或离开则暂停，其他工兵右键接手，也可主动拆除。"))
+		rows.append(_row("立即占领建筑", "右键敌方建筑，到达边缘后立即转为己方，不消耗工程兵。包括防御塔；不包括围墙、拒马、铁路和岔道口。基地兵营可占领多座；其他总部已有一座时不能再占领另一座。" if _unified_rivet_base(rules) else "右键敌方建筑，到达边缘后立即转为己方，不消耗工程兵。包括防御塔；不包括围墙、拒马、铁路和岔道口。已有总部时不能占领另一座总部。"))
 		rows.append(_row("占领生产设施", "原生产队列清空，按未完成比例退款给原主人；原主人飞机失去被占领机场的保障。"))
 		for key: String in ["bridge_hp", "bridge_cost", "bridge_time"]:
 			_append_field(rows, eco, key, "economy", "economy")
@@ -257,14 +326,13 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 	if spec.get("domain", "ground") == "naval": rows.append(_row("航行规则", "沿连通水域航行；陆地及低净空桥梁阻挡舰艇。指定海上集结点；登陆由运输船将地面步兵送到可通行海岸。"))
 	if spec.has("rescue_radius"): rows.append(_row("拖救规则", "拖救车右键仍存活的友方受损载具，持续护送；目标生命≤60%并执行撤离移动时获得速度增量。需距离与可通行连接，多车不叠加，不回收残骸。"))
 	if spec.has("designation_radius"): rows.append(_row("标定规则", "自动持续追踪范围内最近敌方地面载具，满足距离与视线后提高友方射击伤害；追踪中断即失效，多标定车不叠加。"))
-	if spec.has("overcharge_radius"): rows.append(_row("增压规则", "附近武装单位进入交战时自动花费资金与电力余量，提供短时伤害窗口；随后散热充能。低电中断，多个蓄能站增幅不叠加。"))
 	if spec.has("aircraft_repair_rate"): rows.append(_row("航空维护", "飞机返航停机时按实际恢复生命消耗资金；电力不足停止维修。"))
 	if spec.get("domain", "ground") == "air":
 		rows.append(_row("低电时补给时间", _number(float(spec.get("rearm_time", 0.0)) / low) + " 秒" if low > 0.0 else "暂停补给"))
-		rows.append(_row("弹药与返航", "每次开火消耗 1 发；耗尽后自动返航补满。机场失去后寻找有空机位的己方机场。" if not str(spec.get("weapon", "")).is_empty() else "无武装，不消耗射击弹药；可主动返航接受机场检修。机场失去后寻找有空机位的己方机场。"))
+		rows.append(_row("弹药与返航", "主武器每次投弹消耗 1 发；独立机枪不消耗炸弹弹药。炸弹耗尽后自动返航补满；机场失去后寻找有空机位的己方机场。" if not str(spec.get("secondary_weapon", "")).is_empty() else "每次开火消耗 1 发；耗尽后自动返航补满。机场失去后寻找有空机位的己方机场。" if not str(spec.get("weapon", "")).is_empty() else "无武装，不消耗射击弹药；可主动返航接受机场检修。机场失去后寻找有空机位的己方机场。"))
 	if not str(spec.get("weapon", "")).is_empty():
 		_append_field(rows, eco, "fire_angle", "economy", "economy")
-		rows.append(_row("强制命令", "H 后左键目标或地面强制攻击，可攻击友方、树木、房屋和中立石墙；普通右键及攻击移动不会主动破坏这些中立障碍。F 后左键强制移动，可让坦克碾压所指步兵，包括友方。"))
+		rows.append(_row("强制命令", "H 后左键目标或地面强制攻击，可攻击友方、树木、房屋和中立石墙；普通右键及攻击移动不会主动破坏这些中立障碍。F 后左键强制移动：普通坦克可碾压敌方步兵；重型坦克及重装高级单位还可碾压敌方普通坦克。友军、同等级重装、舰船、飞机和轨道专用车辆不参与地面碾压。"))
 	# New economy numbers cannot silently disappear when the rule schema grows.
 	var known_eco: Array[String] = []
 	for raw_key: Variant in LABELS:
@@ -320,10 +388,13 @@ static func _value(key: String, value: Variant, context: String) -> String:
 	if value is bool:
 		return "是" if value else "否"
 	if key == "kind":
-		return "即时命中" if str(value) == "instant" else "飞行弹丸" if str(value) == "shell" else str(value)
+		return {"instant":"即时命中", "shell":"飞行弹丸", "laser":"定点激光射线", "beam":"持续束流"}.get(str(value),str(value))
+	if key == "trajectory": return {"gravity_bomb":"自由落体投弹"}.get(str(value), str(value))
 	if not (value is int or value is float):
 		return str(value)
 	var number: String = _number(float(value))
+	if key in ["tier", "unlocks_tier"]: return "T" + number
+	if key == "local_power": return number + " 电力（仅供附近建筑）"
 	if key == "power":
 		return ("供应 +" + number if float(value) > 0.0 else "消耗 " + _number(absf(float(value))) if float(value) < 0.0 else "0") + " 电力"
 	if key == "size":
@@ -334,11 +405,12 @@ static func _value(key: String, value: Variant, context: String) -> String:
 		return number + " 资金/生命"
 	if key in ["hp", "damage", "bridge_hp"]:
 		return number + " 生命"
-	if key in ["build_time", "rearm_time", "interval", "construction_animation", "bridge_time", "minimum_shell_time", "regen_delay", "breakthrough_window", "emp_vehicle_duration", "emp_building_duration"]:
+	if key in ["build_time", "rearm_time", "interval", "construction_animation", "bridge_time", "minimum_shell_time", "regen_delay", "emp_vehicle_duration", "emp_building_duration", "emp_air_duration", "beam_duration", "self_heal_delay", "harvester_unload_time", "air_idle_return_delay"]:
 		return number + " 秒"
+	if key == "service_rate": return number + " 生命/秒"
 	if key == "repair_rate":
 		return number + "（" + _number(float(value) * 100.0) + "% 最大生命/秒）" if context == "economy" else number + " 生命/秒"
-	if key in ["low_power_multiplier", "sell_ratio", "damage_reduction", "regen_fraction_per_second", "cohesion_damage_bonus", "breakthrough_damage_bonus"]:
+	if key in ["low_power_multiplier", "sell_ratio", "regen_fraction_per_second"]:
 		return number + "（" + _number(float(value) * 100.0) + "%）"
 	if key in ["turn_speed", "turret_turn_speed"]:
 		return number + " °/秒"
@@ -346,9 +418,8 @@ static func _value(key: String, value: Variant, context: String) -> String:
 		return "±" + number + " °"
 	if key == "speed":
 		return number + " 格/秒" + ("（即时命中，无飞行时间）" if context == "weapon" and float(value) == 0.0 else "")
-	if key in ["radius", "flight_height", "repair_radius", "vision_bonus", "range", "blast", "build_radius", "cell_size", "cohesion_radius"]:
+	if key in ["radius", "flight_height", "repair_radius", "vision_bonus", "range", "blast", "build_radius", "construction_radius", "cell_size", "local_power_radius"]:
 		return number + " 格"
-	if key == "breakthrough_distance": return number + " 米"
 	if key in ["harvest_rate", "ore_regen"]:
 		return number + " 辉晶/秒"
 	if key in ["harvester_capacity", "ore_capacity"]:
@@ -380,11 +451,12 @@ static func _name(rules: Dictionary, id: String) -> String:
 static func _producer(rules: Dictionary, spec: Dictionary) -> String:
 	var faction: String = str(spec.get("faction", ""))
 	var role: String = str(spec.get("producer", ""))
+	var names: PackedStringArray = []
 	for id: Variant in rules.get("buildings", {}):
 		var candidate: Dictionary = rules.buildings[id]
-		if candidate.get("faction", "") == faction and candidate.get("role", "") == role:
-			return _name(rules, str(id))
-	return str(ROLE_NAMES.get(role, "未收录设施"))
+		if candidate.get("faction", "") == faction and (candidate.get("role", "") == role or role in candidate.get("production_roles", [])):
+			names.append(_name(rules, str(id)))
+	return "、".join(names) if not names.is_empty() else str(ROLE_NAMES.get(role, "未收录设施"))
 
 
 static func _domain(domain: String) -> String:

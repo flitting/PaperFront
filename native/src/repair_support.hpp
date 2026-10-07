@@ -65,6 +65,7 @@ bool can_target_native(const Dictionary &source, int64_t target, const Dictionar
     if (found.get_type() != Variant::DICTIONARY) return false;
     Dictionary other = found;
     if (double(other[hp]) <= 0 || int64_t(other.get(transport, -1)) > 0) return false;
+    if (bool(other.get(StringName("submarine"), false)) && !bool(source.get(StringName("anti_submarine"), false))) return false;
     if (!(int64_t(other.get(StringName("visible_to"), 255)) & (int64_t(1) << int64_t(source[team])))) return false;
     if (!force) {
         Array commands = source[commands_key];
@@ -78,6 +79,6 @@ bool can_target_native(const Dictionary &source, int64_t target, const Dictionar
     }
     if (int64_t(other[team]) == int64_t(source[team]) && !force) return false;
     bool air = String(other.get(kind, "unit")) == "unit" && air_specs.has(other[spec]);
-    bool naval = String(other.get(kind, "unit")) == "unit" && naval_specs.has(other[spec]);
+    bool naval = String(other.get(kind, "unit")) == "unit" && naval_specs.has(other[spec]) && String(other.get(StringName("surface_domain"), "naval")) != "ground";
     return (mask & (air ? 2 : (naval ? 4 : 1))) != 0;
 }

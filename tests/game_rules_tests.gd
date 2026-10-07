@@ -2,6 +2,7 @@ extends SceneTree
 
 const Sim = preload("res://tests/rule_test_simulation.gd")
 const Rules = preload("res://scripts/rules_loader.gd")
+const LegacyRivet = preload("res://tests/legacy_rivet_construction.gd")
 var config: Dictionary
 var checks: int = 0
 var failures: Array[String] = []
@@ -35,6 +36,16 @@ func _initialize() -> void:
 func _new_sim(faction: String = "rivet"):
 	var sim = Sim.new()
 	sim.setup(config, "dev", 7, faction, false)
+	return sim
+
+
+func _legacy_construction_sim():
+	# Preserve the historical construction/refund and global-power snapshot
+	# independently of current Rivet engineer scaffolds and local HQ supply.
+	# Current faction mechanics are exercised in rivet_mechanics_tests.
+	var historical: Dictionary = LegacyRivet.adapt(config)
+	var sim = Sim.new()
+	sim.setup(historical, "dev", 7, "rivet", false)
 	return sim
 
 
@@ -197,6 +208,7 @@ func _test_tank_fire() -> void:
 	_check(_fires(sim, tank) == 2, "a second turret shot becomes available only after the configured cooldown")
 
 	sim = _new_sim()
+	sim.debug_spawn(0, "rivet_power", Vector2(17.5, 37.5))
 	var tower: int = sim.debug_spawn(0, "rivet_tower", Vector2(10.5, 43.5))
 	target = sim.debug_spawn(1, "kestrel_power", Vector2(4.5, 43.5))
 	sim.step(1.0 / 30.0)
@@ -386,7 +398,7 @@ func _test_bridge() -> void:
 
 
 func _test_power_and_placement() -> void:
-	var sim = _new_sim()
+	var sim = _legacy_construction_sim()
 	var barracks: int = sim.debug_spawn(0, "rivet_barracks", Vector2(5.5, 37.5))
 	sim.debug_spawn(0, "rivet_factory", Vector2(11.5, 38.5))
 	var tower: int = sim.debug_spawn(0, "rivet_tower", Vector2(7.5, 43.5))
@@ -400,7 +412,7 @@ func _test_power_and_placement() -> void:
 	sim.debug_spawn(0, "rivet_power", Vector2(17.5, 37.5))
 	sim.step(0.5)
 	_check(_near(float(sim.building_orders[0].remaining), float(config.buildings.rivet_power.build_time) - slow_progress - 0.5) and _near(float(sim.entities[barracks].queue[0].remaining), float(config.units.rivet_rifle.build_time) - slow_progress - 0.5) and _fires(sim, tower) >= 1, "restored power resumes normal progress and tower fire")
-	sim = _new_sim()
+	sim = _legacy_construction_sim()
 	_check(sim.build(0, "rivet_power") == "", "building order accepts legal HQ prerequisite")
 	_tick(sim, float(config.buildings.rivet_power.build_time) + 0.05)
 	var order: Dictionary = sim.building_orders[0].duplicate(true)
@@ -410,9 +422,9 @@ func _test_power_and_placement() -> void:
 	_check(sim.building_orders[0] == order and sim.money[0] == funds and sim.entities.size() == count, "illegal placement preserves ready order, money and entity count")
 	_check(sim.place_building(0, Vector2(4.5, 30.5)) == "", "ready building places on valid flat covered land")
 	var new_id: int = sim._next_id - 1
-	_check(float(sim.entities[new_id].construct_remaining) > 0.0 and sim.counts(0).y == 2 and sim.power(0).x == float(config.buildings.rivet_hq.power), "landed construction immediately counts and occupies but does not supply power")
+	_check(float(sim.entities[new_id].construct_remaining) > 0.0 and sim.counts(0).y == 2 and sim.power(0).x == float(sim.data_for("rivet_hq").power), "landed construction immediately counts and occupies but does not supply power")
 	_tick(sim, float(config.economy.construction_animation) + 0.1)
-	_check(sim.power(0).x == float(config.buildings.rivet_hq.power) + float(config.buildings.rivet_power.power), "completed construction supplies configured power")
+	_check(sim.power(0).x == float(sim.data_for("rivet_hq").power) + float(config.buildings.rivet_power.power), "completed construction supplies configured power")
 
 
 func _block_exits(sim, barracks: int) -> Array:
@@ -445,7 +457,7 @@ func _test_building_repair() -> void:
 
 
 func _test_queues_and_refunds() -> void:
-	var sim = _new_sim()
+	var sim = _legacy_construction_sim()
 	var starting_money: float = float(config.economy.initial_money)
 	var building_cost: float = float(config.buildings.rivet_power.cost)
 	var building_time: float = float(config.buildings.rivet_power.build_time)
@@ -460,7 +472,9 @@ func _test_queues_and_refunds() -> void:
 	var funds: float = sim.money[0]
 	sim.cancel_build(0)
 	_check(sim.money[0] == funds and not sim.notices.is_empty(), "ready building cancellation refunds zero and provides a notice")
-	sim = _new_sim()
+	# These historical FIFO fixtures use the retired standalone barracks.
+	# Current base-barracks production is covered by rivet_mechanics_tests.
+	sim = _legacy_construction_sim()
 	var barracks: int = sim.debug_spawn(0, "rivet_barracks", Vector2(10.5, 39.5))
 	sim.produce(barracks, "rivet_rifle")
 	sim.produce(barracks, "rivet_rifle")
@@ -469,14 +483,14 @@ func _test_queues_and_refunds() -> void:
 	_check(_near(sim.money[0], starting_money - rifle_cost), "unstarted FIFO order receives a full refund")
 	sim.cancel_production(barracks, 0)
 	_check(_near(sim.money[0], starting_money - rifle_cost * 0.4), "active FIFO order receives remaining-progress refund")
-	sim = _new_sim()
+	sim = _legacy_construction_sim()
 	barracks = sim.debug_spawn(0, "rivet_barracks", Vector2(10.5, 39.5))
 	sim.produce(barracks, "rivet_rifle")
 	sim.produce(barracks, "rivet_rifle")
 	_tick(sim, rifle_time * 0.4)
 	_damage(sim, barracks, 10000.0)
 	_check(_near(sim.money[0], starting_money - rifle_cost * 0.4) and not sim.entities.has(barracks), "destroyed producer refunds active and unstarted orders by the same rule")
-	sim = _new_sim()
+	sim = _legacy_construction_sim()
 	barracks = sim.debug_spawn(0, "rivet_barracks", Vector2(10.5, 39.5))
 	var blockers: Array = _block_exits(sim, barracks)
 	sim.produce(barracks, "rivet_rifle")
@@ -485,7 +499,7 @@ func _test_queues_and_refunds() -> void:
 	_check(sim.entities[barracks].queue.size() == 2 and bool(sim.entities[barracks].queue[0].ready) and sim.counts(0).x == 0, "blocked producer retains ready unit and never overlaps or teleports it")
 	_damage(sim, barracks, 10000.0)
 	_check(_near(sim.money[0], starting_money - rifle_cost), "destroying blocked producer loses finished product and refunds waiting order")
-	sim = _new_sim()
+	sim = _legacy_construction_sim()
 	barracks = sim.debug_spawn(0, "rivet_barracks", Vector2(10.5, 39.5))
 	blockers = _block_exits(sim, barracks)
 	sim.produce(barracks, "rivet_rifle")
@@ -519,7 +533,7 @@ func _test_gift_and_result() -> void:
 
 
 func _test_save() -> void:
-	var sim = _new_sim()
+	var sim = _legacy_construction_sim()
 	sim.debug_spawn(0, "rivet_power", Vector2(4.5, 37.5))
 	var refinery: int = sim.debug_spawn(0, "rivet_refinery", Vector2(10.5, 39.5))
 	var barracks: int = sim.debug_spawn(0, "rivet_barracks", Vector2(17.5, 36.5))

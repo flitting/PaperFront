@@ -13,23 +13,36 @@ const RUBBER := Color("625849")
 const GLASS := Color("759591")
 const BLUE := Color("2865a5")
 const RED := Color("bb4034")
-const PLAYER_COLORS := [Color("e7ad42"), Color("41c7c6"), Color("af80d1"), Color("9bb85a"), Color("6498df"), Color("df7860"), Color("d68eb5"), Color("e2d478")]
-const INFANTRY_ART := ["rifle", "anti", "engineer", "demolition"]
+const PLAYER_COLORS = preload("res://scripts/player_palette.gd").COLORS
+const INFANTRY_ART := ["rifle", "anti", "engineer", "demolition", "gunner", "grenadier", "marksman", "mortar", "aa_infantry", "storm"]
 const AIRCRAFT_ART := ["fighter", "attacker", "bomber", "air_transport", "recon"]
 const EXPANSION_FACTIONS := ["iron", "sky"]
 const WALL_CONNECTIONS = preload("res://scripts/wall_connections.gd")
 
 static var recipes: Dictionary = {}
+static var owner_palette: Array[Color] = []
+static var author_tier: int = 0
+static var author_owner: Color = Color.TRANSPARENT
+static var author_faction: String = ""
+static var author_override: Color = Color.TRANSPARENT
+static var author_override_team: int = -999
+const BADGE_ORANGE := Color("efb537")
+static var authored_lods: Dictionary = {}
 static var painted_material: ShaderMaterial
 static var performance_material:ShaderMaterial
+static var veteran_materials: Dictionary = {}
 static var cargo_mesh: ArrayMesh
 static var cutter_mesh: ArrayMesh
 static var quality_meshes:Dictionary={}
 static var quality_sources:Dictionary={}
+static var quality_source_owners:Dictionary={}
 const UNIT_LOD_RESOURCE=preload("res://assets/models/unit_lod_indices.res")
+const OFFLINE_LOD = preload("res://scripts/offline_mesh_lod.gd")
 
 
 class CraftMesh:
+	var detail_tier: int = VolumeModels.author_tier
+	var fixed_palette: bool = false
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
@@ -39,7 +52,8 @@ class CraftMesh:
 	var shell_vertices := PackedVector3Array()
 	var shell_normals := PackedVector3Array()
 
-	func triangle(a: Vector3, b: Vector3, c: Vector3, color: Color, normal: Vector3) -> void:
+	func triangle(a: Vector3, b: Vector3, c: Vector3, color: Color, normal: Vector3, recolor: bool = true) -> void:
+		if recolor and not fixed_palette: color = VolumeModels.player_pigment(color)
 		# Godot's front winding is clockwise. Normals point out of the model.
 		if (b-a).cross(c-a).dot(normal) > 0:
 			vertices.append_array([a,c,b])
@@ -53,6 +67,25 @@ class CraftMesh:
 			shell_normals.append_array([normal,normal,normal])
 
 	func face(points: Array, color: Color, normal: Vector3) -> void:
+		# Leave a narrow paper margin around broad painted panels. The outline
+		# shell retains its original closed face, independent of paint divisions.
+		if not fixed_palette and points.size() == 4 and VolumeModels.is_painted_role(color) and (points[1]-points[0]).length() > .18 and (points[3]-points[0]).length() > .18:
+			var capture: bool = capture_shell
+			if capture:
+				shell_triangle(points[0],points[1],points[2],normal)
+				shell_triangle(points[0],points[2],points[3],normal)
+			capture_shell = false
+			var center: Vector3 = (points[0]+points[1]+points[2]+points[3])*.25
+			var inset: Array = []
+			for point in points: inset.append(point.lerp(center,.16))
+			for i in range(1,3): triangle(inset[0],inset[i],inset[i+1],color,normal)
+			for i in range(4):
+				var j: int = (i+1)%4
+				var edge_paint: Color = VolumeModels.faction_color(VolumeModels.author_faction) if i in [0,2] else VolumeModels.PAPER
+				triangle(points[i],points[j],inset[j],edge_paint,normal,false)
+				triangle(points[i],inset[j],inset[i],edge_paint,normal,false)
+			capture_shell = capture
+			return
 		for i in range(1,points.size()-1):
 			triangle(points[0],points[i],points[i+1],color,normal)
 
@@ -106,7 +139,15 @@ class CraftMesh:
 				face([outer[i],outer[next],inner[next],inner[i]],border_color,normal)
 		capture_shell=previous_capture
 
+	func fixed_box(center: Vector3, size: Vector3, color: Color, outline: bool = true) -> void:
+		var previous: bool = fixed_palette
+		fixed_palette = true
+		box(center,size,color,outline)
+		fixed_palette = previous
+
 	func box(center: Vector3, size: Vector3, color: Color, outline: bool = true) -> void:
+		if detail_tier == 2 and size.abs().max_axis_index() >= 0 and maxf(size.x,maxf(size.y,size.z)) < .10: return
+		if detail_tier > 0: outline = false
 		var h := size*.5
 		var p: Array = []
 		for v in [Vector3(-1,-1,-1),Vector3(1,-1,-1),Vector3(1,1,-1),Vector3(-1,1,-1),Vector3(-1,-1,1),Vector3(1,-1,1),Vector3(1,1,1),Vector3(-1,1,1)]:
@@ -122,6 +163,8 @@ class CraftMesh:
 				line(p[edge[0]],p[edge[1]],.022,VolumeModels.INK)
 
 	func line(a: Vector3, b: Vector3, radius: float, color: Color) -> void:
+		if detail_tier == 2 and radius < .025: return
+		if detail_tier == 1 and radius < .013: return
 		var axis: Vector3 = (b-a).normalized()
 		if axis.length_squared() < .9:return
 		var tangent: Vector3 = axis.cross(Vector3.UP)
@@ -144,6 +187,9 @@ class CraftMesh:
 		capture_shell = previous_capture
 
 	func cylinder(center: Vector3, radius: float, length: float, axis: Vector3, color: Color, segments: int = 12, outline: bool = true) -> void:
+		if detail_tier > 0:
+			segments = mini(segments,8 if detail_tier == 1 else 6)
+			outline = false
 		var direction: Vector3 = axis.normalized()
 		var tangent: Vector3 = direction.cross(Vector3.UP)
 		if tangent.length_squared()<.01:tangent=direction.cross(Vector3.RIGHT)
@@ -164,6 +210,7 @@ class CraftMesh:
 				line(b+oa,b+ob,.014,VolumeModels.INK)
 
 	func prism(profile: Array, depth: float, center: Vector3, color: Color, outline: bool = true, edge_colors: Dictionary = {}, bordered_edges: Dictionary = {}, cap_border: Color = Color.TRANSPARENT) -> void:
+		if detail_tier > 0: outline = false
 		# Extrusion of an XY cut shape into real Z volume, including both caps.
 		var polygon := PackedVector2Array()
 		for p in profile:polygon.append(p)
@@ -248,8 +295,9 @@ class CraftMesh:
 			shell_normals.append(Vector3(n.x,n.z,-n.y))
 
 	func badge(center: Vector3, faction: String, accent: Color, normal: Vector3 = Vector3.BACK, size: float = .24) -> void:
+		accent = VolumeModels.BADGE_ORANGE
 		# Every identification plate has a neutral frame and a raised faction
-		# emblem. Its player paint is independent of the large faction paint.
+		# emblem. Its orange seal stays fixed while broad panels follow the player.
 		var part := CraftMesh.new()
 		part.box(Vector3.ZERO,Vector3(size*2.16,size*2.16,.060),VolumeModels.INK,false)
 		part.box(Vector3(0,0,.037),Vector3(size*1.92,size*1.92,.035),accent,false)
@@ -316,6 +364,8 @@ static func _paint() -> ShaderMaterial:
 	var shader := Shader.new()
 	shader.code = """shader_type spatial;
 render_mode diffuse_lambert, specular_disabled, cull_back;
+uniform bool veteran = false;
+uniform vec4 veteran_owner = vec4(1.0);
 varying vec3 paper_position;
 void vertex() { paper_position = VERTEX; }
 float hash(vec3 p) { return fract(sin(dot(p, vec3(12.9898,78.233,39.425))) * 43758.5453); }
@@ -329,16 +379,21 @@ void fragment() {
     float broad = wash(p * 3.0);
     float strokes = wash(p * vec3(25.0, 5.0, 9.0));
     vec3 pigment = COLOR.rgb;
+    if (veteran && distance(normalize(pigment),normalize(veteran_owner.rgb)) < 0.065 && distance(pigment,vec3(0.937,0.710,0.216)) > 0.06) {
+        pigment *= 0.68;
+        float service_band = 1.0 - step(0.17,fract(abs(p.x + p.z * 0.35) * 1.7));
+        pigment = mix(pigment,vec3(0.92,0.77,0.38),service_band);
+    }
     float blue = smoothstep(0.09, 0.23, pigment.b - pigment.r);
     float red = smoothstep(0.19, 0.34, pigment.r - pigment.g) * (1.0 - smoothstep(0.40, 0.62, pigment.g));
     float team_paint = max(blue, red);
     // Thin, faded pigment over warm paper. Sparse elongated misses describe a
     // dry brush; broad noise never cuts the roof into camouflage islands.
     vec3 paper = vec3(0.73, 0.60, 0.42);
-    pigment = mix(pigment, paper, team_paint * (0.15 + broad * 0.12));
+    pigment = mix(pigment, paper, team_paint * (0.02 + broad * 0.035));
     float brush = wash(p * vec3(3.0, 11.0, 18.0));
     float dry_brush = smoothstep(0.82, 0.96, brush) * team_paint;
-    pigment = mix(pigment, paper, dry_brush * 0.40);
+    pigment = mix(pigment, paper, dry_brush * 0.12);
     pigment *= 0.91 + broad * 0.13 + strokes * 0.04;
     float phase = dot(p, vec3(211.0, 137.0, 73.0));
     float fibre = sin(phase) * 0.018 * (1.0 - smoothstep(1.0, 3.0, fwidth(phase)));
@@ -352,6 +407,14 @@ void fragment() {
 	painted_material=ShaderMaterial.new()
 	painted_material.shader=shader
 	return painted_material
+
+static func veteran_paint(team: int) -> ShaderMaterial:
+	if not veteran_materials.has(team):
+		var material: ShaderMaterial = _paint().duplicate()
+		material.set_shader_parameter("veteran",true)
+		material.set_shader_parameter("veteran_owner",player_color(team))
+		veteran_materials[team] = material
+	return veteran_materials[team]
 
 static func fast_paint() -> ShaderMaterial:
 	if performance_material!=null:return performance_material
@@ -370,7 +433,9 @@ void fragment() {
 
 
 static func supports(spec: Dictionary, kind: String) -> bool:
-	if str(spec.get("art", "")) in ["naval_transport", "naval_frigate", "naval_signature", "shipyard"]: return true
+	if str(spec.get("art", "")) in INFANTRY_ART: return false
+	if str(spec.get("art", "")) in ["drill", "zeppelin", "armored_train", "rail", "rail_junction", "heavy_tank"]: return true
+	if str(spec.get("art", "")) in ["naval_transport", "naval_frigate", "naval_signature", "shipyard", "helicopter", "naval_submarine", "naval_amphibious", "naval_hovercraft", "naval_support", "naval_carrier", "naval_aa"]: return true
 	if art_faction(spec) in EXPANSION_FACTIONS:
 		return kind=="building" or str(spec.get("art","")) not in INFANTRY_ART
 	return kind=="building" or str(spec.get("art","")) in AIRCRAFT_ART + ["tank","harvester","assault","scout","aa","artillery","advanced"]
@@ -380,7 +445,7 @@ static func art_faction(spec:Dictionary) -> String:
 
 static func faction_color(faction: String) -> Color:
 	match faction:
-		"iron": return Color("bb963e")
+		"iron": return Color("39847b")
 		"sky": return Color("67578b")
 		"rivet": return RED
 	return BLUE
@@ -393,29 +458,20 @@ static func faction_emblem(faction: String) -> String:
 	return "wing"
 
 static func lod_source_signature(source:Mesh,team:int) -> String:
-	var hash:=HashingContext.new()
-	hash.start(HashingContext.HASH_SHA256)
-	var owner:Color=player_color(team)
-	for surface in range(source.get_surface_count()):
-		var arrays:Array=source.surface_get_arrays(surface)
-		for attribute in [Mesh.ARRAY_VERTEX,Mesh.ARRAY_NORMAL,Mesh.ARRAY_TEX_UV,Mesh.ARRAY_INDEX]:
-			hash.update(var_to_bytes(arrays[attribute]))
-		# Identity plates use different owner RGB values with identical topology.
-		# Normalize just that paint; all other authored colors remain validated.
-		if arrays[Mesh.ARRAY_COLOR]!=null:
-			var colors:PackedColorArray=(arrays[Mesh.ARRAY_COLOR] as PackedColorArray).duplicate()
-			for index in range(colors.size()):
-				if colors[index].is_equal_approx(owner):colors[index]=Color(1,0,1,1)
-			hash.update(var_to_bytes(colors))
-	return hash.finish().hex_encode()
+	return OFFLINE_LOD.signature(source,quality_source_owners.get(source.get_instance_id(),player_color(team)))
 
 
-static func quality_mesh(source:Mesh,team:int) -> Mesh:
-	if not source is ArrayMesh:return source
-	var key:int=source.get_instance_id()
+static func quality_mesh(source:Mesh,team:int,tier:String="far") -> Mesh:
+	if source != null and authored_lods.has(source.get_instance_id()):
+		return authored_lods[source.get_instance_id()][1 if tier == "far" else 2] if tier in ["far", "extreme"] else source
+	if not source is ArrayMesh or tier not in ["far","extreme"]:return source
+	if int(UNIT_LOD_RESOURCE.get_meta("lod_schema",0))!=3 or int(UNIT_LOD_RESOURCE.get_meta("opaque_surface_guard",0))!=1:return source
+	var template:String=str(quality_sources.get(source.get_instance_id(),""))
+	var owner:Color=quality_source_owners.get(source.get_instance_id(),player_color(team))
+	var key:String=str(source.get_instance_id())+":"+template+":"+owner.to_html()+":"+tier
 	if quality_meshes.has(key):return quality_meshes[key]
-	var template:String=str(quality_sources.get(key,""))
-	var records:Dictionary=UNIT_LOD_RESOURCE.get_meta("lod_indices",{})
+	var tiers:Dictionary=UNIT_LOD_RESOURCE.get_meta("lod_tiers",{})
+	var records:Dictionary=tiers.get(tier,{})
 	var surfaces:Array=records.get(template,[])
 	if surfaces.is_empty():
 		quality_meshes[key]=source
@@ -425,24 +481,33 @@ static func quality_mesh(source:Mesh,team:int) -> Mesh:
 		# A stale reduction must never index a changed recipe or erase new badges.
 		quality_meshes[key]=source
 		return source
-	for surface in range(source.get_surface_count()):
-		var indices:PackedInt32Array=surfaces[surface]
-		if indices.is_empty() or indices.size()%3!=0:
-			quality_meshes[key]=source
-			return source
-		var vertex_count:int=source.surface_get_array_len(surface)
-		for index in indices:
-			if index<0 or index>=vertex_count:
-				quality_meshes[key]=source
-				return source
-	var mesh:=ArrayMesh.new()
-	for surface in range(source.get_surface_count()):
-		var arrays:Array=source.surface_get_arrays(surface)
-		arrays[Mesh.ARRAY_INDEX]=surfaces[surface]
-		mesh.add_surface_from_arrays(source.surface_get_primitive_type(surface),arrays)
-		mesh.surface_set_material(surface,source.surface_get_material(surface))
+	var mesh:Mesh=OFFLINE_LOD.build_mesh(source,surfaces)
 	quality_meshes[key]=mesh
 	return mesh
+
+static func register_lod_source(source:Mesh,template:String,owner:Color=Color.TRANSPARENT) -> void:
+	if source!=null:
+		quality_sources[source.get_instance_id()]=template
+		if owner.a>0.0:quality_source_owners[source.get_instance_id()]=owner
+
+static func lod_recipe_meshes(recipe:Dictionary,spec:Dictionary,kind:String) -> Dictionary:
+	var prefix:String=art_faction(spec)+"/"+str(spec.art)
+	if int(recipe.get("wall_mask",0))>0:prefix+="/wall_mask:"+str(recipe.wall_mask)
+	var sources:Dictionary={}
+	for field in ["body_mesh","turret_mesh","body_border_mesh","turret_border_mesh"]:
+		if recipe.has(field):sources[prefix+"/"+field]=recipe[field]
+	for part in recipe.get("parts",[]):
+		for field in ["mesh","border_mesh"]:
+			if part.has(field):sources[prefix+"/part:"+str(part.name)+"/"+field]=part[field]
+	return sources
+
+static func _register_recipe_lods(recipe:Dictionary,spec:Dictionary,kind:String,team:int) -> void:
+	var sources:Dictionary=lod_recipe_meshes(recipe,spec,kind)
+	var owner:Color=spec.get("owner_color_override",player_color(team))
+	# The existing first two factions' solid building author uses four owner
+	# inks, wrapping higher owners. Keep their current paint intact at all tiers.
+	if kind=="building" and art_faction(spec) in ["rivet","kestrel"] and str(spec.art) in ["hq","outpost","power","refinery","barracks","factory","tower","tech","repair","command","airfield"]:owner=spec.get("owner_color_override",player_color(team))
+	for template in sources:register_lod_source(sources[template],template,owner)
 
 
 static func _geometry_node(pose_only: bool):
@@ -452,7 +517,9 @@ static func _geometry_node(pose_only: bool):
 static func create_model(spec: Dictionary, kind: String, team: int, pose_only: bool = false) -> Dictionary:
 	if not supports(spec,kind):return {}
 	if kind=="unit" and str(spec.art)=="creator_hand":
-		return load("res://scripts/creator_hand_models.gd").create(spec,team,pose_only)
+		var hand:Dictionary=load("res://scripts/creator_hand_models.gd").create(spec,team,pose_only)
+		register_lod_source(hand.skinned_mesh.mesh,art_faction(spec)+"/creator_hand/body_mesh")
+		return hand
 	var faction: String = art_faction(spec)
 	var art: String = str(spec.art)
 	var recipe: Dictionary=_recipe(spec,kind,team)
@@ -499,6 +566,7 @@ static func create_model(spec: Dictionary, kind: String, team: int, pose_only: b
 		var pivot := Node3D.new()
 		pivot.name=part.name
 		pivot.position=part.pivot
+		if str(part.role) == "drill_damage": pivot.scale = Vector3.ZERO
 		var parent: Node3D=part_nodes.get(part.get("parent",""),body)
 		parent.add_child(pivot)
 		part_nodes[part.name]=pivot
@@ -509,7 +577,7 @@ static func create_model(spec: Dictionary, kind: String, team: int, pose_only: b
 		meshes.append(piece)
 		if part.has("border_mesh"):
 			border_meshes.append({"mesh":part.border_mesh,"source":piece})
-		parts.append({"node":pivot,"role":part.role,"phase":part.get("phase",0.0),"name":part.name})
+		parts.append({"node":pivot,"role":part.role,"phase":part.get("phase",0.0),"name":part.name,"rest":part.pivot,"travel":part.get("travel",0.0),"gate_mode":part.get("gate_mode","roll"),"side":part.get("side",1.0)})
 	var cargo: Array = []
 	var drill: Node3D = null
 	if art == "harvester":
@@ -518,6 +586,7 @@ static func create_model(spec: Dictionary, kind: String, team: int, pose_only: b
 			var shard := CraftMesh.new()
 			shard.prism([Vector2(-.10,0),Vector2(-.12,.20),Vector2(.02,.39),Vector2(.12,.17),Vector2(.09,0)],.19,Vector3.ZERO,Color("6595ad"),false)
 			cargo_mesh=shard.mesh()
+		register_lod_source(cargo_mesh,"shared/harvester/cargo_mesh")
 		for i in range(12):
 			var piece = _geometry_node(pose_only)
 			piece.mesh = cargo_mesh
@@ -539,65 +608,306 @@ static func create_model(spec: Dictionary, kind: String, team: int, pose_only: b
 				var angle: float = i * TAU / 6.0
 				cutter.box(Vector3(cos(angle)*.23,sin(angle)*.23,0),Vector3(.12,.12,.9),WOOD)
 			cutter_mesh=cutter.mesh()
+		register_lod_source(cutter_mesh,"shared/harvester/cutter_mesh")
 		var tool = _geometry_node(pose_only)
 		tool.mesh = cutter_mesh
 		tool.scale=Vector3.ONE*float(recipe.model_scale)
 		drill.add_child(tool)
 		meshes.append(tool)
 
-	return {"cargo":cargo,"drill":drill,"root":root,"body":body,"turret":turret,"muzzle":muzzle,"meshes":meshes,"border_meshes":border_meshes,"dimensions":recipe.dimensions,"height":recipe.dimensions.y,"footprint":Vector2(recipe.dimensions.x,recipe.dimensions.z),"volumetric":true,"faction":faction,"art":art,"team":team,"clock":0.0,"recoil":Vector3.ZERO,"model_scale":recipe.get("model_scale",1.0),"recoil_distance":recipe.get("recoil_distance",.085),"parts":parts,"aircraft":spec.get("domain","air" if art in AIRCRAFT_ART else "ground")=="air","infantry":art in INFANTRY_ART,"faction_color":faction_color(faction),"player_color":player_color(team),"emblem":faction_emblem(faction),"design":recipe.get("design",recipe.get("design_signature",faction+"_"+art)),"smoke_ports":recipe.get("smoke_ports",[]).duplicate()}
+	return {"cargo":cargo,"drill":drill,"root":root,"body":body,"turret":turret,"muzzle":muzzle,"meshes":meshes,"border_meshes":border_meshes,"dimensions":recipe.dimensions,"height":recipe.dimensions.y,"footprint":Vector2(recipe.dimensions.x,recipe.dimensions.z),"volumetric":true,"kind":kind,"faction":faction,"art":art,"team":team,"definition":spec.duplicate(true),"infantry_pose":str(spec.get("paper_pose","idle")),"clock":0.0,"max_hp":float(spec.get("hp",1000)),"recoil":Vector3.ZERO,"model_scale":recipe.get("model_scale",1.0),"recoil_distance":recipe.get("recoil_distance",.085),"parts":parts,"aircraft":spec.get("domain","air" if art in AIRCRAFT_ART else "ground")=="air","infantry":art in INFANTRY_ART,"paper_infantry":bool(recipe.get("paper_infantry",false)),"faction_color":faction_color(faction),"player_color":spec.get("owner_color_override",player_color(team)),"emblem":faction_emblem(faction),"design":recipe.get("design",recipe.get("design_signature",faction+"_"+art)),"smoke_ports":recipe.get("smoke_ports",[]).duplicate()}
 
 
 static func _recipe(spec: Dictionary, kind: String, team: int) -> Dictionary:
 	var faction: String=art_faction(spec)
-	var key: String=kind+":"+faction+":"+str(spec.art)+":"+str(team)
+	var key: String=kind+":"+faction+":"+str(spec.art)+":"+str(team)+":"+str(spec.get("owner_color_override",""))
+	if kind == "unit": key += ":footprint:" + str(spec.get("logical_size",1))
+	if kind == "unit" and (bool(spec.get("carrier_plane",false)) or (bool(spec.get("internal_only",false)) and str(spec.get("producer",""))=="carrier")): key += ":carrier_airframe"
 	var wall_mask: int = int(spec.get("wall_mask", 0)) if kind == "building" and str(spec.get("role", "")) in ["wall", "barricade"] else 0
 	if wall_mask != 0: key += ":connections:" + str(wall_mask)
+	if str(spec.art) in ["rail","rail_junction"]: key += ":rail:" + str(spec.get("rail_mask",0)) + ":ports:" + str(spec.get("rail_ports",0))
+	if kind == "building": key += ":size:" + str(spec.get("size",0))
 	if recipes.has(key):return recipes[key]
 	if wall_mask != 0:
 		var isolated: Dictionary = spec.duplicate()
 		isolated.erase("wall_mask")
 		var connected: Dictionary = WALL_CONNECTIONS.connected_recipe(_recipe(isolated, kind, team), wall_mask, faction, team)
+		_register_recipe_lods(connected,spec,kind,team)
 		recipes[key] = connected
 		return connected
-	var recipe: Dictionary
-	if kind=="unit" and str(spec.art)=="creator_hand":
-		recipe=load("res://scripts/creator_hand_models.gd").recipe_meta(team)
-	elif str(spec.art) in ["naval_transport", "naval_frigate", "naval_signature", "shipyard"]:
-		recipe = load("res://scripts/naval_models.gd").make(CraftMesh.new(), str(spec.art), faction, team, kind)
-	elif faction in EXPANSION_FACTIONS:
-		# Each expansion owns its geometry, including matching production roles.
-		# Runtime loading keeps CraftMesh available without a preload cycle.
-		var author = load("res://scripts/"+faction+"_models.gd")
-		recipe=author.make(CraftMesh.new(),str(spec.art),team,kind)
-	elif kind=="building":recipe=_building(faction,str(spec.art),team)
-	elif str(spec.art) in AIRCRAFT_ART:recipe=_aircraft(faction,str(spec.art),team)
-	elif str(spec.art) in ["scout","aa","artillery","advanced"]:recipe=_special_vehicle(faction,str(spec.art),team)
-	else:recipe=_faction_vehicle(faction,str(spec.art),team)
-	var factor: float=bake_scale(spec,kind)
-	if kind=="unit":
-		recipe.body_mesh=_bake_mesh_scale(recipe.body_mesh,factor)
-		if recipe.has("body_border_mesh"):
-			recipe.body_border_mesh=_bake_mesh_scale(recipe.body_border_mesh,factor)
-		if recipe.has("turret_mesh"):
-			recipe.turret_mesh=_bake_mesh_scale(recipe.turret_mesh,factor)
-			if recipe.has("turret_border_mesh"):
-				recipe.turret_border_mesh=_bake_mesh_scale(recipe.turret_border_mesh,factor)
-			recipe.turret_pos=(recipe.turret_pos as Vector3)*factor
-		if recipe.has("muzzle_pos"):recipe.muzzle_pos=(recipe.muzzle_pos as Vector3)*factor
-		for part in recipe.get("parts",[]):
-			part.mesh=_bake_mesh_scale(part.mesh,factor)
-			if part.has("border_mesh"):part.border_mesh=_bake_mesh_scale(part.border_mesh,factor)
-			part.pivot=(part.pivot as Vector3)*factor
-		recipe.dimensions=(recipe.dimensions as Vector3)*factor
-	recipe.model_scale=factor
-	recipe.recoil_distance=.085*factor
-	if kind=="unit":
+	var recipe: Dictionary = _raw_recipe(spec,kind,team,0)
+	if recipe.is_empty(): return recipe
+	var tiers: Array[Dictionary] = []
+	if str(spec.art) != "creator_hand":
+		for tier in [1,2]: tiers.append(_raw_recipe(spec,kind,team,tier))
+	var factor: float = 1.0
+	if kind == "unit" and str(spec.art) != "creator_hand":
+		var width: float = maxf(float(recipe.dimensions.x),float(recipe.dimensions.z))
+		# Long guns and mining feeds must not shrink the chassis beneath them.
+		if (faction == "kestrel" and str(spec.art) in ["artillery","advanced"]) or (faction == "iron" and str(spec.art) == "harvester"):
+			var chassis: Vector3 = recipe.body_mesh.get_aabb().size
+			width = maxf(chassis.x,chassis.z)
+		var target: float = 10.0 if str(spec.art) == "armored_train" else 4.8 if str(spec.art) == "zeppelin" else float(spec.get("logical_size",1)) * .96
+		if str(spec.get("domain","")) == "naval" or str(spec.art).begins_with("naval_"): target *= 2.0
+		# Compact carrier airframes fit the runway clear of the island; physics is unchanged.
+		if bool(spec.get("carrier_plane",false)) or (bool(spec.get("internal_only",false)) and str(spec.get("producer",""))=="carrier"): target = 1.0
+		factor = target / maxf(.01,width)
+	elif kind == "building" and str(spec.art) in ["hq", "factory", "airfield", "refinery"]:
+		factor = float(spec.get("size",8 if str(spec.art) == "hq" else 5 if str(spec.art) == "refinery" else 6 if str(spec.art) == "factory" else 7)) * .96 / maxf(recipe.dimensions.x,recipe.dimensions.z)
+	_scale_recipe(recipe,factor)
+	for lod in tiers: _scale_recipe(lod,factor)
+	if kind == "building" and str(spec.art) in ["hq","factory","airfield","refinery"]:
+		var target: float = float(spec.get("size",8 if str(spec.art) == "hq" else 5 if str(spec.art) == "refinery" else 6 if str(spec.art) == "factory" else 7))*.96
+		var stretch := Vector3(target/maxf(.01,recipe.dimensions.x),1,target/maxf(.01,recipe.dimensions.z))
+		_stretch_recipe(recipe,stretch)
+		for lod in tiers: _stretch_recipe(lod,stretch)
+	if kind == "building" and str(spec.art) == "airfield":
+		_airport_pads(recipe,0)
+		for i in range(tiers.size()): _airport_pads(tiers[i],i+1)
+	if tiers.size() == 2:
 		for field in ["body_mesh","turret_mesh","body_border_mesh","turret_border_mesh"]:
-			if recipe.has(field):quality_sources[recipe[field].get_instance_id()]=faction+"/"+str(spec.art)+"/"+field
+			if recipe.has(field) and tiers[0].has(field) and tiers[1].has(field): authored_lods[recipe[field].get_instance_id()] = [recipe[field],tiers[0][field],tiers[1][field]]
+		var parts: Array = recipe.get("parts",[])
+		for index in range(parts.size()):
+			if tiers[0].get("parts",[]).size() > index and tiers[1].get("parts",[]).size() > index:
+				for field in ["mesh","border_mesh"]:
+					if parts[index].has(field) and tiers[0].parts[index].has(field) and tiers[1].parts[index].has(field): authored_lods[parts[index][field].get_instance_id()] = [parts[index][field],tiers[0].parts[index][field],tiers[1].parts[index][field]]
+	_register_recipe_lods(recipe,spec,kind,team)
 	recipes[key]=recipe
 	return recipe
 
+static func _raw_recipe(spec: Dictionary, kind: String, team: int, tier: int) -> Dictionary:
+	author_tier = tier
+	author_override = spec.get("owner_color_override",Color.TRANSPARENT)
+	author_override_team = team
+	author_owner = player_color(team)
+	author_faction = art_faction(spec)
+	var faction: String = art_faction(spec)
+	var art: String = str(spec.art)
+	var recipe: Dictionary
+	if kind == "building" and load("res://scripts/architecture_revision.gd").handles(art):
+		recipe = load("res://scripts/architecture_revision.gd").make(spec,faction,player_color(team),tier)
+	elif art in INFANTRY_ART:
+		_clear_author_context()
+		return {} # Original illustrations are rendered by PaperWorld._card.
+	elif art in ["drill","zeppelin","armored_train","rail","rail_junction"]:
+		recipe = load("res://scripts/special_models.gd").make(CraftMesh.new(),spec,player_color(team),tier)
+	elif kind=="unit" and art=="heavy_tank": recipe=load("res://scripts/heavy_tank_models.gd").make(CraftMesh.new(),faction,player_color(team),tier)
+	elif kind=="building" and art=="airfield": recipe=load("res://scripts/airfield_models.gd").make(CraftMesh.new(),faction,player_color(team),tier)
+	elif kind=="unit" and art=="creator_hand": recipe=load("res://scripts/creator_hand_models.gd").recipe_meta(team)
+	elif art in ["helicopter","naval_submarine","naval_amphibious","naval_hovercraft","naval_support","naval_carrier","naval_aa"] or (art=="recon" and faction=="kestrel"): recipe=load("res://scripts/air_naval_models.gd").make(CraftMesh.new(),art,faction,team,kind)
+	elif art in ["naval_transport","naval_frigate","naval_signature","shipyard"]: recipe=load("res://scripts/naval_models.gd").make(CraftMesh.new(),art,faction,team,kind)
+	elif faction in EXPANSION_FACTIONS: recipe=load("res://scripts/"+faction+"_models.gd").make(CraftMesh.new(),art,team,kind)
+	elif kind=="building": recipe=_building(faction,art,team)
+	elif art in AIRCRAFT_ART: recipe=_aircraft(faction,art,team)
+	elif art in ["scout","aa","artillery","advanced"]: recipe=_special_vehicle(faction,art,team)
+	else: recipe=_faction_vehicle(faction,art,team)
+	author_tier = 0
+	if recipe.is_empty():
+		_clear_author_context()
+		return recipe
+	if kind == "building" and art == "hq" and faction == "rivet": _stretch_recipe(recipe,Vector3(1,.75,1))
+	if kind == "building" and (art in ["factory","refinery","barracks"] or (art == "hq" and faction == "rivet")): _production_gate(recipe,faction,player_color(team),tier,spec)
+	if kind == "building" and art not in ["wall","barricade","rail","rail_junction","drill","tower","aa_tower","anti_tower","advanced_tower"]:
+		load("res://scripts/architecture_revision.gd").add_idle_equipment(recipe,faction,tier,art)
+	if kind == "unit" and art == "harvester": load("res://scripts/harvester_equipment.gd").attach(recipe,faction,tier)
+	if kind == "unit" and art != "creator_hand": _measure_unit(recipe)
+	_clear_author_context()
+	return recipe
+
+static func _clear_author_context() -> void:
+	author_owner = Color.TRANSPARENT
+	author_override = Color.TRANSPARENT
+	author_override_team = -999
+	author_faction = ""
+	author_tier = 0
+
+static func _stretch_recipe(recipe: Dictionary, stretch: Vector3) -> void:
+	for field in ["body_mesh","body_border_mesh","turret_mesh","turret_border_mesh"]:
+		if recipe.has(field): recipe[field] = _stretch_mesh(recipe[field],stretch)
+	for field in ["turret_pos","muzzle_pos"]:
+		if recipe.has(field): recipe[field] = (recipe[field] as Vector3)*stretch
+	for part in recipe.get("parts",[]):
+		part.mesh = _stretch_mesh(part.mesh,stretch)
+		if part.has("border_mesh"): part.border_mesh = _stretch_mesh(part.border_mesh,stretch)
+		part.pivot = (part.pivot as Vector3)*stretch
+	if recipe.has("smoke_ports"):
+		for i in range(recipe.smoke_ports.size()): recipe.smoke_ports[i] = (recipe.smoke_ports[i] as Vector3)*stretch
+	recipe.dimensions = (recipe.dimensions as Vector3)*stretch
+
+static func _stretch_mesh(source: ArrayMesh, stretch: Vector3) -> ArrayMesh:
+	var result := ArrayMesh.new()
+	for surface in range(source.get_surface_count()):
+		var arrays: Array = source.surface_get_arrays(surface)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		for i in range(vertices.size()):
+			vertices[i] *= stretch
+			normals[i] = (normals[i]/stretch).normalized()
+		arrays[Mesh.ARRAY_VERTEX] = vertices
+		arrays[Mesh.ARRAY_NORMAL] = normals
+		result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+		result.surface_set_material(surface,source.surface_get_material(surface))
+	return result
+
+static func _airport_pads(recipe: Dictionary, tier: int) -> void:
+	var parts: Array = recipe.get("parts",[])
+	for x in [-1.6,1.6]:
+		for z in [-1.6,1.6]:
+			var pad := CraftMesh.new()
+			pad.detail_tier = tier
+			for side in [-1.0,1.0]:
+				pad.box(Vector3(side*.83,.052,0),Vector3(.06,.015,1.66),PAPER,false)
+				pad.box(Vector3(0,.052,side*.35),Vector3(1.66,.015,.06),PAPER,false)
+			if tier < 2: pad.box(Vector3(0,.055,0),Vector3(.32,.018,.045),INK,false)
+			parts.append({"name":"AircraftStand_%s_%s" % [x,z],"mesh":pad.mesh(),"pivot":Vector3(x,.29,z),"role":"parking_pad"})
+	recipe.parts = parts
+
+static func _measure_unit(recipe: Dictionary) -> void:
+	var extent: Vector3 = Vector3.ZERO
+	for field in ["body_mesh","turret_mesh"]:
+		if not recipe.has(field): continue
+		var offset: Vector3 = recipe.get("turret_pos",Vector3.ZERO) if field == "turret_mesh" else Vector3.ZERO
+		var bounds: AABB = recipe[field].get_aabb()
+		extent = extent.max((bounds.position+offset).abs()).max((bounds.end+offset).abs())
+	for part in recipe.get("parts",[]):
+		var bounds: AABB = part.mesh.get_aabb()
+		extent = extent.max((bounds.position+(part.pivot as Vector3)).abs()).max((bounds.end+(part.pivot as Vector3)).abs())
+	recipe.dimensions = Vector3(extent.x*2.0,extent.y,extent.z*2.0)
+
+static func _scale_recipe(recipe: Dictionary, factor: float) -> void:
+	if recipe.is_empty(): return
+	if not bool(recipe.get("direct_skinned",false)):
+		for field in ["body_mesh","body_border_mesh","turret_mesh","turret_border_mesh"]:
+			if recipe.has(field): recipe[field] = _bake_mesh_scale(recipe[field],factor)
+	for field in ["turret_pos","muzzle_pos"]:
+		if recipe.has(field): recipe[field] = (recipe[field] as Vector3)*factor
+	for part in recipe.get("parts",[]):
+		part.mesh = _bake_mesh_scale(part.mesh,factor)
+		if part.has("border_mesh"): part.border_mesh = _bake_mesh_scale(part.border_mesh,factor)
+		part.pivot = (part.pivot as Vector3)*factor
+		if part.has("travel"): part.travel = float(part.travel)*factor
+	recipe.dimensions = (recipe.dimensions as Vector3)*factor
+	recipe.model_scale = factor
+	recipe.recoil_distance = .085*factor
+	if recipe.has("smoke_ports"):
+		for i in range(recipe.smoke_ports.size()): recipe.smoke_ports[i] = (recipe.smoke_ports[i] as Vector3)*factor
+
+# Legacy owner-panel area is retained for creator-hand wrist insignia.
+# Main model paint now follows the configured player palette during authoring.
+const OWNER_PANEL_FRACTION := .08
+
+# Shared clipping helpers also size the creator hand's existing wrist insignia.
+static func _livery_polygon(points: PackedVector3Array, axis: int, cut: float) -> PackedVector3Array:
+	var result := PackedVector3Array()
+	for i in range(points.size()):
+		var a: Vector3 = points[i]
+		var b: Vector3 = points[(i+1)%points.size()]
+		var a_inside: bool = a[axis] <= cut
+		var b_inside: bool = b[axis] <= cut
+		if a_inside: result.append(a)
+		if a_inside != b_inside: result.append(a.lerp(b,(cut-a[axis])/(b[axis]-a[axis])))
+	return result
+
+static func _livery_area(points: PackedVector3Array) -> float:
+	var result: float = 0.0
+	for i in range(1,points.size()-1): result += (points[i]-points[0]).cross(points[i+1]-points[0]).length()*.5
+	return result
+
+static func _production_gate(recipe: Dictionary, faction: String, owner: Color, tier: int, spec: Dictionary = {}) -> void:
+	if bool(recipe.get("integrated_gate",false)): return
+	# Gates are sized in final world metres, so shrinking factory/refinery
+	# footprints never shrinks the two-cell vehicle opening along with them.
+	var art: String = str(spec.get("art","factory"))
+	var personnel: bool = art in ["hq","barracks"]
+	var dims: Vector3 = recipe.dimensions
+	var final_factor: float = 1.0
+	if art in ["hq","factory","refinery"]:
+		final_factor = float(spec.get("size",8 if art == "hq" else 5 if art == "refinery" else 6))*.96/maxf(dims.x,dims.z)
+	var width: float = (1.45 if personnel else 2.50)/final_factor
+	var height: float = (1.80 if personnel else 2.50)/final_factor
+	var bottom: float = .035/final_factor
+	var front: float = dims.z*(.405 if art == "hq" else .43)
+	var mesh := CraftMesh.new()
+	mesh.detail_tier = tier
+	mesh.box(Vector3.ZERO,Vector3(width,height,.065),Color("e9e5dc") if faction == "sky" else Color("685c4e"),tier == 0)
+	mesh.box(Vector3(0,height*.20,.04),Vector3(width*.73,height*.12,.025),owner,false)
+	if tier < 2:
+		for y in [-.30,-.10,.10,.30]: mesh.line(Vector3(-width*.44,height*y,.041),Vector3(width*.44,height*y,.041),.011,INK)
+	# Cut the ground-level aisle through walls, stairs and workbench props.
+	# Both the solid shell and its ink edges must leave this real opening clear.
+	var opening := AABB(Vector3(-width*.5,0,-.05),Vector3(width,height+bottom+.04,dims.z*.60+.15))
+	recipe.body_mesh = _subtract_opening(recipe.body_mesh,opening)
+	if recipe.has("body_border_mesh"): recipe.body_border_mesh = _subtract_opening(recipe.body_border_mesh,opening)
+	var parts: Array = recipe.get("parts",[])
+	parts.append({"name":"ProductionDoor","mesh":mesh.mesh(),"pivot":Vector3(0,height*.5+bottom,front),"role":"production_door","travel":height*.5})
+	var frame := CraftMesh.new()
+	frame.detail_tier = tier
+	var thickness: float = .10/final_factor
+	for side in [-1.0,1.0]:
+		frame.box(Vector3(side*(width+thickness)*.5,height*.5+bottom,front),Vector3(thickness,height+thickness,.15/final_factor),KRAFT,tier == 0)
+	frame.box(Vector3(0,height+bottom+thickness*.5,front),Vector3(width+thickness*2,thickness,.18/final_factor),KRAFT,tier == 0)
+	if faction == "iron" and not personnel:
+		# Facility-owned track stays visual-only; it meets the real +Z rail port.
+		var rail_end: float = dims.z*.5
+		for side in [-1.0,1.0]:
+			frame.box(Vector3(side*.55/final_factor,.025/final_factor,rail_end*.5),Vector3(.07/final_factor,.05/final_factor,rail_end),STEEL,false)
+		if tier < 2:
+			for index in range(6):
+				frame.box(Vector3(0,.012/final_factor,rail_end*float(index)/5.0),Vector3(1.5/final_factor,.024/final_factor,.12/final_factor),WOOD,false)
+	parts.append({"name":"ProductionDoorFrame","mesh":frame.mesh(),"pivot":Vector3.ZERO,"role":"architecture"})
+	recipe.parts = parts
+	recipe.production_opening = opening
+
+
+static func _subtract_opening(source: ArrayMesh, hole: AABB) -> ArrayMesh:
+	var result := ArrayMesh.new()
+	for surface in range(source.get_surface_count()):
+		var arrays: Array = source.surface_get_arrays(surface)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var colors: PackedColorArray = arrays[Mesh.ARRAY_COLOR] if arrays[Mesh.ARRAY_COLOR] != null else PackedColorArray()
+		var output_vertices := PackedVector3Array()
+		var output_normals := PackedVector3Array()
+		var output_colors := PackedColorArray()
+		for triangle in range(0,vertices.size(),3):
+			var remaining: Array = []
+			for corner in range(3):
+				var index: int = triangle+corner
+				remaining.append({"v":vertices[index],"n":normals[index],"c":colors[index] if not colors.is_empty() else Color.WHITE})
+			for plane in [[0,hole.position.x,false],[0,hole.end.x,true],[1,hole.position.y,false],[1,hole.end.y,true],[2,hole.position.z,false],[2,hole.end.z,true]]:
+				if remaining.size() < 3: break
+				var outside: Array = _clip_polygon_axis(remaining,int(plane[0]),float(plane[1]),bool(plane[2]))
+				for i in range(1,outside.size()-1):
+					for point in [outside[0],outside[i],outside[i+1]]:
+						output_vertices.append(point.v)
+						output_normals.append(point.n)
+						if not colors.is_empty(): output_colors.append(point.c)
+				remaining = _clip_polygon_axis(remaining,int(plane[0]),float(plane[1]),not bool(plane[2]))
+		var rebuilt: Array = []
+		rebuilt.resize(Mesh.ARRAY_MAX)
+		rebuilt[Mesh.ARRAY_VERTEX] = output_vertices
+		rebuilt[Mesh.ARRAY_NORMAL] = output_normals
+		if not colors.is_empty(): rebuilt[Mesh.ARRAY_COLOR] = output_colors
+		if output_vertices.is_empty(): continue
+		result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,rebuilt)
+		result.surface_set_material(result.get_surface_count()-1,source.surface_get_material(surface))
+	return result
+
+static func _clip_polygon_axis(polygon: Array, axis: int, coordinate: float, positive: bool) -> Array:
+	var output: Array = []
+	if polygon.is_empty(): return output
+	var previous: Dictionary = polygon.back()
+	var previous_inside: bool = float(previous.v[axis]) >= coordinate if positive else float(previous.v[axis]) <= coordinate
+	for current: Dictionary in polygon:
+		var inside: bool = float(current.v[axis]) >= coordinate if positive else float(current.v[axis]) <= coordinate
+		if inside != previous_inside:
+			var alpha: float = (coordinate-float(previous.v[axis]))/(float(current.v[axis])-float(previous.v[axis]))
+			output.append({"v":(previous.v as Vector3).lerp(current.v,alpha),"n":(previous.n as Vector3).lerp(current.n,alpha).normalized(),"c":(previous.c as Color).lerp(current.c,alpha)})
+		if inside: output.append(current)
+		previous = current
+		previous_inside = inside
+	return output
 
 static func bake_scale(spec: Dictionary, kind: String) -> float:
 	if str(spec.get("art", "")).begins_with("naval_"): return 1.0
@@ -642,6 +952,23 @@ static func muzzle_offset(spec: Dictionary, kind: String, team: int, body_headin
 	return body_basis*(recipe.turret_pos as Vector3)+gun_basis*((recipe.muzzle_pos as Vector3)+Vector3(visual_recoil,0,0))
 
 
+static func infantry_pose_for(entity: Dictionary) -> String:
+	if float(entity.get("hp",1)) <= 0 or entity.get("state","") == "death": return "death"
+	if float(entity.get("hit_flash",0)) > 0 or entity.get("state","") == "hit": return "hit"
+	if float(entity.get("attack_flash",0)) > 0 or entity.get("state","") in ["attack","combat","repair","capture"]: return "combat"
+	if bool(entity.get("emerging",false)) or float(entity.get("motion",0)) > .05 or entity.get("state","") in ["move","returning","emerging"]: return "move"
+	return "idle"
+
+static func set_infantry_pose(model: Dictionary, pose: String) -> bool:
+	if not bool(model.get("paper_infantry",false)) or str(model.get("infantry_pose","idle")) == pose: return false
+	var spec: Dictionary = model.definition.duplicate()
+	spec.paper_pose = pose
+	var recipe: Dictionary = _recipe(spec,"unit",int(model.team))
+	model.meshes[0].mesh = recipe.body_mesh
+	model.infantry_pose = pose
+	return true
+
+
 static func update_model(model: Dictionary, e: Dictionary, delta: float) -> void:
 	# Cosmetic reactions only. Root heading and independent turret aiming remain
 	# under the renderer's control and never feed back into the simulation.
@@ -650,11 +977,56 @@ static func update_model(model: Dictionary, e: Dictionary, delta: float) -> void
 		load("res://scripts/creator_hand_models.gd").update_pose(model,e)
 		return
 	var body: Node3D=model.body
-	var moving: bool = e.get("state","") in ["move","returning"]
+	if bool(model.get("paper_infantry",false)): set_infantry_pose(model,infantry_pose_for(e))
+	var moving: bool = str(model.get("kind","unit")) == "unit" and (bool(e.get("emerging",false)) or e.get("state","") in ["move","returning","emerging"])
+	var production_active: bool = false
+	for part in model.parts:
+		if part.role == "production_door":
+			var open: float = clampf(float(e.get("production_door",0.0)),0.0,1.0)
+			var mode: String = str(part.get("gate_mode","roll"))
+			var side: float = float(part.get("side",1.0))
+			match mode:
+				"slide": part.node.position = (part.rest as Vector3)+Vector3(side*float(part.travel)*open,0,0)
+				"hinge": part.node.rotation.y = side*open*PI*.50
+				"phase":
+					var dissolved: float = clampf(open*1.25-float(part.phase)*.25,0.0,1.0)
+					part.node.position = (part.rest as Vector3)+Vector3(side*float(part.travel)*dissolved,0,0)
+					part.node.scale.x = maxf(.001,1.0-dissolved*.12)
+					part.node.visible = dissolved < .985
+				_:
+					part.node.position = (part.rest as Vector3)+Vector3(0,float(part.travel)*open,0)
+					part.node.scale.y = maxf(.001,1.0-open)
+			production_active = production_active or open > 0.0
+		elif str(part.role).begins_with("building_"):
+			var ready: bool = float(e.get("construct_remaining",0.0)) <= 0.0 and float(e.get("hp",1)) > 0
+			if ready:
+				var clock: float = float(model.clock)+float(e.get("id",0))*.71
+				match str(part.role):
+					"building_fan": part.node.rotation.y += delta*1.7
+					"building_gear": part.node.rotation.z += delta*.38
+					"building_scanner": part.node.rotation.y = sin(clock*.37)*.72
+					"building_hoist": part.node.position.x = float(part.rest.x)+sin(clock*.53)*float(part.travel)
+		elif part.role == "zeppelin_mg":
+			part.node.rotation.y = -deg_to_rad(float(e.get("zeppelin_mg_alpha",e.get("alpha",0.0)))-float(e.get("alpha",0.0)))
+			part.node.rotation.z = float(e.get("zeppelin_mg_pitch",0.0))
+			part.node.position = part.rest-(Vector3.RIGHT*.025 if float(e.get("zeppelin_mg_flash",0.0))>0 else Vector3.ZERO)
+		elif part.role == "drill_damage":
+			part.node.scale = Vector3.ONE if float(e.get("hp",model.max_hp)) / maxf(1,float(model.max_hp)) < .65 else Vector3.ZERO
+		elif str(part.role).begins_with("harvest_"):
+			load("res://scripts/harvester_equipment.gd").animate(part,e,float(model.clock),delta)
+		elif part.role == "mine_flywheel":
+			var working: bool = float(e.get("construct_remaining",0.0)) <= 0 and e.get("state","") in ["work","harvest"]
+			part.node.rotation.x += delta*3.5 if working else 0.0
+		elif part.role == "mine_spindle":
+			var working: bool = float(e.get("construct_remaining",0.0)) <= 0 and e.get("state","") in ["work","harvest"]
+			part.node.rotation.y += delta*5.0 if working else 0.0
+			part.node.position.y = float(part.rest.y) + sin(float(model.clock)*12.0)*.025 if working else float(part.rest.y)+.14
+			production_active = working
 	if model.art=="harvester":
 		var load_fraction:float=clampf(float(e.get("cargo",0))/float(model.get("cargo_capacity",500)),0,1)
+		if e.get("state","") == "unload": load_fraction *= clampf(float(e.get("unload_remaining",2.0))/2.0,0.0,1.0)
 		model.cargo_count=ceili(load_fraction*model.cargo.size())
-	var animating:bool=moving or (model.aircraft and bool(e.get("airborne",true))) or float(e.get("hit_flash",0))>0.0 or float(e.get("attack_flash",0))>0.0 or (model.art=="harvester" and e.get("state","")=="harvest") or (model.infantry and model.art=="engineer" and e.get("state","") in ["repair","capture"])
+	var animating:bool=production_active or e.get("state","") == "unload" or moving or (model.aircraft and bool(e.get("airborne",true))) or float(e.get("hit_flash",0))>0.0 or float(e.get("attack_flash",0))>0.0 or (model.art=="harvester" and e.get("state","")=="harvest") or (model.infantry and model.art=="engineer" and e.get("state","") in ["repair","capture"])
 	var was_animating:bool=bool(model.get("pose_active",true))
 	model.pose_active=animating
 	# Idle poses are already at rest. Reassigning identical transforms marks the
@@ -665,6 +1037,7 @@ static func update_model(model: Dictionary, e: Dictionary, delta: float) -> void
 	if model.infantry:
 		body.position.y=absf(sin(float(model.clock)*10))* .025 if moving else 0.0
 		for part in model.parts:
+			if part.role != "leg": continue
 			var pivot: Node3D=part.node
 			pivot.rotation.z=sin(float(model.clock)*10+float(part.phase))*.34 if moving else 0.0
 		if model.art=="engineer" and e.get("state","") in ["repair","capture"]:
@@ -674,9 +1047,10 @@ static func update_model(model: Dictionary, e: Dictionary, delta: float) -> void
 		body.rotation.x=sin(float(model.clock)*2)*.035 if moving else 0.0
 		body.rotation.z=-.035 if moving else 0.0
 	if model.art == "harvester":
+		if e.get("state", "") == "unload":
+			body.rotation.z = -.12 * sin(clampf(float(e.get("unload_remaining",2.0))/2.0,0.0,1.0)*PI)
 		if e.get("state", "") == "harvest":
-			body.position.y = sin(float(model.clock)*32)*.025
-			body.rotation.z = sin(float(model.clock)*19)*.015
+			# The chassis stays planted while the cutter and feed machinery work.
 			model.drill.rotation.z += delta * 14
 	var flash: float=float(e.get("hit_flash",0))
 	body.position.z=sin(float(model.clock)*60)*.035 if flash>0 else 0
@@ -771,7 +1145,36 @@ static func _wall_age(mesh: CraftMesh, width: float, depth: float, height: float
 		mesh.face([Vector3(sx,.26,depth*.39),Vector3(sx,.26,depth*.16),Vector3(sx,.36,depth*.25),Vector3(sx,.43,depth*.39)],WOOD.lightened(.12),Vector3(side,0,0))
 
 
+# Legacy pigments encode material roles while authoring. Neutral paper, brass,
+# glass, ink and the orange faction badge keep their authored material colours.
+static func is_faction_pigment(color: Color) -> bool:
+	if author_owner.a == 0.0 or color.s < .25: return false
+	var bases: Array = [Color("2865a5"),Color("bb4034"),Color("bb963e"),Color("d2ad54"),Color("74569d"),Color("4b376e")]
+	for base: Color in bases:
+		if absf(color.h-base.h) < .0035 and absf(color.s-base.s) < .045: return true
+	return false
+
+static func is_painted_role(color: Color) -> bool:
+	if author_owner.a <= 0.0 or color.is_equal_approx(BADGE_ORANGE): return false
+	if is_faction_pigment(color): return true
+	return Vector3(color.r,color.g,color.b).normalized().distance_to(Vector3(author_owner.r,author_owner.g,author_owner.b).normalized()) < .02
+
+static func player_pigment(color: Color) -> Color:
+	if not is_faction_pigment(color): return color
+	var shade: float = clampf(color.v/.72,.55,1.18)
+	return Color(author_owner.r*shade,author_owner.g*shade,author_owner.b*shade,color.a).clamp()
+
+static func configure_player_colors(colors: Array = []) -> void:
+	owner_palette.clear()
+	for color in colors: owner_palette.append(color if color is Color else Color(str(color)))
+	recipes.clear()
+	quality_meshes.clear()
+	authored_lods.clear()
+	veteran_materials.clear()
+
 static func player_color(team: int) -> Color:
+	if team == author_override_team and author_override.a > 0.0: return author_override
+	if team >= 0 and team < owner_palette.size(): return owner_palette[team]
 	return PLAYER_COLORS[posmod(team,PLAYER_COLORS.size())]
 
 

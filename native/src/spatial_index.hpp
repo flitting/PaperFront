@@ -1,7 +1,7 @@
 // Pure derived-index construction. Same insertion order as Dictionary.values().
 Dictionary rebuild_spatial_native(const Dictionary &entities, int64_t faction_count, const Dictionary &air_specs, const Dictionary &naval_specs) {
     const StringName id_key("id"), position_key("pos"), team_key("team"), hp_key("hp"),
-        transport_key("transport_id"), kind_key("kind"), spec_key("spec");
+        transport_key("transport_id"), kind_key("kind"), spec_key("spec"), airborne_key("airborne");
     const String unit_kind("unit");
     Dictionary spatial, combat, contact_buckets, contact_indices;
     Array team_spatial;
@@ -33,14 +33,14 @@ Dictionary rebuild_spatial_native(const Dictionary &entities, int64_t faction_co
         Vector2 pos = e[position_key];
         bool unit = String(e[kind_key]) == unit_kind;
         bool air = unit && air_specs.has(e[spec_key]);
-        bool naval = unit && naval_specs.has(e[spec_key]);
+        bool naval = unit && naval_specs.has(e[spec_key]) && String(e.get(StringName("surface_domain"), "naval")) != "ground";
         int64_t slot = used++;
         contact_indices[id] = slot;
         ids_ptr[slot] = id; pos_ptr[slot] = pos; team_ptr[slot] = team; domain_ptr[slot] = air ? 2 : (naval ? 4 : 1);
         Vector2i cell(std::floor(pos.x / 8.0), std::floor(pos.y / 8.0));
         Dictionary team_buckets = team_spatial[team];
         append(team_buckets, cell, id); append(combat, cell, id); append(contact_buckets, cell, slot);
-        if (unit && !air && !naval) append(spatial, Vector2i(std::floor(pos.x / 2.0), std::floor(pos.y / 2.0)), e);
+        if (unit && (!air || !bool(e.get(airborne_key, true))) && !naval) append(spatial, Vector2i(std::floor(pos.x / 2.0), std::floor(pos.y / 2.0)), e);
     }
     Dictionary result;
     result["spatial"] = spatial; result["combat"] = combat; result["contact_buckets"] = contact_buckets;

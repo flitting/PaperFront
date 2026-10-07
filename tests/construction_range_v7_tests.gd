@@ -37,7 +37,8 @@ func check(ok: bool, label: String) -> void:
 
 func fresh(rules: Dictionary = {}, flatten: bool = true):
 	var sim = Sim.new()
-	sim.setup_multiteam(config if rules.is_empty() else rules, "dev", 7, ["rivet", "kestrel"], false, [Vector2(7, 7), Vector2(42, 42)])
+	# Two conventional Kestrel players isolate construction and ownership rules.
+	sim.setup_multiteam(config if rules.is_empty() else rules, "dev", 7, ["kestrel", "kestrel"], false, [Vector2(7, 7), Vector2(42, 42)])
 	sim.money.assign([100000.0, 100000.0])
 	if not flatten: return sim
 	for z in range(sim.map.size):
@@ -53,7 +54,7 @@ func fresh(rules: Dictionary = {}, flatten: bool = true):
 	sim._nav_dirty = true
 	return sim
 
-func ready(sim, team: int = 0, spec: String = "rivet_power") -> void:
+func ready(sim, team: int = 0, spec: String = "kestrel_power") -> void:
 	var before: float = sim.money[team]
 	check(sim.build(team, spec).is_empty(), "a real paid construction order is accepted: " + spec)
 	check(is_equal_approx(before - sim.money[team], float(sim.data_for(spec).cost)), "configured construction cost is charged once: " + spec)
@@ -63,11 +64,16 @@ func ready(sim, team: int = 0, spec: String = "rivet_power") -> void:
 func rules_contract() -> void:
 	for faction: String in config.factions:
 		check(Construction.radius_in_rules(config, config.buildings[faction + "_hq"]) == 24.0, faction + " headquarters has the same large range")
-		check(Construction.radius_in_rules(config, config.buildings[faction + "_outpost"]) == 20.0, faction + " outpost has the same large range")
+		if faction == "rivet":
+			check(not config.buildings.has("rivet_outpost") and not config.buildings.has("rivet_barracks"), "Rivet expands through its one base barracks blueprint")
+			check(Construction.radius_in_rules(config, config.buildings.rivet_hq) == 24.0, "every Rivet base barracks has the same range")
+		else:
+			check(Construction.radius_in_rules(config, config.buildings[faction + "_outpost"]) == 20.0, faction + " outpost has the same large range")
 		for spec: Dictionary in config.buildings.values():
 			if spec.faction != faction: continue
 			if str(spec.role) not in ["hq", "outpost"]:
 				var expected: float = 3.0 if str(spec.role) in ["wall", "barricade"] else 6.0
+				if faction == "rivet": expected = 0.0
 				check(Construction.radius_in_rules(config, spec) == expected, faction + " completed " + str(spec.role) + " provides the configured small extension")
 	for value: Variant in [-1, "wide", INF]:
 		var invalid: Dictionary = config.duplicate(true)
@@ -79,7 +85,7 @@ func rules_contract() -> void:
 	missing = config.duplicate(true)
 	missing.economy.construction_radii["unknown"] = 8
 	check(not Rules.validate(missing, false).is_empty(), "unknown construction roles are rejected")
-	for spec: String in ["rivet_hq", "rivet_outpost", "rivet_power", "rivet_tower", "rivet_wall"]:
+	for spec: String in ["kestrel_hq", "kestrel_outpost", "kestrel_power", "kestrel_tower", "kestrel_wall"]:
 		var displayed: String = ""
 		for section: Dictionary in Wiki.sections(config, spec):
 			for row: Dictionary in section.rows:
@@ -91,8 +97,9 @@ func all_completed_building_sources() -> void:
 	for spec: String in config.buildings:
 		var id: int = sim.debug_spawn(0, spec, Vector2(34.5, 7.5))
 		var point: Vector2 = sim.entities[id].pos + Vector2(1, 0)
-		check(sim.construction_radius(spec) > 0.0 and sim.in_construction_range(0, point), "every completed owned building supplies positive construction range: " + spec)
-		check(sim.construction_zones(0).any(func(zone): return int(zone.id) == id and float(zone.radius) > 0.0), "every completed building also exposes its visible positive zone: " + spec)
+		var provides_range: bool = sim.construction_radius(spec) > 0.0
+		check(sim.in_construction_range(0, point) == provides_range, "completed buildings grant only their configured construction range: " + spec)
+		check(sim.construction_zones(0).any(func(zone): return int(zone.id) == id and float(zone.radius) > 0.0) == provides_range, "visible construction zones match each building's rules: " + spec)
 		sim.entities[id].construct_remaining = 1.0
 		check(not sim.in_construction_range(0, point), "every unfinished building is excluded from authority: " + spec)
 		sim.entities[id].construct_remaining = 0.0
@@ -114,7 +121,7 @@ func large_continuous_area() -> void:
 	check(sim.placement_error(0, Vector2(31.5, 7.5)).contains("扩建范围"), "real placement rejects a clear site outside all owned zones")
 	check(not sim.in_construction_range(0, Vector2(38.5, 38.5)) and sim.in_construction_range(1, Vector2(38.5, 38.5)), "enemy headquarters never authorizes player construction")
 	check(sim.construction_zones(0).size() == 1 and sim.construction_zones(0)[0].radius == 24.0, "the visible zone API exposes exactly the owned completed headquarters")
-	check(sim.construction_radius("rivet_rifle") == 0.0, "units never provide building zones")
+	check(sim.construction_radius("kestrel_rifle") == 0.0, "units never provide building zones")
 
 func completed_building_extension() -> void:
 	var sim = fresh()
@@ -133,7 +140,7 @@ func completed_building_extension() -> void:
 
 func outpost_and_owner_lifecycle() -> void:
 	var sim = fresh()
-	var outpost: int = sim._spawn(0, "rivet_outpost", Vector2(29.5, 35.5), false)
+	var outpost: int = sim._spawn(0, "kestrel_outpost", Vector2(29.5, 35.5), false)
 	Outpost.initialize(sim, sim.entities[outpost], -1)
 	var site := Vector2(11.5, 35.5)
 	check(not sim.in_construction_range(0, site), "an engineer scaffold does not authorize remote ordinary construction")
@@ -148,7 +155,7 @@ func outpost_and_owner_lifecycle() -> void:
 	var hostile: int = sim.debug_spawn(1, "kestrel_power", Vector2(35.5, 7.5))
 	var target := Vector2(39.5, 7.5)
 	check(not sim.in_construction_range(0, target), "a hostile ordinary facility grants no owned range")
-	var engineer: int = sim.debug_spawn(0, "rivet_engineer", Vector2(33.3, 7.5))
+	var engineer: int = sim.debug_spawn(0, "kestrel_engineer", Vector2(33.3, 7.5))
 	sim.issue([engineer], "capture", sim.entities[hostile].pos, hostile)
 	sim.step(0.1)
 	check(sim.entities[hostile].team == 0 and sim.in_construction_range(0, target), "real engineer capture transfers the completed facility's construction zone to its new owner")
@@ -157,13 +164,13 @@ func outpost_and_owner_lifecycle() -> void:
 
 func engineer_remote_deployment() -> void:
 	var sim = fresh()
-	sim.debug_spawn(0, "rivet_power", Vector2(11.5, 7.5))
+	sim.debug_spawn(0, "kestrel_power", Vector2(11.5, 7.5))
 	var site := Vector2(29.5, 35.5)
 	var nearby := Vector2(11.5, 35.5)
-	var builder: int = sim.debug_spawn(0, "rivet_engineer", Vector2(25.2, 35.5))
+	var builder: int = sim.debug_spawn(0, "kestrel_engineer", Vector2(25.2, 35.5))
 	var before: float = sim.money[0]
 	check(not sim.in_construction_range(0, site), "real engineer deployment fixture lies beyond every current headquarters and ordinary zone")
-	check(sim.build(0, "rivet_outpost", builder).is_empty() and sim.money[0] == before, "remote outpost site selection keeps the existing engineer-only, no-prepayment rule")
+	check(sim.build(0, "kestrel_outpost", builder).is_empty() and sim.money[0] == before, "remote outpost site selection keeps the existing engineer-only, no-prepayment rule")
 	check(sim.placement_error(0, site).is_empty() and sim.place_building(0, site).is_empty(), "a real engineer can still select legal land beyond the enlarged headquarters range")
 	var entity_count: int = sim.entities.size()
 	sim.step(0.1)
@@ -172,18 +179,18 @@ func engineer_remote_deployment() -> void:
 	for tick in range(180):
 		sim.step(1.0 / 30.0)
 		for entity: Dictionary in sim.entities.values():
-			if entity.kind == "building" and entity.spec == "rivet_outpost": outpost = int(entity.id)
+			if entity.kind == "building" and entity.spec == "kestrel_outpost": outpost = int(entity.id)
 		if outpost > 0: break
 	check(outpost > 0, "the engineer physically arrives and creates its scaffold")
 	if outpost < 0: return
 	check(sim.entities[outpost].has("construction") and not sim.in_construction_range(0, nearby), "a real engineer-created scaffold has no remote build authority")
-	sim.step(float(config.buildings.rivet_outpost.build_time) + 0.1)
+	sim.step(float(config.buildings.kestrel_outpost.build_time) + 0.1)
 	check(not sim.entities[outpost].has("construction") and sim.in_construction_range(0, nearby), "the engineer's completed work grants a large continuous remote outpost zone")
-	check(is_equal_approx(before - sim.money[0], float(config.buildings.rivet_outpost.cost)) and sim.entities.has(builder), "real remote field construction charges exactly the configured cost and preserves its engineer")
+	check(is_equal_approx(before - sim.money[0], float(config.buildings.kestrel_outpost.cost)) and sim.entities.has(builder), "real remote field construction charges exactly the configured cost and preserves its engineer")
 
 func site_constraints() -> void:
 	var sim = fresh()
-	check(not sim.build(0, "rivet_factory").is_empty(), "large headquarters ranges do not bypass facility prerequisites")
+	check(not sim.build(0, "kestrel_factory").is_empty(), "large headquarters ranges do not bypass facility prerequisites")
 	ready(sim)
 	var site := Vector2(17.5, 8.5)
 	check(sim.placement_error(0, site).is_empty(), "constraint fixture has a clear authorized land site")
@@ -198,19 +205,19 @@ func site_constraints() -> void:
 	sim.mines.append({"pos": site})
 	check(sim.placement_error(0, site).contains("矿点"), "range does not authorize covering a mine")
 	sim.mines.clear()
-	var unit: int = sim.debug_spawn(0, "rivet_engineer", site)
+	var unit: int = sim.debug_spawn(0, "kestrel_engineer", site)
 	check(unit > 0 and sim.placement_error(0, site).contains("单位"), "ground unit occupancy still blocks placement")
 
 func defense_and_naval_authority() -> void:
 	var sim = fresh()
-	var wall: int = sim.debug_spawn(0, "rivet_wall", Vector2(34.5, 7.5))
-	check(sim.construction_radius("rivet_wall") == 3.0 and sim.construction_radius("rivet_barricade") == 3.0, "completed wall and barricade lines provide a bounded three-cell ordinary construction micro zone")
+	var wall: int = sim.debug_spawn(0, "kestrel_wall", Vector2(34.5, 7.5))
+	check(sim.construction_radius("kestrel_wall") == 3.0 and sim.construction_radius("kestrel_barricade") == 3.0, "completed wall and barricade lines provide a bounded three-cell ordinary construction micro zone")
 	check(sim.in_construction_range(0, Vector2(36.5, 7.5)), "a completed remote wall provides a small ordinary build zone")
-	ready(sim, 0, "rivet_wall")
+	ready(sim, 0, "kestrel_wall")
 	var funds: float = sim.money[0]
 	check(sim.defense_extension(0, Vector2(40.5, 7.5)).size() == 6, "existing straight six-cell wall extension is preserved")
 	check(sim.place_building(0, Vector2(40.5, 7.5)).is_empty(), "a legal paid remote defensive extension still places")
-	check(is_equal_approx(funds - sim.money[0], float(config.buildings.rivet_wall.cost) * 5.0), "the extra five defense cells are charged individually")
+	check(is_equal_approx(funds - sim.money[0], float(config.buildings.kestrel_wall.cost) * 5.0), "the extra five defense cells are charged individually")
 	sim.step(float(config.economy.construction_animation) + 0.1)
 	check(sim.in_construction_range(0, Vector2(40.5, 9.5)), "finished extended walls provide their configured ordinary construction micro zones")
 	check(not sim.in_construction_range(0, Vector2(40.5, 11.0)), "finished paid defense segments do not authorize sites beyond the three-cell micro zone")
@@ -218,7 +225,7 @@ func defense_and_naval_authority() -> void:
 	var naval = fresh()
 	var point := Vector2(35.5, 7.5)
 	check(not Naval._yard_authorized(naval, 0, point, 2.0, true, -1), "open water outside owned zones has no shipyard authority")
-	var facility: int = naval.debug_spawn(0, "rivet_power", Vector2(30.5, 7.5))
+	var facility: int = naval.debug_spawn(0, "kestrel_power", Vector2(30.5, 7.5))
 	check(Naval._yard_authorized(naval, 0, point, 2.0, true, -1), "shipyard authority uses the same completed ordinary facility zones")
 	naval.entities[facility].construct_remaining = 1.0
 	check(not Naval._yard_authorized(naval, 0, point, 2.0, true, -1), "unfinished facilities cannot authorize naval placement")
@@ -232,9 +239,9 @@ func defense_micro_building_sites() -> void:
 		var sim = fresh()
 		var center := Vector2(34.5, 7.5)
 		var point := center + Vector2(2, 0)
-		var source: int = sim.debug_spawn(0, "rivet_" + role, center)
+		var source: int = sim.debug_spawn(0, "kestrel_" + role, center)
 		ready(sim)
-		check(sim.entities[1].pos.distance_to(point) > sim.construction_radius("rivet_hq"), "the actual " + role + " micro-zone site is outside headquarters authority")
+		check(sim.entities[1].pos.distance_to(point) > sim.construction_radius("kestrel_hq"), "the actual " + role + " micro-zone site is outside headquarters authority")
 		check(sim.placement_error(0, point).is_empty(), "a completed owned " + role + " really authorizes normal building placement nearby")
 		check(sim.placement_error(0, center + Vector2(3.5, 0)).contains("扩建范围"), "ordinary building placement stays inside the " + role + " micro zone")
 		sim.entities[source].construct_remaining = 1.0
@@ -244,7 +251,7 @@ func defense_micro_building_sites() -> void:
 		check(sim.placement_error(0, point).contains("扩建范围"), "an enemy " + role + " cannot authorize the same normal site")
 		sim.entities[source].team = 0
 		var funds: float = sim.money[0]
-		check(sim.place_building(0, point).is_empty() and sim.entities[sim._next_id - 1].spec == "rivet_power", "a real paid ordinary power station can be placed using only an owned " + role + " micro zone")
+		check(sim.place_building(0, point).is_empty() and sim.entities[sim._next_id - 1].spec == "kestrel_power", "a real paid ordinary power station can be placed using only an owned " + role + " micro zone")
 		check(sim.money[0] == funds, "ordinary placement near a " + role + " retains its configured prepaid cost")
 
 func ai_placement() -> void:
@@ -292,7 +299,7 @@ func snapshot_compatibility() -> void:
 		else: rules.economy.construction_radii.hq = 26.0
 		check(Rules.validate(rules, false).is_empty(), "custom new and historical range rules both validate: legacy=" + str(legacy))
 		var sim = fresh(rules, false)
-		sim.debug_spawn(0, "rivet_power", Vector2(30.5, 7.5))
+		sim.debug_spawn(0, "kestrel_power", Vector2(30.5, 7.5))
 		var path: String = "/tmp/paper_front_v7_range_" + str(legacy) + ".save"
 		check(sim.save_game(path).is_empty(), "a real range snapshot writes: legacy=" + str(legacy))
 		var restored = Sim.new()
@@ -300,8 +307,8 @@ func snapshot_compatibility() -> void:
 		check(error.is_empty(), "a real range snapshot loads: legacy=" + str(legacy) + " " + error)
 		if error.is_empty():
 			check(restored.rules == rules and restored.construction_zones(0) == sim.construction_zones(0), "saved rule snapshots and derived zones survive load exactly: legacy=" + str(legacy))
-			check(restored.construction_radius("rivet_hq") == (12.0 if legacy else 26.0) and restored.construction_radius("rivet_power") == (0.0 if legacy else 6.0), "loading never silently replaces old or customized range rules with installed defaults")
-			check(restored.construction_radius("rivet_wall") == (0.0 if legacy else 3.0) and restored.construction_radius("rivet_barricade") == (0.0 if legacy else 3.0), "new defensive micro zones round-trip while old snapshots retain their historical defense authority")
+			check(restored.construction_radius("kestrel_hq") == (12.0 if legacy else 26.0) and restored.construction_radius("kestrel_power") == (0.0 if legacy else 6.0), "loading never silently replaces old or customized range rules with installed defaults")
+			check(restored.construction_radius("kestrel_wall") == (0.0 if legacy else 3.0) and restored.construction_radius("kestrel_barricade") == (0.0 if legacy else 3.0), "new defensive micro zones round-trip while old snapshots retain their historical defense authority")
 			check(restored.in_construction_range(0, Vector2(35.5, 7.5)) == (not legacy), "historical expands=false power stations retain their original placement authority")
 		DirAccess.remove_absolute(path)
 
@@ -325,6 +332,6 @@ func visual_memory_snapshot() -> void:
 	file.close()
 	check(restored.load_game(path).is_empty() and restored.visual_memory.is_empty(), "unrecognized optional visual metadata is ignored without invalidating an otherwise valid historical save")
 	restored.visual_memory = before
-	restored.setup(config, "dev", 7, "rivet", false)
+	restored.setup(config, "dev", 7, "kestrel", false)
 	check(restored.visual_memory.is_empty(), "a new match resets restored exploration metadata")
 	DirAccess.remove_absolute(path)

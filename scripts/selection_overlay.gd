@@ -73,10 +73,10 @@ func projected_route_sections(points: PackedVector3Array) -> Array[PackedVector2
 	return sections
 
 func _draw_route_section(points: PackedVector2Array, color: Color, planned: bool) -> void:
-	for segment in PATHS.dashed_segments(points, 8.0 if planned else 5.0, 5.0):
-		draw_line(segment[0], segment[1], Color(.16, .13, .10, color.a * .7), 3.5, true)
-		draw_line(segment[0], segment[1], color, 1.7, true)
-	if points.size() > 1: draw_circle(points[points.size() - 1], 3.0 if planned else 2.5, color, false, 1.3, true)
+	if points.size() < 2: return
+	draw_line(points[0], points[points.size() - 1], Color(.16, .13, .10, color.a * .7), 3.5, true)
+	draw_line(points[0], points[points.size() - 1], color, 1.7, true)
+	draw_circle(points[points.size() - 1], 3.0 if planned else 2.5, color, false, 1.3, true)
 
 func draw_collisions() -> void:
 	if not collisions or sim==null or camera==null:return

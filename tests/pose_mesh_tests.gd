@@ -45,7 +45,7 @@ func run()->void:
 	legacy.pose_meshes_enabled=false
 	root.add_child(fast);root.add_child(legacy)
 	for world in [fast,legacy]:
-		world.setup(sim,camera);world.configure_quality("balanced")
+		world.setup(sim,camera);world.configure_quality("balanced");world.set_destruction_seed(73026)
 		world._cache_view_planes()
 		world._spawn_effect(Vector2(24,28),"death",1.3,.2)
 		world._spawn_effect(Vector2(23,28),"impact",.7,.2)

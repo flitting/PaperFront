@@ -65,12 +65,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.723,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.7225,
+      "rms_dbfs": -23.021,
       "spectral_centroid_hz": 104.349,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "1f491d6eda21301979afc89d401ce9890272c8592b129ddffde03ab2953f50a0"
+      "sha256": "0242b5abb809108b67708e0bd236f0508abdc65d17bada9c62b75446eda1c52a",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "1f491d6eda21301979afc89d401ce9890272c8592b129ddffde03ab2953f50a0",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_forest",
@@ -92,12 +99,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.61,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.612,
+      "rms_dbfs": -23.0209,
       "spectral_centroid_hz": 106.702,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "df933241d065207db70f7dff4b3690a0630387a8e02c4fd6939eb4f9b9cebf65"
+      "sha256": "f1aebf363962f584c22dcc7599b219c90decccf431d8cec72ce7a2671f121321",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "df933241d065207db70f7dff4b3690a0630387a8e02c4fd6939eb4f9b9cebf65",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_desert",
@@ -119,12 +133,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -14.805,
-      "rms_dbfs": -26.02,
+      "peak_dbfs": -11.8059,
+      "rms_dbfs": -23.0207,
       "spectral_centroid_hz": 107.424,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "848765e4702c93e7c82fa62d53d0ec0bf5e7f11a69dff8e68a5f98ef66bcc73f"
+      "sha256": "c4612c85bf8303ba2d15162a656e3470dc1c148852d167557d2eb651d3ede213",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "848765e4702c93e7c82fa62d53d0ec0bf5e7f11a69dff8e68a5f98ef66bcc73f",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_snow",
@@ -146,12 +167,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.218,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.219,
+      "rms_dbfs": -23.0211,
       "spectral_centroid_hz": 119.401,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "0723f5f5d75af4b4d6655db90e570147fe2cb53800c1ce2d8c58fbbdeaa37b3d"
+      "sha256": "3aa7422a8d37302d14dcbc55b13ddc779cb76253f07ea33f3b8bad1665b247fd",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "0723f5f5d75af4b4d6655db90e570147fe2cb53800c1ce2d8c58fbbdeaa37b3d",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_city",
@@ -173,12 +201,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.311,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.3115,
+      "rms_dbfs": -23.0209,
       "spectral_centroid_hz": 107.591,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "6c1d25f2baab5125ed286b209c5b464ec0d2cbb1297defaff37e4124ec5efc5b"
+      "sha256": "20c247db2a3be0e7af7d1afd5560e54e936fe3c992f154884204180b3a1d15a1",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "6c1d25f2baab5125ed286b209c5b464ec0d2cbb1297defaff37e4124ec5efc5b",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_random_city",
@@ -200,12 +235,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.194,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.1942,
+      "rms_dbfs": -23.0208,
       "spectral_centroid_hz": 104.517,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "5f13c60018c4e67bc951e4c9bfb07615fb39cbcf9efd2cd4efe56d9eba28d98c"
+      "sha256": "66e8b1e9f72c160b8a7dff95a02bdd108b9dac39357da84b7b90e81f57d5602a",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "5f13c60018c4e67bc951e4c9bfb07615fb39cbcf9efd2cd4efe56d9eba28d98c",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_islands",
@@ -227,12 +269,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.487,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.4872,
+      "rms_dbfs": -23.0208,
       "spectral_centroid_hz": 103.393,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "1f45f0d4f048234b442e3031c94b9d14a502f42e7d8d0ec071ff5d56a1897ecd"
+      "sha256": "86471035916348bd1b760dcf4b8c8e22011cb585cf0778e21972148ada58943f",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "1f45f0d4f048234b442e3031c94b9d14a502f42e7d8d0ec071ff5d56a1897ecd",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "battle_campaign",
@@ -254,12 +303,19 @@
       ],
       "minimum_attack_ms": 45,
       "lowpass_hz": 1300,
-      "peak_dbfs": -15.938,
-      "rms_dbfs": -26.021,
+      "peak_dbfs": -12.9385,
+      "rms_dbfs": -23.0212,
       "spectral_centroid_hz": 99.739,
       "energy_above_4khz_percent": 2e-06,
       "seam_delta_pcm": 0,
-      "sha256": "890b9782d1a3b217db2c3007735709d67a2c70f0066f3b87dc32cd52682ebd1b"
+      "sha256": "e1aec4b1272613a7087be7e6bdd759e6602e1e665ae651dc7946babd553e71d6",
+      "level_revision": {
+        "id": "v10-menu-minus5-calm-plus3-battle-minus3",
+        "gain_db": 3.0,
+        "source_sha256": "890b9782d1a3b217db2c3007735709d67a2c70f0066f3b87dc32cd52682ebd1b",
+        "tool": "tools/rebalance_audio_v10.py",
+        "tool_sha256": "0ad309d84a4445157c6ee598befc8c59d70089269d34574a1d613d69204d0167"
+      }
     },
     {
       "scene": "win",
@@ -342,5 +398,8 @@
       "seam_delta_pcm": 0,
       "sha256": "f66fc18a869bd93b3d72f88b2e5a6fd0360a380caef957e83b3bc740bc7d5b1e"
     }
-  ]
+  ],
+  "post_processing": {
+    "level_revision": "v10-menu-minus5-calm-plus3-battle-minus3"
+  }
 }

@@ -11,7 +11,7 @@ func _initialize() -> void:
 	_check(not rules.is_empty(), "default rules validate without requiring imported assets: %s" % str(RulesScript.errors))
 	if not rules.is_empty():
 		_check(rules.factions.size() == 4 and _catalog_complete(rules), "four-faction roster accounts for every configured unit, building and weapon")
-		_check(rules.units.rivet_assault.crush and not rules.units.rivet_harvester.crush, "crush permissions differ from generic vehicle status")
+		_check(rules.units.rivet_assault.crush and not rules.units.iron_harvester.crush, "crush permissions differ from generic vehicle status")
 		var bad_rules: Dictionary = rules.duplicate(true)
 		bad_rules.weapons.rivet_rifle.interval = 0
 		_check(not RulesScript.validate(bad_rules, false).is_empty(), "zero weapon interval rejected")
@@ -20,6 +20,7 @@ func _initialize() -> void:
 		_check(not RulesScript.validate(bad_rules, false).is_empty(), "unknown weapon reference rejected")
 		bad_rules = rules.duplicate(true)
 		bad_rules.buildings.rivet_hq.requires = ["rivet_factory"]
+		bad_rules.buildings.rivet_factory.requires = ["rivet_hq"]
 		_check(not RulesScript.validate(bad_rules, false).is_empty(), "building prerequisite cycle rejected")
 		bad_rules = rules.duplicate(true)
 		bad_rules.units.kestrel_tank.animations.erase("attack")
@@ -29,7 +30,7 @@ func _initialize() -> void:
 	for mode: String in ["dev", "handmade", "random"]:
 		var map: Dictionary = MapScript.generate(mode, 20260930)
 		_check(map.valid, "%s validates: %s" % [mode, str(map.get("validation_errors", []))])
-		_check(map.size == (48 if mode == "dev" else 160), "%s has documented dimensions" % mode)
+		_check(map.size == (100 if mode == "dev" else 160), "%s has documented dimensions" % mode)
 		var again: Dictionary = MapScript.generate(mode, 20260930)
 		_check(JSON.stringify(map) == JSON.stringify(again), "%s generation is seed deterministic" % mode)
 		var damaged: Dictionary = map.duplicate(true)
@@ -69,10 +70,10 @@ func _catalog_complete(rules: Dictionary) -> bool:
 				ids[id] = true
 				faction_count += 1
 				accounted += 1
-				var weapon_id: String = str(spec.get("weapon", ""))
-				if not weapon_id.is_empty():
-					if not rules.weapons.has(weapon_id): return false
-					used_weapons[weapon_id] = true
+				for weapon_id: String in [str(spec.get("weapon", "")),str(spec.get("secondary_weapon", ""))]:
+					if not weapon_id.is_empty():
+						if not rules.weapons.has(weapon_id): return false
+						used_weapons[weapon_id] = true
 			if faction_count == 0: return false
 		if accounted != rules[category].size(): return false
 	return used_weapons.size() == rules.weapons.size()

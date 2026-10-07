@@ -10,7 +10,9 @@ func _initialize()->void:
 	rng.seed=73026
 	var units:Array[int]=[]
 	var stations:Array[int]=[]
+	var plants:Array[int]=[]
 	for team in range(8):
+		plants.append(sim._spawn(team,sim.factions[team]+"_power",Vector2(15.5+team*2,18.5),true))
 		for i in range(4):
 			stations.append(sim._spawn(team,sim.factions[team]+"_repair",Vector2(15.5+i*5,24.5),true))
 		for i in range(24):
@@ -22,7 +24,7 @@ func _initialize()->void:
 		sim._field_repairers.clear()
 		for team in range(8):
 			sim.money[team]=[0.0,.03,1.0,100000.0][(team+scenario)%4]
-			sim._low_power[team]=(scenario+team)%5==0
+			sim.entities[plants[team]].emp_until=sim.time+1.0 if (scenario+team)%5==0 else 0.0
 		for i in range(stations.size()):
 			var station:Dictionary=sim.entities[stations[i]]
 			station.team=(i/4+scenario)%8
@@ -40,6 +42,8 @@ func _initialize()->void:
 		sim._air_specs.clear()
 		for spec_id in sim.rules.units:
 			if sim.rules.units[spec_id].get("domain","ground")=="air":sim._air_specs[spec_id]=true
+		sim._invalidate_base_cache()
+		sim._ensure_base_cache()
 		sim._in_step=true
 		var before:Dictionary={}
 		for id in sim.entities:before[id]=sim.entities[id].hp
@@ -59,7 +63,7 @@ func _initialize()->void:
 func reference(sim,delta:float)->void:
 	var stations:Array=[]
 	for building in sim._building_entities:
-		if float(building.construct_remaining)<=0.0 and not sim._low_power[int(building.team)] and sim.data_for(building.spec).get("role","")=="repair":stations.append(building)
+		if float(building.construct_remaining)<=0.0 and not sim.building_low_power(building) and sim.data_for(building.spec).get("role","")=="repair":stations.append(building)
 	if stations.is_empty() and sim._field_repairers.is_empty():return
 	for e in sim.entities.values():
 		if e.kind!="unit" or sim._is_air(e) or int(e.get("transport_id",-1))>0 or float(e.hp)<=0.0:continue
@@ -67,7 +71,7 @@ func reference(sim,delta:float)->void:
 		for station in stations:
 			var info:Dictionary=sim.data_for(station.spec)
 			var armor:String=str(sim.data_for(e.spec).get("armor_class","infantry" if e.crushable else "armored"))
-			if station.team!=e.team or float(station.construct_remaining)>0.0 or info.get("role","")!="repair" or sim._low_power[int(e.team)] or armor!="armored":continue
+			if station.team!=e.team or float(station.construct_remaining)>0.0 or info.get("role","")!="repair" or sim.building_low_power(station) or armor!="armored":continue
 			if (e.pos as Vector2).distance_to(station.pos)<=float(info.get("repair_radius",5.0)):rate=maxf(rate,float(info.get("repair_rate",12.0)))
 		if rate>0.0:sim._repair_health(e,rate*delta)
 	for id in sim._field_repairers:

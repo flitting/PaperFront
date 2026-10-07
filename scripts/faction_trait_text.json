@@ -1,26 +1,37 @@
 {
   "iron": {
-    "short": "减伤{reduction}% / 脱战自愈",
-    "description": "铁钉单位受到的伤害减少{reduction}%；停止开火且未受伤{delay}秒后，每秒自动恢复最大生命的{regen}%，装载期间暂停恢复。",
-    "status": "坚固 −{reduction}%伤害",
+    "short": "铁路机动 / 装甲自修复",
+    "short_without_regeneration": "野战维修 / 拖救撤离",
+    "description": "只可使用所属玩家的正交无环铁路，铁路上速度为常速两倍并允许重叠；矿车与单车装甲火车头仅沿己方铁路运行，工厂出口无轨时等待接轨。",
+    "regeneration": "长钉载具、船舶、空军及装甲列车停止开火且未受伤{delay}秒后，每秒自动恢复最大生命的{regen}%；步兵与建筑不适用，装载期间暂停。",
     "healing": "脱战自愈",
     "waiting": "自愈等待{remaining}秒"
   },
   "kestrel": {
-    "short": "同域集群 +{bonus}%伤害",
-    "description": "正典作战单位在{radius}格内有至少{allies}个其他同域友方作战单位时，伤害提高{bonus}%；装载中的单位不计入。",
-    "active": "协同 +{bonus}%伤害",
-    "waiting": "协同待集结"
+    "short": "精锐步兵 / 廉价快产",
+    "description": "外骨骼精锐步兵结合廉价快产装甲与机动空军；基础建筑成本和时间降低，高级科技解锁更贵、更慢，顶级兵种保持正常定价。"
   },
   "rivet": {
-    "short": "推进突破 +{bonus}%首击",
-    "description": "重锤武装装甲车辆在攻击移动中累计推进{distance}米后，{window}秒内下一次开火伤害提高{bonus}%；开火后重新积累。",
-    "active": "突破 +{bonus}% · {remaining}秒",
-    "progress": "突破推进{progress}/{distance}米"
+    "short": "武装工兵 / 分散钻机",
+    "description": "基地兵营开局训练步兵和武装工兵；工兵沿原脚手架机制现场建造，在矿脉建立独立钻机取代矿车与处理厂。钻机可在建设范围之外的合法矿点施工，摧毁后释放原矿脉。武装工兵脱战自愈，重型坦克和暮钟轰炸飞艇保护经济。基地兵营造价{barracks_cost}、施工{barracks_build_time}秒。",
+    "short_standard": "重装推进 / 范围火力",
+    "standard_description": "锤头坦克以高耐久装甲承担前线作战，理由炮压制密集地面阵地，重申轰炸机以有限投弹支援攻坚。",
+    "short_legacy_engineer": "总部练兵 / 工兵建设",
+    "legacy_engineer_description": "总部是一座大型兵营，开局即可训练步兵，不建造建筑；工程兵现场搭建全部非总部建筑的脚手架，随施工进度付款；普通建筑限于总部或大兵营的建设范围内。重锤没有分基地，只能通过额外大兵营扩张；大兵营可在范围外选址，造价{barracks_cost}资金，完工后提供{barracks_construction_radius}格建设范围与{barracks_local_power}电力、半径{barracks_local_power_radius}格的局部供电，其余建筑造价与建造时间沿用原规则。"
+  },
+  "sky": {
+    "short": "EMP控制 / 激光束流",
+    "description": "昂贵、脆弱的高科技装备与高性能空军：断流车电磁脉冲实际禁用载具和建筑，聚焦激光直接结算伤害，脉冲阵列持续束流按时间造成伤害；没有付费范围支援建筑。"
   },
   "emp": {
-    "short": "EMP压制 / 蓄能支援",
     "description": "断流车命中装甲单位使其失控{vehicle}秒，命中建筑使其失控{building}秒；步兵不受EMP影响。失控期间单位停止移动、开火和航空服务，建筑停止生产、维修、开火与供电。",
     "status": "EMP失控 {remaining}秒"
+  },
+  "hq_power": {
+    "description": "主基地提供{local_power}电力的局部供电，覆盖半径{local_power_radius}格；仅支持范围内建筑，远处设施仍需独立保障供电。",
+    "base_barracks_description": "每座基地兵营提供{local_power}电力的局部供电，覆盖半径{local_power_radius}格；仅支持范围内建筑，远处设施仍需独立保障供电。"
+  },
+  "local_power": {
+    "description": "局部供电容量{capacity}电力，覆盖半径{radius}格，仅支持范围内建筑。"
   }
 }

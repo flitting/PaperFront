@@ -3,6 +3,7 @@ class_name BattlefieldCatalog
 
 const SCHEMA: int = 3
 const MODES: Array[String] = ["forest", "desert", "snow", "city", "random_city", "islands"]
+const FIXED_MODES: Array[String] = ["symmetric"]
 const REMOVED_MENU_MODES: Array[String] = ["handmade", "random", "mountains", "mountains640"]
 const PROFILES = {
 	"forest": {"title": "翠林溪谷", "biome": "forest", "size": 320, "routes": "land", "ground": "879865", "road": "b29d7b", "water": "437f8f"},
@@ -28,6 +29,7 @@ static func entries(include_legacy: bool = true) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for mode: String in MODES:
 		result.append({"id": mode, "name": PROFILES[mode].title, "size": 320, "players": [2, 3, 4]})
+	result.append({"id": "symmetric", "name": display_name("symmetric"), "size": 192, "players": [2]})
 	if include_legacy:
 		# Historical generators remain available for old saves and validation,
 		# while these four maps no longer appear in the new-match catalogue.
@@ -36,9 +38,9 @@ static func entries(include_legacy: bool = true) -> Array[Dictionary]:
 	return result
 
 static func selectable_mode(mode: String, debug_enabled: bool = false) -> String:
-	if mode in MODES or (mode == "dev" and debug_enabled): return mode
+	if mode in MODES or mode in FIXED_MODES or (mode == "dev" and debug_enabled): return mode
 	return "forest"
 
 static func display_name(mode: String) -> String:
 	if PROFILES.has(mode): return str(PROFILES[mode].title)
-	return str({"handmade": "经典河谷（2人）", "random": "经典随机（2人）", "mountains": "山地盆地（2人）", "mountains640": "巨型山地（2人）", "dev": "开发测试（2人）"}.get(mode, mode))
+	return str({"symmetric": "明原对称场（2人）", "handmade": "经典河谷（2人）", "random": "经典随机（2人）", "mountains": "山地盆地（2人）", "mountains640": "巨型山地（2人）", "dev": "开发测试（2人）"}.get(mode, mode))

@@ -40,12 +40,12 @@ static func resume_error(sim, engineer_id: int, target_id: int) -> String:
 	if not sim._builder_valid(int(engineer.team), engineer_id):
 		return "继续施工需要工程兵"
 	if not sim.entities.has(target_id):
-		return "施工分基地已不存在"
+		return "施工建筑已不存在"
 	var building: Dictionary = sim.entities[target_id]
-	if building.kind != "building" or sim.data_for(building.spec).get("role", "") != "outpost" or building.get("construction", {}).is_empty() or float(building.hp) <= 0.0:
-		return "只能继续未完工分基地的施工"
+	if building.kind != "building" or building.get("construction", {}).is_empty() or float(building.hp) <= 0.0:
+		return "只能继续未完工建筑的施工"
 	if int(building.team) != int(engineer.team):
-		return "只能接手己方分基地施工"
+		return "只能接手己方建筑施工"
 	return ""
 
 
@@ -160,11 +160,13 @@ static func _complete(sim, building: Dictionary) -> void:
 	building.state = "idle"
 	building.erase("construction")
 	sim._invalidate_base_cache()
+	sim.statistics.add(int(building.team),"buildings_built")
 	if sim.entities.has(builder_id):
 		var builder: Dictionary = sim.entities[builder_id]
 		if _has_work_order(builder, int(building.id)):
 			sim._finish_command(builder)
-	sim.events.append({"kind": "ready", "pos": building.pos, "id": building.id})
+	sim.events.append({"kind": "ready", "pos": building.pos, "id": building.id, "team": building.team, "spec": building.spec})
+	sim.events.append({"kind": "deploy", "pos": building.pos, "id": building.id, "team": building.team, "spec": building.spec, "entity_kind": "building"})
 
 
 static func status(sim, building: Dictionary) -> String:
@@ -185,10 +187,10 @@ static func dismantle(sim, target_id: int) -> String:
 	if not str(sim.result).is_empty():
 		return "对局已经结束"
 	if not sim.entities.has(target_id):
-		return "施工分基地已不存在"
+		return "施工建筑已不存在"
 	var building: Dictionary = sim.entities[target_id]
-	if building.kind != "building" or sim.data_for(building.spec).get("role", "") != "outpost" or building.get("construction", {}).is_empty():
-		return "只能拆除未完工分基地"
+	if building.kind != "building" or building.get("construction", {}).is_empty():
+		return "只能拆除未完工建筑"
 	var builder_id: int = int(building.construction.builder)
 	if sim.entities.has(builder_id) and _has_work_order(sim.entities[builder_id], target_id):
 		sim._finish_command(sim.entities[builder_id])

@@ -50,6 +50,7 @@ struct UnitKeys {
     const StringName _air_goal{"_air_goal"};
     const StringName _near_stand{"_near_stand"};
     const StringName _combat_approach{"_combat_approach"};
+    const StringName _pursue_target{"_pursue_target"};
     const StringName _fire{"_fire"};
     const StringName _finish_command{"_finish_command"};
     const StringName _lost_target_order{"_lost_target_order"};
@@ -61,7 +62,7 @@ struct UnitKeys {
 struct UnitSpecView {
     String weapon;
     double reach=0.0, turn_speed=360.0, turret_turn_speed=360.0;
-    bool turret=false, mobile_fire=false, has_mask=false;
+    bool turret=false, mobile_fire=false, has_mask=false, independent_secondary=false;
     int64_t mask=0;
 };
 struct UnitSpecHash { size_t operator()(const String &value) const { return value.hash(); } };
@@ -81,6 +82,7 @@ struct UnitTickContext {
         view.weapon=data.get(k.weapon,String());
         if (!view.weapon.is_empty()) { const Dictionary weapon=weapons[view.weapon]; view.reach=weapon[k.range]; }
         const String art=data.get(k.art,String());
+        view.independent_secondary=art==String("zeppelin");
         view.turret=data.has(k.has_turret) ? bool(data[k.has_turret]) : art==k.tank || art==k.assault;
         view.mobile_fire=view.turret && bool(data.get(k.fire_while_moving,true));
         view.turn_speed=data.get(k.turn_speed,360);
@@ -167,6 +169,8 @@ struct UnitTickContext {
         else turret_forward(e, spec);
     }
     void engage(Dictionary e, const UnitSpecView &spec, int64_t target, bool pursue, bool validated=false) const {
+        // A dirigible chooses bomb or dorsal gun range by target domain.
+        if (spec.independent_secondary) { sim->call(StringName("_engage"), e, target, delta, pursue); return; }
         if (!validated && !can_target(e, target, spec)) return;
         const String &weapon_id = spec.weapon;
         if (weapon_id.is_empty()) { e[k.state] = k.waiting; return; }
@@ -174,9 +178,7 @@ struct UnitTickContext {
         const double reach = spec.reach;
         if (double(position.distance_to(target_pos)) > reach) {
             if (pursue) {
-                const Vector2 goal = sim->call(k._combat_approach, e, target_pos, reach);
-                if (goal.is_finite()) sim->call(k._move_to, e, goal, delta);
-                else e[k.state] = k.unreachable;
+                sim->call(k._pursue_target, e, target, target_pos, reach, delta);
             }
             if (has_turret(spec)) aim(e, spec, target);
             return;
@@ -192,6 +194,11 @@ struct UnitTickContext {
     }
     void unit(Dictionary e) const {
         if (loaded(e)) return;
+        const Dictionary special_spec = specs[e[k.spec]];
+        if (bool(special_spec.get(StringName("permanent_air"), false)) || bool(special_spec.get(StringName("carrier_plane"), false))) {
+            sim->call(k._step_unit, e, delta);
+            return;
+        }
         if (double(e.get(k.emp_until, 0.0)) > double(sim->get(k.time))) {
             e[k.state] = String("emp");
             return;
@@ -203,16 +210,12 @@ struct UnitTickContext {
         if (yielding.is_finite()) {
             const double time = sim->get(k.time);
             if (time >= double(e.get(k.yield_until, time + 3.0))) {
-                e[k.yield_goal] = Vector2(INFINITY, INFINITY);
-                Array path = e[k.path]; path.clear();
-                e[k.path_goal] = Vector2(INFINITY, INFINITY); e[k.path_wait] = 0.0;
+                sim->call(StringName("_complete_movement_yield"), e);
                 yielding = Vector2(INFINITY, INFINITY);
             } else {
                 if (!e.has(k.yield_until)) e[k.yield_until] = time + 3.0;
                 if (bool(sim->call(k._move_to, e, yielding, delta))) {
-                    e[k.yield_goal] = Vector2(INFINITY, INFINITY);
-                    Array path = e[k.path]; path.clear();
-                    e[k.path_goal] = Vector2(INFINITY, INFINITY); e[k.path_wait] = 0.0;
+                    sim->call(StringName("_complete_movement_yield"), e);
                 }
                 if (has_turret(spec)) {
                     const Array commands = e[k.commands];

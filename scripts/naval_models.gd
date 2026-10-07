@@ -8,14 +8,14 @@ const WOOD := Color("987b52")
 const DARK := Color("4c4a48")
 const GLASS := Color("759591")
 const METAL := Color("a9aea4")
-const FACTION_PAINT := {"rivet": Color("bb4034"), "kestrel": Color("2865a5"), "iron": Color("bb963e"), "sky": Color("67578b")}
-const FACTION_TRIM := {"rivet": Color("e0b373"), "kestrel": Color("b9d2d9"), "iron": Color("dfc47e"), "sky": Color("d8c5ed")}
+const FACTION_PAINT := {"rivet": Color("817262"), "kestrel": Color("c6c0ad"), "iron": Color("789f96"), "sky": Color("ebe8df")}
+const FACTION_TRIM := {"rivet": Color("c4ae8b"), "kestrel": Color("8c9290"), "iron": Color("665b48"), "sky": Color("b8b5ad")}
 
 static func make(mesh, art: String, faction: String, team: int, kind: String) -> Dictionary:
 	if art not in ["naval_transport", "naval_frigate", "naval_signature", "shipyard"]: return {}
 	var owner: Color = load("res://scripts/volume_models.gd").player_color(team)
 	var paint: Color = FACTION_PAINT.get(faction, FACTION_PAINT.kestrel)
-	var trim: Color = FACTION_TRIM.get(faction, FACTION_TRIM.kestrel)
+	var trim: Color = owner
 	mesh.capture_shell = true
 	if kind == "building":
 		if art != "shipyard": return {}
@@ -24,7 +24,7 @@ static func make(mesh, art: String, faction: String, team: int, kind: String) ->
 	if kind != "unit": return {}
 	var role: String = art.trim_prefix("naval_")
 	var length: float = 4.2 if role == "transport" else 5.1 if role == "frigate" else 6.3
-	var breadth: float = 1.38 if role == "transport" else 1.7 if role == "frigate" else 2.05
+	var breadth: float = (1.38 if role == "transport" else 1.7 if role == "frigate" else 2.05) * (1.13 if faction == "rivet" else .85 if faction == "kestrel" else 1.0)
 	_hull(mesh, length, breadth, paint, trim)
 	_deck(mesh, length, breadth, faction, role, paint, trim, owner)
 	var gun = null
@@ -81,7 +81,7 @@ static func _deck(mesh, length: float, breadth: float, faction: String, role: St
 		mesh.line(Vector3(x, 0.706, -breadth * 0.39), Vector3(x, 0.706, breadth * 0.39), 0.019, INK)
 	# Identification is a small physical plate; player ownership is not the
 	# faction silhouette's only difference.
-	mesh.box(Vector3(-half * 0.58, 0.731, 0), Vector3(0.44, 0.045, 0.35), owner)
+	mesh.badge(Vector3(-half * 0.58, 0.731, 0),faction,owner,Vector3.UP,.19)
 	if role == "transport":
 		mesh.box(Vector3(-0.24, 0.98, 0), Vector3(length * 0.48, 0.58, breadth * 0.60), paint)
 		mesh.box(Vector3(-0.24, 1.31, 0), Vector3(length * 0.50, 0.13, breadth * 0.64), trim)
@@ -121,6 +121,19 @@ static func _deck(mesh, length: float, breadth: float, faction: String, role: St
 				for side in [-1.0, 1.0]: mesh.box(Vector3(x, 1.61, side * breadth * 0.3), Vector3(0.12, 1.21, 0.12), trim)
 				mesh.box(Vector3(x, 2.25, 0), Vector3(0.13, 0.12, breadth * 0.7), trim)
 
+	if role == "frigate":
+		match faction:
+			"rivet":
+				for z in [-breadth*.24,breadth*.24]: mesh.cylinder(Vector3(-half*.28,1.98,z),.20,.72,Vector3.UP,paint,8,false)
+			"kestrel":
+				mesh.slab([Vector2(-.55,-.28),Vector2(.50,-.28),Vector2(.33,.28),Vector2(-.43,.28)],.08,Vector3(-half*.31,1.94,0),trim,false)
+			"iron":
+				mesh.cylinder(Vector3(-half*.44,1.82,0),.24,1.14,Vector3.UP,paint,8,false)
+				mesh.cylinder(Vector3(-half*.44,2.43,0),.31,.12,Vector3.UP,trim,8,false)
+				mesh.line(Vector3(-half*.40,1.20,.24),Vector3(-half*.06,1.20,.24),.09,trim)
+			"sky":
+				for side in [-1.0,1.0]: mesh.prism([Vector2(-.48,0),Vector2(-.12,.62),Vector2(.33,.13),Vector2(.46,0)],.12,Vector3(-half*.30,1.89,side*.38),paint,true)
+
 static func _turret(gun, faction: String, role: String, trim: Color) -> Vector3:
 	var heavy: bool = role == "signature"
 	var body: Color = FACTION_PAINT.get(faction, FACTION_PAINT.kestrel)
@@ -147,7 +160,7 @@ static func _shipyard(mesh, faction: String, paint: Color, trim: Color, owner: C
 	mesh.box(Vector3(-0.86, 0.17, 0), Vector3(2.0, 0.34, 3.4), WOOD)
 	mesh.box(Vector3(-1.25, 1.01, 0), Vector3(1.26, 1.48, 2.56), paint)
 	mesh.box(Vector3(-1.25, 1.79, 0), Vector3(1.55, 0.16, 2.8), trim)
-	mesh.box(Vector3(-0.55, 1.22, 1.33), Vector3(0.43, 0.53, 0.11), owner)
+	mesh.badge(Vector3(-0.55, 1.22, 1.33),faction,owner,Vector3.BACK,.22)
 	for side in [-1.0, 1.0]:
 		mesh.box(Vector3(0.95, 0.12, side * 1.53), Vector3(2.05, 0.22, 0.34), WOOD)
 		mesh.box(Vector3(0.13, 1.66, side * 1.52), Vector3(0.15, 2.55, 0.16), DARK)

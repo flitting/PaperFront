@@ -8,3 +8,5 @@ __pycache__/
 *.tmp
 
 native/build/
+native/build-windows/
+assets/native/paper_front_kernels.dll

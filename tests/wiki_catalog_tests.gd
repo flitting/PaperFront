@@ -28,7 +28,7 @@ func _initialize() -> void:
 
 func _test_roster_and_search(rules: Dictionary) -> void:
 	var all: Array[Dictionary] = Catalog.entries(rules)
-	_check(all.size() == rules.units.size() + rules.buildings.size(), "Every configured unit and building is browseable")
+	_check(all.size() == rules.units.values().filter(func(info):return not bool(info.get("roster_hidden",false))).size() + rules.buildings.size(), "Every current-roster unit and building is browseable")
 	var ids: Dictionary = {}
 	for entry: Dictionary in all:
 		_check(not ids.has(entry.id), "Roster contains no duplicate ID: " + str(entry.id))
@@ -41,7 +41,7 @@ func _test_roster_and_search(rules: Dictionary) -> void:
 			var expected: int = 0
 			var category: String = "units" if kind == "unit" else "buildings"
 			for id: Variant in rules[category]:
-				if rules[category][id].faction == faction: expected += 1
+				if rules[category][id].faction == faction and not bool(rules[category][id].get("roster_hidden",false)): expected += 1
 			var group: Array[Dictionary] = Catalog.entries(rules, faction, kind)
 			_check(group.size() == expected, "Faction and kind filter matches full source group: " + faction + "/" + kind)
 	_check(Catalog.entries(rules, "", "", "防御围墙").size() == 2, "Shared-name search reaches both factions")
@@ -50,8 +50,8 @@ func _test_roster_and_search(rules: Dictionary) -> void:
 	_check(Catalog.entries(rules, "", "", "精确支援").size() >= 1, "Search includes authored descriptions")
 	_check(Catalog.entries(rules, "", "", "  KESTREL_TANK ").size() == 1, "Search trims whitespace and ignores case")
 	_check(Catalog.entries(rules, "rivet", "unit", "kestrel").is_empty(), "Search cannot escape a faction filter")
-	_check(Catalog.entries(rules, "", "units").size() == rules.units.size(), "Plural kind alias is supported")
-	_check(Catalog.entries(rules, "", "unit", "正典军团 校正炮").size() == 1, "Each search term must match the chosen entry")
+	_check(Catalog.entries(rules, "", "units").size() == rules.units.values().filter(func(info):return not bool(info.get("roster_hidden",false))).size(), "Plural kind alias is supported")
+	_check(Catalog.entries(rules, "", "unit", "正典军团 "+str(rules.units.kestrel_artillery.name)).size() == 1, "Each search term must match the chosen entry")
 	_check(Catalog.entries(rules, "unknown").is_empty() and Catalog.entries(rules, "", "weapon").is_empty(), "Unknown groups are empty")
 	_check(Catalog.sections(rules, "missing").is_empty(), "Unknown detail IDs are empty")
 	var reordered: Dictionary = rules.duplicate(true)
@@ -79,6 +79,10 @@ func _test_complete_numeric_coverage(rules: Dictionary) -> void:
 		if not weapon_id.is_empty():
 			used_weapons[weapon_id] = true
 			_numeric_leaves(rules.weapons[weapon_id], "weapons." + weapon_id, expected)
+		var secondary_id: String = str(entry.spec.get("secondary_weapon", ""))
+		if not secondary_id.is_empty():
+			used_weapons[secondary_id] = true
+			_numeric_leaves(rules.weapons[secondary_id], "weapons." + secondary_id, expected)
 		for path: String in expected:
 			_check(actual.has(path) and actual[path] == expected[path], "Every numerical / boolean source value is displayed unchanged: " + path)
 		for section: Dictionary in tables:
@@ -86,7 +90,13 @@ func _test_complete_numeric_coverage(rules: Dictionary) -> void:
 			for row: Dictionary in section.rows:
 				_check(not str(row.label).is_empty() and not str(row.value).is_empty(), "Every statistic has a label and display value")
 				_check(not str(row.value).contains("res://") and not str(row.value).contains(".svg") and not str(row.value).contains(".png"), "Technical asset paths stay out of product tables")
-	_check(used_weapons.size() == rules.weapons.size(), "The catalog exposes every configured weapon through its owning entity")
+	var current_weapons:Dictionary={}
+	for category:String in ["units","buildings"]:
+		for info:Dictionary in rules[category].values():
+			if bool(info.get("roster_hidden",false)):continue
+			for key:String in ["weapon","secondary_weapon"]:
+				if not str(info.get(key,"")).is_empty():current_weapons[str(info[key])]=true
+	_check(used_weapons.size()==current_weapons.size() and used_weapons.keys().all(func(id):return current_weapons.has(id)),"The catalog exposes every weapon used by the current roster")
 
 
 func _test_future_fields(rules: Dictionary) -> void:
@@ -119,18 +129,22 @@ func _test_future_fields(rules: Dictionary) -> void:
 func _test_meaningful_rules(rules: Dictionary) -> void:
 	var tank: Array[Dictionary] = Catalog.sections(rules, "kestrel_tank")
 	_check(_row_value(tank, "生产设施") == "拱架装配厂", "Producer role resolves to the current faction's authored building name")
-	_check(_row_value(Catalog.sections(rules, "kestrel_fighter"), "前置设施").contains("战术审定台"), "Prerequisite IDs resolve to Chinese names")
+	_check(_row_value(Catalog.sections(rules, "kestrel_advanced"), "前置设施").contains(str(rules.buildings.kestrel_tech.name)), "Prerequisite IDs resolve to the current technology center's Chinese name")
 	_check(_row_value(tank, "基础理论每秒伤害") == "35 生命/秒", "Basic DPS is explicitly named as a derived theoretical statistic")
 	var scout: Array[Dictionary] = Catalog.sections(rules, "kestrel_scout")
 	_check(_source_values(scout).get("weapons.kestrel_scout.multipliers.infantry") == 1.6, "Nested armor multiplier is displayed")
 	_check(_row_value(scout, "对步兵理论每秒伤害").begins_with("34.909"), "Per-armor DPS uses actual weapon multipliers")
 	_check(_row_value(scout, "步兵运输容量") == "%d 名地面步兵" % int(rules.units.kestrel_scout.transport_capacity) and _row_value(scout, "步兵运输规则").contains("卸载按钮") and _row_value(scout, "步兵运输规则").contains("工程兵、反甲兵"), "Scout transport capacity and the complete ground-infantry unload workflow are documented")
-	var workshop: Array[Dictionary] = Catalog.sections(rules, "kestrel_repair")
-	_check(_row_value(workshop, "支援维修满速耗费") == "3.6 资金/秒", "Repair station expense is repair_rate times actual per-health cost")
-	_check(_row_value(workshop, "建筑自修速度") == "22 生命/秒", "Building self-repair uses maximum health times economy repair ratio")
-	_check(_row_value(workshop, "建筑自修满速耗费") == "4.4 资金/秒", "Building self-repair expense uses its actual health-derived rate")
-	_check(_row_value(workshop, "出售回收资金") == "350 资金", "Sell recovery is calculated from actual cost and sell ratio")
-	_check(_row_value(workshop, "支援维修规则").contains("不叠加"), "Support repair explains non-stacking behavior")
+	for removed in ["kestrel_command","rivet_command","iron_command","sky_command","sky_accumulator"]:
+		_check(Catalog.sections(rules,removed).is_empty(), "Removed support building has no Wiki entry: "+removed)
+	for faction: String in rules.factions:
+		var depot: Array[Dictionary] = Catalog.sections(rules, faction + "_repair")
+		_check(_row_value(depot, "入厂维修").contains("自行寻路进入车间") and _row_value(depot, "维修对象").contains("地面装甲载具"), "Each faction's repair depot explains active ground-vehicle service")
+		_check(not _row_value(depot, "车间维修速度").is_empty() and _row_value(depot, "科技等级") == "T2", "Each repair depot exposes its live service rate and T2 unlock")
+	var facility: Array[Dictionary] = Catalog.sections(rules, "kestrel_refinery")
+	var repair_rate: float = float(rules.buildings.kestrel_refinery.hp) * float(rules.economy.repair_rate)
+	_check(_row_value(facility, "建筑自修速度") == Catalog._number(repair_rate)+" 生命/秒", "Ordinary building owner-paid repair remains documented")
+	_check(_row_value(facility, "出售回收资金") == Catalog._number(float(rules.buildings.kestrel_refinery.cost)*float(rules.economy.sell_ratio))+" 资金", "Sell recovery uses the current actual building price")
 	var fighter: Array[Dictionary] = Catalog.sections(rules, "kestrel_fighter")
 	_check(_row_value(fighter, "低电时补给时间") == "12 秒", "Aircraft low-power rearm time uses actual economy multiplier")
 	_check(_row_value(fighter, "弹药与返航").contains("每次开火消耗 1 发"), "Aircraft ammunition behavior is explained")
@@ -144,7 +158,7 @@ func _test_meaningful_rules(rules: Dictionary) -> void:
 	var outpost_sections:Array[Dictionary]=Catalog.sections(rules,"kestrel_outpost")
 	_check(_row_value(outpost_sections,"工程兵施工").contains("立即选址") and _row_value(outpost_sections,"工程兵施工").contains("资金随现场施工进度支付"),"Outposts describe immediate placement and progress payments")
 	_check(_row_value(outpost_sections,"受损与接手").contains("右键接手") and _row_value(outpost_sections,"主动拆除").contains("不退款"),"Outposts describe damaged scaffold repairs, replacement engineers and dismantling")
-	_check(_row_value(Catalog.sections(rules,"rivet_harvester"),"矿柱规则").contains("储量无限") and _row_value(Catalog.sections(rules,"rivet_harvester"),"矿柱规则").contains("只有一辆矿车"),"Harvesters describe infinite ore and cross-team exclusive mining")
+	_check(_row_value(Catalog.sections(rules,"kestrel_harvester"),"矿柱规则").contains("储量无限") and _row_value(Catalog.sections(rules,"kestrel_harvester"),"矿柱规则").contains("只有一辆矿车"),"Harvesters describe infinite ore and cross-team exclusive mining")
 	var refinery: Array[Dictionary] = Catalog.sections(rules, "kestrel_refinery")
 	_check(_row_value(refinery, "建成赠送").contains("1 辆"), "Refinery free harvester is documented")
 	_check(_row_value(refinery, "满载交付收入").begins_with("500 资金"), "Harvest income follows the actual cargo delivery behavior")
@@ -152,6 +166,14 @@ func _test_meaningful_rules(rules: Dictionary) -> void:
 	for section: Dictionary in fighter:
 		if section.title == "单位语音": voices_found = section.rows.size() >= 4
 	_check(voices_found, "Authored voice lines are offered in a separate section")
+	var zeppelin: Array[Dictionary] = Catalog.sections(rules, "rivet_zeppelin")
+	var machine_gun: Dictionary = {}
+	for section: Dictionary in zeppelin:
+		if section.title == "独立副武器 · 背部机枪": machine_gun = section
+	_check(_row_value(zeppelin, "主武器") == "短程自由落体炸弹" and _row_value(zeppelin, "弹道") == "自由落体投弹", "Zeppelin main weapon is described as short-range gravity bombing")
+	_check(not machine_gun.is_empty() and _row_value([machine_gun], "射程") == "6 格" and _row_value([machine_gun], "单次基础伤害") == "12 生命", "Independent zeppelin gun displays its actual range and damage")
+	_check(_row_value([machine_gun], "攻击间隔") == "0.18 秒" and _row_value([machine_gun], "射速").begins_with("5.555"), "Independent zeppelin gun exposes its actual interval and firing rate")
+	_check(_row_value([machine_gun], "可攻击目标").contains("空中") and _row_value([machine_gun], "可攻击目标").contains("地面"), "Independent zeppelin gun states both air and ground target domains")
 
 
 func _numeric_leaves(value: Variant, path: String, out: Dictionary) -> void:

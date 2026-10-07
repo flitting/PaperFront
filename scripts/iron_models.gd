@@ -5,7 +5,7 @@ extends RefCounted
 ## CraftMesh is passed in; runtime loading only creates independent gun meshes.
 const INK := Color("382a22")
 const ARMOR := Color("51463a")
-const OLD_PAINT := Color("7b684b")
+const OLD_PAINT := Color("39847b")
 const YELLOW := Color("bb963e")
 const PATCH := Color("d2ad54")
 const PAPER := Color("e6d5af")
@@ -71,6 +71,12 @@ static func _part():
 
 
 static func _finish(mesh, art: String, kind: String, gun=null, pivot: Vector3=Vector3.ZERO, muzzle: Vector3=Vector3.ZERO, extras: Dictionary={}) -> Dictionary:
+	if kind == "unit" and art not in ["fighter","attacker","air_transport"]:
+		# Small kraft boiler stack and bent steam feed identify the long-nail army
+		# even when every player uses identical paint. No glossy metal material.
+		mesh.cylinder(Vector3(-.67,1.08,-.29),.095,.49,Vector3.UP,ARMOR,8,false)
+		mesh.cylinder(Vector3(-.67,1.34,-.29),.14,.09,Vector3.UP,OLD_PAINT,8,false)
+		mesh.line(Vector3(-.64,.94,-.32),Vector3(-.24,.94,-.32),.045,EDGE)
 	var low:=Vector3(INF,INF,INF)
 	var high:=Vector3(-INF,-INF,-INF)
 	for p: Vector3 in mesh.vertices:
@@ -111,8 +117,9 @@ static func _oriented_box(mesh, center: Vector3, size: Vector3, normal: Vector3,
 
 
 static func _mark(mesh, center: Vector3, normal: Vector3, owner: Color, size: float=.25) -> void:
+	owner = Color("efb537")
 	# A nail in an eight-tooth workshop seal. Owner paint occupies the same small
-	# plate as before; the fixed yellow machines never inherit player colour.
+	# orange plate; the broad panel pigments follow the player palette.
 	var previous: bool=mesh.capture_shell
 	mesh.capture_shell=false
 	var b: Basis=_basis(normal)

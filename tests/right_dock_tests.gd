@@ -113,7 +113,12 @@ func check_layout_and_selection(label: String) -> void:
 	game.box_select(Rect2(Vector2.ZERO,logical.size),false)
 	check(ids[0] in game.selected and ids[1] in game.selected, label+" 跨越右栏的框选仍包含左右可见单位")
 	var selected_before: Array = game.selected.duplicate()
-	var dock_center: Vector2 = game.hud.ui_panels[0].get_global_rect().get_center()
+	# ui_panels[0] is the conditional formation panel. Empty formations hide
+	# it, and its retained rectangle is ordinary battlefield, not clickable HUD.
+	# The production panel is also contextual; use the persistent right-hand
+	# command panel padding so the probe cannot invoke a command button.
+	var dock_center: Vector2 = game.hud.command_panel.get_global_rect().position + Vector2(2,2)
+	check(game.hud.command_panel.is_visible_in_tree() and logical.has_point(dock_center) and game.hud.blocks_world_scroll(dock_center),label+" 输入夹具命中真实可见右侧指令面板")
 	game._unhandled_input(mouse_button(dock_center,MOUSE_BUTTON_LEFT))
 	game._unhandled_input(mouse_button(dock_center,MOUSE_BUTTON_LEFT,false))
 	check(game.hud.blocks_world_scroll(dock_center) and game.selected==selected_before and not game.dragging, label+" 可见面板点击不穿透或清空战场选择")
@@ -121,9 +126,25 @@ func check_layout_and_selection(label: String) -> void:
 	check(not game.middle_drag, label+" 可见面板中键不触发战场平移")
 	var old_distance: float = game.distance
 	game._unhandled_input(mouse_button(dock_center,MOUSE_BUTTON_WHEEL_DOWN))
-	check(is_equal_approx(game.distance,old_distance), label+" 右栏滚轮不穿透缩放")
+	check(is_equal_approx(game.distance,old_distance) and is_equal_approx(game.zoom_target_distance,old_distance), label+" 右栏滚轮不穿透缩放目标")
+	# Also dispatch through the actual viewport GUI route at every resolution;
+	# the direct calls above separately exercise the defensive world guard.
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_LEFT),true)
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_LEFT,false),true)
+	await process_frame
+	check(game.selected==selected_before and not game.dragging,label+" 真实GUI面板点击保留战场选择且不框选")
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_MIDDLE),true)
+	await process_frame
+	check(not game.middle_drag,label+" 真实GUI面板中键不启动平移")
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_MIDDLE,false),true)
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_WHEEL_DOWN),true)
+	root.push_input(mouse_button(dock_center,MOUSE_BUTTON_WHEEL_DOWN,false),true)
+	await process_frame
+	check(is_equal_approx(game.distance,old_distance) and is_equal_approx(game.zoom_target_distance,old_distance),label+" 真实GUI面板滚轮拦截当前镜头与待执行缩放")
 	game._unhandled_input(mouse_button(battlefield.get_center(),MOUSE_BUTTON_WHEEL_DOWN))
-	check(game.distance>old_distance, label+" 战场滚轮正常缩放")
+	check(is_equal_approx(game.distance,old_distance) and game.zoom_target_distance>old_distance,label+" 战场滚轮先更新平滑目标")
+	game._advance_camera_zoom(.016);game.update_camera()
+	check(game.distance>old_distance and game.distance<game.zoom_target_distance,label+" 战场滚轮逐帧正常缩放")
 	game.distance = old_distance
 	# A real GUI event must pass through the minimap's local coordinates.
 	game.hud.refresh(game.sim,[],game.camera,true,"",0)
@@ -220,7 +241,7 @@ func check_debug_panel() -> void:
 		tool.pressed.emit()
 	var after_tools := {"money":game.sim.money.duplicate(),"entities":game.sim.entities.size(),"mode":game.sim.map.mode,"seed":game.sim.map.seed,"collisions":game.overlay.collisions,"angle":game.angle_test_id,"selected":game.selected.duplicate()}
 	check(before_tools==after_tools and not game.dev_mode,"普通对局直接触发隐藏规则按钮也不能加钱、生成单位或重置地图")
-	check(game.debug_panel.find_children("","CheckButton",true,false).is_empty() and game.debug_panel.find_children("","OptionButton",true,false).is_empty(),"调试面板不再包含图形设置控件")
+	check(not game.debug_panel.is_ancestor_of(game.dof_toggle) and not game.debug_panel.is_ancestor_of(game.render_scale_option),"调试面板不再包含图形设置控件，开发阵营与即时施工控件独立保留")
 	game._unhandled_input(f2)
 	check(not game.debug_panel.visible and game.hud.fps_label.is_visible_in_tree(),"第二次F2关闭指标面板，常驻FPS仍可见")
 	game.handle_action("settings_open",null)

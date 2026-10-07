@@ -172,7 +172,7 @@ func after_tick() -> void:
 			else: game.sim.issue([id], "attack_move", center + Vector2(24.0 if team == 0 else -24.0, 0.0))
 
 func _building(team: int, role: String, wanted: Vector2) -> int:
-	var spec: String = game.sim.factions[team] + "_" + role
+	var spec: String = game.sim.building_spec(team, role)
 	var pos: Vector2 = game.sim._near_stand(wanted, float(game.sim.data_for(spec).size) * 0.72, -1, 24.0)
 	if not pos.is_finite(): pos = wanted
 	var id: int = game.sim.debug_spawn(team, spec, pos)

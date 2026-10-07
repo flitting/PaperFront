@@ -126,6 +126,7 @@ func check_pair(scene: Node3D,a_spec: Dictionary,b_spec: Dictionary,kind: String
 func run(scene: Node3D,rules: Dictionary) -> Array[Dictionary]:
 	records.clear()
 	for role in ["hq","power","refinery","barracks","factory","tech","tower","outpost","repair","command","airfield"]:
+		if not rules.buildings.has("rivet_"+role) or not rules.buildings.has("kestrel_"+role): continue
 		check_pair(scene,rules.buildings["rivet_"+role],rules.buildings["kestrel_"+role],"building",role)
 	for role in ["tank","harvester","scout","aa","fighter","advanced"]:
 		check_pair(scene,rules.units["rivet_"+role],rules.units["kestrel_"+role],"unit",role)
