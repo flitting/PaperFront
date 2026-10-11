@@ -7,8 +7,12 @@ var command: String = ""
 var projector: Node3D
 var selection: Array = []
 var _selected_routes: Array[Dictionary] = []
+var _selected_squads: Array[Dictionary] = []
 var _paint_key:Array=[]
 var _unit_circle:PackedVector2Array=PackedVector2Array()
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED: queue_redraw()
+
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for index in range(21):_unit_circle.append(Vector2.from_angle(float(index)*TAU/20.0))
@@ -18,8 +22,10 @@ func refresh_overlay() -> void:
 	var next_routes: Array[Dictionary] = []
 	if sim != null and not selection.is_empty(): next_routes = PATHS.selected_routes(sim.entities, selection, sim.rules)
 	_selected_routes = next_routes
+	_selected_squads = preload("res://scripts/squad_ground_markers.gd").collect(sim,selection) if sim != null else []
 	key.append(_selected_routes)
-	if not _selected_routes.is_empty() and camera != null:
+	key.append(_selected_squads)
+	if (not _selected_routes.is_empty() or not _selected_squads.is_empty()) and camera != null:
 		key.append_array([camera.global_transform, camera.fov, camera.size, camera.projection, camera.h_offset, camera.v_offset, get_viewport().get_visible_rect()])
 		# The projector owns the battlefield SubViewport-to-client transform.
 		if projector != null and projector.has_method("battlefield_rect"): key.append(projector.battlefield_rect())
@@ -96,3 +102,7 @@ func draw_collisions() -> void:
 				var v:Vector2=point*float(d.radius)
 				points.append(projector.project_world_to_screen(Vector3(e.pos.x+v.x,h,e.pos.y+v.y)) - global_position)
 		draw_polyline(points,VolumeModels.player_color(int(e.team)),1.5,true)
+
+func draw_squad_brackets() -> void:
+	# Ground geometry is depth-tested by PaperWorld, never drawn over bodies.
+	pass

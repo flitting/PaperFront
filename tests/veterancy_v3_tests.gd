@@ -116,7 +116,7 @@ func _live_combat() -> void:
 	target.pos = source.pos+Vector2(float(base.range)*1.09,0)
 	sim._fire(source,target_id)
 	check(sim._damage.is_empty(),"veteran cannot fire beyond extended range")
-	# A penetrating weapon just above ordinary armor becomes nonpenetrating
+	# A weapon just above ordinary armor enters the 80%-threshold partial band
 	# against veteran armor; compare settled health, not only exposed numbers.
 	var normal_id: int = sim.debug_spawn(0,"kestrel_rifle",Vector2(14.5,27.5))
 	var normal: Dictionary = sim.entities[normal_id]
@@ -127,7 +127,7 @@ func _live_combat() -> void:
 	sim._add_damage(source_id,sim._weapon_damage(40,source_id,armor_probe),true,{"source":target_id,"source_team":1})
 	sim._apply_damage()
 	check(near(ordinary_before-float(normal.hp),40),"boundary penetration damages ordinary armor fully")
-	check(near(veteran_before-float(source.hp),10),"veteran armor actually reduces boundary penetration damage")
+	check(near(veteran_before-float(source.hp),20),"veteran armor applies half damage in the partial penetration band")
 	check(near(float(config.weapons.kestrel_rifle.damage),float(base.damage)),"unit bonuses do not mutate shared weapon rules")
 
 func _automatic_range_and_rate() -> void:

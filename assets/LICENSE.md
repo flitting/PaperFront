@@ -43,3 +43,8 @@ Godot Engine 为 MIT 许可，版权属于其作者及贡献者。引擎与第�
 ## 连续人手基础网格
 
 本轮巨手返工采用MakeHuman Community的核心图形basemesh，固定来源commit `a8bc2d54ff0ac92e78ff71431b1023eda42bf482`，裁出单只手、封闭腕端、雕修与重新绑定参考姿态。仅使用其图形资产，没有引入MakeHuman应用程序代码。官方[许可说明](https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md)将核心图形basemesh/assets列为CC0；原始文件头也明确2020年CC0发布。原素材及SHA-256记录在`tools/source_assets/makehuman/`，随运行包的资产许可与来源副本在`assets/creator_hand/MAKEHUMAN_LICENSE.md`、`MAKEHUMAN_PROVENANCE.json`。
+
+
+## English speech revision (2026-10-09)
+
+English unit acknowledgements, combat calls, commander reports and spoken power alerts are synthetic project dialogue rendered locally with stock Kokoro-82M voices. Original Chinese recordings remain separate. Model weights and the generation runtime are not shipped; playback uses local PCM WAV files. Model and wrapper attribution, checksum-pinned provenance, generation instructions and output scope are recorded in [the English speech notes](audio/english/README.md) and [provenance](audio/english/provenance.json). Upstream Apache-2.0 and MIT notices are preserved under `audio/english/licenses/`. These assets are not claimed to be human recordings or CC0.

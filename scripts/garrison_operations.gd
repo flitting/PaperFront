@@ -2,6 +2,7 @@ extends RefCounted
 
 ## Neutral houses keep their map identity; occupants remain the actual units.
 const Transport = preload("res://scripts/unit_transport.gd")
+const InfantrySquads = preload("res://scripts/infantry_squads.gd")
 const BASE: int = -100000
 
 static func suitable(ruin: Dictionary) -> bool:
@@ -36,6 +37,7 @@ static func board_error(sim, unit_id: int, target: int) -> String:
 	if float(ruin.get("hp", 0)) < float(ruin.get("max_hp", 1)) * .2: return "建筑生命低于20%，不能进驻"
 	if hostile(sim, int(e.team), target): return "建筑已被敌方驻军占据"
 	if ruin.get("garrison", []).size() >= capacity(ruin): return "建筑驻军已满"
+	if ruin.get("garrison", []).size() + InfantrySquads.boarding_count(sim, e, target, "garrison") > capacity(ruin): return "建筑空位不足以进驻整个小队"
 	return ""
 
 static func step_board(sim, e: Dictionary, command: Dictionary, delta: float) -> void:

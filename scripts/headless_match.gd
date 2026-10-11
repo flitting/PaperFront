@@ -1,17 +1,20 @@
 extends RefCounted
 
-## No scene, renderer, audio, UI or AI is instantiated here. Commands go through
+## No scene, renderer, audio or UI is instantiated here. Commands go through
 ## the exact simulation methods used by the game. A duration limit is unfinished,
 ## never an invented draw. The caller can also step `sim` directly in later tools.
 const Simulation = preload("res://scripts/simulation.gd")
 const Loader = preload("res://scripts/rules_loader.gd")
+const IndependentAI = preload("res://scripts/independent_ai_runtime.gd")
 const MAPS := ["symmetric", "dev", "handmade", "random", "mountains", "mountains640", "forest", "desert", "snow", "city", "random_city", "islands"]
 const FACTIONS := ["kestrel", "rivet", "iron", "sky"]
+const STYLES := ["balanced", "pressure", "armor"]
 const ACTIONS := ["build", "place", "produce", "issue", "sell", "cancel_build", "cancel_production", "rally"]
 const ORDERS := ["move", "attack", "attack_move", "force_attack", "force_move", "stop", "hold", "harvest", "repair", "return", "board", "unload_move", "capture", "garrison", "patrol", "land"]
 var sim
 var command_log: Array[Dictionary] = []
 var stop_reason := ""
+var run_options: Dictionary = {}
 
 func start(options: Dictionary = {}) -> String:
 	var mode := str(options.get("map", "symmetric"))
@@ -24,6 +27,38 @@ func start(options: Dictionary = {}) -> String:
 	if ids.size() < 2 or ids.size() > 4: return "Expected two to four factions"
 	if mode not in ["forest", "desert", "snow", "city", "random_city", "islands"] and ids.size() != 2:
 		return "This map requires exactly two factions"
+	var ai_mode := str(options.get("ai", "both" if options.has("ai-modules") else "off"))
+	if ai_mode not in ["off", "both", "left", "right"]: return "ai must be off, both, left or right"
+	if ids.size() != 2 and ai_mode not in ["off", "both"]: return "left/right AI controls require two factions"
+	var difficulty := str(options.get("difficulty", "normal"))
+	if difficulty not in ["easy", "normal", "hard"]: return "Invalid difficulty"
+	var starts_mode := str(options.get("starts", "default"))
+	if starts_mode not in ["default", "swap"] or (starts_mode == "swap" and ids.size() != 2): return "starts must be default or swap (1v1)"
+	if not str(options.get("load", "")).is_empty() and starts_mode != "default": return "A loaded match retains its original side mapping; starts swap is only valid for a new match"
+	if not options.get("ai-styles", ["balanced"]) is Array: return "ai-styles must be an array"
+	var styles: Array = options.get("ai-styles", ["balanced"]).duplicate()
+	var requested_style_count: int = styles.size()
+	if str(options.get("load", "")).is_empty() and styles.size() != 1 and styles.size() != ids.size(): return "ai-styles needs one entry or one per faction"
+	if styles.is_empty() or styles.size()>4: return "ai-styles needs one to four supported styles"
+	for style: Variant in styles:
+		if str(style) not in STYLES: return "Unknown AI style: " + str(style)
+	if styles.size() == 1:
+		var style: String = str(styles[0]);styles=[]
+		for _index in ids.size(): styles.append(style)
+	var module_paths: Array = []
+	if options.has("ai-modules"):
+		if not options["ai-modules"] is Array: return "ai-modules must be an array"
+		module_paths = options["ai-modules"].duplicate()
+		if str(options.get("load", "")).is_empty() and module_paths.size()!=ids.size(): return "ai-modules requires one path per faction"
+		for path: Variant in module_paths:
+			if not path is String: return "AI module paths must be strings"
+	run_options=options.duplicate(true)
+	run_options.requested_factions=ids.duplicate()
+	if starts_mode == "swap": ids.reverse();styles.reverse();module_paths.reverse()
+	var slots: Array = []
+	for team in ids.size():
+		var controlled: bool = ai_mode == "both" or (ai_mode == "left" and team==0) or (ai_mode == "right" and team==1)
+		slots.append({"faction":ids[team],"control":"ai" if controlled else "human","difficulty":difficulty,"ai_style":str(styles[team]),"ai_seed":int(options.get("seed",1))})
 	var config: Dictionary = Loader.load_rules(str(options.get("rules", "res://data/rules.json")), false)
 	if config.is_empty(): return "Invalid rules: " + "; ".join(Loader.errors)
 	sim = Simulation.new()
@@ -33,11 +68,31 @@ func start(options: Dictionary = {}) -> String:
 	if not str(options.get("load", "")).is_empty():
 		var problem: String = sim.load_game(str(options.load))
 		if not problem.is_empty(): return problem
-		sim.ai_enabled = false
+		if sim.factions.size()!=2 and ai_mode not in ["off","both"]: return "left/right AI controls require a two-faction saved match"
+		if options.has("ai-styles") and requested_style_count!=1 and requested_style_count!=sim.factions.size(): return "ai-styles needs one entry or one per saved faction"
+		sim.ai_enabled = ai_mode != "off"
+		sim.match_options.allow_player_ai=true
+		sim.match_options.explicit_controls=true
+		if not sim.match_options.get("slots") is Array or sim.match_options.slots.size()!=sim.factions.size():
+			sim.match_options.slots=[]
+			for faction: String in sim.factions: sim.match_options.slots.append({"faction":faction,"control":"human","difficulty":difficulty})
+		for team in sim.factions.size():
+			var slot: Dictionary=sim.match_options.slots[team]
+			slot.control="ai" if ai_mode=="both" or (ai_mode=="left" and team==0) or (ai_mode=="right" and team==1) else "human"
+			slot.difficulty=difficulty
+			slot.ai_style=str(styles[mini(team,styles.size()-1)])
 	else:
 		var starts: Array[Vector2] = []
-		sim.setup_multiteam(config, mode, int(options.get("seed", 1)), ids, false, starts, Callable(), {"vision_enabled":true})
+		sim.setup_multiteam(config, mode, int(options.get("seed", 1)), ids, ai_mode!="off", starts, Callable(), {"vision_enabled":true,"slots":slots,"allow_player_ai":true,"explicit_controls":true})
 	if sim.map.is_empty() or (str(options.get("load", "")).is_empty() and not bool(sim.map.get("valid", false))): return "Map setup or validation failed"
+	if module_paths.is_empty() and ai_mode!="off":
+		for slot: Dictionary in sim.match_options.slots: module_paths.append(str(slot.get("ai_module","builtin")))
+	if not module_paths.is_empty():
+		var runtime := IndependentAI.new()
+		var module_error: String = runtime.configure(sim,module_paths)
+		if not module_error.is_empty(): return module_error
+		if not runtime.modules.is_empty(): sim.independent_ai = runtime
+		run_options.resolved_ai_modules = runtime.identities.duplicate(true)
 	command_log.clear()
 	stop_reason = ""
 	return ""
@@ -100,6 +155,10 @@ func run_for(duration: float, delta: float = 1.0 / 30.0, commands: Array = []) -
 		var tick: float = minf(delta, end_time - float(sim.time))
 		if next < commands.size(): tick = minf(tick, float(commands[next].at) - float(sim.time))
 		sim.step(tick)
+		if sim.independent_ai != null and not str(sim.independent_ai.error).is_empty():
+			stop_reason = "ai_error"
+			sim.statistics.sample(sim,true)
+			return str(sim.independent_ai.error)
 		# Telemetry has consumed logical events before visual consumers would.
 		sim.events.clear()
 		sim.notices.clear()

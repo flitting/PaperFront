@@ -11,7 +11,7 @@ func step(music: PaperMusic, seconds: float) -> void:
 	for i in range(ceili(seconds/.05)): music._process(.05)
 func run() -> void:
 	var before := AudioServer.bus_count
-	var audio := PaperAudio.new(); root.add_child(audio); audio.set_process(false); audio.music.set_process(false)
+	var audio := PaperAudio.new(); audio.voice_language = "zh_CN"; root.add_child(audio); audio.set_process(false); audio.music.set_process(false)
 	await process_frame
 	audio.configure_units(RulesLoader.load_rules())
 	check(audio.mix == {"master":1.0,"music":1.0,"sfx":1.0,"voice":1.0,"commander":.6},"four existing categories stay100% and the new commander defaults to60%")

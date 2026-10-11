@@ -3,6 +3,7 @@ class_name PaperWorld
 
 ## A visual reader of the simulation. Rendering never changes rules or commands.
 ## Faction vehicles and aircraft are solid models; infantry uses distinct folded-paper figures.
+const SQUAD_MARKERS = preload("res://scripts/squad_ground_markers.gd")
 const CAMERA_OCCLUSION = preload("res://scripts/camera_occlusion.gd")
 const MAP = preload("res://scripts/map_data.gd")
 const VOLUME = preload("res://scripts/volume_models.gd")
@@ -14,6 +15,9 @@ const AIR_VISUAL = preload("res://scripts/aircraft_visual_motion.gd")
 const EFFECT_LOD = preload("res://scripts/battlefield_effect_lod.gd")
 const BATTLEFIELD_DAMAGE = preload("res://scripts/battlefield_damage.gd")
 const PAPER_CIVILIANS = preload("res://assets/civilians/paper_civilians.gd")
+var squad_marker_node: MeshInstance3D
+var squad_markers: Array[Dictionary] = []
+var _squad_marker_key: Array = []
 var landscape: Node3D
 const CARD_DIR = "res://assets/cards/"
 const TEAM_COLORS = VOLUME.PLAYER_COLORS
@@ -272,6 +276,9 @@ func _prepare_setup(simulation: WarSimulation, view_camera: Camera3D) -> void:
 	for child in get_children():
 		child.queue_free()
 	models.clear()
+	squad_marker_node = null
+	squad_markers.clear()
+	_squad_marker_key.clear()
 	_wall_masks.clear()
 	_rail_shapes.clear()
 	model_pool.clear()
@@ -607,6 +614,7 @@ func sync(delta: float, selection: Array, placement: Dictionary = {}) -> void:
 		_native_world_cache_active=false
 		_sync_entities_script(selection)
 	_syncing_entities = false
+	_sync_squad_markers(selection)
 	if profile_enabled:
 		profile_last.entities_us=Time.get_ticks_usec()-stage_us
 		stage_us=Time.get_ticks_usec()
@@ -1647,7 +1655,7 @@ func _update_entity(model: Dictionary, e: Dictionary, selected: bool) -> void:
 		# Only living, visible, unloaded hand entities reach this submission.
 		# Fog/culling skip _sync_entity; corpses never submit the owner mark.
 		_append_batch(model.hand_owner_batch,transform*model.hand_owner_mark.transform)
-	if selected:
+	if selected and selection_ring_visible(e):
 		_append_batch(model.ring_batch,transform*model.ring.transform)
 	_industrial_smoke(model, e)
 	if float(e.get("emp_until",0)) > sim.time: _draw_emp_status(model,e)
@@ -3114,3 +3122,29 @@ func _dart_mesh() -> ArrayMesh:
 	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(-.32,-.04,0),Vector3(.18,0,0),Vector3(-.32,.05,0),Vector3(-.18,0,-.04),Vector3(.18,0,0),Vector3(-.18,0,.04)])
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
 	return mesh
+
+
+static func selection_ring_visible(_entity: Dictionary) -> bool:
+	# Selection is communicated through the HUD and squad outlines.
+	# Circular selection markers are disabled for every entity type.
+	return false
+
+
+func _sync_squad_markers(selection: Array) -> void:
+	var records: Array[Dictionary] = SQUAD_MARKERS.collect(sim,selection)
+	squad_markers = records
+	if records.is_empty():
+		if is_instance_valid(squad_marker_node): squad_marker_node.hide()
+		_squad_marker_key.clear()
+		return
+	if not is_instance_valid(squad_marker_node):
+		squad_marker_node=MeshInstance3D.new()
+		squad_marker_node.name="SquadGroundCorners"
+		squad_marker_node.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(squad_marker_node)
+	var key: Array = []
+	for record: Dictionary in records: key.append([record.id,record.color,record.points])
+	if key != _squad_marker_key:
+		_squad_marker_key=key
+		squad_marker_node.mesh=SQUAD_MARKERS.mesh(records,sim.map)
+	squad_marker_node.show()

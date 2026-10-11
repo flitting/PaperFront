@@ -16,7 +16,8 @@ if ! command -v "$COMPILER" >/dev/null 2>&1 ||
 fi
 
 OUTPUT=${1:-"$PROJECT_DIR/artifacts/windows_portable/staging/PaperFront.exe"}
-BUILD_DIR="$PROJECT_DIR/artifacts/windows_portable/launcher-build"
+BUILD_DIR=${PAPER_FRONT_PORTABLE_BUILD_DIR:-"$PROJECT_DIR/artifacts/windows_portable/launcher-build"}
+BUILD_REPORT=${PAPER_FRONT_LAUNCHER_BUILD_REPORT:-"$PROJECT_DIR/artifacts/windows_portable/portable_launcher_build.json"}
 mkdir -p "$BUILD_DIR" "$(dirname -- "$OUTPUT")"
 convert -background none -density 192 "$PROJECT_DIR/assets/icon.svg" \
     -resize 256x256 "$BUILD_DIR/icon-256.png"
@@ -35,7 +36,7 @@ PY
     -static -s "$PROJECT_DIR/tools/portable_windows_launcher.c" \
     "$BUILD_DIR/launcher.res.o" -o "$OUTPUT"
 python3 - "$PROJECT_DIR" "$OUTPUT" "$(command -v "$COMPILER")" \
-    "$(command -v "$RESOURCE_COMPILER")" <<'PY'
+    "$(command -v "$RESOURCE_COMPILER")" "$BUILD_REPORT" <<'PY'
 import datetime
 import hashlib
 import json
@@ -100,7 +101,8 @@ report = {
         'https://docs.godotengine.org/en/4.6/tutorials/ui/creating_applications.html',
     ],
 }
-report_path = root / 'artifacts/windows_portable/portable_launcher_build.json'
+report_path = pathlib.Path(sys.argv[5]).resolve()
+report_path.parent.mkdir(parents=True, exist_ok=True)
 report_path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
 PY
 echo "Built portable Windows launcher: $OUTPUT"

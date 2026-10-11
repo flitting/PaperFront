@@ -1,12 +1,14 @@
 # 对称地图、对局统计与 Headless
 
-本轮只准备测试环境，不新增或适配 AI，也不调整现有战斗数值。
+This guide covers the symmetric map, match reports and simulation-only commands. AI experiment options are in [AI balance experiments](ai_balance_experiments.md).
+
+本文介绍对称地图、对局统计与无渲染入口。电脑 AI 和 1v1 实验的完整用法见 [AI 与数值平衡实验](ai_balance_experiments.md)。
 
 ## 对称战场
 
 新建战局中选择 **明原对称场**（`symmetric`）。192 × 192 米，固定两方，左右对置。地形、道路、坡道、树木、矿点与中立房屋均按两个轴严格镜像；四级高地通过宽坡连接，没有水面。出生区与经济区保留大块建造空间，中央和两翼都有陆路。
 
-地图布局固定，种子仅作为对局来源信息保存，便于在相同条件下比较结果。原有地图仍可选择。
+地图布局固定，种子仅作为对局来源信息保存，便于在相同条件下比较结果；不同种子不代表独立地理样本。
 
 ## 统计与导出
 
@@ -38,7 +40,7 @@
 
 该入口仅创建逻辑对象，不加载战场场景、模型、HUD 或播放器。它共用 `simulation.gd`、规则配置、寻路、生产、经济、战斗与统计；为可重复的逻辑测试使用同步寻路。默认步长为 1/30 秒，可用 `--dt` 选择 0.001 至 0.1 秒。
 
-**AI 固定关闭。** 没有命令输入时双方不会自行建造或出兵。达到 `--duration` 只表示测试时间到，导出 `stop_reason=duration_limit`，不伪造平局；真实结束则导出 `stop_reason=result`。非法参数、规则或命令返回非零退出码，命令执行失败时尽可能保留部分报告。
+**AI 默认关闭；`--ai both` 可启用双 AI。** AI 关闭时，没有命令输入的双方不会自行建造或出兵。达到 `--duration` 只表示测试时间到，导出 `stop_reason=duration_limit`，不伪造平局；真实结束则导出 `stop_reason=result`。非法参数、规则或命令返回非零退出码，命令执行失败时尽可能保留部分报告。
 
 ### 命令脚本
 
@@ -55,22 +57,8 @@
 
 `--save-final /path/final.pfront` 保存运行结束时的正常游戏存档。`--load /path/final.pfront` 可继续运行；此时 `--duration` 表示额外运行秒数，命令仍使用绝对游戏时间。`--rules /path/rules.json` 可指定经验证的规则配置，便于以后测试候选平衡参数。
 
-库接口为 `scripts/headless_match.gd` 的 `start(options)`、`run_for(duration,dt,commands)` 和 `sim`；后续 AI 可接入此共享模拟对象，无需另做战斗规则。
+库接口为 `scripts/headless_match.gd` 的 `start(options)`、`run_for(duration,dt,commands)` 和 `sim`；AI 与玩家入口共用这份模拟，无需另做战斗规则。
 
-## 本轮验证
+## 验证范围
 
-以下专项测试均通过，并已加入 `tools/test.sh`：
-
-| 测试 | 检查数 | 范围 |
-|---|---:|---|
-| `symmetric_map_tests.gd` | 19 | 双轴逐格对称、矿区与中立几何、连通性、缩略图 |
-| `symmetric_map_navigation_tests.gd` | 31 | 三种体型的真实寻路、全部坡道链、开局与存档 |
-| `match_telemetry_tests.gd` | 50 | 真实生产、经济、伤害、终局、旧档、四方数据、JSON/CSV |
-| `settlement_history_ui_tests.gd` | 31 | 曲线、图例、所选颜色、悬停、旧档空缺、导出交互 |
-| `headless_match_tests.gd` | 25 | 无场景节点、确定性、精确命令时刻、时间上限、保存与终局 |
-
-原有地图、菜单、结算集成、胜负、存档、场景交互和统计专项回归亦已通过。图形检查使用私有离屏显示：新地图按正常场景光照渲染；结算页面检查 1100、1440、1920 宽度。结算截图使用明确的展示数据，未作为实战结果。
-
-独立可执行文件还被单独复制到工程外运行，执行付费步兵生产及出售最后建筑的命令脚本。其历史、事件、结果和队伍汇总与源码入口完全一致，非法 CLI 参数正确返回错误。验证记录及 JSON/CSV 样本见 `artifacts/balance_preparation_20261007/headless/validation.json` 与同目录 `standalone.*` / `standalone_*.csv`。此测试是命令回归场景，没有启用 AI。
-
-渲染用废墟模型已拆至 `battlefield_ruin_models.gd`，正常画面按需加载并保留缓存；地图与模拟的预加载链不再包含模型。独立 Headless 包只选择逻辑脚本与规则配置。
+专项测试在 `tools/test.sh` 中包含 `symmetric_map_tests`、`symmetric_map_navigation_tests`、`match_telemetry_tests`、`settlement_history_ui_tests`、`headless_match_tests` 与 `headless_ai_controls_tests`。实际发行验证以 [release notes](release_notes.md) 为准，历史检查数量不当作当前运行包证据。

@@ -2,6 +2,7 @@ extends Node
 class_name PaperAudio
 
 signal unit_caption(text: String, duration: float)
+signal voice_language_changed(language: String)
 
 # Separate UI/field voices keep crowded combat from swallowing an order click.
 # Original PCM assets have >2 dB headroom; the dedicated SFX bus also limits peaks.
@@ -14,6 +15,9 @@ const MUSIC_BUS := "Paper Music"
 const MIX_KEYS := ["master", "music", "sfx", "voice", "commander"]
 const VOICE_MANIFEST := "res://assets/audio/revision_v8/radio/manifest.json"
 const SYSTEM_MANIFEST := "res://assets/audio/revision_v8/system/manifest.json"
+const ENGLISH_VOICE_MANIFEST := "res://assets/audio/english/radio/manifest.json"
+const ENGLISH_SYSTEM_MANIFEST := "res://assets/audio/english/system/manifest.json"
+const ENGLISH_COMMANDER_MANIFEST := "res://assets/audio/english/commander/manifest.json"
 const SFX_MANIFEST := "res://assets/audio/revision_v8/sfx/manifest.json"
 const RADIO_ACTIONS := ["select", "move", "attack", "ready", "return", "combat", "under_attack", "death"]
 const RADIO_CATEGORIES := ["infantry", "vehicle", "air"]
@@ -25,6 +29,7 @@ const SFX_BASELINE := .765 # Previous default master .85 x effects .90.
 const ENERGY_WEAPONS := ["sky_rifle", "sky_anti", "sky_scout", "sky_tank", "sky_artillery", "sky_aa", "sky_disruptor", "sky_pulse", "sky_fighter", "sky_attacker", "sky_tower", "sky_aa_tower", "sky_anti_tower", "sky_ship_frigate", "sky_ship_signature"]
 const INFANTRY_ART := ["rifle", "anti", "engineer", "demolition"]
 const WHEELED_ART := ["scout", "harvester", "transport", "inspection", "designation", "recycler"]
+var voice_language: String = "en"
 var music: PaperMusic
 var mix := {"master": 1.0, "music": 1.0, "sfx": 1.0, "voice": 1.0, "commander": .6}
 var commander
@@ -168,9 +173,79 @@ func _ready() -> void:
 	_load_system_bank()
 	commander = preload("res://scripts/commander_voice.gd").new()
 	commander.audio = self
+	commander.voice_language = voice_language
 	add_child(commander)
 	_apply_mix()
 	set_scene("menu")
+
+
+# Spoken language is independent of interface locale. English is the default;
+# original Chinese banks remain available without a silent language fallback.
+static func normalize_voice_language(language: String) -> String:
+	return "en" if language.begins_with("en") else "zh_CN"
+
+static func voice_manifest(language: String = "en") -> String:
+	return ENGLISH_VOICE_MANIFEST if normalize_voice_language(language) == "en" else VOICE_MANIFEST
+
+static func system_manifest(language: String = "en") -> String:
+	return ENGLISH_SYSTEM_MANIFEST if normalize_voice_language(language) == "en" else SYSTEM_MANIFEST
+
+static func commander_manifest(language: String = "en") -> String:
+	return ENGLISH_COMMANDER_MANIFEST if normalize_voice_language(language) == "en" else "res://assets/audio/commander/manifest.json"
+
+static func caption_text(clip: Dictionary) -> String:
+	# English recordings retain their Chinese semantic source for Godot's UI
+	# translator. Subtitles therefore follow interface language, not the actor.
+	return str(clip.get("source_text", clip.get("text", "")))
+
+static func voice_language_available(language: String) -> bool:
+	for path: String in [voice_manifest(language), system_manifest(language), commander_manifest(language)]:
+		if not FileAccess.file_exists(path): return false
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if not parsed is Dictionary or parsed.get("clips", []).is_empty(): return false
+		for clip: Dictionary in parsed.get("clips", []):
+			var file: String = str(clip.get("file", clip.get("path", "")))
+			if not file.begins_with("res://"): file = path.get_base_dir().path_join(file)
+			if not ResourceLoader.exists(file): return false
+	return true
+
+func set_voice_language(language: String) -> bool:
+	var chosen: String = normalize_voice_language(language)
+	if not voice_language_available(chosen):
+		push_warning("Requested voice language assets are unavailable: " + chosen)
+		return false
+	if chosen == voice_language: return true
+	_clear_speech_language()
+	voice_language = chosen
+	if is_node_ready():
+		_load_voice_manifest()
+		_load_radio_bank()
+		_load_system_bank()
+		if commander != null: commander.set_voice_language(chosen)
+	voice_language_changed.emit(chosen)
+	return true
+
+func _clear_speech_language() -> void:
+	for player: AudioStreamPlayer in speech_players:
+		player.stop()
+		player.stream = null
+	pending_speech.clear()
+	group_voice_queue.clear()
+	pending_system.clear()
+	speech_slots.clear()
+	speech_recent.clear()
+	speech_variants.clear()
+	speech_cache.clear()
+	system_recent.clear()
+	last_spoken_clip.clear()
+	last_group_voice.clear()
+	last_speech_ms = -100000
+	last_field_speech_ms = -100000
+	if commander != null: commander.clear_playback()
+	unit_caption.emit("", 0.0)
+	effects_duck_db = 0.0
+	music_duck_db = 0.0
+	_apply_mix()
 
 # Public Demo audio controls. Values are linear 0..2; zero truly mutes a bus.
 # The SFX duck is applied below this preference, so speech never overwrites it.
@@ -270,13 +345,14 @@ func _load_radio_bank() -> void:
 	for group: String in speech_clips:
 		for clip: Dictionary in speech_clips[group]:
 			var path: String = str(clip.get("file", clip.get("path", "")))
-			if not path.begins_with("res://"): path = VOICE_MANIFEST.get_base_dir().path_join(path)
+			if not path.begins_with("res://"): path = voice_manifest(voice_language).get_base_dir().path_join(path)
 			if ResourceLoader.exists(path): radio_bank[str(clip.key)] = load(path)
 
 func _load_system_bank() -> void:
 	system_clips.clear(); system_bank.clear()
-	if not FileAccess.file_exists(SYSTEM_MANIFEST): return
-	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(SYSTEM_MANIFEST))
+	var manifest_path: String = system_manifest(voice_language)
+	if not FileAccess.file_exists(manifest_path): return
+	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 	if not manifest is Dictionary: return
 	for raw: Dictionary in manifest.get("clips", []):
 		var action: String = str(raw.get("action", ""))
@@ -629,12 +705,13 @@ func _configure_definitions(rules: Dictionary) -> void:
 func _load_voice_manifest() -> void:
 	speech_clips.clear()
 	speech_profile_speakers.clear()
-	if not FileAccess.file_exists(VOICE_MANIFEST):
-		push_warning("New faction/class speech manifest is missing: " + VOICE_MANIFEST)
+	var manifest_path: String = voice_manifest(voice_language)
+	if not FileAccess.file_exists(manifest_path):
+		push_warning("Faction/class speech manifest is missing: " + manifest_path)
 		return
-	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(VOICE_MANIFEST))
+	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(manifest_path))
 	if not manifest is Dictionary:
-		push_warning("New faction/class speech manifest is invalid: " + VOICE_MANIFEST)
+		push_warning("Faction/class speech manifest is invalid: " + manifest_path)
 		return
 	for profile: String in manifest.get("profiles", {}):
 		var settings: Dictionary = manifest.profiles[profile]
@@ -653,7 +730,7 @@ func _load_voice_manifest() -> void:
 		var clip: Dictionary = raw_clip.duplicate()
 		var group: String = str(clip.get("faction", "")) + "/" + category + "/" + str(clip.get("action", ""))
 		if not speech_clips.has(group): speech_clips[group] = []
-		clip["key"] = group + "/" + str(clip.get("variant", speech_clips[group].size() + 1))
+		clip["key"] = group + "/" + str(int(clip.get("variant", speech_clips[group].size() + 1)))
 		speech_clips[group].append(clip)
 
 func speech_profile_key(spec: String) -> String:
@@ -752,7 +829,7 @@ func play_unit_voice(spec: String, action_id: String, context: Dictionary = {}) 
 		var index: int = _variant_index(choices.size(), int(speech_variants.get(group, -1)))
 		clip = choices[index]
 		stream = radio_bank.get(str(clip.key))
-		text = str(clip.get("text", text))
+		text = caption_text(clip)
 		duration = float(clip.get("duration_s", 0.0))
 		if audible and stream == null: return false
 		speech_variants[group] = index
@@ -778,7 +855,7 @@ func play_system_voice(action: String, team: int = 0) -> bool:
 	var now: int = Time.get_ticks_msec()
 	if now - int(system_recent.get(action,-100000)) < 4000: return false
 	var clip: Dictionary = system_clips[action]
-	unit_caption.emit("系统：" + str(clip.text), maxf(2.5,float(clip.duration_s)+.25))
+	unit_caption.emit("系统：" + caption_text(clip), maxf(2.5,float(clip.duration_s)+.25))
 	var audible: bool = not muted and float(mix.master)>0.0 and float(mix.voice)>0.0
 	if not audible: system_recent[action]=now;return true
 	if speech_player.playing:

@@ -6,12 +6,18 @@ const MOVE_COMMANDS := ["move", "force_move", "attack_move", "patrol", "attack",
 
 static func selected_routes(entities: Dictionary, selection: Array, rules: Dictionary, viewer_team: int = 0) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	var squads: Dictionary = {}
 	for id in selection:
 		var entity: Dictionary = entities.get(id, {})
 		if entity.is_empty() or str(entity.get("kind", "")) != "unit" or int(entity.get("transport_id", -1)) > 0 or float(entity.get("hp", 1.0)) <= 0.0: continue
 		if int(entity.get("team", -1)) != viewer_team: continue
+		var squad: int = int(entity.get("squad_id", -1))
+		if squad >= 0:
+			if squads.has(squad): continue
 		var spec: Dictionary = rules.units.get(entity.get("spec", ""), {})
-		for route in entity_routes(entity, spec, entities):
+		var routes: Array[Dictionary] = entity_routes(entity, spec, entities)
+		if not routes.is_empty() and squad >= 0: squads[squad] = true
+		for route in routes:
 			route.id = int(id)
 			route.team = int(entity.get("team", 0))
 			route.domain = str(spec.get("domain", "ground"))

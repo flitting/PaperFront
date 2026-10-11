@@ -25,7 +25,7 @@ func peak(stream: AudioStreamWAV) -> int:
 	return maximum
 func run() -> void:
 	sim = Sim.new(); sim.setup(RulesLoader.load_rules(), "dev", 27, "kestrel", false)
-	sound = PaperAudio.new(); root.add_child(sound)
+	sound = PaperAudio.new(); sound.voice_language = "zh_CN"; root.add_child(sound)
 	await process_frame
 	sound.music.stop_all()
 	voice = sound.commander; voice.set_process(false); voice.enabled = true

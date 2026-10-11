@@ -94,6 +94,7 @@ static func approach(sim,unit: Dictionary,refinery: Dictionary,delta: float,mode
 static func _clearance_goal(sim,unit: Dictionary,field: Dictionary,outside: Vector2) -> Vector2:
 	var radius: float=sim._radius(unit)
 	var queue: Array=_waiters(sim,field)
+	var fallback := Vector2.INF
 	for distance in [maxf(1.65,radius*2+.65),maxf(2.25,radius*2+1.1),maxf(3.0,radius*2+1.8)]:
 		for direction in [Vector2(0,1),Vector2(1,1),Vector2(-1,1),Vector2(1,.4),Vector2(-1,.4)]:
 			var point: Vector2=outside+Orientation.offset(direction,Orientation.quarters(field))*float(distance)
@@ -102,8 +103,12 @@ static func _clearance_goal(sim,unit: Dictionary,field: Dictionary,outside: Vect
 			for other: Dictionary in queue:
 				var goal: Vector2=other.refinery_waiting.get("goal",Vector2.INF)
 				if goal.is_finite() and point.distance_to(goal)<radius+sim._radius(other)+.25: reserved=true; break
-			if not reserved: return point
-	return Vector2.INF
+			if reserved: continue
+			if not fallback.is_finite(): fallback=point
+			if _clear_path(sim,unit,point,int(field.id)): return point
+	# If traffic occupies every direct corridor, keep a legal destination so
+	# the checked short strides can ask idle allies to yield along the way.
+	return fallback
 
 static func begin(sim, unit: Dictionary, refinery: Dictionary, outside: Vector2) -> bool:
 	var occupied: int = _reservation(sim,refinery)
@@ -130,14 +135,29 @@ static func release(sim, unit: Dictionary) -> void:
 	unit.erase("refinery_waiting")
 	unit.erase("unload_remaining")
 
+static func _clear_path(sim,unit: Dictionary,goal: Vector2,ignore_building: int,request_yield: bool=false) -> bool:
+	var original: Vector2=unit.pos
+	var radius: float=sim._radius(unit)
+	if not sim._segment_static(original,goal,radius,ignore_building): return false
+	for other: Dictionary in sim._movement_neighbors(original,goal,radius):
+		if int(other.id)==int(unit.id) or float(other.hp)<=0 or sim.Transport.is_loaded(other): continue
+		if sim.RailNetwork.rail_only(sim.data_for(unit.spec)) and int(other.team)==int(unit.team) and sim._rail_network.usable(sim,other,other.pos): continue
+		var separation: float=radius+sim._radius(other)+.02
+		if not sim._swept_unit_contact(original-sim._ground_motion_start(other),goal-other.pos,Vector2.ZERO,separation): continue
+		# Docking keeps its checked doorway traversal, but shares the ordinary
+		# movement service's request for idle friendly traffic to move aside.
+		# Other reserved services retain their own lane; Hold is respected by
+		# _request_movement_yield rather than moving or teleporting a blocker.
+		if request_yield and not bool(other.get("emerging",false)) and other.get("refinery_docking",{}).is_empty():
+			sim._request_movement_yield(unit,other,original,goal)
+		return false
+	return true
+
 static func _travel(sim, unit: Dictionary, goal: Vector2, delta: float, ignore_building: int) -> bool:
 	var original: Vector2=unit.pos
+	if original.distance_to(goal)<.01: return true
 	var next: Vector2=original.move_toward(goal,float(sim.data_for(unit.spec).speed)*delta)
-	if not sim._segment_static(original,next,sim._radius(unit),ignore_building): unit.state="waiting"; return false
-	for other in sim._neighbors(next):
-		if int(other.id)==int(unit.id): continue
-		if sim.RailNetwork.rail_only(sim.data_for(unit.spec)) and int(other.team)==int(unit.team) and sim._rail_network.usable(sim,other,other.pos): continue
-		if Geometry2D.get_closest_point_to_segment(other.pos,original,next).distance_to(other.pos)<sim._radius(unit)+sim._radius(other)+.02: unit.state="waiting"; return false
+	if not _clear_path(sim,unit,next,ignore_building,true): unit.state="waiting"; return false
 	unit.pos=next
 	unit.motion=original.distance_to(next)/maxf(delta,.001)
 	if unit.motion>0: unit.alpha=rad_to_deg((next-original).angle()); unit.turret_alpha=unit.alpha
@@ -199,6 +219,11 @@ static func step_unit(sim, unit: Dictionary, delta: float) -> bool:
 			return true
 	if job.phase=="clear":
 		var goal: Vector2=job.get("clearance",Vector2.INF)
+		# The initially free departure point can become occupied later. A
+		# cached point is a preference, not a permanent reservation of traffic.
+		if goal.is_finite() and not _clear_path(sim,unit,goal,int(field.id)):
+			goal=Vector2.INF
+			job.clearance=goal
 		if not goal.is_finite():
 			goal=_clearance_goal(sim,unit,field,job.outside)
 			job.clearance=goal

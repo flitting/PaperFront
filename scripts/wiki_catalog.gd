@@ -1,6 +1,8 @@
 class_name WikiCatalog
 extends RefCounted
 
+const Squads = preload("res://scripts/infantry_squads.gd")
+const Localization = preload("res://scripts/localization.gd")
 const TraitText = preload("res://scripts/faction_trait_text.gd")
 const Construction = preload("res://scripts/building_construction.gd")
 const TierAvailability = preload("res://scripts/tier_availability.gd")
@@ -62,6 +64,27 @@ static func tier_description(spec: Dictionary) -> String:
 	return TierAvailability.requirement_text(spec).get_slice(" · ", 1)
 
 
+static func penetration_rule_text(rules: Dictionary, compact: bool = false) -> String:
+	var configured: Variant = rules.get("combat_model", {})
+	var model: Dictionary = configured if configured is Dictionary else {}
+	var low: String = _number(float(model.get("non_penetrating_damage_multiplier", 0.25)) * 100.0) + "%"
+	# The partial pair also opts the snapshot into unarmored full damage.
+	# Older snapshots retain the original strict-greater two-band behavior.
+	if model.has("partial_penetration_threshold") and model.has("partial_penetration_damage_multiplier"):
+		var threshold: String = _number(float(model.partial_penetration_threshold) * 100.0) + "%"
+		var partial: String = _number(float(model.partial_penetration_damage_multiplier) * 100.0) + "%"
+		if compact: return "护甲为0或穿透大于护甲：全额；穿透达护甲的%s至100%%：%s伤害；不足%s：%s伤害" % [threshold, partial, threshold, low]
+		return "护甲为0时全额伤害；穿透大于护甲时造成全额伤害；穿透达到护甲的%s且不超过护甲时造成%s伤害；低于护甲的%s时造成%s伤害。" % [threshold, partial, threshold, low]
+	if compact: return "穿透大于护甲：全额；穿透不超过护甲：%s伤害" % low
+	return "穿透大于护甲时造成全额伤害；穿透不超过护甲时造成%s伤害。" % low
+
+
+static func veteran_kill_experience_text(rules: Dictionary) -> String:
+	var configured: Variant = rules.get("experience", {})
+	var experience: Dictionary = configured if configured is Dictionary else {}
+	return "击杀星级敌军经验×" + _number(float(experience.get("veteran_kill_experience_multiplier", 1.0)))
+
+
 static func entries(rules: Dictionary, faction: String = "", kind: String = "", query: String = "") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var search: String = query.strip_edges().to_lower()
@@ -91,6 +114,9 @@ static func entries(rules: Dictionary, faction: String = "", kind: String = "", 
 				ROLE_NAMES.get(str(spec.get("role", spec.get("producer", ""))), ""),
 				"单位" if entry_kind == "unit" else "建筑", tier_label(spec), tier_description(spec), _names(rules, spec.get("requires", [])),
 				" ".join(TraitText.spec_lines(rules, spec))]).to_lower()
+			# Search both source and displayed text, so English names and roles work
+			# without changing the authoritative rules or save format.
+			search_text += " " + Localization.text(search_text).to_lower()
 			var matches: bool = true
 			for term: String in search.split(" ", false):
 				if not search_text.contains(term):
@@ -124,8 +150,18 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 		base.append(_row("生产设施", producer))
 	else:
 		base.append(_row("设施用途", "基地兵营" if _is_base_barracks(spec) else str(ROLE_NAMES.get(str(spec.get("role", "")), "其他设施"))))
+	var infantry: bool = unit and spec.get("armor_class", "") == "infantry" and spec.get("domain", "ground") == "ground"
+	if infantry:
+		base.append(_row("编制人数", "%d 人" % Squads.size(spec), prefix + ".squad_size" if spec.has("squad_size") else "", spec.get("squad_size")))
+		var squad_roles: Dictionary = {"engineer":"单人工程兵", "line":"常规步兵小队", "specialist":"精锐步兵小队", "sniper":"狙击小队"}
+		base.append(_row("操控类型", str(squad_roles.get(str(spec.get("squad_role", "engineer" if spec.get("art", "") == "engineer" else "line")), "步兵小队"))))
+		base.append(_row("整组招募费用", _number(Squads.cost(spec)) + " 资金"))
+		base.append(_row("整组训练时间", _number(Squads.training_time(spec)) + " 秒", prefix + ".squad_build_time" if spec.has("squad_build_time") else "", spec.get("squad_build_time")))
+		base.append(_row("成员伤害结算", "整队生产与指挥；每名成员独立承受伤害。" if Squads.size(spec) > 1 else "工程兵单独生产与指挥。"))
 	for key: String in BASE_FIELDS:
 		_append_field(base, spec, key, prefix, "entity")
+		if infantry and key in ["cost", "hp", "build_time"]:
+			base.back().label = {"cost":"每名成员造价", "hp":"每名成员最大生命", "build_time":"每名成员训练时间"}[key]
 		if key == "build_time" and not unit and _field_building(rules, spec): base.back().label = "现场施工时间"
 	_add_section(result, "生产与基础", base)
 	var trait_rows: Array[Dictionary] = []
@@ -145,6 +181,7 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 	if unit:
 		capabilities.append(_row("行动领域", _domain(str(spec.get("domain", "ground")))))
 		capabilities.append(_row("护甲类别", str(LABELS.get(str(spec.get("armor_class", "infantry" if spec.get("crushable", false) else "armored")), "其他护甲"))))
+		capabilities.append(_row("经验获取", veteran_kill_experience_text(rules)))
 		for key: String in UNIT_FIELDS:
 			_append_field(capabilities, spec, key, prefix, "entity")
 		# These missing flags have an actual default in Simulation, so readers also
@@ -185,7 +222,7 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 			weapon_rows.append(_row("基础理论每秒伤害", _number(float(weapon.get("damage", 0.0)) / float(weapon.interval)) + " 生命/秒"))
 		weapon_rows.append(_row("理论伤害说明", "只对可攻击目标生效，假设连续命中单个目标；不计转向、移动、飞行与返航补给，范围伤害不重复计入。"))
 		if weapon.has("penetration"):
-			weapon_rows.append(_row("穿甲规则", "穿透严格大于护甲时正常伤害；小于或等于护甲时仅造成四分之一。表中理论值按成功穿甲计算，并保留兵种伤害倍率。"))
+			weapon_rows.append(_row("穿甲规则", penetration_rule_text(rules) + "表中理论值按全额穿甲伤害计算，并保留兵种伤害倍率。"))
 			if weapon.get("aoe_falloff","")=="linear": weapon_rows.append(_row("范围衰减", "从爆心至受击表面，伤害与穿透同时线性递减；边缘降至零。"))
 		var additional_weapon: Array[Dictionary] = []
 		_extra_numeric(weapon, WEAPON_FIELDS, "weapons." + weapon_id, additional_weapon, "weapon")
@@ -207,6 +244,7 @@ static func sections(rules: Dictionary, id: String) -> Array[Dictionary]:
 	var extras: Array[Dictionary] = []
 	var known: Array[String] = BASE_FIELDS.duplicate()
 	known.append_array(UNIT_FIELDS if unit else BUILDING_FIELDS)
+	if infantry: known.append_array(["squad_size", "squad_build_time"])
 	_extra_numeric(spec, known, prefix, extras, "entity")
 	_add_section(result, "其他规则数值", extras)
 	var voices: Array[Dictionary] = []
@@ -243,7 +281,9 @@ static func _economy_rows(rules: Dictionary, spec: Dictionary, unit: bool) -> Ar
 	if field_building:
 		rows.append(_row("现场施工速度", "按建筑设定的施工时间推进，不受全域缺电影响；资金不足或工程兵离开时暂停。"))
 	elif spec.has("build_time"):
-		rows.append(_row("低电时生产时间", _number(float(spec.build_time) / low) + " 秒" if low > 0.0 else "暂停生产"))
+		var grouped: bool = unit and Squads.size(spec) > 1
+		var duration: float = Squads.training_time(spec) if grouped else float(spec.build_time)
+		rows.append(_row("低电时整队训练时间" if grouped else "低电时生产时间", _number(duration / low) + " 秒" if low > 0.0 else "暂停生产"))
 	_append_field(rows, eco, "repair_cost", "economy", "economy")
 	if not unit:
 		_append_field(rows, eco, "construction_animation", "economy", "economy")
@@ -451,10 +491,12 @@ static func _name(rules: Dictionary, id: String) -> String:
 static func _producer(rules: Dictionary, spec: Dictionary) -> String:
 	var faction: String = str(spec.get("faction", ""))
 	var role: String = str(spec.get("producer", ""))
+	if role == "carrier": return "航母飞行甲板"
+	var producer_roles: Array = ["factory", "shipyard"] if role == "amphibious" else [role]
 	var names: PackedStringArray = []
 	for id: Variant in rules.get("buildings", {}):
 		var candidate: Dictionary = rules.buildings[id]
-		if candidate.get("faction", "") == faction and (candidate.get("role", "") == role or role in candidate.get("production_roles", [])):
+		if candidate.get("faction", "") == faction and producer_roles.any(func(required): return candidate.get("role", "") == required or required in candidate.get("production_roles", [])):
 			names.append(_name(rules, str(id)))
 	return "、".join(names) if not names.is_empty() else str(ROLE_NAMES.get(role, "未收录设施"))
 

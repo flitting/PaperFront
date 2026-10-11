@@ -1,0 +1,774 @@
+{
+  "seed733_default_alpha_review.json": {
+    "duration": 604.7000000001074,
+    "winner": "alpha",
+    "income": 17999.999999999854,
+    "enemy_income": 8297.499999999929,
+    "produced": {
+      "kestrel_anti": 11,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 12,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 7
+    },
+    "lost": {
+      "kestrel_anti": 6,
+      "kestrel_gunner": 2,
+      "kestrel_marksman": 5,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 3
+    },
+    "units_produced": 42.0,
+    "units_lost": 19.0,
+    "units_killed": 25.0,
+    "phase_counts": {
+      "assemble": 164,
+      "advance": 138
+    },
+    "advance_time": 330.0000000000469,
+    "advance_reason": "alpha_v3_range_and_circulation phase=advance fighters=12 inf=10 vehicles=2 gathered=9 median=27.4 home_threat=0 money=277 power_ready=true orders=11",
+    "low_power": 0.0,
+    "first_deaths": [
+      [
+        309.8,
+        "kestrel_marksman"
+      ],
+      [
+        312.4,
+        "kestrel_tank"
+      ],
+      [
+        334.7,
+        "kestrel_marksman"
+      ],
+      [
+        372.53,
+        "kestrel_rifle"
+      ]
+    ],
+    "kills_by_weapon": {
+      "kestrel_marksman": 9,
+      "kestrel_anti": 13,
+      "kestrel_scout": 1,
+      "kestrel_tank": 9
+    },
+    "command_kinds": {
+      "attack_move": 246,
+      "build": 2,
+      "attack": 115
+    },
+    "command_actors": {
+      "kestrel_rifle": 25,
+      "kestrel_marksman": 126,
+      "kestrel_tank": 71,
+      "kestrel_scout": 14,
+      "building": 2,
+      "kestrel_anti": 93,
+      "kestrel_gunner": 25,
+      "kestrel_helicopter": 7
+    },
+    "failed_commands": 0,
+    "reroutes": [],
+    "air_orders": [
+      {
+        "time": 506.00000000018696,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            157.4306640625,
+            108.61914825439453
+          ],
+          "target": 7
+        },
+        "ok": true
+      },
+      {
+        "time": 508.00000000018855,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            160.0,
+            96.0
+          ],
+          "target": 2
+        },
+        "ok": true
+      },
+      {
+        "time": 520.0000000001844,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            167.18673706054688,
+            92.98401641845703
+          ],
+          "target": 76
+        },
+        "ok": true
+      },
+      {
+        "time": 536.0000000001698,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            165.5,
+            86.5
+          ],
+          "target": 29
+        },
+        "ok": true
+      },
+      {
+        "time": 554.0000000001535,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            172.5,
+            84.5
+          ],
+          "target": 4
+        },
+        "ok": true
+      },
+      {
+        "time": 562.0000000001462,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack_move",
+          "pos": [
+            160.0,
+            96.0
+          ]
+        },
+        "ok": true
+      },
+      {
+        "time": 566.0000000001426,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            172.0,
+            76.0
+          ],
+          "target": 16
+        },
+        "ok": true
+      }
+    ],
+    "builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        183.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        335.5,
+        "kestrel_tower"
+      ],
+      [
+        463.5,
+        "kestrel_airfield"
+      ],
+      [
+        483.5,
+        "kestrel_power"
+      ],
+      [
+        535.5,
+        "kestrel_airfield"
+      ]
+    ],
+    "all_four_waiting_samples": 1,
+    "unit_kills_by_weapon": {
+      "kestrel_marksman": 9,
+      "kestrel_anti": 10,
+      "kestrel_scout": 1,
+      "kestrel_tank": 5
+    }
+  },
+  "seed733_swap_alpha_review.json": {
+    "duration": 737.9999999999861,
+    "winner": "alpha",
+    "income": 24499.999999999807,
+    "enemy_income": 5874.166666666616,
+    "produced": {
+      "kestrel_anti": 10,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 13,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 12
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "units_produced": 48.0,
+    "units_lost": 6.0,
+    "units_killed": 18.0,
+    "phase_counts": {
+      "assemble": 160,
+      "advance": 208
+    },
+    "advance_time": 322.00000000004053,
+    "advance_reason": "alpha_v3_range_and_circulation phase=advance fighters=12 inf=10 vehicles=2 gathered=9 median=27.0 home_threat=0 money=1183 power_ready=true orders=9",
+    "low_power": 0.0,
+    "first_deaths": [
+      [
+        309.67,
+        "kestrel_scout"
+      ],
+      [
+        352.47,
+        "kestrel_rifle"
+      ],
+      [
+        353.4,
+        "kestrel_rifle"
+      ],
+      [
+        354.2,
+        "kestrel_anti"
+      ]
+    ],
+    "kills_by_weapon": {
+      "kestrel_marksman": 13,
+      "kestrel_anti": 6,
+      "kestrel_tank": 4,
+      "kestrel_gunner": 1,
+      "kestrel_helicopter": 1
+    },
+    "command_kinds": {
+      "attack_move": 338,
+      "build": 2,
+      "attack": 133
+    },
+    "command_actors": {
+      "kestrel_rifle": 19,
+      "kestrel_marksman": 214,
+      "kestrel_tank": 94,
+      "kestrel_scout": 10,
+      "building": 2,
+      "kestrel_anti": 93,
+      "kestrel_gunner": 39,
+      "kestrel_helicopter": 2
+    },
+    "failed_commands": 0,
+    "reroutes": [],
+    "air_orders": [
+      {
+        "time": 516.000000000188,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 70,
+          "kind": "attack",
+          "pos": [
+            12.0,
+            86.0
+          ],
+          "target": 15
+        },
+        "ok": true
+      },
+      {
+        "time": 542.0000000001644,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 70,
+          "kind": "attack",
+          "pos": [
+            12.0,
+            86.0
+          ],
+          "target": 15
+        },
+        "ok": true
+      }
+    ],
+    "builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        183.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        337.5,
+        "kestrel_tower"
+      ],
+      [
+        469.5,
+        "kestrel_airfield"
+      ],
+      [
+        483.5,
+        "kestrel_power"
+      ],
+      [
+        543.5,
+        "kestrel_airfield"
+      ]
+    ],
+    "all_four_waiting_samples": 0,
+    "unit_kills_by_weapon": {
+      "kestrel_marksman": 13,
+      "kestrel_anti": 4,
+      "kestrel_tank": 1
+    }
+  },
+  "seed734_default_alpha_review.json": {
+    "duration": 604.7000000001074,
+    "winner": "alpha",
+    "income": 17999.999999999854,
+    "enemy_income": 8297.499999999929,
+    "produced": {
+      "kestrel_anti": 11,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 12,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 7
+    },
+    "lost": {
+      "kestrel_anti": 6,
+      "kestrel_gunner": 2,
+      "kestrel_marksman": 5,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 3
+    },
+    "units_produced": 42.0,
+    "units_lost": 19.0,
+    "units_killed": 25.0,
+    "phase_counts": {
+      "assemble": 164,
+      "advance": 138
+    },
+    "advance_time": 330.0000000000469,
+    "advance_reason": "alpha_v3_range_and_circulation phase=advance fighters=12 inf=10 vehicles=2 gathered=9 median=27.4 home_threat=0 money=277 power_ready=true orders=11",
+    "low_power": 0.0,
+    "first_deaths": [
+      [
+        309.8,
+        "kestrel_marksman"
+      ],
+      [
+        312.4,
+        "kestrel_tank"
+      ],
+      [
+        334.7,
+        "kestrel_marksman"
+      ],
+      [
+        372.53,
+        "kestrel_rifle"
+      ]
+    ],
+    "kills_by_weapon": {
+      "kestrel_marksman": 9,
+      "kestrel_anti": 13,
+      "kestrel_scout": 1,
+      "kestrel_tank": 9
+    },
+    "command_kinds": {
+      "attack_move": 246,
+      "build": 2,
+      "attack": 115
+    },
+    "command_actors": {
+      "kestrel_rifle": 25,
+      "kestrel_marksman": 126,
+      "kestrel_tank": 71,
+      "kestrel_scout": 14,
+      "building": 2,
+      "kestrel_anti": 93,
+      "kestrel_gunner": 25,
+      "kestrel_helicopter": 7
+    },
+    "failed_commands": 0,
+    "reroutes": [],
+    "air_orders": [
+      {
+        "time": 506.00000000018696,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            157.4306640625,
+            108.61914825439453
+          ],
+          "target": 7
+        },
+        "ok": true
+      },
+      {
+        "time": 508.00000000018855,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            160.0,
+            96.0
+          ],
+          "target": 2
+        },
+        "ok": true
+      },
+      {
+        "time": 520.0000000001844,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            167.18673706054688,
+            92.98401641845703
+          ],
+          "target": 76
+        },
+        "ok": true
+      },
+      {
+        "time": 536.0000000001698,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            165.5,
+            86.5
+          ],
+          "target": 29
+        },
+        "ok": true
+      },
+      {
+        "time": 554.0000000001535,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            172.5,
+            84.5
+          ],
+          "target": 4
+        },
+        "ok": true
+      },
+      {
+        "time": 562.0000000001462,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack_move",
+          "pos": [
+            160.0,
+            96.0
+          ]
+        },
+        "ok": true
+      },
+      {
+        "time": 566.0000000001426,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 75,
+          "kind": "attack",
+          "pos": [
+            172.0,
+            76.0
+          ],
+          "target": 16
+        },
+        "ok": true
+      }
+    ],
+    "builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        183.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        335.5,
+        "kestrel_tower"
+      ],
+      [
+        463.5,
+        "kestrel_airfield"
+      ],
+      [
+        483.5,
+        "kestrel_power"
+      ],
+      [
+        535.5,
+        "kestrel_airfield"
+      ]
+    ],
+    "all_four_waiting_samples": 1,
+    "unit_kills_by_weapon": {
+      "kestrel_marksman": 9,
+      "kestrel_anti": 10,
+      "kestrel_scout": 1,
+      "kestrel_tank": 5
+    }
+  },
+  "seed734_swap_alpha_review.json": {
+    "duration": 737.9999999999861,
+    "winner": "alpha",
+    "income": 24499.999999999807,
+    "enemy_income": 5874.166666666616,
+    "produced": {
+      "kestrel_anti": 10,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 13,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 12
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "units_produced": 48.0,
+    "units_lost": 6.0,
+    "units_killed": 18.0,
+    "phase_counts": {
+      "assemble": 160,
+      "advance": 208
+    },
+    "advance_time": 322.00000000004053,
+    "advance_reason": "alpha_v3_range_and_circulation phase=advance fighters=12 inf=10 vehicles=2 gathered=9 median=27.0 home_threat=0 money=1183 power_ready=true orders=9",
+    "low_power": 0.0,
+    "first_deaths": [
+      [
+        309.67,
+        "kestrel_scout"
+      ],
+      [
+        352.47,
+        "kestrel_rifle"
+      ],
+      [
+        353.4,
+        "kestrel_rifle"
+      ],
+      [
+        354.2,
+        "kestrel_anti"
+      ]
+    ],
+    "kills_by_weapon": {
+      "kestrel_marksman": 13,
+      "kestrel_anti": 6,
+      "kestrel_tank": 4,
+      "kestrel_gunner": 1,
+      "kestrel_helicopter": 1
+    },
+    "command_kinds": {
+      "attack_move": 338,
+      "build": 2,
+      "attack": 133
+    },
+    "command_actors": {
+      "kestrel_rifle": 19,
+      "kestrel_marksman": 214,
+      "kestrel_tank": 94,
+      "kestrel_scout": 10,
+      "building": 2,
+      "kestrel_anti": 93,
+      "kestrel_gunner": 39,
+      "kestrel_helicopter": 2
+    },
+    "failed_commands": 0,
+    "reroutes": [],
+    "air_orders": [
+      {
+        "time": 516.000000000188,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 70,
+          "kind": "attack",
+          "pos": [
+            12.0,
+            86.0
+          ],
+          "target": 15
+        },
+        "ok": true
+      },
+      {
+        "time": 542.0000000001644,
+        "unit": "kestrel_helicopter",
+        "command": {
+          "action": "issue",
+          "id": 70,
+          "kind": "attack",
+          "pos": [
+            12.0,
+            86.0
+          ],
+          "target": 15
+        },
+        "ok": true
+      }
+    ],
+    "builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        183.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        337.5,
+        "kestrel_tower"
+      ],
+      [
+        469.5,
+        "kestrel_airfield"
+      ],
+      [
+        483.5,
+        "kestrel_power"
+      ],
+      [
+        543.5,
+        "kestrel_airfield"
+      ]
+    ],
+    "all_four_waiting_samples": 0,
+    "unit_kills_by_weapon": {
+      "kestrel_marksman": 13,
+      "kestrel_anti": 4,
+      "kestrel_tank": 1
+    }
+  }
+}

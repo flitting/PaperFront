@@ -3,6 +3,7 @@ config_version=5
 
 [application]
 config/name="纸境战线 · Paper Front"
+config/version="0.8.0"
 run/main_scene="res://main.tscn"
 run/main_scene.headless_sim="res://headless.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")

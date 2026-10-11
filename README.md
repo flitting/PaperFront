@@ -1,330 +1,273 @@
-# 纸境战线 · Paper Front
+# Paper Front · 纸境战线
 
-独立原创的手绘桌面模型 3D RTS，按 [项目任务书](docs/plan.md) 和 [立体化升级要求](docs/upgrade_3d.md) 制作。Godot **4.6.2 stable**，GDScript + C++ 原生内核，Forward+ / Vulkan 桌面渲染。
+**Build a paper army. Fight for the final draft.**
 
-## 当前统一入口（源码修订，2026-10-07）
+A desktop real-time strategy game set on a handcrafted tabletop: painted cardboard bases, cut-paper infantry, armored columns, aircraft and fleets. Four rival armies turn their creators’ competing blueprints into an industrial war.
 
-本机工程已在 Git `main` 汇合。启动当前源码使用仓库根目录唯一入口：
+[Download v0.8.0 preview](https://github.com/flitting/PaperFront/releases/tag/v0.8.0) · [Watch the trailer](media/paper-front-trailer.mp4) · [Documentation](docs/README.md) · [简体中文](#简体中文)
 
-```bash
-./run.sh
+![Paper Front — in-engine battlefield showcase](media/gameplay-battlefield.jpg)
+
+## What you can play
+
+- Single-player skirmishes against up to three AI opponents, with four playable factions and independent player colors.
+- Six 320 × 320 battlefields: forest, desert, snow, river-port city, seeded city and islands; plus a 192 × 192 symmetric map for two armies.
+- A playable Canon Legion tutorial mission that teaches economy, engineering and combat.
+- Base construction, crystal mining, local power, technology, infantry squads, armored warfare, air service, naval combat, transports and building garrisons.
+- Destructible bridges and obstacles, engineer repairs and capture, armor penetration, friendly-fire splash and veteran units.
+- An in-game Wiki with real model previews, unit statistics and an audio browser; match history charts and JSON/CSV reports.
+- English and Simplified Chinese interface and voice options, selected independently. Both default to English. Gameplay and packaged audio run offline.
+
+This is an evolving desktop game. There is no online multiplayer, mobile/web build or macOS release. Balance and large-battle performance continue to develop; historical benchmark and AI results are not promises for every map or machine.
+
+## Download and run
+
+Download the archive for your system from [GitHub Releases](https://github.com/flitting/PaperFront/releases/tag/v0.8.0), extract the **entire folder**, then launch:
+
+| Platform | Release archive | Launch |
+|---|---|---|
+| Linux x86_64 | `PaperFront-v0.8.0-linux-x86_64.tar.gz` | `./start.sh` |
+| Windows x86_64 | `PaperFront-v0.8.0-windows-x86_64.zip` | Double-click `PaperFront.exe` |
+
+The packages include the Godot runtime and the matching native library. Players do not need to install Godot, Python or a compiler. Keep all extracted files together. On Windows, use the root launcher so saves and caches stay in the portable folder.
+
+```sh
+# Linux, from the extracted release folder
+chmod +x start.sh PaperFront.x86_64
+./start.sh
 ```
 
-需要 Godot 4.6.2（可用 `PAPER_FRONT_GODOT` 指定程序）；干净检出会先导入资源。`./tools/run.sh` 仅转发至此入口，不再自动选择旧发行程序。已有旧归档保留供历史核查。当前 v7 接入与实际验证见 [本轮验收](docs/revision_v7_validation.md)，下列 Shipping03/v6/v5 数字属于历史版本。
+**Runtime requirements:** a 64-bit desktop OS, keyboard and mouse, and a Vulkan-capable graphics card with a current driver. The minimum window is 1100 × 700; 1600 × 900 or larger gives the HUD more space. Windows targets Windows 10/11 x64. Linux requires glibc 2.38 or newer. See the [v0.8.0 release notes](docs/release_notes.md) and [validation record](docs/release_validation.md) for checks and outstanding limits; a Windows cross-build or Wine check does not establish Windows hardware validation.
 
-新遭遇战列出六张320×320地图及192×192的两方“明原对称场”；经典河谷、经典随机、山地盆地、巨型山地已移出选择列表，历史存档仍能读取。右上齿轮直接打开统一声音、画面、镜头及调试设置；Debug 默认关闭，可勾选并保存，F2 显示诊断，规则工具只允许试验场。FPS 在所有页面右上角常驻。地图平民改为2D剪纸，当前视野之外显示明显的冷色深暗滤镜。
+If rendering is slow, lower quality or 3D render scale in Settings. UI resolution stays unchanged. If the game does not open, check the log and graphics driver, and include the release version and platform in an [issue](https://github.com/flitting/PaperFront/issues).
 
-正典、长钉与天翼总部提供24格、分基地20格建设半径；每个己方已完成且存活的普通建筑（含防御塔、船厂）向周围扩展6格。围墙与拒马也各提供3格微扩建范围；围墙保留原有6格付费相邻延伸。重锤建设范围只由基地兵营提供，规则见下方本轮调整。地形、占地、前置及费用继续适用。各地图和教程的舒缓配乐保留，菜单与激烈交战使用新制作的独立曲目。单位改用按阵营和步兵、车辆、空军分类的自然中文语音；[新版音频来源与验证](docs/revision_v8_audio.md)记录实际制作方式、费用和试听范围。
+## Meet the factions
 
-## 2026-10-07 兵种、驻军、经验与空海军扩展（当前）
-
-四阵营统一为正典军团、重锤军团、长钉军团、天翼教团。主体依开局势力色染色，同时保留部分阵营默认底色（长钉为青绿色），缩小大面色块，徽章固定橙黄；钻塔与机场补色，四机场布局差异化，天翼试制工厂补后墙/镂空围护。基地只在小地图显示大小黑边同心圆。封面使用当前模型，Wiki可多选配色并排对照。
-
-步兵为正典7种、其它各5种；长钉基础步兵为钉枪兵，铁道工程兵可现场施工铁路和岔道。普通步兵可右键进驻中立房屋、从窗户开火，建筑低于20%生命时强制撤出；工兵不能驻军，查看己方驻军房屋按U撤出。矿车按B或右键己方矿厂立即回厂卸矿，随后继续采矿。
-
-消灭敌方价值严格超过自身造价3倍后成为星级单位，生命、伤害、射速、射程与护甲提高并持续恢复生命，金星与车辆涂装显示晋级。列车炮与飞艇外观加长而碰撞不变；飞艇和直升机永久留空、不耗弹药，固定翼待命盘旋。可购买飞机每军4/4/4/5种、舰艇每军8种，包含潜艇、两栖装甲、气垫运输、支援舰与小航母；两栖单位可从工厂或船坞生产，航母实际放出并回收舰载机。
-
-当前源码入口仍为 `./run.sh`，新规则请重启后新开对局。修改说明、数值与实际截图见 [本次扩展记录](docs/revision_v3/README.md)。
-
-## 2026-10-07 镜头、原配色、开发地图与穿甲修订（历史）
-
-最近镜头距离20→8，动态俯角在最大放大时达到10°；仅淡化画面边缘或贴近镜头的物体，淡化范围随缩放改变，中央正常距离物体完整保留，镜头不再被拉远卡住。步兵保持二维卡面，双面之间沿人物轮廓填玩家色侧边，提高对比度。模型恢复原配色，势力色集中在徽章和少量小标记；创世之手外观保持。天翼兵营、工厂、修理厂及四家船坞图标已更新，天翼门向两侧开启，矿车使用机械采矿动画。所有建筑预览按R以90°旋转，真实出入口和机位同步转向，铁路可按旋转方向正反延伸。
-
-车辆、飞机、舰船统一2×2碰撞体积，步兵1×1；普通与重型坦克仍保持不同碾压等级。开发试验场扩至100×100，开启Debug后按F2可切换阵营、生成本阵营全部建筑并启用即时施工/生产，普通对局禁用这些功能。创世之手改为5000资金、6667生命、300基础伤害、3格范围拍击。
-
-所有单位/建筑配置护甲，所有武器配置穿透：穿透严格大于护甲时正常伤害，否则伤害为1/4。范围攻击从爆心至受击表面的伤害和穿透线性衰减；EMP、电流类和创世之手穿透为9999。详细规则、实图及当前验收见 [本次修订记录](docs/rts_revision_v2_20261007.md)。重启当前源码并新开对局生效。
-
-## 2026-10-07 此前 RTS 修订（历史）
-
-四阵营为正典军团、重锤军团、长钉军团、天翼教团。步兵已恢复原二维纸片卡面、朝向和状态切换，仅保留0.6倍外观缩放、1×1格寻路占地，各兵种卡面不同。普通车辆、舰艇和飞机占1×1格，重型坦克、选定高级兵种及大型舰机占2×2格。模型以固定淡色阵营涂装为主，配纸板底色和约30%的醒目、规整玩家色；创世之手仅保留少量玩家标记。开局提供16种玩家颜色，可跨阵营同色。
-
-T0开局可建，T1需已完成兵营，T2需已完成工厂或机场，T3需已完成科技建筑。四阵营旧指挥台已移除，新增主动进厂维修的修理厂和T2高级炮塔；正典增加防空塔，天翼增加T3高效发电站。基地、工厂、矿厂和修理厂与各阵营专用门整合，地面单位实际从正门进出；四家船坞、天翼基地/分基地/测绘车与科技建筑已重做，建筑空闲动画只驱动局部部件。重锤飞艇2200生命、2.5格短程自由落弹，另有6格独立对空机枪。
-
-重锤工兵现场搭建重型螺旋钻塔取代矿车与处理厂；长钉矿车和列车沿己方铁路运行，轨道速度翻倍。天翼拥有EMP、即时激光和持续束流。机场保留四个真实机位与返航流程。Ctrl+1—6建立编队，1—6或点击侧栏选组，空编队隐藏；空格跳至最新战斗热点。F2调试使用原窗口内面板，验证截图使用私有离屏显示。
-
-修改数值、实际截图与最新测试范围见 [完整交付记录](docs/rts_revision_20261007.md)。使用当前源码入口 `./run.sh`；新规则请新开对局，旧存档保留规则快照。下方保留此前修订历史。
-
-## 2026-10-07 最新试玩修订
-
-作战结算改为原窗口全屏页面，字号放大并按分辨率补偿；战场停止模拟与渲染。声线改为十二位不同演员，步兵群体同句错时应答，默认音量统一100%并保留素材增益校准。重制九类界面提示、菜单/舒缓/轻交战/危机配乐，新增能量武器与创世之手专属声效；暂停冻结音乐游标。飞机提前缓升、带烟惯性坠落后接地碎散，创世之手增加势力涂色，镜头跨悬崖平滑。最新行为与验证见[本轮记录](docs/av_feedback_v11_20261007.md)；下方保留此前修订历史。
-
-## 2026-10-06 观感、战斗音频与音乐调整
-
-最新试玩修订把音量上限提升至200%，直接调整现有音乐文件的响度，零星交火即启用普通交战曲，局部合计15个交战单位才进入激烈层。应答缩短长停顿，死亡改为急促呼救/无线电中断；新增供电不足与恢复提示、建筑与按键反馈、选中/鼠标附近声音优先。飞机使用连续渐散尾迹，地面有飘动云影；非爆炸步兵死亡倒地，爆炸死亡碎纸，出售建筑折叠退场。320×320地图近距缩放已修复，新战局配相邻真实地图预览，结束后停止战场并打开独立计分窗口。当前行为见[最新试玩修订](docs/av_feedback_v10_20261006.md)；[上一轮修订](docs/av_feedback_v9_20261006.md)保留固定声线、播放器与密集小爆炸的历史记录。以下三段属于首轮实现。
-
-建筑在50%和25%生命显示两级破损，修复后恢复完整模型。摧毁时先出现覆盖模型轮廓的爆炸，再飞散原模型碎片，留下弹坑和残片；炮弹命中增加持续烟雾与弹坑。爆炸、烟雾、破损建筑和弹片分别提供近、远、超远三档网格。坦克原地转向留下圆形履带痕迹，停车有轻微惯性动作；选中路线改为当前位置到当前目标的一条直线。
-
-四阵营各有步兵、车辆、空军三组声音，八种情境各三句，共288条新语音，最多同时播放三路。另有51个独立音效与两首新配乐。所有有效交战停止时，激烈音乐立即切断，静默约0.8秒后恢复地图配乐。旧在用的20个机械应答，以及未启用的148个历史在线配音已从活动资源中移除；[旧素材审计](artifacts/av_revision_20261006/retired_audio_audit.json)核对了实际文件及音频数据。
-
-Wiki 新增音频浏览器，设置中独立开关默认开启。可筛选和试听360个当前在用素材，显示台词与校验信息；旧素材及废案不显示。试听时暂停常规声音，停止或关闭后恢复，遵守音量和静音偏好。完整改动、使用方式和验证见[本轮观感与音频记录](docs/av_revision_20261006.md)。
-
-## 2026-10-06 阵营与重锤建设调整
-
-新对局移除正典同域集群增伤、重锤推进首击和铁钉全军减伤，暂时保留铁钉脱战自愈。阵营差异由兵种、工程与具体支援平台体现；断流车EMP、标定车跟踪和蓄能站附近支援继续按各自条件生效。
-
-重锤的初始与扩张基地统一为 **基地兵营**，游戏目录中只有一个建筑定义；每座都使用相同模型、数值与功能，可建多座并在失守后重建。基地兵营开局即可训练步兵与工程兵，不建造建筑。选中重锤工程兵后通过常规与防御建筑卡选址，基地兵营及其他全部建筑均在现场搭建脚手架并随进度付款；基地兵营可在已有范围外建设，普通建筑须在基地兵营的建设范围内。每座基地兵营生命3500、占地4×4、视野28格、建设半径24格，提供独立步兵队列及半径12格、容量100电力的局部供电；新建造价1000资金、施工15秒。重锤没有普通兵营或分基地，其他建筑不扩展建设范围，价格与建造时间保持原值。其他阵营总部同样提供100电力、半径12格的局部供电，远处设施仍需电站保障。当前说明与数值见[阵营目录](docs/faction_catalog.md)。
-
-## 商业 Demo 完整度迭代（Shipping03，2026-10-05 UTC，产品冻结）
-
-最新实际验收的 Linux Shipping03 使用 runtime `016ba553…`、源码/测试/工具 `338971fb…`、程序 `e9f0b2cc…`、原生库 `0836ac79…`，需要 **Linux x86_64、glibc 2.38+ 与 Vulkan**。解压后运行 `./start.sh`；完整身份、最终目录/归档 SHA、文件数及实际提取/普通启动结果以 [最终交付回执](artifacts/demo_20261004/delivery/DELIVERY.md) 为准。最终 C 包含119文件、93份文本报告；工程外提取及两个普通启动已通过，完整回执见上述交付说明。旧 B 和 v6 归档保留。
-
-实际 Shipping **35/35、125/125**，1100×700 最低窗口 **125/125**，六张 320×320 地图 **72/72** 已通过。原始115调用按三个冻结区段 **100＋4＋11 组合覆盖通过，非单次完整115 PASS**；full7 与 suffix08 原失败记录保留。仅测试修正音频退出清理和合法碾压的对称权限/body重叠观察规则，产品 runtime 不变。本轮真实付费战役教程 **65/65、528.033 模拟秒胜利**。证据和范围见 [Demo 验收记录](docs/demo_validation.md)。
-
-同画质独立源码压力场景平均 FPS：森林 **46.077548**、城市 **46.933174**、群岛 **80.109039**；固定1920×1080、balanced100%、完整模型/材质、SSAO、景深、阴影与MSAA2×，128预置单位/24建筑、一名玩家＋3个Normal AI。这是单轮压力测量，不代表正常开局、稳定60FPS或性能增益。固定96坦克窄路仍 **UNSTABLE**：改动组三轮62/91/96，对照94/49/63，未据此宣称稳定或吞吐改善。
-
-当前16张实际PNG视觉复核通过，涵盖普通主菜单、设置、教程、总部及持久己方总部投降后的败局/返回菜单；没有自然胜利或平局像素验收。源码音频类的 **329.596秒立体声PCM** 自动记录及分析通过，5首音乐各跨2次循环、11次切换、最多1个播放器；**尚未人工试听，且不是Shipping录音或物理扬声器验收**。同音频类的实际16.254秒热混音47项通过，静音为数字零、恢复有声，Master/音效/无线电半音量比例通过；[实际热混音报告](artifacts/demo_20261004/audio_live/hot_mix/actual_hot_review.md)保留范围。
-
-9份实际许可输入包含Godot/godot-cpp、OFL字体、MakeHuman仅CC0图形及GNU静态runtime版权/Exception；原创素材和音乐来源随包，旧在线TTS与用户参考图不进入玩家资源。模型缓存确认6.1 Sol支持Ultra、6 Astra支持High；没有Alpha的可验证映射，当前线程实际设置未核实。产品已冻结，没有上传、公开发布或提交商店。
-
-## 2026-10-05 模型、交互与地图重建验收（此前 v6 发行历史）
-
-本轮五项源码与独立手/地图视觉复核已完成。**Source与实际Linux Shipping各125项真实GPU检查全部通过**，当前headless清单102项已覆盖，新增大地标存档缺陷已修复并通过105项专项。三图1080p、128单位/24建筑/4方的完整模型压力实测为森林45.34、城市48.89、群岛79.79 FPS；不是普通开局帧率，不据此宣称稳定60FPS。正式Linux目录已完整同步同一已验收staging；工程外归档全部文件校验、正式目录全文件一致性与同核心字节的实际正常GPU启动通过。归档校验文件为同名 `.tar.gz.sha256`，完整状态、条件及历史失败证据见[本轮验证](docs/revision_v6_validation.md)。地图需求与提示词见[地图需求](docs/map_design_v6/requirements.md)。
-
-- 正典、铁钉与天翼选中己方已完成总部/分基地时，下方显示已解锁常规、防御建筑，并保留两个独立队列；工兵通过右侧「部署分基地」选址。重锤选中基地兵营时只显示步兵生产，选中工程兵时显示现场建设卡，可新建同一种基地兵营。选中兵营/工厂/机场/船坞时，只显示该设施的生产项目。未选对象或选择其他非生产对象时，下方栏隐藏。前置或生产资格未满足的项目不显示，暂时资金不足的已解锁项目保留费用与状态；现场建设可重新选址或取消。
-- 右下第三格改为「装载/卸载」菜单，两个动作分别选择。可以先选载具再点步兵，或先选步兵再点载具；部分载客后仍可继续补员，菜单显示空位和人数。卸载选择合法空地或登陆海岸，U 仍指定卸载，L 仍指定运输机降落，B 仍返航补给。
-- 船坞全部占地直接建在海面上，需满足前置、己方建设权限和可用出航/登岸通道。旧存档的岸边船坞保留原规则与位置。
-- 创世之手已撤销旧13块刚体拼接限制，改为真实解剖连续皮肤 GLB、16骨 Skin / Skeleton3D 变形；16骨是当前资产说明，不是玩法规则。源网格来自 MakeHuman Community 的 CC0 图形资产，仅使用手部网格，未纳入其应用程序代码。[来源和许可](assets/creator_hand/README.md)与官方许可副本保存在 `assets/creator_hand/`，原始图形资料在 `tools/source_assets/makehuman/`。造价、生命与地/空/海攻击域以当前 [数值目录](docs/faction_catalog.md)为准，本轮不凭模型外观调整规则数值。
-- 六地图已经先生成12张 AI 小地图/全景参考，再制作地形、分区与地标并拍摄实际 GPU 四视图。**最终独立视觉复核PASS（主要地形与地标门槛）**：[最终报告](artifacts/expansion_v6/map_reference_review_final.md)绑定当前24实图SHA。连续山脊/台地、单帘高差瀑布、工坊/钟楼/村落、港区/堡垒及喷泉干岸位置已完成主要回修；报告明确纸艺细节、布局微差与游玩净空的可接受范围，不声称逐像素复制参考。原NO PASS失败像素未及时保存，仅旧文字/36SHA可追溯；第一次新修图单独保存，不能冒充旧失败图。
-
-## 2026-10-04 四阶段扩展（此前 v5 发行历史）
-
-v5 当时接入四阵营扩展，采用常驻科技目录与未解锁条目灰显；这是历史行为，v6 改为上文的上下文目录与未解锁隐藏。v5 的普通经济建筑与防御设施（炮台、围墙、拒马）使用独立建造队列。相邻围墙连接成完整墙段，己方选中部队显示实际剩余路径与后续命令。所有地面步兵均可搭乘合适载具，包含工兵和反甲兵；机场按实际恢复生命付费维修。
-
-运输机按 **L 后左键** 指定合法空地降落，按 **U 后左键** 指定卸载地点；地面运输车与运输船也可用 U 指定地面或岸边卸载点。运输机为登机自动寻找附近合法落点，移动命令重新起飞。选中飞机按 **B** 主动返回机场维修、补给并停机；自动弹尽返航仍保留原任务，服务完成后恢复。乘员容量、前置设施和费用以生产卡及 Wiki 当前数值为准。
-
-v5 历史版本曾提供正典集群增伤、重锤推进首击以及铁钉减伤；这些全军加成已在2026-10-06的新对局规则中移除，铁钉脱战自愈暂时保留。天翼电磁压制仍由断流车武器触发。矿车在同数量、同矿点与同运输距离下采用相同经济参数，制空战机每次出击拥有 8 发弹药；这些基线不代表所有地图和阵容已经达到长期竞技平衡。
-
-遭遇战新增六种 **320×320** 战场：翠林盆地、金砂绿洲、白雪松原、纸城街区、种子城市、远海群岛。支持 **2—4 方本地参战**：一名玩家与可配置阵营、难度的 AI；新地图启用团队视野与最后已知位置。五张经典地图继续固定两方，旧开发/压力基准保持原来的无迷雾设置。四阵营各有船厂、运输船、护卫舰和特色舰艇，海军使用真实水域路径和岸边登卸。
-
-天翼新增 **创世之手**（`sky_creator_hand`）：约 20000 生命，五指实体模型以食指和中指行走，攻击经过抬手准备后结算，命中建筑可直接摧毁。每名玩家同时只能拥有或生产一只，死亡后可重造。入口菜单唯一的 **「战役 · 无字桥补给线」** 是正典单关教程，依次教授基地供电、采矿、军队与侦察、修桥、分基地、侦察车运输，以及守住补给线后反攻重锤总部。
-
-**v5 历史发布状态：四阶段扩展与 Linux 独立发行当时已完成。** 当时正式启动路径与压缩包使用v5 Shipping程序，解压后也通过当时88项检查。这些历史数值不用于本轮v6；当前版本路径与状态见本轮验证。v5 功能、实际测量条件与校验方式见 [扩展验证与交付记录](docs/expansion_v5_validation.md)。下面的旧日期记录保留为历史。
-
-**2026-10-03 景深修复与完整模型恢复。** 按用户要求撤回单位、建筑和树木的模型简化，恢复原材质、描边与抗锯齿；修复高俯角下景深不可见及开关状态问题。见 [视觉恢复记录](docs/visual_fidelity_restoration.md)。此前性能优化已收尾，1080p 八方平均 42.24 FPS、原生全屏平均 34.06 FPS 属于旧画质配置，不代表恢复完整细节后的帧率。历史数据见 [性能验收报告](docs/performance_640_results.md)，迁移可行性见 [Bevy/ECS 评估](docs/bevy_ecs_migration_assessment.md)。
-
-**2026-10-07 技术方案决定。** 暂缓 Rust / Bevy ECS 迁移，继续采用 Godot + GDScript + 项目自写 C++ 加速。迁移收益尚未实测，先保留评估，待以后出现并确认模拟 CPU 瓶颈时再考虑。保守逻辑收益估算、FPS 边界与重新评估条件见 [迁移评估及暂缓决定](docs/bevy_ecs_migration_assessment.md)。
-
-**2026-10-05 远景模型与固定高度镜头。** 按最新要求提供完整近景、远景、极远景三层网格，并按屏幕投影尺寸与切换缓冲区选择。近景保留完整原模型；单位、建筑、海军、施工架、森林、地标与纸片人物保留主要轮廓及原颜料/材质。WASD、边缘与中键平移使用固定高度，地图最高静态几何留有净空；缩放和俯角仍可主动调整。策略见 [游戏设计](docs/design.md)，模型烘焙与对照入口见 [原生模块说明](native/README.md)。
-
-## 直接游玩
-
-统一入口始终启动当前主分支源码：
-
-```bash
-./run.sh
-```
-
-在现有本机环境已经安装 Godot 4.6.2，脚本会在资源变化后导入，避免旧配音或已导出程序遮盖当前修改。`./tools/run.sh` 兼容转发至同一入口。入口菜单选择“开始战局”，再点选四阵营卡片、地图与种子；新建、再战和读取存档显示加载进度。各方从总部与相同的4000资金开始。
-
-本轮独立 Linux 包保存在 `artifacts/revision_v7_release/`；准确文件与启动验证见 [v7验收记录](docs/revision_v7_validation.md)。旧 Shipping03/v6/v5 包保留为历史版本，根目录启动器不会自动选择它们。
-
-编辑源工程：
-
-```bash
-godot --editor --path .
-```
-
-默认窗口1440×810，最小1100×700；中文字体已捆绑。
-
-## 2026-10-03 铁钉与天翼修订（历史）
-
-后两个阵营依新说明重做：铁钉采用工整、厚实、值得维护的工业结构；天翼采用少量厚纸盒、纸筒与折板，朴素外壳拥有真正的电磁、导引与航空能力。更新33种单位名称、说明与对白，重绘六种步兵五动作纸片，重做57个载具/建筑模型，生产卡、Wiki与阵营选择同步读取新版。
-
-扳手维修车、吊装工程车和检验车可以右键受损友方地面载具进行付费维修，多来源取最高速度。拖救车右键护送友军，生命≤60%且撤离移动时，在4格内增加25%速度；不复活残骸。标定车保持12格内视线追踪1.5秒后，为该目标提供15%友军伤害增量。蓄能站在附近交战时自动消耗60资金与80电力余量，提供5秒20%伤害窗口，再散热25秒。
-
-两方机场按实际恢复生命付费维护停机飞机。稳翼/翼桥运输机可搭载4名普通步兵：B返航并补给完成后停机，步兵右键到机场边缘登机，卸载到机场周围合法空地；给运输机移动命令起飞。不能在空中装卸。
-
-源工程和Linux独立程序同步更新。模型与支援专项验证、完整回归和发行包检查见 [本轮验证](docs/faction_revision_validation.md)，模型图与实现边界见 [修订说明](docs/expansion_factions.md)。加固/机动组件可选改装、额外EMP和独立揭雾尚未接入。旧存档保留自身规则快照，查看新单位请新开战局。
-
-## 2026-10-02 矿柱、现场施工与强制命令（历史）
-
-辉晶矿柱储量无限，不会耗尽、被摧毁或被地面单位穿过。双方合计每根矿柱同时只有一辆矿车开采，其余矿车等待或寻找其他可达矿柱。满载矿车仍交付精炼厂并返回。
-
-工程兵分基地卡立即进入选址，抵达后现场搭建脚手架，随施工进度扣款。受损先维修，工兵阵亡或离开则保留进度暂停；其他工兵可以接手，玩家可以主动拆除未完工分基地。地图菜单新增 320×320 山地大战场，保留原 160×160 地图。
-
-H 后左键强制攻击目标或地面，可攻击友方、树木、房屋与中立石墙。普通右键和攻击移动不会破坏这些中立障碍。F 后左键强制移动，坦克可碾压敌方步兵，不能碾压友方步兵；空格仍定位镜头。WASD 平移，Z 攻击移动、X 停止、C 路径点。
-
-## 2026-10-02 纸板入口菜单与 Wiki（历史）
-
-启动进入纸板风格主菜单，可选择开始战局、军团档案 Wiki、读取存档、声音或退出。Wiki覆盖两阵营全部49个单位/建筑条目，支持阵营与分类筛选、搜索；上方为自动旋转的真实模型，下方为介绍及完整数值表。步兵保留纸片。可拖动模型、暂停/复位旋转及切换玩家识别色；表格可滚动查看武器、护甲倍率、航空/维修、科技与经济数据。
-
-战局菜单也有Wiki入口，局内查阅临时暂停，退出后恢复原暂停状态。Esc或返回按钮关闭Wiki。数据/预览/页面专项检查与截图见 [Wiki验证](docs/wiki_validation.md)。
-
-## 2026-10-02 建筑原图体量修复（历史）
-
-按用户提供的两张阵营示意图，重建22种核心建筑：完整主楼、侧翼、屋顶和实体功能设备取代上一版过度骨架化的旗座、拱架及裸仪器。总部恢复主厅/阶梯堡垒，工厂恢复厂房和装配门，科研楼恢复穹顶及仪器塔，指挥中心恢复控制楼/雷达碟，机场恢复机库/塔台/停机飞机。维修站保留开放检修工位，补足侧房、工具、检修床与作业车体。
-
-修复前后用同一相机和世界尺度，旁放当前坦克与纸兵校核比例。模型仍位于原有规则占地内，建筑规模由真实房体承担；墙、拒马、载具与纸片单位保留当前造型。屋顶点击改为检测实际建筑表面，防止楼体增高后漏选。
-
-[逐类型修复方案](docs/building_reference_repair.md) · [总部原图/修复前/修复后](artifacts/building_repair/comparisons/hq_comparison.png) · [11类建筑全部对比](artifacts/building_repair/all_comparison_manifest.json)。本轮恢复主体体量与主要原图要素，附属箱垛、管道仍按RTS视角简化。
-
-## 2026-10-02 首发双阵营与空军（历史）
-
-依据 [阵营设定 v4](docs/派系设定/paper_front_world_setting_four_factions.md) 完成正典与重锤的首发目录：**23 种单位、26 种建筑、21 套武器**。新增侦察车、防空车、截击机、对地攻击机 / 重轰炸机、高级火炮，以及前线分基地、开放维修站、指挥中心和机场。正典保留蓝漆，重锤保留暗红漆；玩家所属使用独立橙黄 / 青色识别板，与小地图和选中标记一致。建筑与载具使用有厚度的纸板结构；7种步兵保留五动作纸片表现。所有对应兵种与建筑（围墙、拒马除外）按阵营重新设计轮廓，不能用旧demo模型换色代替。
-
-机场每座保障四架飞机。飞机越过水面、建筑与地面障碍；截击机与防空车只对空，攻击机与轰炸机只对地。飞机有弹药上限，耗尽自动返航补给；选中飞机按 **B** 主动返航。机场被摧毁后寻找备用机场。补给受电力影响，空军状态可保存和读取。
-
-每个单位配有正式型号、用途说明、生产与战斗数值，以及中文合成应答：选中、移动、攻击、就绪，飞机另有返航语音。共 **96 条中文临时配音**，播放时显示字幕，静音开关同时控制语音与音效。语音文件已捆绑，游玩无需联网；在线合成仅用于重新制作配音。新增数值仍是首轮平衡基线。
-
-从总部依次建设电站、精炼厂、兵营与车辆工厂，再建设指挥中心和机场。研究所解锁火炮，与指挥中心共同解锁顶级火炮。工程维修站付费修复周围地面载具，工兵右键友方受损单位或建筑执行维修。前线分基地可在总部失守后继续建设；摧毁敌方全部存活的有效建筑获胜，围墙与拒马不参与最终胜负统计。
-
-每方同时最多拥有一座总部，总部不能建造另一座总部，失守后也不能重建。工程兵到友方建筑边缘可立即修至满血，按实际恢复生命收费；资金不足时等待完整修复所需资金。选中工程兵点击分基地卡立即选择合法地面，无需预付款或等订单；工程兵到达后搭起脚手架，按现场施工进度逐步扣款。受损脚手架先维修再施工，维修另收费并拖慢进度；工兵阵亡或离开后暂停，其他工兵可以右键接手，玩家也可选中脚手架拆除，已花资金不退款。可以超出已有扩建范围，并可在失去总部后建设，仍遵守地形、占地和前置规则。工程兵也可持续修理地面单位、按进度修桥，并在到达敌建筑边缘时立即占领，包括防御塔，排除围墙和拒马；已有总部时不能再占领另一座。以上作业均不消耗工程兵。
-
-侦察车暂可运输一名普通步兵：选中普通步兵右键己方侦察车上车，选中侦察车点击卸载按钮下车。车内步兵随车移动。
-
-完整 [单位数值、科技树与语音文案](docs/faction_catalog.md)，[验收记录与整组模型图](docs/faction_validation.md)。内部 `kestrel` / `rivet` 编号保留以兼容历史引用；旧档继续使用其规则快照，新兵种请新开对局。
-
-## 2026-10-02 群体通行与纸板场景更新（历史）
-
-部队移动改为共享 A* 主路线＋窄口预约：前队通行，后队在入口外等位，相向队伍分批交替；移动单位不再作为战略寻路障碍。半格节点支持两格宽坦克通道，预约也约束局部让路；出口分流和协作微步让路避免已到达部队再次堵住出口。队列随存档保存，取消和死亡会释放预约。H 现为强制攻击，F 现为强制移动；原坚守逻辑仍用于内部规则测试，玩家停止单位使用 X。
-
-石墙与半毁建筑分别按种子随机成簇，不再混成固定组合。采用暖米色纸面、赭色切边、棕色描线与哑光纸纹；石墙调整为参考图中的低矮三层结构。它们继续可摧毁。**新布局需新开一局；旧存档保留原地图，但可使用新的通行调度。**
-
-两格宽 96 坦克单向、48 坦克双向、一格宽 48 步兵，以及途中坚守/恢复、死亡和存档均做了专项验证。详情与实机图见 [群体通行验证](docs/group_navigation_validation.md)。
-
-## 2026-10-02 第二轮修正（历史）
-
-矿车改为真正的开放货箱，去掉互相重叠的盖板；选中矿车右键矿点可指定采矿，满载交付后返回同一矿区，X 停止。死亡增加分批燃爆、抛飞碎片、较长黑烟和短时焦痕，普通命中保持短促。
-
-石墙和半毁建筑按新参考重建为低墙、厚窗洞、破损墙顶、木梁与碎砖组成的成簇废墟。新对局中它们是中立可摧毁障碍：H 后左键强制攻击，普通右键与攻击移动不会破坏这些中立障碍，左键查看生命；摧毁后留下可通过的碎砖，存档保留摧毁状态。旧存档与旧固定截图保留其原地图布局，新增废墟请在新对局查看。
-
-拥堵修复加入被新建筑覆盖后的终点重选、让路超时、持续避让方向及车辆倒退；压力场景在两边建筑生成完毕后才分配终点，避免目标随后被覆盖，同时拒绝生成地图外建筑。混合编队不再因为目标暂时被其他单位占用而丢失命令。
-
-[第二轮验证与实机图](docs/refinement_v2_validation.md)。
-
-## 2026-10-02 视觉与操作更新（历史）
-
-独立程序已更新：车辆车辙约 5 秒淡出；车辆和建筑被摧毁时播放立体火团、烟尘与地面冲击圈；炮弹落点不再使用朝向镜头的星形卡片，弹道改成低仰角。矿车增加旋转采矿头、采矿振动及 0–12 块随货量变化的矿石。原石头和碎石外观替换为断墙、残损建筑与砖块；斜坡采用邻近地表色系。
-
-总部新增围墙（每格 $60，700 HP）和拒马（每格 $40，400 HP）。围墙阻挡所有地面单位；拒马阻挡车辆，步兵以 35% 速度穿越。沿已完成的己方围墙或拒马可直线延伸最多 6 格，整段检查占地、地形与资金，额外段在落地时按格扣款，失败保留订单。普通建筑按总部24格、分基地20格及已完成普通建筑6格扩建范围放置。绿色线显示扩建距离与延伸方向，炮塔预览另有金色射程圈。
-
-右下角为进攻移动、路径点、巡逻、停止、强制攻击、强制移动；修理和出售位于选中建筑的说明区。说明气泡改用浅纸色深字，依赖项显示中文名称。底部建筑卡支持滚轮横向浏览。拥堵处理增加独立编队终点、重叠脱离和停滞后的局部绕路。
-
-旧存档保留其规则快照；新增防御建筑请在新对局中使用。专项结果与截图见 [本轮验证](docs/gameplay_polish_validation.md)。
-
-## 如何开始
-
-1. 先选中己方已完成总部，下方纸卡栏只显示已解锁建筑；不选对象或仅选部队时该栏隐藏。点击电站，订单付款后等待对应卡片进度完成并显示“就绪 · 放置”；再次点击，移到绿色合法标记处左键落地。
-2. 正典、长钉与天翼建设精炼厂，完成后附带矿车，自动采矿、进厂卸矿并返回；长钉使用己方铁路。重锤由工程兵在矿点现场搭建钻塔。出口被堵时等待，不重叠生成。
-3. 兵营完成解锁T1，可建设工厂或机场；任一完成解锁T2修理厂、高级炮塔与科技院所，科技院所完成解锁T3。选中对应生产设施购买单位。
-4. 拖框部队，右键行军；Z 后左键指定进攻移动；右键敌人指定攻击。摧毁敌方所有已放置的有效建筑取胜，围墙与拒马不计入结算。
-
-重锤开局选中基地兵营训练工程兵与作战步兵；选中工程兵后使用建筑卡选择施工地点，抵达后开始脚手架施工并按进度付费。基地兵营同时满足基地与兵营角色，开局已具有T1权限；重锤没有普通精炼厂，以矿点钻塔取得收入。新建同一种基地兵营用于扩张和增加步兵队列。
-
-普通建筑取消就绪订单不退款；进行中订单按剩余比例退款，未开始的订单全额退款。分基地选址不收费，施工随进度付费；拆除脚手架不退已花资金。低电使建造与生产减半、停用防御塔，但矿车与现有部队继续工作。
-
-## 操作
-
-| 输入 | 行为 |
+| Faction | Approach |
 |---|---|
-| 左键 / 拖框 | 点选 / 多选独立单位 |
-| 右键地面 / 敌人 | 移动 / 指定攻击 |
-| Shift | 追加命令 |
-| Z 后左键 | 攻击移动；坦克沿路索敌并在移动中开火 |
-| X | 停止并取消命令 |
-| H 后左键目标 / 地面 | 强制攻击；可攻击友方、树木、中立房屋和石墙，或向指定地面开火 |
-| F 后左键目标 / 地面 | 强制移动；坦克可直接碾压敌方步兵，友方步兵受到保护 |
-| C 后连续左键 | 追加路径点；右键或 Esc 结束指定 |
-| G 后左键 | 从当前位置到目标往返巡逻，沿路索敌 |
-| P / 右上暂停按钮 | 暂停或继续 PVE；相机和界面仍可操作 |
-| Ctrl + 数字 / 数字 | 保存 / 选择编队 |
-| 选中己方已完成总部/分基地/生产建筑 | 呼出其可用建造或生产卡，前置未解锁项目隐藏；订单进入对应队列 |
-| 选中兵营、工厂、机场或船坞，右键目标位置 | 设置对应地面、航空或海上集结点 |
-| 选中飞机，B / 返航按钮 | 主动返回机场维修补给后停机；移动命令起飞 |
-| 选中运输机，L 后左键地面 | 到合法空地降落；可在落地后登机 |
-| 右下「装载/卸载」菜单 | 装载：选载具点步兵，或选步兵点载具；有余位可续载。卸载：指定合法空地/登陆海岸；空位/人数实时显示 |
-| 选中运输载具，U 后左键地面 / 岸边 | 前往合法位置并卸载乘员 |
-| Q / E | 相机环绕 |
-| R / T | 手动固定俯角（20–45°）；动态模式在最大放大时达到10° |
-| 中键拖动 / WASD | 相机平移 |
-| 战场滚轮 / 纸卡栏滚轮 | 缩放地图 / 横向滚动条目（不缩放地图） |
-| 空格 / Home | 定位选中 / 回总部 |
-| F5 / F9 | 保存 / 读取 |
-| 鼠标贴屏幕四边 | 平移；右边使用侧栏最右的屏幕边缘 |
-| 右上 Debug / F2（设置中启用） | 开关诊断面板；画面与音量统一在齿轮设置 |
-| Esc | 实时菜单，不暂停模拟 |
-| 工程兵右键断桥或桥头 | 按进度付费修桥 |
-| 工程兵右键友方受损建筑 / 敌方建筑 | 立即满修 / 立即占领；均需走到建筑边缘 |
-| 选中工程兵，右侧部署分基地 / 右键己方脚手架 | 独立选址并现场施工，不打开下方建造栏；可重新选址/取消 / 接手续建 |
-| 选中未完工分基地，拆除脚手架 | 拆除并释放占地，已花资金不退款 |
-| 地面步兵右键己方运输载具 / 卸载按钮 | 登乘 / 下客；包含工兵、反甲兵，容量以当前目录为准 |
-| 武装单位右键桥面 | 攻击中立桥 |
+| **Canon Legion · 正典军团** | Elite infantry and affordable armor; establish the basic industry quickly, then invest in expensive advanced technology. |
+| **Heavy Hammer Legion · 重锤军团** | Armed engineers construct buildings on site. Repeatable Base Barracks support expansion while mining drills, heavy tanks and bombing airships hold the line. |
+| **Long Nail Legion · 长钉军团** | Railway logistics, armored trains and durable vehicles. Its harvesters and trains need friendly track; eligible vehicles repair themselves after leaving combat. |
+| **Skywing Order · 天翼教团** | Fragile, expensive high technology: EMP disruption, lasers, sustained beams, strong aviation and the unique Creator Hand. |
 
-己方建筑可以在右侧选中说明区切换持续付费修理或出售。工兵右键友方受损建筑执行立即满修，修理地面单位与桥梁仍按进度进行。出售最后一座建筑会先要求确认，因为它立即导致失败。菜单本身不暂停；PVE 可通过 P 或右上按钮主动暂停。
+Exact costs, prerequisites and abilities are shown in production cards and the Wiki. See the generated [faction reference](docs/faction_catalog.md) for the current rule data.
 
-## 早期已实现清单（历史目录）
+![The four armies — in-engine model showcase](media/gameplay-factions.jpg)
 
-- 原创不规则高地与悬崖、合法坡道、曲折蓝色河流、立体桥梁、森林簇、晶矿和环境装饰；暖色侧光、接触阴影与 SSAO，随镜头调整的前后景浅景深。拉远时减弱虚化，HUD 保持清晰。
-- 42 套原创体积模型：26 建筑与16载具，覆盖矿车、装甲、火炮、防空与航空；装甲车体与炮塔独立旋转。7种步兵采用纸片。
-- 步兵保留纸片、五动作及固定80°镜像；两军通过斜帽与长外套、平顶盔与厚肩甲等剪影区别。专用UV遮罩只改变头盔/肩背所属牌，阵营服装颜色固定。体积模型保持世界朝向、独立炮塔、后坐与死亡表现。
-- 两阵营 12 单位、18 建筑、10 武器，集中 JSON 配置，不同轮廓、数值、徽记与特色兵种。
-- 无限矿柱、双方合计单矿柱一车独占开采、电力、普通建筑全局就绪队列、合法放置、工程兵分基地现场施工与接手、独立生产 FIFO、退款、堵门、集结、修理与出售。
-- 地形与半径寻路、地面占地、局部绕行与让路、编队站位、坦克独立炮塔瞄准与攻击移动中射击、固定落点友伤、碾压、断桥和续修。
-- 公平规则电脑、真实小地图、完整遭遇战胜负、版本化一致存档与规则快照。
-- 默认可选 320×320 山地大图；保留 48×48 开发场、160×160 手工图与输入种子的对称随机图；地图验证资源与无桥陆路。
-- Linux release 导出、规则 / 地图 / 显示与输入测试、实际图形性能入口。
+## Your first match
 
-## 开发与验证
+1. Start with the **tutorial**, or choose **Skirmish**, a faction, a battlefield and AI opponents. The symmetric map is a clear place to learn a two-army land battle.
+2. For Canon, Long Nail and Skywing, select the Headquarters, order a power plant, then establish a refinery and barracks. A completed building order must be placed on valid ground. Long Nail needs railway connections for its mining vehicles.
+3. For Heavy Hammer, select the Base Barracks and train an engineer. Select that engineer to place construction sites, including mining drills at crystal deposits. Work is paid for as construction progresses; extra Base Barracks extend the base.
+4. Keep production facilities supplied with power and their doors clear. Barracks unlock the next technology stage; factories or airfields open further development, followed by the faction’s technology building.
+5. Recruit infantry squads and supporting vehicles. Drag-select troops, right-click to move or attack, and use **Z then left-click** for attack-move.
+6. Destroy all enemy buildings that count toward survival. Walls, barricades and railway infrastructure do not keep an otherwise defeated army alive.
 
-视觉修改始终采用两张 [原始参考图](docs/visual_target.md)；最新有效版本、自动命令和实际看图结论见 [接续记录](docs/art_iteration.md)。普通 RTS 镜头为主验收，G0 宽视角辅助，开发资产场与压力场各作专用诊断。固定中期状态的两次独立启动截图完全一致。
+Most combat infantry are recruited as squads of 2–6 soldiers; engineers remain individuals. Each soldier has separate health, experience and a transport seat. Orders select and control the squad together. Production prices and times represent the whole squad, and casualties do not replenish for free.
 
-```bash
-python3 tools/capture_golden.py --name next --views gameplay,g0 --output-dir artifacts/visual_iteration/next --baseline artifacts/visual_iteration/v44_reference_rebuild --fixture data/golden_visual_paintedforest_v9.json
-godot --path . -- --golden-visual --golden-view gameplay --golden-fixture res://data/golden_visual_paintedforest_v9.json
+## Controls
+
+Commands followed by a click enter a targeting mode; **Esc** cancels it. Controls are shared by both interface languages.
+
+| Input | Action |
+|---|---|
+| Left-click / drag | Select a unit or squad / box-select |
+| Shift + selection or command | Add/remove selection or queue a command |
+| Right-click ground / enemy | Move / attack target; contextual engineering, boarding and garrison actions |
+| Z, then left-click | Attack-move |
+| X | Stop and clear orders |
+| C, then left-click points | Queue waypoints |
+| G, then left-click | Patrol between current position and destination |
+| H, then left-click | Force attack a target or ground; can damage friendly and neutral objects |
+| F, then left-click | Force move; eligible vehicles can crush enemy infantry |
+| Ctrl + 1–6 / 1–6 | Save / select a control group |
+| Right-click with a production building selected | Set its rally point |
+| B | Return selected aircraft to an airfield; send a harvester back to unload |
+| L, then left-click | Land a transport aircraft on valid ground |
+| U, then left-click | Move a transport to unload; **U** also evacuates an inspected friendly garrison |
+| R while placing / V while placing rails | Rotate building / change rail orientation |
+| WASD / middle-mouse drag / screen edges | Pan camera |
+| Q / E | Orbit camera |
+| Mouse wheel | Zoom; over cards, scroll the cards |
+| R / T outside placement | Adjust camera pitch |
+| Space / Home | Jump to the latest combat hotspot / home base |
+| P / Pause | Pause or resume a skirmish |
+| F5 / F9 | Save / load the skirmish |
+| Esc / gear button | Cancel the current action or open Settings |
+
+Production cards and the selection panel also expose building repair/sale, loading/unloading and other contextual commands. [Game design](docs/design.md) explains construction, power, combat and save behavior in more detail.
+
+## Saves, settings and reports
+
+| Data | Location |
+|---|---|
+| Linux player data | `~/.local/share/godot/app_userdata/纸境战线 · Paper Front/` (or the corresponding `XDG_DATA_HOME`) |
+| Windows portable player data | `user_data/` beside `PaperFront.exe` |
+| Skirmish save | `skirmish_v1.pfront` inside the player data folder |
+| Preferences | `settings.cfg` inside the player data folder |
+| Match JSON/CSV exports | `match_reports/` inside the player data folder |
+
+Saves contain the actual map, simulation state and a rules snapshot. An older save can keep older unit costs and mechanics; start a **new match** to use the current rules. Move the entire Windows portable folder to carry its saves with it. See [Windows portable details](docs/windows_portable.md) for logs, caches and reset instructions.
+
+## Run from source
+
+Use **Godot 4.6.2 stable**, the standard edition; C#/.NET is not required. The project uses GDScript and a project-authored C++ GDExtension with the Forward+ renderer.
+
+```sh
+git clone https://github.com/flitting/PaperFront.git
+cd PaperFront
+./run.sh
 ```
 
-历史 v12 修复了尺寸与文字，v44 重建了枝叶/树干，细化崖桥、地表和建筑，收窄纸边并替换39个音效。当前版本保留完整近景模型并按顶部说明启用远景层级，采用常驻科技与双队列界面；画质恢复见 [视觉恢复记录](docs/visual_fidelity_restoration.md)。鼠标贴屏幕四边平移，右移在面板最右屏幕边缘触发。F2可开关诊断和75%/85%3D渲染倍率，默认原生画质、UI始终原生。
+`run.sh` always launches the current source tree and imports changed resources when needed. To use a specific Godot binary:
 
-[旧发行全屏八方实机图](artifacts/performance_640/phase19/fullscreen_30s.png) · [v44 松树形体特写](artifacts/visual_iteration/v44_reference_rebuild/pine_multiview.png)。历史视觉迭代的验证限制保留在接续记录；当前扩展验收以 [本轮记录](docs/expansion_v5_validation.md) 为准。
+```sh
+PAPER_FRONT_GODOT=/path/to/godot ./run.sh
+```
 
-截图命令自动运行项目、进入 G0 并保存实际 1920×1080 PNG、元数据和日志。每次使用新的名称，保留上一版本；随后必须查看新图，与两张概念图及上一版比较。可用 `--executable artifacts/linux/PaperFront.x86_64` 拍摄独立程序。固定采集恢复镜头和中期对局状态、等8个真实渲染帧后自动保存并退出；不用手动Esc。`--hold`只用于故障排查。普通遭遇战操作保持实时。
+On Windows, open `project.godot` in Godot 4.6.2 and press **F5**, or run `godot --path .` after importing the project. Build the matching native library when your platform needs it; Linux’s checked-in `.so` is not a Windows library.
 
-开发场通过菜单进入，F2 显示明确标记的工具：重置、补钱、补兵、真实占地显示、朝向边界轮检和性能场景。这些作弊不在正常遭遇战启用。256 是性能参考数，不是人口上限。
+To rebuild the native module, install **CMake, Make, a C++17 compiler and Python 3**, then run:
 
-```bash
+```sh
+./tools/build_native.sh
+```
+
+Windows cross-builds on Linux also need the **MinGW-w64 POSIX x86_64 toolchain**, ImageMagick and Pillow for the launcher icon. Godot’s matching **4.6.2 export templates** are required for packaged builds. See [native build instructions](native/README.md).
+
+## Build and check a release
+
+```sh
+# Linux and Windows x86_64 packages, including native libraries and notices
+python3 tools/build_release.py --version 0.8.0 --output artifacts/release_20261011
+
+# Full project regression runner; requires the native library
 PAPER_FRONT_GODOT=godot ./tools/test.sh
 ```
 
-测试使用真实 `WarSimulation`，完整对局控制器从总部和 4000 资金开始，通过正常建造、生产和指令接口行动。测试的快速循环不会在游戏里增加倍速操作。
+`PAPER_FRONT_GODOT` selects Godot; `PAPER_FRONT_MINGW_BIN` can select an unpacked MinGW toolchain. Build outputs and diagnostic evidence go under the ignored `artifacts/` directory. The full runner checks engine/script errors and resource leaks as well as process exit status. See the release notes for what was actually run and any outstanding failures; the command alone is not a claim that every historical test passes.
 
-640 地图历史验收采用性能报告中的 `--performance-case normal/stress` 命令。以下保留较早的 224/256 单位基准入口；这些旧发行结果均不能替代本次扩展的运行与性能验收：
+For simulation-only experiments:
 
-```bash
-./artifacts/linux/PaperFront.x86_64 --windowed --resolution 1920x1080 --position 32,32 --disable-vsync -- \
-  --benchmark --pitch 30 --seconds 65 --benchmark-output /tmp/paperfront-224.json
-./artifacts/linux/PaperFront.x86_64 --windowed --resolution 1920x1080 --position 32,32 --disable-vsync -- \
-  --benchmark --stress --pitch 30 --seconds 65 --benchmark-output /tmp/paperfront-256.json
+```sh
+./tools/run_headless.sh --map symmetric --factions kestrel,sky --ai both \
+  --ai-styles balanced --difficulty normal --duration 120 --output /tmp/paper-front-match
+./tools/build_headless.sh
 ```
 
-第一项初始 **224 移动单位 + 32 建筑**；压力项初始 **256 移动单位 + 32 建筑**。真实生产、采矿、寻路、交战与死亡持续工作，后续数量可能变化，报告记录初始 / 最终 / 峰值和事件次数。正式帧耗时使用墙钟测量，不使用被引擎限幅的帧 delta；同时报告模拟与墙钟推进，不能用时间减速伪装帧率。
+See [headless runs and statistics](docs/balance_preparation.md), [AI balance experiments](docs/ai_balance_experiments.md) and [independent strategy modules](docs/independent_ai_duel.md).
 
-完整结果、构建方式与局限见 [交付与验证记录](docs/validation.md)。本轮截图来自游戏实际运行：[立体交战与基地](artifacts/gameplay_3d.png)、[就绪条目加深](artifacts/ready_3d.png)、[24°低视角](artifacts/low_angle_3d.png)、[主菜单](artifacts/menu_3d.png)。开发工具生成的展示场景不冒充普通经济开局。
+## Project map
 
-## 存档与设置
+| Path | Purpose |
+|---|---|
+| `data/rules.json` | Economy, factions, units, buildings, weapons and prerequisites |
+| `data/localization/` | English translation catalogs; Chinese source identifiers remain stable |
+| `scripts/simulation.gd` and simulation modules | Authoritative rules and save state |
+| `scripts/main.gd`, `paper_hud.gd`, `paper_world.gd` | Input/camera, interface and read-only scene presentation |
+| `native/` | C++ kernels, pinned Godot C++ bindings and build configuration |
+| `assets/` | Artwork, audio, shaders, fonts and asset provenance |
+| `tests/`, `tools/` | Regression checks, asset tooling, headless experiments and packaging |
+| `docs/` | Current guides, reference material and selected experiment evidence |
+| `media/` | Trailer, poster and promotional screenshots |
 
-游戏使用 Godot 的可写用户数据目录：Linux 为 `~/.local/share/godot/app_userdata/纸境战线 · Paper Front/`，Windows / macOS 使用各自的应用数据位置。F5 / F9 对应 `skirmish_v1.pfront`；声音和菜单选择保存在 `settings.cfg`。不能将开发者绝对路径当作玩家数据目录。
+The [architecture guide](docs/architecture.md) describes the simulation/rendering boundary and developer workflow. Bug reports should include steps to reproduce, the map/seed, faction, version, platform and relevant logs. For rule or visual changes, include focused tests or before/after captures where they help reviewers verify the result.
 
-存档保存实际地图、资金、命令、车体/炮塔朝向、冷却、生产、就绪状态、矿车货物、矿柱开采状态、分基地施工状态、桥梁与修复进度及在途炮弹，并带规则快照。读取前检查版本与结构，不兼容时明确报错。
+## Credits and licensing
 
-## 工程文件
+Read [asset licenses and provenance](assets/LICENSE.md) and the `LICENSES/` and `PROVENANCE/` folders included in each release. Godot and godot-cpp use MIT, Noto CJK uses SIL OFL, and the Creator Hand is derived from MakeHuman CC0 graphical assets. Project-authored assets identified as CC0, synthetic speech, and provider-generated audio have separate documented scopes. Chinese and English voices are synthetic, not human recordings.
 
-对称地图、全程结算曲线、JSON/CSV 对局报告和无渲染运行入口，见 [平衡性测试准备说明](docs/balance_preparation.md)。Headless 可用 `./tools/run_headless.sh` 启动，独立 Linux 文件由 `./tools/build_headless.sh` 生成。
+**The repository currently has no single license granting reuse of all game source code.** Asset and dependency licenses do not automatically license the rest of the project. User-supplied style references remain documentation references and are excluded from player packages.
 
-- `data/rules.json`：独立数值、前置、兵种、建筑、武器和动画映射。
-- `scripts/simulation.gd`：唯一规则模拟；`sim_save_validator.gd`：存档检查。
-- `scripts/map_data.gd`：确定性地图生成与验证。
-- `scripts/volume_models.gd`：原创实体车辆/建筑几何、纸张纹理、体积分体动画及真实炮口；巨手由 `scripts/creator_hand_models.gd` 接入独立连续蒙皮资产。
-- `scripts/landscape.gd`：地形/悬崖、体积森林/晶矿/桥梁/装饰，静态批处理。
-- `scripts/paper_world.gd`：模型与步兵 MultiMesh 渲染、选中反馈、真实炮口弹道与效果，仅读取模拟。
-- `scripts/main.gd`、`paper_hud.gd`、`minimap.gd`：镜头、输入、中文 UI 与真实小地图。
-- `tools/generate_art.py`、`generate_audio.py`：原创资产生成源。
-- [设计说明](docs/design.md)、[工程接口](docs/architecture.md)、[素材来源与许可](assets/LICENSE.md)。
+---
 
-## 项目边界
+## 简体中文
 
-当前支持四阵营、本地 2—4 方玩家/AI 遭遇战，以及一关正典教程战役。经济与制空结论按本轮记录中的固定测量条件成立；不据此宣称所有地图、阵容或长时间战局完全平衡。Windows 与 macOS 尚未实际运行验证，不标为通过；不提供手机、网页或真人联网对战。
+**组建纸上军团，争夺最终定稿。**
 
+《纸境战线》是一款发生在手工桌面模型世界中的即时战略游戏。纸板基地、剪纸步兵、装甲车队、飞机与舰队，在四套相互竞争的“正确图纸”之间展开工业战争。
 
-`Linux` 开发导出preset带有development标记，F2诊断默认关闭但可启用。正常发行使用不含该标记的 `Linux Shipping` preset，调试入口自动隐藏；实际交付preset与同步状态见本轮验证记录。普通规则工具仅在开发场可用。3D倍率是主动选择，75%/85%会降低3D内部渲染分辨率以减轻GPU负担，UI、地图显示区域和点击坐标保持原生；默认100%。
+[下载 v0.8.0 试玩版](https://github.com/flitting/PaperFront/releases/tag/v0.8.0) · [观看宣传视频](media/paper-front-trailer.mp4) · [文档索引](docs/README.md)
 
-本轮模型、步兵辨识、差异化海军、舰载机起飞、盘旋避碰与菜单分页的修改及实图见 [修订记录](docs/revision_v4/README.md)。
+### 游戏内容
+
+- 单人对抗最多三名电脑，四个可玩阵营，玩家颜色与阵营身份独立。
+- 六张 320 × 320 战场：森林、沙漠、雪原、河港城市、种子城市与群岛；另有 192 × 192 的两军对称地图。
+- 一关正典军团教程，涵盖经济、工程与战斗。
+- 基地建设、晶矿经济、局部供电、科技、小队步兵、装甲、航空与海军、运输和驻军。
+- 可破坏桥梁与障碍、工兵维修和占领、护甲穿透、溅射友伤及星级单位。
+- 游戏内图鉴、真实模型预览、音频浏览器，以及结算曲线和 JSON/CSV 对局报告。
+- 界面与语音均支持 English / 简体中文，可以分别选择并保存；两项默认英语。游戏和发行包音频可离线运行。
+
+当前提供桌面单人版本；暂无真人联网、手机、网页或 macOS 发行包。数值平衡和大规模战斗性能仍在完善。
+
+### 下载与启动
+
+从 [GitHub Releases](https://github.com/flitting/PaperFront/releases/tag/v0.8.0) 下载并完整解压：
+
+| 系统 | 文件 | 启动方式 |
+|---|---|---|
+| Linux x86_64 | `PaperFront-v0.8.0-linux-x86_64.tar.gz` | 在解压目录运行 `./start.sh` |
+| Windows x86_64 | `PaperFront-v0.8.0-windows-x86_64.zip` | 双击根目录 `PaperFront.exe` |
+
+玩家无需安装 Godot 或编译器。请保留整个目录，不要只移动主程序。Windows 须通过根目录启动器运行，以将数据保存在便携目录中。
+
+需要 64 位系统、键鼠与支持 Vulkan 的显卡和驱动；最低窗口 1100 × 700，建议使用更大的显示空间。Windows 面向 Windows 10/11 x64；Linux 需要 glibc 2.38 或更新版本。具体构建、检查范围及已知限制见 [v0.8.0 发布说明](docs/release_notes.md)与[验证记录](docs/release_validation.md)，Windows 交叉编译或 Wine 检查不代表 Windows 实机验收。性能不足时可在设置中降低画质或 3D 渲染倍率，界面仍使用原始分辨率。
+
+### 四个阵营
+
+| 阵营 | 特点 |
+|---|---|
+| 正典军团 · Canon Legion | 精锐步兵搭配廉价装甲，基础工业成型快，高级科技投入昂贵。 |
+| 重锤军团 · Heavy Hammer Legion | 武装工兵现场搭建全部建筑，基地兵营可反复建造；以矿脉钻机、重坦与轰炸飞艇支撑扩张。 |
+| 长钉军团 · Long Nail Legion | 铁路运输、装甲列车与耐用车辆；矿车及列车依赖己方轨道，符合条件的车辆可脱战自修复。 |
+| 天翼教团 · Skywing Order | 昂贵而脆弱的高科技：EMP、激光、束流、强力航空与独特的创世之手。 |
+
+价格、前置和能力以生产卡、图鉴及[当前规则目录](docs/faction_catalog.md)为准。
+
+### 如何开始
+
+1. 先玩教程，或在遭遇战中选择阵营、地图和电脑。初学陆战可选择两方的明原对称场。
+2. 正典、长钉和天翼先选总部，建设电站、精炼厂和兵营；建筑订单完成后还需放到合法位置。长钉矿车需要己方铁路连通。
+3. 重锤先从基地兵营训练工程兵，再选工兵放置施工现场与矿点钻机，随施工进度付款；新基地兵营用于扩张。
+4. 保持供电和生产出口通畅，逐步解锁工厂、机场和科技设施。
+5. 训练步兵小队与支援载具，拖框选择、右键行军或攻击，**Z 后左键**指定攻击移动。
+6. 摧毁敌方所有计入生存的建筑获胜；围墙、拒马与铁路不能单独维持阵营存活。
+
+普通战斗步兵按 2–6 人小队购买，工兵仍为单人。每名成员独立计算生命、经验、碰撞和运输座位；命令以小队为单位下达，价格与时间是整队总额，伤亡不会免费补充。
+
+### 常用操作
+
+| 输入 | 功能 |
+|---|---|
+| 左键 / 拖框；Shift | 选择 / 多选；增减选择或追加命令 |
+| 右键 | 移动、攻击，以及维修、占领、登乘和驻军等情境操作 |
+| Z / X / C / G | 攻击移动 / 停止 / 路径点 / 巡逻；需要目标的命令随后左键指定 |
+| H / F 后左键 | 强制攻击 / 强制移动；强制攻击可伤及友方与中立物 |
+| Ctrl + 1–6 / 1–6 | 保存 / 选择编队 |
+| 生产设施选中时右键 | 设置集结点 |
+| B | 飞机返航；矿车回厂卸矿 |
+| L / U 后左键 | 运输机降落 / 运输载具前往卸载；查看己方驻军房屋时 U 撤出 |
+| 放置建筑时 R / 放置铁路时 V | 旋转建筑 / 切换铁路朝向 |
+| WASD / 中键拖动 / 屏幕边缘 | 平移镜头 |
+| Q / E；滚轮；非放置时 R / T | 环绕；缩放；调整俯角 |
+| 空格 / Home | 跳到最近交战热点 / 回基地 |
+| P / Pause；F5 / F9 | 暂停；保存 / 读取 |
+| Esc / 齿轮 | 取消当前操作或打开设置 |
+
+### 存档、开发与反馈
+
+Linux 数据默认保存在 `~/.local/share/godot/app_userdata/纸境战线 · Paper Front/`；Windows 便携包保存在启动器旁的 `user_data/`。存档为 `skirmish_v1.pfront`，偏好为 `settings.cfg`，结算报告位于 `match_reports/`。旧存档带自己的规则快照，查看最新机制请新开对局。
+
+源码需要 **Godot 4.6.2 stable 标准版**，克隆后运行 `./run.sh`；可用 `PAPER_FRONT_GODOT` 指定引擎。原生内核需要 CMake、Make、C++17 编译器和 Python 3，通过 `./tools/build_native.sh` 重建。Windows 交叉编译另需 MinGW-w64 POSIX 工具链及启动器图标依赖。两平台打包使用：
+
+```sh
+python3 tools/build_release.py --version 0.8.0 --output artifacts/release_20261011
+PAPER_FRONT_GODOT=godot ./tools/test.sh
+```
+
+构建和检查细节见[工程接口](docs/architecture.md)、[原生模块](native/README.md)与[发布说明](docs/release_notes.md)。反馈问题请在 [Issues](https://github.com/flitting/PaperFront/issues) 附复现步骤、版本、系统、阵营、地图/种子和日志。
+
+项目没有覆盖全部源码的统一许可；请分别查看[素材与依赖许可](assets/LICENSE.md)及发行包内的 `LICENSES/`、`PROVENANCE/`。原创 CC0 美术、合成语音和供应商生成音频的授权范围分别记录；中英文语音均为合成声音。用户提供的风格参考仅用于文档，不进入玩家包。
+
+宣传视频及截图来自游戏引擎内渲染的编排展示场景。 / Trailer and screenshots use staged in-engine showcase scenes.

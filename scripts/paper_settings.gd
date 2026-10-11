@@ -6,10 +6,13 @@ signal action(kind: String, value: Variant)
 signal closed
 
 const Paper = preload("res://scripts/paper_ui.gd")
+const Localization = preload("res://scripts/localization.gd")
 const INK := Color("392c21")
 var sliders: Dictionary = {}
 var percentages: Dictionary = {}
 var mute_button: CheckButton
+var language_option: OptionButton
+var voice_language_option: OptionButton
 var quality: OptionButton
 var resolution: OptionButton
 var dof: CheckButton
@@ -63,6 +66,15 @@ func _ready() -> void:
 	stack.add_theme_constant_override("separation", 10)
 	panel.add_child(stack)
 	stack.add_child(_label("设置  /  SETTINGS", 28))
+	language_option = _option(stack, "语言 / Language", ["English", "简体中文"])
+	language_option.name = "LanguageSwitch"
+	language_option.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	language_option.select(1 if Localization.language() == "zh_CN" else 0)
+	language_option.item_selected.connect(func(index: int):
+		var locale: String = "zh_CN" if index == 1 else "en"
+		Localization.set_language(locale)
+		changed.emit("language", locale)
+	)
 	tabs = TabContainer.new()
 	tabs.name = "SettingsTabs"
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -92,6 +104,11 @@ func _ready() -> void:
 	stack.add_child(notice)
 	content = _page("声音")
 	content.add_child(_label("声音", 19))
+	voice_language_option = _option(content, "语音语言", ["简体中文", "English"])
+	voice_language_option.name = "VoiceLanguageSwitch"
+	voice_language_option.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	voice_language_option.select(1)
+	voice_language_option.item_selected.connect(func(index: int): changed.emit("voice_language", "en" if index == 1 else "zh_CN"))
 	for item in [["master", "总音量"], ["music", "音乐"], ["sfx", "音效"], ["voice", "单位应答"], ["commander", "指挥官播报"]]:
 		_add_volume(content, item[0], item[1])
 	mute_button = CheckButton.new(); mute_button.text = "全部静音"
@@ -207,6 +224,8 @@ func _label(text: String, font_size: int) -> Label:
 
 func open(values: Dictionary) -> void:
 	show_notice("")
+	language_option.select(1 if Localization.language() == "zh_CN" else 0)
+	voice_language_option.select(1 if values.get("voice_language", "en") == "en" else 0)
 	var in_match: bool = bool(values.get("in_match", false))
 	session_controls.visible = in_match
 	tabs.set_tab_hidden(0, not in_match)
@@ -250,3 +269,7 @@ func _fit() -> void:
 	var height: float = minf(700.0, maxf(240.0, size.y - 48.0))
 	_panel.offset_left = -width * 0.5; _panel.offset_right = width * 0.5
 	_panel.offset_top = -height * 0.5; _panel.offset_bottom = height * 0.5
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_instance_valid(language_option):
+		language_option.select(1 if Localization.language() == "zh_CN" else 0)

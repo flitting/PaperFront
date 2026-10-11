@@ -57,7 +57,7 @@ func boundaries()->void:
 			if kind=="shell":sim._step_projectiles(1)
 			if kind=="beam":sim.BeamWeapons.step(sim,1)
 			sim._apply_damage()
-			var expected:float=80.0 if protection<50 else 20.0
+			var expected:float=80.0 if protection<50 else 40.0
 			check(is_equal_approx(float(sim.entities[target].hp),1000.0-expected),kind+" actual attack settles armor boundary "+str(protection))
 			close(sim)
 func splash()->void:
@@ -69,7 +69,7 @@ func splash()->void:
 	var weapon:Dictionary={"penetration":100,"aoe_falloff":"linear","kind":"shell"}
 	sim._impact_damage(Vector2(20,20),4,100,{},["ground"],false,weapon,0);sim._apply_damage()
 	check(is_equal_approx(float(sim.entities[ids[0]].hp),900),"blast center full damage and full penetration")
-	check(is_equal_approx(float(sim.entities[ids[1]].hp),987.5),"half-radius damage halves and penetration50 fails armor60, yielding12.5")
+	check(is_equal_approx(float(sim.entities[ids[1]].hp),975),"half-radius damage halves and penetration50 partially penetrates armor60, yielding25")
 	check(is_equal_approx(float(sim.entities[ids[2]].hp),1000),"outer wave edge reaches zero damage")
 	close(sim)
 func hand_and_emp()->void:
@@ -112,9 +112,9 @@ func snapshots()->void:
 	check(problem.is_empty(),"armor/AP save restores: "+problem)
 	if problem.is_empty():
 		for state in [sim,restored]:state._step_projectiles(1);state._apply_damage()
-		check(is_equal_approx(float(sim.entities[target].hp),float(restored.entities[target].hp)) and is_equal_approx(float(restored.entities[target].hp),460),"restored equal armor shell still deals exactly quarter damage")
+		check(is_equal_approx(float(sim.entities[target].hp),float(restored.entities[target].hp)) and is_equal_approx(float(restored.entities[target].hp),440),"restored equal armor shell still deals exactly half damage")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path));close(sim);close(restored)
-	var legacy:Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://artifacts/rts_revision_v2_20261007/rules_before.json"))
+	var legacy:Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/historical_rules/before_armor_20261007.json"))
 	check(RulesLoader.validate(legacy,false).is_empty(),"previous unarmored rule snapshot remains valid")
 	var invalid:Dictionary=rules.duplicate(true);invalid.weapons.sky_tank.penetration=-1
 	check(not RulesLoader.validate(invalid,false).is_empty(),"negative penetration is rejected")

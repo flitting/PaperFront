@@ -73,6 +73,12 @@ const BUILDINGS = {
 static func adapt(current: Dictionary) -> Dictionary:
 	var snapshot: Dictionary = current.duplicate(true)
 	snapshot.factions.rivet.erase("building_method")
+	# Historical FIFO fixtures recruit individuals. Current whole-squad costs,
+	# doorway spawning and refunds are covered by infantry_squad_tests.
+	for unit: Dictionary in snapshot.units.values():
+		unit.erase("squad_size")
+		unit.erase("squad_role")
+		unit.erase("squad_build_time")
 	for id: String in BUILDINGS:
 		snapshot.buildings[id] = BUILDINGS[id].duplicate(true)
 	return snapshot

@@ -1,0 +1,229 @@
+{
+  "version": 1,
+  "generated_on": "2026-10-09",
+  "generator": "tools/generate_english_audio.py",
+  "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+  "model_license": "Apache-2.0",
+  "inference_wrapper": {
+    "name": "kokoro-onnx",
+    "version": "0.4.9",
+    "license": "MIT"
+  },
+  "synthesis_location": "Local CPU",
+  "paid_api_requests": 0,
+  "runtime_network_required": false,
+  "human_recording": false,
+  "model_files": [
+    {
+      "name": "kokoro-v1.0.int8.onnx",
+      "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/kokoro-v1.0.int8.onnx",
+      "sha256": "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c",
+      "distributed_with_game": false
+    },
+    {
+      "name": "voices-v1.0.bin",
+      "url": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/voices-v1.0.bin",
+      "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "distributed_with_game": false
+    }
+  ],
+  "input_sources": [
+    {
+      "file": "assets/audio/revision_v8/radio/manifest.json",
+      "sha256": "ef0292174870509e72706b1a46e90b1703a7e4a37451ebd9f59d1bade76a5242"
+    },
+    {
+      "file": "assets/audio/commander/manifest.json",
+      "sha256": "6156b809d54d6179b631cb9e84cf6f670a050d715350d9cc90cebdf33b4031db"
+    },
+    {
+      "file": "assets/audio/revision_v8/system/manifest.json",
+      "sha256": "220164e47b6ebe43a5f2adc985dc3bf698526ce741ddb3a9f2b801c32f3eacac"
+    },
+    {
+      "file": "tools/revision_v8_dialogue.py",
+      "sha256": "8b291daaeacca3bbbb8cdd17814184f8b0f2baaeea16f785ce94b07e30dc71e0"
+    }
+  ],
+  "bank_counts": {
+    "radio": 300,
+    "commander": 13,
+    "system": 2
+  },
+  "original_chinese_bank_count": 285,
+  "missing_radio_slots_restored": 15,
+  "profiles": {
+    "kestrel/infantry": {
+      "voice": "am_michael",
+      "speaker_identity": "am_michael",
+      "speaker_id": "kokoro/am_michael@speed=1.060",
+      "speaker_gender": "male",
+      "tempo": 1.06,
+      "accent": "en-us",
+      "direction": "Composed professional infantry leader",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "kestrel/vehicle": {
+      "voice": "bm_george",
+      "speaker_identity": "bm_george",
+      "speaker_id": "kokoro/bm_george@speed=1.020",
+      "speaker_gender": "male",
+      "tempo": 1.02,
+      "accent": "en-gb",
+      "direction": "Steady armored vehicle commander",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "kestrel/air": {
+      "voice": "af_kore",
+      "speaker_identity": "af_kore",
+      "speaker_id": "kokoro/af_kore@speed=1.080",
+      "speaker_gender": "female",
+      "tempo": 1.08,
+      "accent": "en-us",
+      "direction": "Crisp professional pilot",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "rivet/infantry": {
+      "voice": "am_fenrir",
+      "speaker_identity": "am_fenrir",
+      "speaker_id": "kokoro/am_fenrir@speed=1.060",
+      "speaker_gender": "male",
+      "tempo": 1.06,
+      "accent": "en-us",
+      "direction": "Direct heavy-assault infantry leader",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "rivet/vehicle": {
+      "voice": "am_onyx",
+      "speaker_identity": "am_onyx",
+      "speaker_id": "kokoro/am_onyx@speed=1.000",
+      "speaker_gender": "male",
+      "tempo": 1.0,
+      "accent": "en-us",
+      "direction": "Deliberate heavy armored commander",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "rivet/air": {
+      "voice": "am_puck",
+      "speaker_identity": "am_puck",
+      "speaker_id": "kokoro/am_puck@speed=1.080",
+      "speaker_gender": "male",
+      "tempo": 1.08,
+      "accent": "en-us",
+      "direction": "Decisive combat pilot",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "iron/infantry": {
+      "voice": "af_bella",
+      "speaker_identity": "af_bella",
+      "speaker_id": "kokoro/af_bella@speed=1.020",
+      "speaker_gender": "female",
+      "tempo": 1.02,
+      "accent": "en-us",
+      "direction": "Warm dependable field soldier",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "iron/vehicle": {
+      "voice": "bm_fable",
+      "speaker_identity": "bm_fable",
+      "speaker_id": "kokoro/bm_fable@speed=1.000",
+      "speaker_gender": "male",
+      "tempo": 1.0,
+      "accent": "en-gb",
+      "direction": "Practical industrial vehicle commander",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "iron/air": {
+      "voice": "bf_emma",
+      "speaker_identity": "bf_emma",
+      "speaker_id": "kokoro/bf_emma@speed=1.030",
+      "speaker_gender": "female",
+      "tempo": 1.03,
+      "accent": "en-gb",
+      "direction": "Calm maintenance-minded pilot",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "sky/infantry": {
+      "voice": "af_heart",
+      "speaker_identity": "af_heart",
+      "speaker_id": "kokoro/af_heart@speed=1.060",
+      "speaker_gender": "female",
+      "tempo": 1.06,
+      "accent": "en-us",
+      "direction": "Precise advanced-technology infantry specialist",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "sky/vehicle": {
+      "voice": "af_sarah",
+      "speaker_identity": "af_sarah",
+      "speaker_id": "kokoro/af_sarah@speed=1.020",
+      "speaker_gender": "female",
+      "tempo": 1.02,
+      "accent": "en-us",
+      "direction": "Focused advanced-technology vehicle operator",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    },
+    "sky/air": {
+      "voice": "af_nova",
+      "speaker_identity": "af_nova",
+      "speaker_id": "kokoro/af_nova@speed=1.080",
+      "speaker_gender": "female",
+      "tempo": 1.08,
+      "accent": "en-us",
+      "direction": "Agile advanced-technology pilot",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    }
+  },
+  "announcer": {
+    "voice": "af_aoede",
+    "speaker_identity": "af_aoede",
+    "speaker_id": "kokoro/af_aoede@speed=1.000",
+    "speaker_gender": "female",
+    "tempo": 1.0,
+    "accent": "en-us",
+    "direction": "Neutral tactical announcer",
+    "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+    "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+  },
+  "audio_processing": {
+    "sample_rate": 22050,
+    "channels": 1,
+    "sample_width": 2,
+    "radio_band_hz": [
+      105,
+      4700
+    ],
+    "announcer_band_hz": [
+      70,
+      7000
+    ],
+    "pitch_shift": 0,
+    "peak_target_radio": 0.53,
+    "peak_target_announcer": 0.6,
+    "trim": "Leading/trailing padding only"
+  },
+  "listening_audit": "Objective validation only; human listening audit not claimed.",
+  "generation_dependencies": {
+    "kokoro-onnx": "0.4.9",
+    "onnxruntime": "1.27.0",
+    "numpy": "2.5.0",
+    "phonemizer-fork": "3.3.2",
+    "espeakng-loader": "0.2.4"
+  },
+  "generator_sha256": "5c29a49a62a5d096f2d71520d5c053b18de3c2910c03ec88d7ef0e061e18b814",
+  "total_clips": 315,
+  "total_duration_s": 817.175,
+  "total_wav_bytes": 36051266
+}

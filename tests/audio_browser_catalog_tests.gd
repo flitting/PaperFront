@@ -19,9 +19,9 @@ func stream_paths(value: Variant, paths: Dictionary) -> void:
 
 func run() -> void:
 	var before_buses: int = AudioServer.bus_count
-	var rows: Array[Dictionary] = Catalog.load_catalog()
+	var rows: Array[Dictionary] = Catalog.load_catalog("zh_CN")
 	check(rows.size() == 366, "inventory contains all current287voices,74effects and5music files after15 obsolete-name retirements")
-	check(JSON.stringify(rows) == JSON.stringify(Catalog.load_catalog()), "catalog IDs/order/metadata are deterministic")
+	check(JSON.stringify(rows) == JSON.stringify(Catalog.load_catalog("zh_CN")), "catalog IDs/order/metadata are deterministic")
 	var ids: Dictionary = {}
 	var files: Dictionary = {}
 	var voice_groups: Dictionary = {}
@@ -56,7 +56,7 @@ func run() -> void:
 		check(voice_groups[group].files.size() == count and (count == 1 if group.begins_with("voice/system/") else count == 4 if group.ends_with("/death") else count in [2,3]), "catalog preserves distinct actual audio/text alternatives: " + group)
 	# Ground truth is the current audio node's post-override runtime banks. Generic
 	# fallback keys are deliberately absent from the routed-family list below.
-	var sound := PaperAudio.new()
+	var sound := PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	sound.set_process(false)

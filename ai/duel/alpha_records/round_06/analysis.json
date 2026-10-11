@@ -1,0 +1,236 @@
+{
+  "seed733_default_alpha_review.json": {
+    "finished": true,
+    "review_status": "completed",
+    "winner_if_finished": "beta",
+    "duration": 728.633333333328,
+    "income": 5231.666666666623,
+    "produced": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 9,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 9,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "phases": {
+      "assemble": 230,
+      "screen": 57,
+      "defend": 77
+    },
+    "failed_commands": 0,
+    "builds": [
+      [
+        15.499999999999956,
+        "kestrel_power"
+      ],
+      [
+        37.50000000000043,
+        "kestrel_refinery"
+      ],
+      [
+        49.49999999999975,
+        "kestrel_barracks"
+      ],
+      [
+        75.49999999999828,
+        "kestrel_factory"
+      ],
+      [
+        169.49999999999295,
+        "kestrel_power"
+      ],
+      [
+        249.4999999999884,
+        "kestrel_tower"
+      ],
+      [
+        307.500000000029,
+        "kestrel_refinery"
+      ]
+    ]
+  },
+  "seed734_default_alpha_review.json": {
+    "finished": true,
+    "review_status": "completed",
+    "winner_if_finished": "beta",
+    "duration": 728.633333333328,
+    "income": 5231.666666666623,
+    "produced": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 9,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 9,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "phases": {
+      "assemble": 230,
+      "screen": 57,
+      "defend": 77
+    },
+    "failed_commands": 0,
+    "builds": [
+      [
+        15.499999999999956,
+        "kestrel_power"
+      ],
+      [
+        37.50000000000043,
+        "kestrel_refinery"
+      ],
+      [
+        49.49999999999975,
+        "kestrel_barracks"
+      ],
+      [
+        75.49999999999828,
+        "kestrel_factory"
+      ],
+      [
+        169.49999999999295,
+        "kestrel_power"
+      ],
+      [
+        249.4999999999884,
+        "kestrel_tower"
+      ],
+      [
+        307.500000000029,
+        "kestrel_refinery"
+      ]
+    ]
+  },
+  "seed733_swap_continued_01_alpha_review.json": {
+    "finished": false,
+    "review_status": "unfinished",
+    "winner_if_finished": null,
+    "duration": 2399.999999998475,
+    "income": 4999.999999999955,
+    "produced": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 8,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 8,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "phases": {
+      "assemble": 1128,
+      "screen": 8,
+      "defend": 64
+    },
+    "failed_commands": 0,
+    "builds": [
+      [
+        15.499999999999956,
+        "kestrel_power"
+      ],
+      [
+        37.50000000000043,
+        "kestrel_refinery"
+      ],
+      [
+        49.49999999999975,
+        "kestrel_barracks"
+      ],
+      [
+        75.49999999999828,
+        "kestrel_factory"
+      ],
+      [
+        169.49999999999295,
+        "kestrel_power"
+      ],
+      [
+        249.4999999999884,
+        "kestrel_tower"
+      ],
+      [
+        307.500000000029,
+        "kestrel_refinery"
+      ]
+    ]
+  },
+  "seed734_swap_continued_01_alpha_review.json": {
+    "finished": false,
+    "review_status": "unfinished",
+    "winner_if_finished": null,
+    "duration": 2399.999999998475,
+    "income": 4999.999999999955,
+    "produced": {
+      "kestrel_anti": 2,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 8,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "lost": {
+      "kestrel_anti": 2,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 8,
+      "kestrel_rifle": 2,
+      "kestrel_tank": 1
+    },
+    "phases": {
+      "assemble": 1128,
+      "screen": 8,
+      "defend": 64
+    },
+    "failed_commands": 0,
+    "builds": [
+      [
+        15.499999999999956,
+        "kestrel_power"
+      ],
+      [
+        37.50000000000043,
+        "kestrel_refinery"
+      ],
+      [
+        49.49999999999975,
+        "kestrel_barracks"
+      ],
+      [
+        75.49999999999828,
+        "kestrel_factory"
+      ],
+      [
+        169.49999999999295,
+        "kestrel_power"
+      ],
+      [
+        249.4999999999884,
+        "kestrel_tower"
+      ],
+      [
+        307.500000000029,
+        "kestrel_refinery"
+      ]
+    ]
+  }
+}

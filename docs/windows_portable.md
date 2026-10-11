@@ -1,33 +1,57 @@
-# Windows x64 免安装发行包
+# Windows portable release / Windows 免安装版
 
-本轮从 Linux 构建 Godot 4.6.2 的 Windows release 程序，并用 MinGW-w64 编译项目原生扩展。正式包使用 `Windows Portable` preset；只加入 `portable` 特征，不加入 `development`。
+The Windows x86_64 player build uses Godot 4.6.2 and the `Windows Portable` export profile, together with a MinGW-w64-built native extension. It has the `portable` feature, without the development feature.
 
-解压后双击根目录 `PaperFront.exe`。它是便携启动入口，内含项目图标，按普通用户权限运行；真正的 Godot 程序及游戏资源位于 `bin/PaperFrontRuntime.exe`，原生扩展位于同目录 `paper_front_kernels.dll`。不要直接启动内部 runtime。
-
-启动入口在引擎初始化之前设置子进程的数据、缓存和临时目录；不会修改系统环境变量。对应 `application/config/use_custom_user_dir.portable` 和 `custom_user_dir_name.portable` 使 `user://` 指向本份解压目录的 `user_data/`。Linux 源码与编辑器继续使用原有用户数据路径。
+Extract the entire ZIP to a folder you can write to, then double-click **`PaperFront.exe`** at its root. The launcher sets the child process's data/cache/temp locations before Godot starts and forwards arguments. It does not change system-wide environment variables.
 
 ```text
-PaperFront-v7-windows-x86_64-portable/
+PaperFront-v0.8.0-windows-x86_64/
 ├── PaperFront.exe
 ├── bin/
-│   ├── PaperFrontRuntime.exe    # 内嵌游戏资源
+│   ├── PaperFrontRuntime.exe
 │   └── paper_front_kernels.dll
-├── user_data/                  # 出厂只有说明；运行后生成数据
-├── README.txt
+├── START_HERE.txt
 ├── CREDITS.md
-├── BUILD.sha256
+├── FILES.sha256
+├── BUILD_INFO.json
 ├── LICENSES/
 ├── PROVENANCE/
-├── VALIDATION/
-└── SOURCE/espeak-ng/            # 中文合成应答的对应源材料
+└── user_data/                  # Created when the game runs
 ```
 
-游戏存档为 `user_data/skirmish_v1.pfront`（F5 保存、F9 读取）；设置为 `user_data/settings.cfg`。地形缓存、图形缓存、日志与临时文件也在 `user_data/` 下。退出游戏后删除 `user_data/` 可重置本份游戏；删除整个解压目录可移除这份游戏和游戏数据。移动整个目录会一同带走存档。独立解压的副本相互隔离，不附带开发者存档。
+Use the root launcher so portable storage works correctly. Keep the runtime and native DLL together; launching from inside the ZIP is unsupported. Godot, a compiler and separate MinGW runtime DLLs do not need installation. The default Forward+ renderer needs Vulkan-capable graphics and current drivers; Windows 10/11 x64 is the target platform.
 
-需要 Windows 10/11 x64、支持 Vulkan 的显卡及驱动，并将游戏解压到当前用户可写入的目录。无需安装 Godot、编译器或额外 MinGW 运行库。
+## Data and removal / 数据与卸载
 
-构建入口为 `tools/build_native_windows.sh`、`tools/build_portable_launcher.sh`、Godot 的 `Windows Portable` preset，封装入口为 `tools/package_windows_portable.py`。本机免 root 的 MinGW 工具链位于 `artifacts/toolchains/mingw-w64/usr/bin`；可通过 `PAPER_FRONT_MINGW_BIN` 指定它。打包器检查 Windows PE 架构、PCK 中排除的开发资源及旧语音、构建记录与实际二进制 SHA，然后创建干净数据目录和 ZIP。
+| Data | Path inside the extracted folder |
+|---|---|
+| Save / 存档 | `user_data/skirmish_v1.pfront` |
+| Preferences / 设置 | `user_data/settings.cfg` |
+| Match reports / 对局报告 | `user_data/match_reports/` |
+| Godot log / 日志 | `user_data/logs/godot.log` |
+| Generated cache / 缓存 | `user_data/cache/` and other engine-generated cache folders |
+| Temporary files / 临时文件 | `user_data/tmp/` |
 
-本轮的确切二进制、模板、源文件和工具链记录在 `artifacts/windows_portable/` 及包内 `PROVENANCE/`。实际 Windows 二进制的 Wine 验证范围在包内 `VALIDATION/`；它不等同于 Windows 实机、真实显卡性能、物理音频或完整游玩验收。
+Exit before moving or removing data. Copy the whole folder to carry saves with it. Separate extracted copies have isolated data. Preserve `user_data/` when upgrading; deleting it resets that copy's settings and saves. Deleting the entire extracted folder removes that copy of the game and its portable data.
 
-曾使用旧 Wine 的模板预检产生异常调试窗口，已终止本轮所有残留进程。后续验证改为 WineHQ 11 的独立 Xvfb 显示、禁止调试器弹窗、有限执行时长和最终进程清理，避免干扰用户桌面。
+## Building and verification / 构建与验证
+
+From Linux:
+
+```sh
+python3 tools/build_release.py --version 0.8.0 --output artifacts/release_20261011
+```
+
+Requirements are Godot 4.6.2 with matching export templates, CMake, Python 3, the MinGW-w64 POSIX x86_64 toolchain, ImageMagick and Pillow. `PAPER_FRONT_GODOT` selects the engine; `PAPER_FRONT_MINGW_BIN` can select an unpacked toolchain. The build script calls `tools/build_native_windows.sh`, `tools/build_portable_launcher.sh` and the Windows export preset, then packages runtime files, license notices, provenance and checksums.
+
+The native extension statically links the relevant compiler runtimes. The build checks imports so the player does not need `libstdc++-6.dll`, `libgcc_s_seh-1.dll` or `libwinpthread-1.dll` as loose files.
+
+See [release notes](release_notes.md) for checks actually performed. Cross-compilation and Wine checks are distinct from a Windows machine's GPU/driver, audio and complete play testing; do not describe them as Windows hardware validation.
+
+## 中文使用说明
+
+完整解压到可写文件夹，双击根目录 **`PaperFront.exe`**；不要直接运行内部 runtime，不要只移动 EXE，也不要在压缩包内启动。需要 Windows 10/11 x64 及支持 Vulkan 的显卡和驱动，无需另装 Godot 或编译器运行库。
+
+启动器仅为子进程设置便携目录，不改系统环境变量。存档、设置、日志、报告和缓存均留在本份解压目录的 `user_data/` 下。退出后可整体移动，升级时保留 `user_data/`；删除该目录会重置本份游戏数据，删除整个解压文件夹即可移除游戏。
+
+构建命令与要求见上文；具体检查范围见发布说明，不能把 Linux 交叉编译或 Wine 运行等同于 Windows 实机验收。

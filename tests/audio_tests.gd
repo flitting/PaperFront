@@ -9,7 +9,7 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
-	var sound := PaperAudio.new()
+	var sound := PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	for family in PaperAudio.VARIANT_BANKS:

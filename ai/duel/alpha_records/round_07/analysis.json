@@ -1,0 +1,350 @@
+{
+  "seed733_default_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 936.2333333331392,
+    "income": 16213.333333333201,
+    "produced": {
+      "kestrel_anti": 18,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 35,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "checkpoints": {
+      "320": {
+        "reason": "alpha_v5_income_before_budget phase=screen fighters=6 inf=5 vehicles=1 gathered=5 median=20.8 home_threat=526 money=1257 power_ready=true orders=4",
+        "own_lost": 8.0,
+        "enemy_lost": 8.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti",
+          "kestrel_marksman"
+        ]
+      },
+      "340": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=8 inf=7 vehicles=1 gathered=6 median=27.9 home_threat=0 money=777 power_ready=true orders=0",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "400": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=3 median=43.5 home_threat=0 money=673 power_ready=true orders=3",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "404": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=1 median=48.1 home_threat=0 money=433 power_ready=true orders=1",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": [
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank",
+          "kestrel_anti",
+          "kestrel_gunner",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti"
+        ]
+      },
+      "408": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=15 inf=15 vehicles=0 gathered=2 median=53.2 home_threat=0 money=255 power_ready=true orders=14",
+        "own_lost": 10.0,
+        "enemy_lost": 14.0,
+        "visible_units": [
+          "kestrel_tank",
+          "kestrel_gunner",
+          "kestrel_anti"
+        ]
+      },
+      "412": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=12 inf=12 vehicles=0 gathered=2 median=52.4 home_threat=0 money=77 power_ready=true orders=7",
+        "own_lost": 14.0,
+        "enemy_lost": 15.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti"
+        ]
+      },
+      "420": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=5 inf=5 vehicles=0 gathered=2 median=5.6 home_threat=0 money=77 power_ready=true orders=0",
+        "own_lost": 23.0,
+        "enemy_lost": 18.0,
+        "visible_units": []
+      }
+    }
+  },
+  "seed733_swap_alpha_review.json": {
+    "finished": false,
+    "winner_if_finished": null,
+    "duration": 1199.999999999566,
+    "income": 13499.999999999887,
+    "produced": {
+      "kestrel_anti": 16,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 28,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "checkpoints": {
+      "320": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=6 inf=5 vehicles=1 gathered=5 median=30.0 home_threat=0 money=1257 power_ready=true orders=2",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "340": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=8 inf=7 vehicles=1 gathered=7 median=27.9 home_threat=0 money=839 power_ready=true orders=0",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "400": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=2 median=48.5 home_threat=0 money=495 power_ready=true orders=3",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "404": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=15 inf=14 vehicles=1 gathered=2 median=53.2 home_threat=0 money=317 power_ready=true orders=7",
+        "own_lost": 10.0,
+        "enemy_lost": 16.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "408": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=11 inf=11 vehicles=0 gathered=2 median=51.5 home_threat=0 money=817 power_ready=true orders=6",
+        "own_lost": 15.0,
+        "enemy_lost": 18.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "412": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=7 inf=7 vehicles=0 gathered=1 median=32.0 home_threat=0 money=399 power_ready=true orders=2",
+        "own_lost": 20.0,
+        "enemy_lost": 19.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "420": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=9 inf=9 vehicles=0 gathered=3 median=31.0 home_threat=0 money=159 power_ready=true orders=4",
+        "own_lost": 20.0,
+        "enemy_lost": 21.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman"
+        ]
+      }
+    }
+  },
+  "seed734_default_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 936.2333333331392,
+    "income": 16213.333333333201,
+    "produced": {
+      "kestrel_anti": 18,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 35,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "checkpoints": {
+      "320": {
+        "reason": "alpha_v5_income_before_budget phase=screen fighters=6 inf=5 vehicles=1 gathered=5 median=20.8 home_threat=526 money=1257 power_ready=true orders=4",
+        "own_lost": 8.0,
+        "enemy_lost": 8.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti",
+          "kestrel_marksman"
+        ]
+      },
+      "340": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=8 inf=7 vehicles=1 gathered=6 median=27.9 home_threat=0 money=777 power_ready=true orders=0",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "400": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=3 median=43.5 home_threat=0 money=673 power_ready=true orders=3",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "404": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=1 median=48.1 home_threat=0 money=433 power_ready=true orders=1",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": [
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank",
+          "kestrel_anti",
+          "kestrel_gunner",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti"
+        ]
+      },
+      "408": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=15 inf=15 vehicles=0 gathered=2 median=53.2 home_threat=0 money=255 power_ready=true orders=14",
+        "own_lost": 10.0,
+        "enemy_lost": 14.0,
+        "visible_units": [
+          "kestrel_tank",
+          "kestrel_gunner",
+          "kestrel_anti"
+        ]
+      },
+      "412": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=12 inf=12 vehicles=0 gathered=2 median=52.4 home_threat=0 money=77 power_ready=true orders=7",
+        "own_lost": 14.0,
+        "enemy_lost": 15.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_anti"
+        ]
+      },
+      "420": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=5 inf=5 vehicles=0 gathered=2 median=5.6 home_threat=0 money=77 power_ready=true orders=0",
+        "own_lost": 23.0,
+        "enemy_lost": 18.0,
+        "visible_units": []
+      }
+    }
+  },
+  "seed734_swap_alpha_review.json": {
+    "finished": false,
+    "winner_if_finished": null,
+    "duration": 1199.999999999566,
+    "income": 13499.999999999887,
+    "produced": {
+      "kestrel_anti": 16,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 28,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "checkpoints": {
+      "320": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=6 inf=5 vehicles=1 gathered=5 median=30.0 home_threat=0 money=1257 power_ready=true orders=2",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "340": {
+        "reason": "alpha_v5_income_before_budget phase=assemble fighters=8 inf=7 vehicles=1 gathered=7 median=27.9 home_threat=0 money=839 power_ready=true orders=0",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "400": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=16 inf=15 vehicles=1 gathered=2 median=48.5 home_threat=0 money=495 power_ready=true orders=3",
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "visible_units": []
+      },
+      "404": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=15 inf=14 vehicles=1 gathered=2 median=53.2 home_threat=0 money=317 power_ready=true orders=7",
+        "own_lost": 10.0,
+        "enemy_lost": 16.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_anti",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "408": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=11 inf=11 vehicles=0 gathered=2 median=51.5 home_threat=0 money=817 power_ready=true orders=6",
+        "own_lost": 15.0,
+        "enemy_lost": 18.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "412": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=7 inf=7 vehicles=0 gathered=1 median=32.0 home_threat=0 money=399 power_ready=true orders=2",
+        "own_lost": 20.0,
+        "enemy_lost": 19.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_tank"
+        ]
+      },
+      "420": {
+        "reason": "alpha_v5_income_before_budget phase=advance fighters=9 inf=9 vehicles=0 gathered=3 median=31.0 home_threat=0 money=159 power_ready=true orders=4",
+        "own_lost": 20.0,
+        "enemy_lost": 21.0,
+        "visible_units": [
+          "kestrel_marksman",
+          "kestrel_marksman",
+          "kestrel_marksman"
+        ]
+      }
+    }
+  }
+}

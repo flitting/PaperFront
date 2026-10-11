@@ -161,7 +161,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 16,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 6,
+      "squad_role": "line"
     },
     "rivet_anti": {
       "name": "破甲兵",
@@ -239,7 +241,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 16,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "rivet_tank": {
       "name": "锤头坦克",
@@ -403,7 +407,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 16,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 1,
+      "squad_role": "engineer"
     },
     "rivet_assault": {
       "name": "理由炮",
@@ -493,7 +499,7 @@
     "kestrel_rifle": {
       "name": "步枪兵",
       "faction": "kestrel",
-      "cost": 76,
+      "cost": 110,
       "hp": 112,
       "speed": 3.08,
       "build_time": 3.6,
@@ -566,7 +572,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 5,
+      "squad_role": "line"
     },
     "kestrel_anti": {
       "name": "穿甲兵",
@@ -644,12 +652,14 @@
       "large_unit": false,
       "tier": 1,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "kestrel_tank": {
       "name": "答案坦克",
       "faction": "kestrel",
-      "cost": 646,
+      "cost": 780,
       "hp": 480,
       "speed": 3.85,
       "build_time": 12.8,
@@ -883,7 +893,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 1,
+      "squad_role": "engineer"
     },
     "kestrel_demolition": {
       "name": "爆破兵",
@@ -963,7 +975,9 @@
       "large_unit": false,
       "tier": 3,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 3,
+      "squad_role": "specialist"
     },
     "kestrel_scout": {
       "name": "巡逻车",
@@ -1946,7 +1960,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 10,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 1,
+      "squad_role": "engineer"
     },
     "iron_rifle": {
       "name": "钉枪兵",
@@ -2023,7 +2039,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 10,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 5,
+      "squad_role": "line"
     },
     "iron_anti": {
       "name": "反甲兵",
@@ -2100,7 +2118,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 10,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "iron_harvester": {
       "name": "矿车",
@@ -3221,15 +3241,17 @@
       "large_unit": false,
       "tier": 1,
       "armor": 8,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 1,
+      "squad_role": "engineer"
     },
     "sky_rifle": {
       "name": "勤务兵",
       "formal_name": "新版勤务兵",
       "faction": "sky",
       "art": "rifle",
-      "cost": 127,
-      "hp": 63,
+      "cost": 110,
+      "hp": 80,
       "speed": 3.0,
       "build_time": 5,
       "radius": 0.5,
@@ -3299,7 +3321,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 8,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "sky_anti": {
       "name": "导引兵",
@@ -3377,14 +3401,16 @@
       "large_unit": false,
       "tier": 1,
       "armor": 8,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "sky_harvester": {
       "name": "矿车",
       "formal_name": "辉晶分离勤务采集车",
       "faction": "sky",
       "art": "harvester",
-      "cost": 798,
+      "cost": 600,
       "hp": 351,
       "speed": 3.0,
       "build_time": 14,
@@ -3541,8 +3567,8 @@
       "formal_name": "按理必胜式试验坦克",
       "faction": "sky",
       "art": "tank",
-      "cost": 1265,
-      "hp": 405,
+      "cost": 900,
+      "hp": 480,
       "speed": 3.9,
       "build_time": 20,
       "radius": 1.0,
@@ -6178,7 +6204,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 16,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "rivet_grenadier": {
       "name": "震荡榴弹兵",
@@ -6256,7 +6284,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 16,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 4,
+      "squad_role": "line"
     },
     "kestrel_gunner": {
       "name": "班用机枪兵",
@@ -6334,7 +6364,9 @@
       "large_unit": false,
       "tier": 1,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 5,
+      "squad_role": "line"
     },
     "kestrel_marksman": {
       "name": "精确射手",
@@ -6412,7 +6444,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 2,
+      "squad_role": "sniper"
     },
     "kestrel_aa_infantry": {
       "name": "防空导弹兵",
@@ -6490,7 +6524,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 12,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 2,
+      "squad_role": "specialist"
     },
     "iron_marksman": {
       "name": "长钉狙击兵",
@@ -6567,7 +6603,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 10,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 2,
+      "squad_role": "sniper"
     },
     "iron_mortar": {
       "name": "轨道迫击炮兵",
@@ -6644,7 +6682,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 10,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 3,
+      "squad_role": "specialist"
     },
     "sky_storm": {
       "name": "脉冲步兵",
@@ -6722,7 +6762,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 8,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 2,
+      "squad_role": "specialist"
     },
     "sky_aa_infantry": {
       "name": "折翼导引兵",
@@ -6800,7 +6842,9 @@
       "large_unit": false,
       "tier": 2,
       "armor": 8,
-      "armor_family": "infantry"
+      "armor_family": "infantry",
+      "squad_size": 2,
+      "squad_role": "specialist"
     },
     "kestrel_helicopter": {
       "name": "协定武装直升机",
@@ -9687,7 +9731,7 @@
       "rebuildable": true,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/rivet_hq.png",
-      "armor": 110
+      "armor": 40
     },
     "rivet_power": {
       "name": "重型发电站",
@@ -9711,7 +9755,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/rivet_power.png",
-      "armor": 60
+      "armor": 40
     },
     "rivet_factory": {
       "name": "横向冲压厂",
@@ -9735,7 +9779,7 @@
       "vision_radius": 18,
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/rivet_factory.png",
-      "armor": 90
+      "armor": 40
     },
     "rivet_tower": {
       "name": "炮击守备塔",
@@ -9758,7 +9802,7 @@
       "description": "通电后自动攻击地面目标；不能替代防空单位。",
       "vision_radius": 18,
       "tier": 1,
-      "armor": 90
+      "armor": 80
     },
     "rivet_tech": {
       "name": "科尔钦压力研究院",
@@ -9783,7 +9827,7 @@
       "tier": 2,
       "unlocks_tier": 3,
       "portrait": "res://assets/cards/architecture_revision/rivet_tech.png",
-      "armor": 80
+      "armor": 40
     },
     "kestrel_hq": {
       "name": "原图总部",
@@ -9809,7 +9853,7 @@
       "local_power_radius": 12,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/kestrel_hq.png",
-      "armor": 110
+      "armor": 40
     },
     "kestrel_power": {
       "name": "标准发电站",
@@ -9833,7 +9877,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/kestrel_power.png",
-      "armor": 60
+      "armor": 40
     },
     "kestrel_refinery": {
       "name": "辉晶精炼厂",
@@ -9857,7 +9901,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/kestrel_refinery.png",
-      "armor": 80
+      "armor": 40
     },
     "kestrel_barracks": {
       "name": "正典兵营",
@@ -9881,7 +9925,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/kestrel_barracks.png",
-      "armor": 60
+      "armor": 40
     },
     "kestrel_factory": {
       "name": "拱架装配厂",
@@ -9905,7 +9949,7 @@
       "vision_radius": 18,
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/kestrel_factory.png",
-      "armor": 90
+      "armor": 40
     },
     "kestrel_tower": {
       "name": "连射守备塔",
@@ -9928,7 +9972,7 @@
       "description": "通电后自动攻击地面目标；不能替代防空单位。",
       "vision_radius": 18,
       "tier": 1,
-      "armor": 90
+      "armor": 80
     },
     "kestrel_tech": {
       "name": "开放校准所",
@@ -9953,7 +9997,7 @@
       "tier": 2,
       "unlocks_tier": 3,
       "portrait": "res://assets/cards/architecture_revision/kestrel_tech.png",
-      "armor": 80
+      "armor": 40
     },
     "rivet_wall": {
       "name": "防御围墙",
@@ -9975,7 +10019,7 @@
       "formal_name": "防御围墙",
       "description": "每格独立计费，阻挡所有地面单位；飞机可越过。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "rivet_barricade": {
       "name": "反坦克拒马",
@@ -9997,7 +10041,7 @@
       "formal_name": "反坦克拒马",
       "description": "阻挡车辆，步兵缓慢穿越；飞机不受影响。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "kestrel_wall": {
       "name": "防御围墙",
@@ -10019,7 +10063,7 @@
       "formal_name": "防御围墙",
       "description": "每格独立计费，阻挡所有地面单位；飞机可越过。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "kestrel_barricade": {
       "name": "反坦克拒马",
@@ -10041,7 +10085,7 @@
       "formal_name": "反坦克拒马",
       "description": "阻挡车辆，步兵缓慢穿越；飞机不受影响。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "kestrel_outpost": {
       "name": "前线图台",
@@ -10065,7 +10109,7 @@
       "description": "工程兵选址并抵达后搭建低生命脚手架；现场施工逐步付款，受伤先维修、工兵阵亡后可接手或拆除，完工后授权前线建设。",
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/kestrel_outpost.png",
-      "armor": 60
+      "armor": 40
     },
     "kestrel_airfield": {
       "name": "航向航空站",
@@ -10091,7 +10135,7 @@
       "vision_radius": 18,
       "parking_slots": 4,
       "tier": 1,
-      "armor": 60
+      "armor": 40
     },
     "rivet_airfield": {
       "name": "重载航空站",
@@ -10117,7 +10161,7 @@
       "vision_radius": 18,
       "parking_slots": 4,
       "tier": 1,
-      "armor": 60
+      "armor": 40
     },
     "iron_hq": {
       "name": "总工坊",
@@ -10143,7 +10187,7 @@
       "local_power_radius": 12,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/iron_hq.png",
-      "armor": 110
+      "armor": 40
     },
     "iron_power": {
       "name": "锅炉发电站",
@@ -10167,7 +10211,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/iron_power.png",
-      "armor": 60
+      "armor": 40
     },
     "iron_refinery": {
       "name": "筛选精炼厂",
@@ -10191,7 +10235,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/iron_refinery.png",
-      "armor": 80
+      "armor": 40
     },
     "iron_barracks": {
       "name": "守备兵营",
@@ -10215,7 +10259,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/iron_barracks.png",
-      "armor": 60
+      "armor": 40
     },
     "iron_factory": {
       "name": "装配工厂",
@@ -10239,7 +10283,7 @@
       "vision_radius": 18,
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/iron_factory.png",
-      "armor": 90
+      "armor": 40
     },
     "iron_tech": {
       "name": "耐久机工研究院",
@@ -10264,7 +10308,7 @@
       "tier": 2,
       "unlocks_tier": 3,
       "portrait": "res://assets/cards/architecture_revision/iron_tech.png",
-      "armor": 80
+      "armor": 40
     },
     "iron_airfield": {
       "name": "野战机场",
@@ -10290,7 +10334,7 @@
       "vision_radius": 18,
       "parking_slots": 4,
       "tier": 1,
-      "armor": 60
+      "armor": 40
     },
     "iron_outpost": {
       "name": "前线工坊",
@@ -10314,7 +10358,7 @@
       "description": "工兵搭建的前线建设节点，完工后扩展基地授权与建设范围；仍遵守现有现场施工规则。",
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/iron_outpost.png",
-      "armor": 60
+      "armor": 40
     },
     "iron_tower": {
       "name": "机枪堡",
@@ -10340,7 +10384,7 @@
       "fire_while_moving": false,
       "vision_radius": 18,
       "tier": 1,
-      "armor": 90
+      "armor": 80
     },
     "iron_aa_tower": {
       "name": "护场防空台",
@@ -10367,16 +10411,16 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/iron_aa_tower.png",
-      "armor": 90
+      "armor": 80
     },
     "iron_anti_tower": {
       "name": "守门炮座",
       "formal_name": "守门炮座",
       "faction": "iron",
       "art": "anti_tower",
-      "cost": 750,
+      "cost": 950,
       "hp": 1100,
-      "build_time": 18,
+      "build_time": 27.0,
       "power": -55,
       "size": 3,
       "requires": [],
@@ -10393,7 +10437,7 @@
       "fire_while_moving": false,
       "vision_radius": 18,
       "tier": 3,
-      "armor": 90
+      "armor": 100
     },
     "iron_wall": {
       "name": "铆接围墙",
@@ -10415,7 +10459,7 @@
       },
       "description": "模块围墙与闸门构型，沿用地面阻挡与逐格计费；闸门开闭机制尚未接入。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "sky_hq": {
       "name": "展翼总部",
@@ -10441,7 +10485,7 @@
       "local_power_radius": 12,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/sky_hq.png",
-      "armor": 110
+      "armor": 40
     },
     "sky_power": {
       "name": "励磁发电站",
@@ -10465,14 +10509,14 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/sky_power.png",
-      "armor": 60
+      "armor": 40
     },
     "sky_refinery": {
       "name": "辉晶分离站",
       "formal_name": "辉晶分离站",
       "faction": "sky",
       "art": "refinery",
-      "cost": 1550,
+      "cost": 1350,
       "hp": 1360,
       "build_time": 24,
       "power": -65,
@@ -10489,7 +10533,7 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/sky_refinery.png",
-      "armor": 80
+      "armor": 40
     },
     "sky_barracks": {
       "name": "勤务兵营",
@@ -10513,14 +10557,14 @@
       "vision_radius": 18,
       "tier": 0,
       "portrait": "res://assets/cards/architecture_revision/sky_barracks.png",
-      "armor": 60
+      "armor": 40
     },
     "sky_factory": {
       "name": "试制工厂",
       "formal_name": "试制工厂",
       "faction": "sky",
       "art": "factory",
-      "cost": 1350,
+      "cost": 1200,
       "hp": 1572,
       "build_time": 27,
       "power": -105,
@@ -10537,7 +10581,7 @@
       "vision_radius": 18,
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/sky_factory.png",
-      "armor": 90
+      "armor": 40
     },
     "sky_tech": {
       "name": "续稿科技研究所",
@@ -10562,7 +10606,7 @@
       "tier": 2,
       "unlocks_tier": 3,
       "portrait": "res://assets/cards/architecture_revision/sky_tech.png",
-      "armor": 80
+      "armor": 40
     },
     "sky_airfield": {
       "name": "展翼机场",
@@ -10588,7 +10632,7 @@
       "vision_radius": 18,
       "parking_slots": 4,
       "tier": 1,
-      "armor": 60
+      "armor": 40
     },
     "sky_outpost": {
       "name": "前线翼站",
@@ -10612,7 +10656,7 @@
       "description": "工兵搭建的前线建设节点，完工后扩展基地授权与建设范围；仍遵守现有现场施工规则。",
       "tier": 1,
       "portrait": "res://assets/cards/architecture_revision/sky_outpost.png",
-      "armor": 60
+      "armor": 40
     },
     "sky_tower": {
       "name": "哨戒枪座",
@@ -10638,7 +10682,7 @@
       "fire_while_moving": false,
       "vision_radius": 18,
       "tier": 1,
-      "armor": 90
+      "armor": 80
     },
     "sky_aa_tower": {
       "name": "截空炮台",
@@ -10665,16 +10709,16 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/sky_aa_tower.png",
-      "armor": 90
+      "armor": 80
     },
     "sky_anti_tower": {
       "name": "聚焦炮座",
       "formal_name": "聚焦炮座",
       "faction": "sky",
       "art": "anti_tower",
-      "cost": 900,
+      "cost": 1125,
       "hp": 680,
-      "build_time": 18,
+      "build_time": 27.0,
       "power": -80,
       "size": 3,
       "requires": [],
@@ -10691,7 +10735,7 @@
       "fire_while_moving": false,
       "vision_radius": 18,
       "tier": 3,
-      "armor": 90
+      "armor": 100
     },
     "sky_wall": {
       "name": "折板围墙",
@@ -10713,7 +10757,7 @@
       },
       "description": "模块围墙与闸门构型，沿用地面阻挡与逐格计费；闸门开闭机制尚未接入。",
       "tier": 0,
-      "armor": 120
+      "armor": 80
     },
     "rivet_shipyard": {
       "name": "钢铆船坞",
@@ -10739,7 +10783,7 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/rivet_shipyard.png",
-      "armor": 60
+      "armor": 40
     },
     "kestrel_shipyard": {
       "name": "标准船坞",
@@ -10765,7 +10809,7 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/kestrel_shipyard.png",
-      "armor": 60
+      "armor": 40
     },
     "iron_shipyard": {
       "name": "工匠船坞",
@@ -10791,7 +10835,7 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/iron_shipyard.png",
-      "armor": 60
+      "armor": 40
     },
     "sky_shipyard": {
       "name": "观测船坞",
@@ -10817,7 +10861,7 @@
       "vision_radius": 18,
       "tier": 2,
       "portrait": "res://assets/cards/architecture_revision/sky_shipyard.png",
-      "armor": 60
+      "armor": 40
     },
     "rivet_drill": {
       "name": "矿脉采掘钻机",
@@ -10842,7 +10886,7 @@
       },
       "portrait": "res://assets/cards/rts_revision/drill.png",
       "tier": 0,
-      "armor": 60
+      "armor": 40
     },
     "iron_rail": {
       "name": "铁路",
@@ -10867,7 +10911,7 @@
       },
       "portrait": "res://assets/cards/rts_revision/rail.png",
       "tier": 0,
-      "armor": 20
+      "armor": 0
     },
     "iron_rail_junction": {
       "name": "三向铁路岔道",
@@ -10892,7 +10936,7 @@
       },
       "portrait": "res://assets/cards/rts_revision/rail_junction.png",
       "tier": 0,
-      "armor": 20
+      "armor": 0
     },
     "kestrel_repair": {
       "name": "标准整备修理厂",
@@ -10917,7 +10961,7 @@
         "death": "res://assets/cards/architecture_revision/kestrel_repair.png"
       },
       "portrait": "res://assets/cards/architecture_revision/kestrel_repair.png",
-      "armor": 80
+      "armor": 40
     },
     "kestrel_advanced_tower": {
       "name": "远程精确炮塔",
@@ -10926,9 +10970,9 @@
       "art": "advanced_tower",
       "role": "tower",
       "tier": 2,
-      "cost": 1000,
+      "cost": 1250,
       "hp": 1050,
-      "build_time": 22,
+      "build_time": 33.0,
       "power": -65,
       "size": 3,
       "requires": [],
@@ -10941,7 +10985,7 @@
         "death": "res://assets/cards/architecture_revision/kestrel_advanced_tower.png"
       },
       "portrait": "res://assets/cards/architecture_revision/kestrel_advanced_tower.png",
-      "armor": 90
+      "armor": 100
     },
     "rivet_repair": {
       "name": "重锤装甲修理厂",
@@ -10966,7 +11010,7 @@
         "death": "res://assets/cards/architecture_revision/rivet_repair.png"
       },
       "portrait": "res://assets/cards/architecture_revision/rivet_repair.png",
-      "armor": 80
+      "armor": 40
     },
     "rivet_advanced_tower": {
       "name": "重轰堡垒炮塔",
@@ -10975,9 +11019,9 @@
       "art": "advanced_tower",
       "role": "tower",
       "tier": 2,
-      "cost": 1200,
+      "cost": 1500,
       "hp": 1500,
-      "build_time": 22,
+      "build_time": 33.0,
       "power": -65,
       "size": 3,
       "requires": [],
@@ -10990,7 +11034,7 @@
         "death": "res://assets/cards/architecture_revision/rivet_advanced_tower.png"
       },
       "portrait": "res://assets/cards/architecture_revision/rivet_advanced_tower.png",
-      "armor": 90
+      "armor": 100
     },
     "iron_repair": {
       "name": "轨道机务修理厂",
@@ -11015,7 +11059,7 @@
         "death": "res://assets/cards/architecture_revision/iron_repair.png"
       },
       "portrait": "res://assets/cards/architecture_revision/iron_repair.png",
-      "armor": 80
+      "armor": 40
     },
     "iron_advanced_tower": {
       "name": "蒸汽重炮塔",
@@ -11024,9 +11068,9 @@
       "art": "advanced_tower",
       "role": "tower",
       "tier": 2,
-      "cost": 1100,
+      "cost": 1375,
       "hp": 1400,
-      "build_time": 22,
+      "build_time": 33.0,
       "power": -65,
       "size": 3,
       "requires": [],
@@ -11039,7 +11083,7 @@
         "death": "res://assets/cards/architecture_revision/iron_advanced_tower.png"
       },
       "portrait": "res://assets/cards/architecture_revision/iron_advanced_tower.png",
-      "armor": 90
+      "armor": 100
     },
     "sky_repair": {
       "name": "纳米校准修理厂",
@@ -11064,7 +11108,7 @@
         "death": "res://assets/cards/architecture_revision/sky_repair.png"
       },
       "portrait": "res://assets/cards/architecture_revision/sky_repair.png",
-      "armor": 80
+      "armor": 40
     },
     "sky_advanced_tower": {
       "name": "棱镜束流炮塔",
@@ -11073,9 +11117,9 @@
       "art": "advanced_tower",
       "role": "tower",
       "tier": 2,
-      "cost": 1350,
+      "cost": 1700,
       "hp": 850,
-      "build_time": 22,
+      "build_time": 33.0,
       "power": -65,
       "size": 3,
       "requires": [],
@@ -11088,7 +11132,7 @@
         "death": "res://assets/cards/architecture_revision/sky_advanced_tower.png"
       },
       "portrait": "res://assets/cards/architecture_revision/sky_advanced_tower.png",
-      "armor": 90
+      "armor": 100
     },
     "kestrel_aa_tower": {
       "name": "双联防空炮塔",
@@ -11112,7 +11156,7 @@
         "death": "res://assets/cards/architecture_revision/kestrel_aa_tower.png"
       },
       "portrait": "res://assets/cards/architecture_revision/kestrel_aa_tower.png",
-      "armor": 90
+      "armor": 80
     },
     "sky_advanced_power": {
       "name": "聚变辉晶发电站",
@@ -11136,7 +11180,7 @@
         "death": "res://assets/cards/architecture_revision/sky_advanced_power.png"
       },
       "portrait": "res://assets/cards/architecture_revision/sky_advanced_power.png",
-      "armor": 60
+      "armor": 40
     }
   },
   "weapons": {
@@ -11179,7 +11223,10 @@
       ],
       "penetration": 120,
       "damage_type": "explosive",
-      "aoe_falloff": "linear"
+      "aoe_falloff": "linear",
+      "multipliers": {
+        "infantry": 0.4
+      }
     },
     "kestrel_anti": {
       "damage": 112.5,
@@ -11194,7 +11241,10 @@
       ],
       "penetration": 120,
       "damage_type": "explosive",
-      "aoe_falloff": "linear"
+      "aoe_falloff": "linear",
+      "multipliers": {
+        "infantry": 0.4
+      }
     },
     "rivet_tank": {
       "damage": 90,
@@ -11244,10 +11294,13 @@
       ],
       "penetration": 100,
       "damage_type": "explosive",
-      "aoe_falloff": "linear"
+      "aoe_falloff": "linear",
+      "multipliers": {
+        "infantry": 0.3
+      }
     },
     "kestrel_demolition": {
-      "damage": 90,
+      "damage": 80,
       "interval": 2.8,
       "range": 7,
       "kind": "shell",
@@ -11347,7 +11400,7 @@
       "multipliers": {
         "building": 1.2,
         "armored": 1.5,
-        "infantry": 0.65
+        "infantry": 0.2
       },
       "penetration": 140,
       "damage_type": "explosive",
@@ -11413,7 +11466,7 @@
       "multipliers": {
         "building": 1.7,
         "armored": 1.15,
-        "infantry": 0.65
+        "infantry": 0.2
       },
       "penetration": 140,
       "damage_type": "explosive",
@@ -11430,7 +11483,9 @@
         "ground",
         "naval"
       ],
-      "multipliers": {},
+      "multipliers": {
+        "infantry": 0.45
+      },
       "penetration": 110,
       "damage_type": "explosive",
       "aoe_falloff": "linear"
@@ -11447,7 +11502,7 @@
       ],
       "multipliers": {
         "armored": 1.4,
-        "infantry": 0.65
+        "infantry": 0.4
       },
       "penetration": 120,
       "damage_type": "explosive",
@@ -11465,7 +11520,8 @@
       ],
       "multipliers": {
         "building": 1.4,
-        "armored": 0.85
+        "armored": 0.85,
+        "infantry": 0.28
       },
       "penetration": 120,
       "damage_type": "explosive",
@@ -11502,7 +11558,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.55,
+        "infantry": 0.5,
         "armored": 1.2,
         "building": 0.85
       },
@@ -11590,7 +11646,9 @@
         "ground",
         "naval"
       ],
-      "multipliers": {},
+      "multipliers": {
+        "infantry": 0.45
+      },
       "penetration": 110,
       "damage_type": "explosive",
       "aoe_falloff": "linear"
@@ -11620,7 +11678,7 @@
         "ground"
       ],
       "multipliers": {
-        "infantry": 1.0,
+        "infantry": 0.45,
         "armored": 1.15,
         "building": 1.15
       },
@@ -11640,7 +11698,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.7,
+        "infantry": 0.2,
         "armored": 1.2,
         "building": 1.5
       },
@@ -11730,7 +11788,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.5,
+        "infantry": 0.45,
         "armored": 1.2,
         "building": 0.8
       },
@@ -11785,7 +11843,9 @@
         "ground",
         "naval"
       ],
-      "multipliers": {},
+      "multipliers": {
+        "infantry": 0.45
+      },
       "penetration": 110,
       "damage_type": "explosive",
       "aoe_falloff": "linear"
@@ -11839,7 +11899,7 @@
         "ground"
       ],
       "multipliers": {
-        "infantry": 0.8,
+        "infantry": 0.2,
         "armored": 1.3,
         "building": 1.2
       },
@@ -11872,7 +11932,7 @@
         "ground"
       ],
       "multipliers": {
-        "infantry": 0.6,
+        "infantry": 0.28,
         "armored": 1.45,
         "building": 1.05
       },
@@ -11923,7 +11983,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.45,
+        "infantry": 0.4,
         "armored": 1.5,
         "building": 1.1
       },
@@ -11961,7 +12021,7 @@
         "ground"
       ],
       "multipliers": {
-        "infantry": 0.65,
+        "infantry": 0.2,
         "building": 1.3
       },
       "penetration": 160,
@@ -12000,7 +12060,7 @@
         "air"
       ],
       "multipliers": {
-        "infantry": 0.65,
+        "infantry": 0.2,
         "building": 1.3
       },
       "penetration": 160,
@@ -12038,7 +12098,7 @@
         "ground"
       ],
       "multipliers": {
-        "infantry": 0.65,
+        "infantry": 0.2,
         "building": 1.3
       },
       "penetration": 160,
@@ -12077,7 +12137,7 @@
         "air"
       ],
       "multipliers": {
-        "infantry": 0.65,
+        "infantry": 0.2,
         "building": 1.3
       },
       "emp_vehicle_duration": 2.0,
@@ -12135,7 +12195,7 @@
       ],
       "multipliers": {
         "building": 1.5,
-        "infantry": 0.65,
+        "infantry": 0.2,
         "armored": 1.15
       },
       "penetration": 140,
@@ -12155,7 +12215,8 @@
       ],
       "multipliers": {
         "building": 1.4,
-        "armored": 0.85
+        "armored": 0.85,
+        "infantry": 0.2
       },
       "trajectory": "gravity_bomb",
       "gravity": 9.8,
@@ -12251,7 +12312,7 @@
       "multipliers": {
         "building": 1.2,
         "armored": 1.2,
-        "infantry": 0.75
+        "infantry": 0.25
       },
       "penetration": 125,
       "damage_type": "explosive",
@@ -12271,7 +12332,7 @@
       "multipliers": {
         "building": 1.2,
         "armored": 1.2,
-        "infantry": 0.75
+        "infantry": 0.25
       },
       "penetration": 125,
       "damage_type": "explosive",
@@ -12291,7 +12352,7 @@
       "multipliers": {
         "building": 1.2,
         "armored": 1.2,
-        "infantry": 0.75
+        "infantry": 0.25
       },
       "penetration": 125,
       "damage_type": "explosive",
@@ -12311,7 +12372,7 @@
       "multipliers": {
         "building": 1.2,
         "armored": 1.2,
-        "infantry": 0.75
+        "infantry": 0.25
       },
       "penetration": 125,
       "damage_type": "laser"
@@ -12401,7 +12462,7 @@
       }
     },
     "kestrel_marksman": {
-      "damage": 72,
+      "damage": 60,
       "interval": 2.9,
       "range": 11,
       "kind": "instant",
@@ -12432,7 +12493,7 @@
       "damage_type": "explosive"
     },
     "iron_marksman": {
-      "damage": 84,
+      "damage": 60,
       "interval": 3.2,
       "range": 12,
       "kind": "instant",
@@ -12561,7 +12622,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.45,
+        "infantry": 0.3,
         "building": 0.9
       },
       "penetration": 100,
@@ -12674,7 +12735,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.45,
+        "infantry": 0.3,
         "building": 0.9
       },
       "penetration": 100,
@@ -12787,7 +12848,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.45,
+        "infantry": 0.3,
         "building": 0.9
       },
       "penetration": 100,
@@ -12900,7 +12961,7 @@
         "naval"
       ],
       "multipliers": {
-        "infantry": 0.45,
+        "infantry": 0.3,
         "building": 0.9
       },
       "penetration": 100,
@@ -13044,7 +13105,9 @@
     "non_penetrating_damage_multiplier": 0.25,
     "aoe_falloff": "linear_damage_and_penetration",
     "aoe_distance": "nearest_target_surface",
-    "unarmored_default": 0
+    "unarmored_default": 0,
+    "partial_penetration_threshold": 0.8,
+    "partial_penetration_damage_multiplier": 0.5
   },
   "experience": {
     "threshold_cost_multiplier": 3.0,
@@ -13053,6 +13116,7 @@
     "attack_speed_multiplier": 1.1,
     "range_multiplier": 1.08,
     "armor_multiplier": 1.1,
-    "regen_fraction_per_second": 0.005
+    "regen_fraction_per_second": 0.005,
+    "veteran_kill_experience_multiplier": 2.0
   }
 }

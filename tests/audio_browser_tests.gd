@@ -45,7 +45,7 @@ func find_row(kind: String, action: String = "") -> Dictionary:
 func run() -> void:
 	root.size = Vector2i(1600, 900)
 	var original_buses: int = AudioServer.bus_count
-	sound = PaperAudio.new()
+	sound = PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	sound.configure_units(RulesLoader.load_rules())

@@ -26,6 +26,10 @@ static func destroyed(sim,victim:Dictionary,cause:Dictionary)->void:
 	var info:Dictionary=sim.data_for(victim.spec)
 	var value:float=float(info.get("cost",0))
 	if victim.has("construction"):value=float(victim.construction.get("spent",0))
+	# This reward affects experience only. Economic kill/loss telemetry keeps
+	# the target's original value, and legacy rule snapshots default to 1x.
+	if victim.get("kind", "") == "unit" and bool(victim.get("veteran", false)):
+		value *= multiplier(sim,"veteran_kill_experience_multiplier",1.0)
 	killer.experience_value=float(killer.get("experience_value",0))+value
 	var own_cost:float=float(sim.data_for(killer.spec).get("experience_cost",sim.data_for(killer.spec).cost))
 	if bool(killer.get("veteran",false)) or own_cost<=0 or float(killer.experience_value)<=own_cost*multiplier(sim,"threshold_cost_multiplier",3):return

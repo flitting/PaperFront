@@ -1,0 +1,640 @@
+[
+  {
+    "match": "seed733_default",
+    "team": 1,
+    "winner": "beta",
+    "duration": 1035.9666666663818,
+    "strategy_sha256": "2a00c0f75278378243a466b8c82dd7731d7c3385a45830efb500d1be610cff8d",
+    "first_attack_phase": 286.0000000000119,
+    "own_funds_earned": 30999.99999999976,
+    "enemy_funds_earned": 25432.4999999998,
+    "own_units_lost_value": 19455.0,
+    "enemy_units_lost_value": 24492.0,
+    "value_exchange_ratio": 1.258905165767155,
+    "own_buildings_lost": 0,
+    "own_harvesters_lost": 0,
+    "enemy_harvester_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 130,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 34,
+        "kind": "death",
+        "position": [
+          36.77289962768555,
+          110.77899932861328
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 871.5999999998646
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 130,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 8,
+        "kind": "death",
+        "position": [
+          32.852874755859375,
+          86.2825927734375
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 882.1666666665217
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 136,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          35.8452033996582,
+          110.48007202148438
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 889.899999999848
+      }
+    ],
+    "attacker_produced": [
+      {
+        "id": 92,
+        "kind": "produce",
+        "position": [
+          155.89999389648438,
+          114.9000015258789
+        ],
+        "spec": "kestrel_attacker",
+        "team": 1,
+        "time": 608.8000000001036
+      }
+    ],
+    "command_attempts": 469,
+    "command_failures": 0,
+    "max_sampled_miner_no_progress": 12.00000000000955,
+    "comparisons": [
+      {
+        "time": 119.99999999999575,
+        "own_earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "own_army": 1824.0,
+        "enemy_army": 1714.0,
+        "own_unit_loss": 0.0,
+        "enemy_unit_loss": 110.0
+      },
+      {
+        "time": 179.99999999999235,
+        "own_earned": 1499.9999999999868,
+        "enemy_earned": 1999.9999999999825,
+        "own_army": 2334.0,
+        "enemy_army": 2046.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 239.99999999998894,
+        "own_earned": 2999.9999999999736,
+        "enemy_earned": 3999.9999999999645,
+        "own_army": 2504.0,
+        "enemy_army": 3004.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 300.000000000023,
+        "own_earned": 4499.99999999996,
+        "enemy_earned": 4999.999999999955,
+        "own_army": 3540.0,
+        "enemy_army": 3514.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 420.0000000001185,
+        "own_earned": 8499.999999999924,
+        "enemy_earned": 8499.999999999924,
+        "own_army": 3829.0,
+        "enemy_army": 3500.0,
+        "own_unit_loss": 5166.0,
+        "enemy_unit_loss": 5429.0
+      },
+      {
+        "time": 600.0000000001116,
+        "own_earned": 15499.999999999873,
+        "enemy_earned": 14999.999999999876,
+        "own_army": 2856.0,
+        "enemy_army": 4001.0,
+        "own_unit_loss": 10661.0,
+        "enemy_unit_loss": 9426.0
+      },
+      {
+        "time": 799.9999999999297,
+        "own_earned": 21999.999999999825,
+        "enemy_earned": 23432.499999999814,
+        "own_army": 4452.0,
+        "enemy_army": 4184.0,
+        "own_unit_loss": 16595.0,
+        "enemy_unit_loss": 17395.0
+      },
+      {
+        "time": 999.9999999997478,
+        "own_earned": 29499.99999999977,
+        "enemy_earned": 25432.4999999998,
+        "own_army": 7295.0,
+        "enemy_army": 136.0,
+        "own_unit_loss": 19455.0,
+        "enemy_unit_loss": 24356.0
+      }
+    ]
+  },
+  {
+    "match": "seed733_swap",
+    "team": 0,
+    "winner": "beta",
+    "duration": 831.4999999999011,
+    "strategy_sha256": "2a00c0f75278378243a466b8c82dd7731d7c3385a45830efb500d1be610cff8d",
+    "first_attack_phase": 282.0000000000087,
+    "own_funds_earned": 23499.999999999814,
+    "enemy_funds_earned": 18779.16666666652,
+    "own_units_lost_value": 11980.0,
+    "enemy_units_lost_value": 18126.0,
+    "value_exchange_ratio": 1.5130217028380635,
+    "own_buildings_lost": 0,
+    "own_harvesters_lost": 0,
+    "enemy_harvester_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 93,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 32,
+        "kind": "death",
+        "position": [
+          153.5,
+          107.25004577636719
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 698.933333333355
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 108,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 7,
+        "kind": "death",
+        "position": [
+          152.09664916992188,
+          111.04118347167969
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 737.099999999987
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 103,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          169.740966796875,
+          95.70708465576172
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 738.9666666666519
+      }
+    ],
+    "attacker_produced": [
+      {
+        "id": 83,
+        "kind": "produce",
+        "position": [
+          32.900001525878906,
+          114.9000015258789
+        ],
+        "spec": "kestrel_attacker",
+        "team": 0,
+        "time": 558.8000000001491
+      }
+    ],
+    "command_attempts": 373,
+    "command_failures": 0,
+    "max_sampled_miner_no_progress": 12.00000000000955,
+    "comparisons": [
+      {
+        "time": 119.99999999999575,
+        "own_earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "own_army": 1824.0,
+        "enemy_army": 1824.0,
+        "own_unit_loss": 0.0,
+        "enemy_unit_loss": 0.0
+      },
+      {
+        "time": 179.99999999999235,
+        "own_earned": 1499.9999999999868,
+        "enemy_earned": 1999.9999999999825,
+        "own_army": 2494.0,
+        "enemy_army": 2046.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 239.99999999998894,
+        "own_earned": 2499.999999999978,
+        "enemy_earned": 3999.9999999999645,
+        "own_army": 3174.0,
+        "enemy_army": 3004.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 300.000000000023,
+        "own_earned": 3999.9999999999645,
+        "enemy_earned": 4999.999999999955,
+        "own_army": 4040.0,
+        "enemy_army": 3514.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 420.0000000001185,
+        "own_earned": 8499.999999999924,
+        "enemy_earned": 8999.99999999992,
+        "own_army": 3034.0,
+        "enemy_army": 3396.0,
+        "own_unit_loss": 4392.0,
+        "enemy_unit_loss": 5587.0
+      },
+      {
+        "time": 600.0000000001116,
+        "own_earned": 14499.99999999988,
+        "enemy_earned": 15545.833333333207,
+        "own_army": 4034.0,
+        "enemy_army": 3036.0,
+        "own_unit_loss": 9291.0,
+        "enemy_unit_loss": 10482.0
+      },
+      {
+        "time": 799.9999999999297,
+        "own_earned": 21999.999999999825,
+        "enemy_earned": 18779.16666666652,
+        "own_army": 7827.0,
+        "enemy_army": 136.0,
+        "own_unit_loss": 11980.0,
+        "enemy_unit_loss": 18126.0
+      }
+    ]
+  },
+  {
+    "match": "seed734_default",
+    "team": 1,
+    "winner": "beta",
+    "duration": 1035.9666666663818,
+    "strategy_sha256": "2a00c0f75278378243a466b8c82dd7731d7c3385a45830efb500d1be610cff8d",
+    "first_attack_phase": 286.0000000000119,
+    "own_funds_earned": 30999.99999999976,
+    "enemy_funds_earned": 25432.4999999998,
+    "own_units_lost_value": 19455.0,
+    "enemy_units_lost_value": 24492.0,
+    "value_exchange_ratio": 1.258905165767155,
+    "own_buildings_lost": 0,
+    "own_harvesters_lost": 0,
+    "enemy_harvester_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 130,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 34,
+        "kind": "death",
+        "position": [
+          36.77289962768555,
+          110.77899932861328
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 871.5999999998646
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 130,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 8,
+        "kind": "death",
+        "position": [
+          32.852874755859375,
+          86.2825927734375
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 882.1666666665217
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 136,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          35.8452033996582,
+          110.48007202148438
+        ],
+        "spec": "kestrel_harvester",
+        "team": 0,
+        "time": 889.899999999848
+      }
+    ],
+    "attacker_produced": [
+      {
+        "id": 92,
+        "kind": "produce",
+        "position": [
+          155.89999389648438,
+          114.9000015258789
+        ],
+        "spec": "kestrel_attacker",
+        "team": 1,
+        "time": 608.8000000001036
+      }
+    ],
+    "command_attempts": 469,
+    "command_failures": 0,
+    "max_sampled_miner_no_progress": 12.00000000000955,
+    "comparisons": [
+      {
+        "time": 119.99999999999575,
+        "own_earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "own_army": 1824.0,
+        "enemy_army": 1714.0,
+        "own_unit_loss": 0.0,
+        "enemy_unit_loss": 110.0
+      },
+      {
+        "time": 179.99999999999235,
+        "own_earned": 1499.9999999999868,
+        "enemy_earned": 1999.9999999999825,
+        "own_army": 2334.0,
+        "enemy_army": 2046.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 239.99999999998894,
+        "own_earned": 2999.9999999999736,
+        "enemy_earned": 3999.9999999999645,
+        "own_army": 2504.0,
+        "enemy_army": 3004.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 300.000000000023,
+        "own_earned": 4499.99999999996,
+        "enemy_earned": 4999.999999999955,
+        "own_army": 3540.0,
+        "enemy_army": 3514.0,
+        "own_unit_loss": 780.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 420.0000000001185,
+        "own_earned": 8499.999999999924,
+        "enemy_earned": 8499.999999999924,
+        "own_army": 3829.0,
+        "enemy_army": 3500.0,
+        "own_unit_loss": 5166.0,
+        "enemy_unit_loss": 5429.0
+      },
+      {
+        "time": 600.0000000001116,
+        "own_earned": 15499.999999999873,
+        "enemy_earned": 14999.999999999876,
+        "own_army": 2856.0,
+        "enemy_army": 4001.0,
+        "own_unit_loss": 10661.0,
+        "enemy_unit_loss": 9426.0
+      },
+      {
+        "time": 799.9999999999297,
+        "own_earned": 21999.999999999825,
+        "enemy_earned": 23432.499999999814,
+        "own_army": 4452.0,
+        "enemy_army": 4184.0,
+        "own_unit_loss": 16595.0,
+        "enemy_unit_loss": 17395.0
+      },
+      {
+        "time": 999.9999999997478,
+        "own_earned": 29499.99999999977,
+        "enemy_earned": 25432.4999999998,
+        "own_army": 7295.0,
+        "enemy_army": 136.0,
+        "own_unit_loss": 19455.0,
+        "enemy_unit_loss": 24356.0
+      }
+    ]
+  },
+  {
+    "match": "seed734_swap",
+    "team": 0,
+    "winner": "beta",
+    "duration": 831.4999999999011,
+    "strategy_sha256": "2a00c0f75278378243a466b8c82dd7731d7c3385a45830efb500d1be610cff8d",
+    "first_attack_phase": 282.0000000000087,
+    "own_funds_earned": 23499.999999999814,
+    "enemy_funds_earned": 18779.16666666652,
+    "own_units_lost_value": 11980.0,
+    "enemy_units_lost_value": 18126.0,
+    "value_exchange_ratio": 1.5130217028380635,
+    "own_buildings_lost": 0,
+    "own_harvesters_lost": 0,
+    "enemy_harvester_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 93,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 32,
+        "kind": "death",
+        "position": [
+          153.5,
+          107.25004577636719
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 698.933333333355
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 108,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 7,
+        "kind": "death",
+        "position": [
+          152.09664916992188,
+          111.04118347167969
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 737.099999999987
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 103,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          169.740966796875,
+          95.70708465576172
+        ],
+        "spec": "kestrel_harvester",
+        "team": 1,
+        "time": 738.9666666666519
+      }
+    ],
+    "attacker_produced": [
+      {
+        "id": 83,
+        "kind": "produce",
+        "position": [
+          32.900001525878906,
+          114.9000015258789
+        ],
+        "spec": "kestrel_attacker",
+        "team": 0,
+        "time": 558.8000000001491
+      }
+    ],
+    "command_attempts": 373,
+    "command_failures": 0,
+    "max_sampled_miner_no_progress": 12.00000000000955,
+    "comparisons": [
+      {
+        "time": 119.99999999999575,
+        "own_earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "own_army": 1824.0,
+        "enemy_army": 1824.0,
+        "own_unit_loss": 0.0,
+        "enemy_unit_loss": 0.0
+      },
+      {
+        "time": 179.99999999999235,
+        "own_earned": 1499.9999999999868,
+        "enemy_earned": 1999.9999999999825,
+        "own_army": 2494.0,
+        "enemy_army": 2046.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 239.99999999998894,
+        "own_earned": 2499.999999999978,
+        "enemy_earned": 3999.9999999999645,
+        "own_army": 3174.0,
+        "enemy_army": 3004.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 300.000000000023,
+        "own_earned": 3999.9999999999645,
+        "enemy_earned": 4999.999999999955,
+        "own_army": 4040.0,
+        "enemy_army": 3514.0,
+        "own_unit_loss": 110.0,
+        "enemy_unit_loss": 1178.0
+      },
+      {
+        "time": 420.0000000001185,
+        "own_earned": 8499.999999999924,
+        "enemy_earned": 8999.99999999992,
+        "own_army": 3034.0,
+        "enemy_army": 3396.0,
+        "own_unit_loss": 4392.0,
+        "enemy_unit_loss": 5587.0
+      },
+      {
+        "time": 600.0000000001116,
+        "own_earned": 14499.99999999988,
+        "enemy_earned": 15545.833333333207,
+        "own_army": 4034.0,
+        "enemy_army": 3036.0,
+        "own_unit_loss": 9291.0,
+        "enemy_unit_loss": 10482.0
+      },
+      {
+        "time": 799.9999999999297,
+        "own_earned": 21999.999999999825,
+        "enemy_earned": 18779.16666666652,
+        "own_army": 7827.0,
+        "enemy_army": 136.0,
+        "own_unit_loss": 11980.0,
+        "enemy_unit_loss": 18126.0
+      }
+    ]
+  }
+]

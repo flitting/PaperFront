@@ -6,7 +6,7 @@ extends RefCounted
 ## direct assignment to simulation.result. Ordinary startup does not run it.
 const SETTINGS_PATH := "user://settings.cfg"
 const EXTENSION_PATH := "res://assets/native/paper_front_kernels.gdextension"
-const MUSIC_TRACKS := ["menu", "battle", "battle_forest", "battle_desert", "battle_snow", "battle_city", "battle_random_city", "battle_islands", "battle_campaign", "win", "lose", "draw"]
+const CommanderVoice = preload("res://scripts/commander_voice.gd")
 
 static func run(owner_game: Node) -> int:
 	if "--verify-demo" not in OS.get_cmdline_user_args(): return 0
@@ -34,6 +34,7 @@ class RuntimeProbe extends RefCounted:
 		if evidence != null: entry.evidence = evidence
 		checks.append(entry)
 		if not ok: failures.append(label)
+		print("DEMO_CHECK ", "PASS " if ok else "FAIL ", label)
 
 	func frames(count: int = 3) -> void:
 		for _frame: int in range(count): await game.get_tree().process_frame
@@ -98,7 +99,7 @@ class RuntimeProbe extends RefCounted:
 	func wait_music(scene: String) -> bool:
 		var began: int = Time.get_ticks_msec()
 		var deadline: int = began + 6000
-		var track: String = game.audio.music.track_for_map(str(game.sim.map.mode)) if scene == "battle" else scene
+		var track: String = game.audio.music.track_for_map(str(game.sim.map.mode)) if scene == "battle" else "battle_calm" if scene in ["win", "lose", "draw"] else scene
 		while Time.get_ticks_msec() < deadline and not finished:
 			if Time.get_ticks_msec() - began >= 3000 and game.audio_scene == scene and game.audio.music.requested_scene == scene and game.audio.music.scene == scene and game.audio.music.requested_track == track and game.audio.music.active_track == track and game.audio.music.player.stream == game.audio.music.tracks.get(track) and game.audio.music.player.playing and game.audio.music.gain >= 0.99:
 				if not details.has("music_playback"): details.music_playback = {}
@@ -144,7 +145,7 @@ class RuntimeProbe extends RefCounted:
 	func resource_and_native_checks() -> void:
 		var identities: Dictionary = {}
 		var readable := true
-		for path: String in ["res://scripts/main.gd", "res://scripts/demo_runtime_validation.gd", "res://scripts/paper_audio.gd", "res://scripts/paper_music.gd", "res://scripts/paper_settings.gd", "res://data/rules.json", "res://assets/audio/music/manifest.json", PaperAudio.VOICE_MANIFEST, PaperAudio.SFX_MANIFEST, PaperMusic.REVISION_MANIFEST]:
+		for path: String in ["res://scripts/main.gd", "res://scripts/demo_runtime_validation.gd", "res://scripts/paper_audio.gd", "res://scripts/paper_music.gd", "res://scripts/paper_settings.gd", "res://data/rules.json", "res://assets/audio/music/manifest.json", PaperAudio.voice_manifest(game.audio.voice_language), PaperAudio.system_manifest(game.audio.voice_language), PaperAudio.SFX_MANIFEST, PaperMusic.REVISION_MANIFEST, PaperAudio.commander_manifest(game.audio.voice_language)]:
 			identities[path] = file_identity(path)
 			readable = not str(identities[path].sha256).is_empty() and readable
 		details.resources = identities
@@ -165,15 +166,15 @@ class RuntimeProbe extends RefCounted:
 		check(game.sim.native_kernels_enabled and game.world.native_batches_enabled and game.world.native_world_sync_enabled, "normal native simulation and rendering policies remain enabled")
 		var routing: Dictionary = {}
 		var routes_ok := true
-		for name: String in [PaperAudio.MASTER_BUS, PaperAudio.MUSIC_BUS, PaperAudio.BUS_NAME, PaperAudio.VOICE_BUS]:
+		for name: String in [PaperAudio.MASTER_BUS, PaperAudio.MUSIC_BUS, PaperAudio.BUS_NAME, PaperAudio.VOICE_BUS, CommanderVoice.BUS]:
 			var index: int = AudioServer.get_bus_index(name)
 			var send: String = str(AudioServer.get_bus_send(index)) if index >= 0 else "missing"
 			routing[name] = send
 			routes_ok = index >= 0 and send == ("Master" if name == PaperAudio.MASTER_BUS else PaperAudio.MASTER_BUS) and routes_ok
-		check(routes_ok and game.audio.music.player.bus == PaperAudio.MUSIC_BUS and game.audio.speech_player.bus == PaperAudio.VOICE_BUS, "four Demo buses route real music/response players through the Demo master", routing)
+		check(routes_ok and game.audio.music.player.bus == PaperAudio.MUSIC_BUS and game.audio.speech_player.bus == PaperAudio.VOICE_BUS and game.audio.commander.player.bus == CommanderVoice.BUS, "all five audio buses route real music, response and commander players through the master", routing)
 		var music_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/music/manifest.json"))
 		var revision_music_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(PaperMusic.REVISION_MANIFEST))
-		var radio_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(PaperAudio.VOICE_MANIFEST))
+		var radio_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(PaperAudio.voice_manifest(game.audio.voice_language)))
 		var licenses: Dictionary = {}
 		var licenses_ok := true
 		for path: String in ["res://assets/audio/licenses/ESPEAK_GPL-3.0.txt", "res://assets/audio/licenses/ESPEAK_DEBIAN_COPYRIGHT.txt", "res://assets/audio/licenses/UNICODE-LICENSE.txt"]:
@@ -181,32 +182,56 @@ class RuntimeProbe extends RefCounted:
 			licenses_ok = not str(licenses[path].sha256).is_empty() and licenses_ok
 		details.audio_provenance = {"music": music_manifest, "radio": radio_manifest, "music_revision": revision_music_manifest, "license_files": licenses}
 		check(music_manifest is Dictionary and music_manifest.get("license", "") == "CC0-1.0" and music_manifest.get("tracks", []).size() == 12, "music provenance identifies twelve project-authored CC0-1.0 tracks")
-		check(radio_manifest is Dictionary and not str(radio_manifest.get("license", "")).is_empty() and radio_manifest.get("clips", []).size() >= 288, "spoken class banks identify their actual provider provenance and generation terms", radio_manifest)
-		check(revision_music_manifest is Dictionary and revision_music_manifest.get("tracks", []).size() == 2 and not str(revision_music_manifest.get("license", "")).is_empty(), "menu and intense battle compositions record their actual generation provenance")
+		check(radio_manifest is Dictionary and not str(radio_manifest.get("license", "")).is_empty() and not radio_manifest.get("clips", []).is_empty(), "spoken class banks identify their actual provider provenance and generation terms", radio_manifest)
+		var music_metadata: Dictionary = {}
+		if revision_music_manifest is Dictionary:
+			for entry: Dictionary in revision_music_manifest.get("tracks", []):
+				music_metadata[str(entry.get("id", entry.get("scene", entry.get("name", ""))))] = entry
+		var expected_music: Array = PaperMusic.APPLIED_TRACKS.duplicate()
+		var manifest_music: Array = music_metadata.keys()
+		expected_music.sort()
+		manifest_music.sort()
+		check(manifest_music == expected_music and revision_music_manifest.get("tracks", []).size() == expected_music.size() and not str(revision_music_manifest.get("license", "")).is_empty(), "all five applied compositions record their actual generation provenance", manifest_music)
 		details.music = {}
-		check(game.audio.music.tracks.size() == 14, "all scenes, seven battlefield themes and both combat levels load")
+		var loaded_music: Array = game.audio.music.tracks.keys()
+		loaded_music.sort()
+		check(loaded_music == expected_music, "exactly the five applied music sources load; historical scene tracks stay inactive", loaded_music)
 		for track: String in game.audio.music.tracks:
 			var stream: Variant = game.audio.music.tracks.get(track)
 			var identity: Dictionary = pcm_identity(stream) if stream is AudioStreamWAV else {"missing": true}
-			identity.resource = file_identity((PaperMusic.REVISION_MANIFEST.get_base_dir() if track in ["menu"] + PaperMusic.BATTLE_TRACKS else "res://assets/audio/music") + "/%s.wav" % track)
+			identity.resource = file_identity(PaperMusic.REVISION_MUSIC_DIR + track + ".wav")
 			details.music[track] = identity
-			check(pcm_ok(stream, true), "bundled looping 16-bit PCM music: " + track, identity)
-		var radio_ok: bool = game.audio.radio_bank.size() >= 288 and game.audio.speech_clips.size() == 96
+			check(pcm_ok(stream, true) and absf(stream.get_length() - float(music_metadata.get(track, {}).get("duration_s", 0.0))) < .001, "bundled looping 16-bit PCM music matches its manifest: " + track, identity)
+		var radio_metadata: Dictionary = {}
+		var radio_groups: Dictionary = {}
+		if radio_manifest is Dictionary:
+			for entry: Dictionary in radio_manifest.get("clips", []):
+				var group: String = str(entry.get("faction", "")) + "/" + str(entry.get("category", "")) + "/" + str(entry.get("action", ""))
+				var key: String = group + "/" + str(int(entry.get("variant", 0)))
+				radio_metadata[key] = entry
+				radio_groups[group] = int(radio_groups.get(group, 0)) + 1
+		var radio_ok: bool = game.audio.radio_bank.size() == radio_metadata.size() and radio_metadata.size() == radio_manifest.get("clips", []).size() and game.audio.speech_clips.size() == 96 and radio_groups.size() == 96
 		details.radio = {}
 		for faction: String in ["kestrel", "rivet", "iron", "sky"]:
 			for category: String in PaperAudio.RADIO_CATEGORIES:
 				for action_id: String in PaperAudio.RADIO_ACTIONS:
 					var key: String = faction + "/" + category + "/" + action_id
 					var clips: Array = game.audio.speech_clips.get(key, [])
-					radio_ok = clips.size() >= 3 and clips.size() <= 4 and radio_ok
+					radio_ok = clips.size() == int(radio_groups.get(key, 0)) and (clips.size() == 4 if action_id == "death" else clips.size() in [2, 3]) and radio_ok
 					var variants: Array = []
+					var distinct_texts: Dictionary = {}
+					var distinct_pcm: Dictionary = {}
 					for clip: Dictionary in clips:
 						var stream: Variant = game.audio.radio_bank.get(str(clip.key))
 						var words: String = str(clip.get("text", ""))
-						radio_ok = pcm_ok(stream) and not words.is_empty() and not clip.get("provenance", {}).is_empty() and radio_ok
+						var metadata: Dictionary = radio_metadata.get(str(clip.key), {})
+						radio_ok = pcm_ok(stream) and not words.is_empty() and words == str(metadata.get("text", "")) and not clip.get("provenance", {}).is_empty() and clip.get("provenance", {}) == metadata.get("provenance", {}) and str(clip.get("speaker_id", "")) == str(game.audio.speech_profile_speakers.get(faction + "/" + category, "")) and radio_ok
 						var identity: Dictionary = pcm_identity(stream) if stream is AudioStreamWAV else {"missing": true}
 						identity.merge({"text": words, "language": clip.get("language", "cmn"), "provenance": clip.get("provenance", {}), "variant": clip.get("variant", 0)})
 						variants.append(identity)
+						distinct_texts[words] = true
+						distinct_pcm[str(identity.get("pcm_sha256", ""))] = true
+					radio_ok = distinct_texts.size() == clips.size() and distinct_pcm.size() == clips.size() and radio_ok
 					details.radio[key] = variants
 				game.audio.reset_field()
 				var spec := ""
@@ -226,7 +251,7 @@ class RuntimeProbe extends RefCounted:
 		var opened: bool = press_named(game.hud.entry_menu, "设置 · 声音与画面")
 		await frames()
 		if finished: return
-		check(opened and game.hud.settings.visible and game.hud.settings.sliders.size() == 4, "real entry settings control opens four audio sliders")
+		check(opened and game.hud.settings.visible and game.hud.settings.sliders.size() == PaperAudio.MIX_KEYS.size(), "real entry settings control opens every audio category slider")
 		for key: String in PaperAudio.MIX_KEYS:
 			var slider: HSlider = game.hud.settings.sliders.get(key)
 			if slider == null:
@@ -265,10 +290,10 @@ class RuntimeProbe extends RefCounted:
 		game.hud.refresh(game.sim, [], game.camera, game.dev_mode, "", 0.0)
 		var music_ok: bool = await wait_music(outcome)
 		details["settlement_" + outcome] = {"fixture": "building elimination via real simulation kill/result routines", "seed": seed_value, "removed_buildings": removed, "result": game.sim.result, "music_played": music_ok}
-		return game.sim.result == outcome and game.hud.end_panel.visible and music_ok
+		return game.sim.result == outcome and game.hud.scoreboard.visible and game.hud.scoreboard.displayed_result == outcome and game.hud.scoreboard.displayed_stats.teams.size() == game.sim.factions.size() and not game.hud.end_panel.visible and music_ok
 
 	func menu_flow_checks() -> void:
-		check(await start_fixture(73026) and game.sim.map.size == 48 and game.sim.counts(0).y == 1, "actual HUD start signal loads the small dev fixture with its normal headquarters")
+		check(await start_fixture(73026) and game.sim.map.size == 100 and int(game.sim.map.get("developer_layout", 0)) == 2 and game.sim.counts(0).y == 1, "actual HUD start signal loads the current 100-cell developer fixture with its normal headquarters")
 		if finished: return
 		check(await wait_music("battle"), "actual match lifecycle plays the bundled battle music")
 		if finished: return
@@ -278,20 +303,21 @@ class RuntimeProbe extends RefCounted:
 			var paused_inside: bool = game.pve_paused and game.hud.settings.visible
 			game.hud.settings.close_button.pressed.emit()
 			check(paused_inside and not game.hud.settings.visible and game.pve_paused == before, "real in-match settings restores the previous pause state: " + str(before))
-		check(await settle_fixture("win", 73027), "building-elimination win shows the real HUD and plays win PCM")
+		check(await settle_fixture("win", 73027), "building-elimination win shows the real scoreboard and plays the calm result score")
 		if finished: return
-		var restarted: bool = press_named(game.hud.end_panel, "再战一次")
-		check(restarted and await wait_match(73027) and not game.hud.end_panel.visible and await wait_music("battle"), "actual settlement restart returns to a fresh active match and battle PCM")
+		var new_battle: bool = press_named(game.hud.scoreboard, "新建战局")
+		check(new_battle and not game.hud.scoreboard.visible and game.hud.menu.visible and game.setup_session_active, "actual scoreboard new-battle control opens the match setup")
+		check(await start_fixture(73027) and not game.hud.scoreboard.visible and await wait_music("battle"), "a new match from settlement setup starts the dev fixture and plays calm battlefield music")
 		if finished: return
-		check(await settle_fixture("lose", 73028), "building-elimination loss shows the real HUD and plays lose PCM")
+		check(await settle_fixture("lose", 73028), "building-elimination loss shows the real scoreboard and plays the calm result score")
 		if finished: return
-		var home: bool = press_named(game.hud.end_panel, "返回主菜单")
-		check(home and game.hud.entry_menu.visible and not game.hud.end_panel.visible and not game.hud.entry_menu.resume_button.visible and await wait_music("menu"), "actual loss return opens the main menu without a finished-match resume action")
+		var home: bool = press_named(game.hud.scoreboard, "返回主菜单")
+		check(home and game.hud.entry_menu.visible and not game.hud.scoreboard.visible and not game.hud.entry_menu.resume_button.visible and await wait_music("menu"), "actual loss return opens the main menu without a finished-match resume action")
 		if finished: return
-		check(await settle_fixture("draw", 73029), "building-elimination draw shows the real HUD and plays draw PCM")
+		check(await settle_fixture("draw", 73029), "building-elimination draw shows the real scoreboard and plays the calm result score")
 		if finished: return
-		home = press_named(game.hud.end_panel, "返回主菜单")
-		check(home and game.hud.entry_menu.visible and not game.hud.end_panel.visible and not game.hud.entry_menu.resume_button.visible and await wait_music("menu"), "actual draw return opens the main menu and restores menu PCM")
+		home = press_named(game.hud.scoreboard, "返回主菜单")
+		check(home and game.hud.entry_menu.visible and not game.hud.scoreboard.visible and not game.hud.entry_menu.resume_button.visible and await wait_music("menu"), "actual draw return opens the main menu and restores menu PCM")
 
 	func finish() -> int:
 		if finished: return 1 if not failures.is_empty() else 0
@@ -357,15 +383,22 @@ class RuntimeProbe extends RefCounted:
 		await frames()
 		if finished: return 1
 		var dev_map_entry := false
+		var actual_map_ids: Array[String] = []
 		for index: int in range(game.hud.map_option.item_count):
-			if str(game.hud.map_option.get_item_metadata(index)) == "dev": dev_map_entry = true
+			var map_id: String = str(game.hud.map_option.get_item_metadata(index))
+			actual_map_ids.append(map_id)
+			if map_id == "dev": dev_map_entry = true
 		var startup_preferences := ConfigFile.new()
 		var expected_debug_enabled: bool = "--debug-panel" in arguments
 		if startup_preferences.load(SETTINGS_PATH) == OK:
 			expected_debug_enabled = bool(startup_preferences.get_value("debug", "enabled", expected_debug_enabled))
+		var expected_map_ids: Array[String] = []
+		for entry: Dictionary in BattlefieldCatalog.entries():
+			if str(entry.id) == "dev" and not expected_debug_enabled: continue
+			expected_map_ids.append(str(entry.id))
 		details.shipping_controls = {"debug_enabled_preference": expected_debug_enabled, "debug_available": game.debug_available, "debug_panel_visible": game.debug_panel.visible,
-			"debug_button_visible": game.hud.dev_button.visible, "dev_map_entry_present": dev_map_entry, "policy": "user opt-in in every build; disabled by default"}
-		var shipping_controls_ok: bool = game.debug_available == expected_debug_enabled and game.hud.debug_menu_enabled == expected_debug_enabled and dev_map_entry == expected_debug_enabled and not game.debug_panel.visible and (expected_debug_enabled or not game.hud.dev_button.visible) and game.hud.map_option.item_count == (7 if expected_debug_enabled else 6)
+			"debug_button_visible": game.hud.dev_button.visible, "dev_map_entry_present": dev_map_entry, "actual_map_ids": actual_map_ids, "expected_map_ids": expected_map_ids, "policy": "user opt-in in every build; disabled by default"}
+		var shipping_controls_ok: bool = game.debug_available == expected_debug_enabled and game.hud.debug_menu_enabled == expected_debug_enabled and dev_map_entry == expected_debug_enabled and not game.debug_panel.visible and (expected_debug_enabled or not game.hud.dev_button.visible) and actual_map_ids == expected_map_ids
 		check(game.hud.entry_menu.visible and not game.started and shipping_controls_ok, "initial entry respects the saved optional Debug preference and dev-map visibility", details.shipping_controls)
 		check(quality_matches_startup(), "startup respects declared or persisted render scale/quality without silent visual reductions", original_quality)
 		# Unmute only this opt-in controlled audition. Original bytes/mix are saved.

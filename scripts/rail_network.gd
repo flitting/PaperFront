@@ -180,10 +180,19 @@ func traversable_path(sim, e: Dictionary, start: Vector2, goal: Vector2) -> Arra
 		_validated_route_count += 1
 	var route: Array = routes[route_key]
 	if route.is_empty(): return []
+	var answer: Array = route.duplicate()
+	# A vehicle already part-way toward the next cell must not reverse back
+	# to the source centre first. That unnecessary reversal can be blocked by
+	# traffic behind it even though its checked forward rail segment is free.
+	if answer.size() > 1:
+		var source_center: Vector2 = answer[0]
+		var next_center: Vector2 = answer[1]
+		if (start-source_center).dot(next_center-source_center) > .00001 and Geometry2D.get_closest_point_to_segment(start,source_center,next_center).distance_to(start) <= .15 and sim._segment_static(start,next_center,radius,int(e.id)):
+			answer.pop_front()
 	# Subcell origins are never covered by a cell-keyed result. Recheck the real
 	# start connector for every caller; only immutable center-to-center legs share.
-	if not sim._segment_static(start, route[0], radius, int(e.id)): return []
-	return route.duplicate()
+	if not sim._segment_static(start, answer[0], radius, int(e.id)): return []
+	return answer
 
 func carrier_radius(sim, building: Dictionary) -> float:
 	var faction: String = str(sim.data_for(building.spec).get("faction", "iron"))
@@ -433,6 +442,7 @@ func ai_connect_factory(sim, building: Dictionary) -> bool:
 		if not cells.has(key(point)): cost += float(info.cost)
 	if float(sim.money[team]) < cost: return false
 	sim.money[team] -= cost
+	sim.statistics.add(team, "funds_spent", cost)
 	for point: Vector2 in route:
 		if not cells.has(key(point)): sim._spawn(team, "iron_rail", point, true)
 	return true

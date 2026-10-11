@@ -75,6 +75,18 @@ func run() -> void:
 	ground.path_goal = Vector2.INF
 	var dashes: Array[PackedVector2Array] = PATHS.dashed_segments(PackedVector2Array([Vector2.ZERO, Vector2(6,0), Vector2(20,0)]), 8, 5)
 	check(dashes.size() == 3 and dashes[1][1] == Vector2(8,0) and dashes[2][0] == Vector2(13,0), "dash phase continues across route vertices")
+	var stationary: Dictionary = ground.duplicate(true)
+	stationary.id = 10; stationary.squad_id = 10; stationary.state = "idle"
+	stationary.commands = []; stationary.path_goal = Vector2.INF
+	var moving: Dictionary = ground.duplicate(true)
+	moving.id = 11; moving.squad_id = 10; moving.state = "move"
+	moving.commands = [{"kind":"move","pos":Vector2(6,2)}]
+	var squad_entities: Dictionary = {10:stationary,11:moving}
+	var squad_routes: Array[Dictionary] = PATHS.selected_routes(squad_entities,[10,11],rules)
+	check(squad_routes.size() == 1 and int(squad_routes[0].id) == 11, "idle leader does not hide a moving squad member's intent route")
+	stationary.commands = [{"kind":"move","pos":Vector2(6,2)}]
+	stationary.state = "move"
+	check(PATHS.selected_routes(squad_entities,[10,11],rules).size() == 1, "several moving members still produce only one squad route")
 	var sim := WarSimulation.new()
 	sim.entities = entities
 	sim.rules = rules

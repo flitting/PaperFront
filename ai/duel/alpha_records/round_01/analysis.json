@@ -1,0 +1,456 @@
+{
+  "seed733_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 1035.9666666663818,
+    "phase_counts": {
+      "opening": 179,
+      "contest": 223,
+      "defend": 115
+    },
+    "funds_earned": 25432.4999999998,
+    "units_produced_by_spec": {
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 10,
+      "kestrel_scout": 6,
+      "kestrel_tank": 20
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 10,
+      "kestrel_scout": 6,
+      "kestrel_tank": 20
+    },
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 11,
+          "source_team": 1,
+          "weapon": "kestrel_rifle"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 12,
+        "kind": "death",
+        "position": [
+          135.5130157470703,
+          99.26081085205078
+        ],
+        "spec": "kestrel_rifle",
+        "team": 0,
+        "time": 119.66666666666244
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 14,
+        "kind": "death",
+        "position": [
+          134.73672485351562,
+          93.2513198852539
+        ],
+        "spec": "kestrel_rifle",
+        "team": 0,
+        "time": 121.49999999999567
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 16,
+        "kind": "death",
+        "position": [
+          131.63235473632812,
+          98.5360107421875
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 124.2999999999955
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          143.56858825683594,
+          92.908203125
+        ],
+        "spec": "kestrel_tank",
+        "team": 0,
+        "time": 132.69999999999504
+      }
+    ],
+    "low_power_seconds": 41.9666666666933,
+    "peak_infantry": 7.0,
+    "explicit_commands": 119,
+    "failed_commands": 0
+  },
+  "seed733_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 831.4999999999011,
+    "phase_counts": {
+      "opening": 138,
+      "contest": 176,
+      "defend": 101
+    },
+    "funds_earned": 18779.16666666652,
+    "units_produced_by_spec": {
+      "kestrel_aa": 1,
+      "kestrel_aa_infantry": 1,
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 12,
+      "kestrel_scout": 3,
+      "kestrel_tank": 13
+    },
+    "units_lost_by_spec": {
+      "kestrel_aa": 1,
+      "kestrel_aa_infantry": 1,
+      "kestrel_anti": 12,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 12,
+      "kestrel_scout": 3,
+      "kestrel_tank": 13
+    },
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 13,
+        "kind": "death",
+        "position": [
+          55.1552848815918,
+          93.5979995727539
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 120.69999999999571
+      },
+      {
+        "cause": {
+          "explosive": false,
+          "source": 12,
+          "source_team": 0,
+          "weapon": "kestrel_rifle"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 11,
+        "kind": "death",
+        "position": [
+          55.407649993896484,
+          99.22870635986328
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 123.36666666666223
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 15,
+        "kind": "death",
+        "position": [
+          56.54325866699219,
+          98.38787841796875
+        ],
+        "spec": "kestrel_anti",
+        "team": 1,
+        "time": 126.46666666666205
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 22,
+        "kind": "death",
+        "position": [
+          41.05259704589844,
+          82.37313842773438
+        ],
+        "spec": "kestrel_tank",
+        "team": 1,
+        "time": 137.66666666666143
+      }
+    ],
+    "low_power_seconds": 77.49999999999432,
+    "peak_infantry": 5.0,
+    "explicit_commands": 73,
+    "failed_commands": 0
+  },
+  "seed734_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 1035.9666666663818,
+    "phase_counts": {
+      "opening": 179,
+      "contest": 223,
+      "defend": 115
+    },
+    "funds_earned": 25432.4999999998,
+    "units_produced_by_spec": {
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 10,
+      "kestrel_scout": 6,
+      "kestrel_tank": 20
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 10,
+      "kestrel_scout": 6,
+      "kestrel_tank": 20
+    },
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 11,
+          "source_team": 1,
+          "weapon": "kestrel_rifle"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 12,
+        "kind": "death",
+        "position": [
+          135.5130157470703,
+          99.26081085205078
+        ],
+        "spec": "kestrel_rifle",
+        "team": 0,
+        "time": 119.66666666666244
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 14,
+        "kind": "death",
+        "position": [
+          134.73672485351562,
+          93.2513198852539
+        ],
+        "spec": "kestrel_rifle",
+        "team": 0,
+        "time": 121.49999999999567
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 16,
+        "kind": "death",
+        "position": [
+          131.63235473632812,
+          98.5360107421875
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 124.2999999999955
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          143.56858825683594,
+          92.908203125
+        ],
+        "spec": "kestrel_tank",
+        "team": 0,
+        "time": 132.69999999999504
+      }
+    ],
+    "low_power_seconds": 41.9666666666933,
+    "peak_infantry": 7.0,
+    "explicit_commands": 119,
+    "failed_commands": 0
+  },
+  "seed734_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 831.4999999999011,
+    "phase_counts": {
+      "opening": 138,
+      "contest": 176,
+      "defend": 101
+    },
+    "funds_earned": 18779.16666666652,
+    "units_produced_by_spec": {
+      "kestrel_aa": 1,
+      "kestrel_aa_infantry": 1,
+      "kestrel_anti": 12,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 12,
+      "kestrel_scout": 3,
+      "kestrel_tank": 13
+    },
+    "units_lost_by_spec": {
+      "kestrel_aa": 1,
+      "kestrel_aa_infantry": 1,
+      "kestrel_anti": 12,
+      "kestrel_gunner": 6,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 12,
+      "kestrel_scout": 3,
+      "kestrel_tank": 13
+    },
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 13,
+        "kind": "death",
+        "position": [
+          55.1552848815918,
+          93.5979995727539
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 120.69999999999571
+      },
+      {
+        "cause": {
+          "explosive": false,
+          "source": 12,
+          "source_team": 0,
+          "weapon": "kestrel_rifle"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 11,
+        "kind": "death",
+        "position": [
+          55.407649993896484,
+          99.22870635986328
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 123.36666666666223
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 15,
+        "kind": "death",
+        "position": [
+          56.54325866699219,
+          98.38787841796875
+        ],
+        "spec": "kestrel_anti",
+        "team": 1,
+        "time": 126.46666666666205
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 16,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 22,
+        "kind": "death",
+        "position": [
+          41.05259704589844,
+          82.37313842773438
+        ],
+        "spec": "kestrel_tank",
+        "team": 1,
+        "time": 137.66666666666143
+      }
+    ],
+    "low_power_seconds": 77.49999999999432,
+    "peak_infantry": 5.0,
+    "explicit_commands": 73,
+    "failed_commands": 0
+  }
+}

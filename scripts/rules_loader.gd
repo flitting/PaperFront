@@ -41,6 +41,14 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 	if not issues.is_empty():
 		return issues
 	_positive(data, "version", "$", issues, false)
+	if data.has("combat_model"): _validate_combat_model(data.combat_model, issues)
+	if data.has("experience"):
+		if not data.experience is Dictionary:
+			issues.append("$.experience: expected an object")
+		elif data.experience.has("veteran_kill_experience_multiplier"):
+			var reward: Variant = data.experience.veteran_kill_experience_multiplier
+			if not _number(reward) or float(reward) < 1.0:
+				issues.append("$.experience.veteran_kill_experience_multiplier: expected a finite number greater than or equal to 1")
 	var economy: Dictionary = data.economy
 	for key: String in ["initial_money", "ore_capacity", "ore_regen", "harvester_capacity", "harvest_rate", "construction_animation", "repair_rate", "repair_cost", "bridge_hp", "bridge_cost", "bridge_time", "build_radius", "fire_angle"]:
 		_positive(economy, key, "$.economy", issues, key in ["ore_regen", "repair_cost", "bridge_cost"])
@@ -129,6 +137,19 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 				if bool(spec.get("execute_building", false)) and (spec.get("kind") != "instant" or not _number(spec.get("blast")) or float(spec.get("blast", 0.0)) != 0.0):
 					issues.append("%s.execute_building: requires a direct instant weapon" % prefix)
 				continue
+			if spec.has("squad_size"):
+				var member_count: Variant = spec.squad_size
+				if category != "units" or not _number(member_count) or float(member_count) != floorf(float(member_count)) or int(member_count) < 1 or int(member_count) > 6:
+					issues.append(prefix + ".squad_size: expected an integer from 1 to 6 on an infantry unit")
+				elif spec.get("armor_class", "") != "infantry" or spec.get("domain", "ground") != "ground":
+					issues.append(prefix + ".squad_size: only ground infantry can form squads")
+				elif spec.get("art", "") == "engineer" and int(member_count) != 1:
+					issues.append(prefix + ".squad_size: engineers must remain single units")
+				elif spec.get("art", "") != "engineer" and int(member_count) < 2:
+					issues.append(prefix + ".squad_size: combat squads need at least two members")
+			if spec.has("squad_role") and spec.squad_role not in ["engineer", "line", "specialist", "sniper"]:
+				issues.append(prefix + ".squad_role: unknown infantry squad role")
+			if spec.has("squad_build_time"): _positive(spec, "squad_build_time", prefix, issues, false)
 			if spec.has("tier") and (not _number(spec.tier) or float(spec.tier)!=floorf(float(spec.tier)) or int(spec.tier)<0 or int(spec.tier)>3): issues.append("%s.tier: expected integer 0..3" % prefix)
 			if spec.has("armor"):
 				_positive(spec,"armor",prefix,issues,true)
@@ -270,6 +291,25 @@ static func validate(data: Dictionary, check_assets: bool = true) -> Array[Strin
 	for id: Variant in buildings:
 		_check_cycle(str(id), buildings, visit, [], issues)
 	return issues
+
+
+static func _validate_combat_model(value: Variant, issues: Array[String]) -> void:
+	if not value is Dictionary:
+		issues.append("$.combat_model: expected an object")
+		return
+	var model: Dictionary = value
+	var threshold: String = "partial_penetration_threshold"
+	var partial: String = "partial_penetration_damage_multiplier"
+	if model.has(threshold) != model.has(partial):
+		issues.append("$.combat_model: partial_penetration_threshold and partial_penetration_damage_multiplier must be provided together")
+	for key: String in ["non_penetrating_damage_multiplier", threshold, partial]:
+		if not model.has(key): continue
+		_positive(model, key, "$.combat_model", issues, key != threshold)
+		if _number(model.get(key)) and float(model[key]) > 1.0:
+			issues.append("$.combat_model.%s: expected a ratio no greater than 1" % key)
+	var non_penetrating: Variant = model.get("non_penetrating_damage_multiplier", 0.25)
+	if model.has(partial) and _number(model[partial]) and _number(non_penetrating) and float(model[partial]) < float(non_penetrating):
+		issues.append("$.combat_model.partial_penetration_damage_multiplier: must be at least non_penetrating_damage_multiplier (default 0.25)")
 
 
 static func _has_producer(buildings: Dictionary, faction: String, role: String) -> bool:

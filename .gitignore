@@ -10,3 +10,6 @@ __pycache__/
 native/build/
 native/build-windows/
 assets/native/paper_front_kernels.dll
+
+# Generated AI review telemetry is retained locally, not shipped as source.
+/ai/duel/*_records/**/*_review.json

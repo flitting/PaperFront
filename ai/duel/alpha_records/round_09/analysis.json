@@ -1,0 +1,272 @@
+{
+  "seed733_default_alpha_review.json": {
+    "finished": true,
+    "winner": "alpha",
+    "duration": 549.0666666668246,
+    "income": 14499.99999999988,
+    "enemy_income": 12499.999999999894,
+    "units_produced": 52.0,
+    "units_lost": 16.0,
+    "units_killed": 42.0,
+    "produced_by_spec": {
+      "kestrel_anti": 16,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 24,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "tank_production_times": [
+      88.83333333333086,
+      332.8333333333825,
+      408.83333333344297
+    ],
+    "scout_move_orders": 27,
+    "miner_return_orders": 1,
+    "unit_orders": {
+      "kestrel_rifle": 6,
+      "kestrel_marksman": 292,
+      "kestrel_tank": 48,
+      "kestrel_scout": 36,
+      "building": 45,
+      "kestrel_anti": 150,
+      "kestrel_harvester": 1
+    },
+    "failed_commands": 0,
+    "low_power_seconds": 0.0,
+    "checkpoints": {
+      "320": {
+        "own_lost": 8.0,
+        "enemy_lost": 8.0,
+        "own_army": 2935.0,
+        "enemy_army": 3732.0
+      },
+      "340": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 4195.0,
+        "enemy_army": 3854.0
+      },
+      "400": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 5333.0,
+        "enemy_army": 5758.0
+      },
+      "420": {
+        "own_lost": 12.0,
+        "enemy_lost": 20.0,
+        "own_army": 5695.0,
+        "enemy_army": 3794.0
+      },
+      "480": {
+        "own_lost": 15.0,
+        "enemy_lost": 36.0,
+        "own_army": 7459.0,
+        "enemy_army": 2146.0
+      }
+    }
+  },
+  "seed733_swap_alpha_review.json": {
+    "finished": true,
+    "winner": "beta",
+    "duration": 693.1333333333603,
+    "income": 15499.999999999873,
+    "enemy_income": 21999.999999999825,
+    "units_produced": 63.0,
+    "units_lost": 61.0,
+    "units_killed": 42.0,
+    "produced_by_spec": {
+      "kestrel_anti": 20,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 33,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 1
+    },
+    "tank_production_times": [
+      88.83333333333086
+    ],
+    "scout_move_orders": 21,
+    "miner_return_orders": 0,
+    "unit_orders": {
+      "kestrel_rifle": 6,
+      "kestrel_marksman": 202,
+      "kestrel_tank": 15,
+      "kestrel_scout": 28,
+      "building": 55,
+      "kestrel_anti": 97
+    },
+    "failed_commands": 0,
+    "low_power_seconds": 10.133333333324117,
+    "checkpoints": {
+      "320": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 3777.0,
+        "enemy_army": 2942.0
+      },
+      "340": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 4257.0,
+        "enemy_army": 3840.0
+      },
+      "400": {
+        "own_lost": 12.0,
+        "enemy_lost": 15.0,
+        "own_army": 4969.0,
+        "enemy_army": 5170.0
+      },
+      "420": {
+        "own_lost": 21.0,
+        "enemy_lost": 22.0,
+        "own_army": 3925.0,
+        "enemy_army": 4812.0
+      },
+      "480": {
+        "own_lost": 32.0,
+        "enemy_lost": 25.0,
+        "own_army": 3623.0,
+        "enemy_army": 6553.0
+      }
+    }
+  },
+  "seed734_default_alpha_review.json": {
+    "finished": true,
+    "winner": "alpha",
+    "duration": 549.0666666668246,
+    "income": 14499.99999999988,
+    "enemy_income": 12499.999999999894,
+    "units_produced": 52.0,
+    "units_lost": 16.0,
+    "units_killed": 42.0,
+    "produced_by_spec": {
+      "kestrel_anti": 16,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 24,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "tank_production_times": [
+      88.83333333333086,
+      332.8333333333825,
+      408.83333333344297
+    ],
+    "scout_move_orders": 27,
+    "miner_return_orders": 1,
+    "unit_orders": {
+      "kestrel_rifle": 6,
+      "kestrel_marksman": 292,
+      "kestrel_tank": 48,
+      "kestrel_scout": 36,
+      "building": 45,
+      "kestrel_anti": 150,
+      "kestrel_harvester": 1
+    },
+    "failed_commands": 0,
+    "low_power_seconds": 0.0,
+    "checkpoints": {
+      "320": {
+        "own_lost": 8.0,
+        "enemy_lost": 8.0,
+        "own_army": 2935.0,
+        "enemy_army": 3732.0
+      },
+      "340": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 4195.0,
+        "enemy_army": 3854.0
+      },
+      "400": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 5333.0,
+        "enemy_army": 5758.0
+      },
+      "420": {
+        "own_lost": 12.0,
+        "enemy_lost": 20.0,
+        "own_army": 5695.0,
+        "enemy_army": 3794.0
+      },
+      "480": {
+        "own_lost": 15.0,
+        "enemy_lost": 36.0,
+        "own_army": 7459.0,
+        "enemy_army": 2146.0
+      }
+    }
+  },
+  "seed734_swap_alpha_review.json": {
+    "finished": true,
+    "winner": "beta",
+    "duration": 693.1333333333603,
+    "income": 15499.999999999873,
+    "enemy_income": 21999.999999999825,
+    "units_produced": 63.0,
+    "units_lost": 61.0,
+    "units_killed": 42.0,
+    "produced_by_spec": {
+      "kestrel_anti": 20,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 33,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 1
+    },
+    "tank_production_times": [
+      88.83333333333086
+    ],
+    "scout_move_orders": 21,
+    "miner_return_orders": 0,
+    "unit_orders": {
+      "kestrel_rifle": 6,
+      "kestrel_marksman": 202,
+      "kestrel_tank": 15,
+      "kestrel_scout": 28,
+      "building": 55,
+      "kestrel_anti": 97
+    },
+    "failed_commands": 0,
+    "low_power_seconds": 10.133333333324117,
+    "checkpoints": {
+      "320": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 3777.0,
+        "enemy_army": 2942.0
+      },
+      "340": {
+        "own_lost": 8.0,
+        "enemy_lost": 12.0,
+        "own_army": 4257.0,
+        "enemy_army": 3840.0
+      },
+      "400": {
+        "own_lost": 12.0,
+        "enemy_lost": 15.0,
+        "own_army": 4969.0,
+        "enemy_army": 5170.0
+      },
+      "420": {
+        "own_lost": 21.0,
+        "enemy_lost": 22.0,
+        "own_army": 3925.0,
+        "enemy_army": 4812.0
+      },
+      "480": {
+        "own_lost": 32.0,
+        "enemy_lost": 25.0,
+        "own_army": 3623.0,
+        "enemy_army": 6553.0
+      }
+    }
+  }
+}

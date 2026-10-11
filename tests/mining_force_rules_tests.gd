@@ -19,7 +19,14 @@ func _initialize() -> void:
 
 func _sim():
 	var sim = Sim.new()
-	sim.setup(rules, "dev", 7, "rivet", false)
+	# Rivet's current roster uses drills, not harvesters. These mechanics
+	# fixtures need legal mobile miners on both sides of the contested ore.
+	var factions: Array[String] = ["kestrel", "kestrel"]
+	sim.setup_multiteam(rules, "dev", 7, factions, false)
+	# Load normalizes the optional historical drill claim to its -1 sentinel.
+	# Author the same explicit empty claim so exact round-trip comparison is
+	# about mining state rather than absent-vs-default serialization keys.
+	for mine in sim.mines: mine.drill = int(mine.get("drill", -1))
 	return sim
 
 func _check(ok: bool, message: String) -> void:

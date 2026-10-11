@@ -14,7 +14,7 @@ func run() -> void:
 	var panel := Control.new(); root.add_child(panel)
 	var demo = Demo.new(); panel.add_child(demo); demo.size = Vector2(640, 240)
 	check(demo.viewport == null, "no viewport/model is allocated before an actor is selected")
-	var rows: Array[Dictionary] = Catalog.load_catalog()
+	var rows: Array[Dictionary] = Catalog.load_catalog("zh_CN")
 	var scenarios: Dictionary = {}
 	var music_count := 0
 	for row: Dictionary in rows:

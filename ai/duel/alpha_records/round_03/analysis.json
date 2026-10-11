@@ -1,0 +1,600 @@
+{
+  "seed733_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 930.599999999811,
+    "phase_counts": {
+      "assemble": 257,
+      "advance": 25,
+      "defend": 183
+    },
+    "income": 7999.999999999928,
+    "produced": {
+      "kestrel_anti": 8,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 1,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "loss": {
+      "kestrel_anti": 8,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 1,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "death_weapons": {
+      "kestrel_anti": 9,
+      "kestrel_rifle": 1,
+      "kestrel_marksman": 16,
+      "kestrel_tank": 2
+    },
+    "all_four_miners_waiting_samples": 24,
+    "first_four_waiting": [
+      {
+        "time": 352.0000000000644,
+        "money": 117.99999999994361,
+        "miners": [
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 0,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 8,
+            "pos": [
+              45.32192611694336,
+              93.55218505859375
+            ],
+            "refinery_waiting": {
+              "goal": [
+                45.150001525878906,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 15
+            },
+            "state": "idle",
+            "stationary_seconds": 16.000000000012733
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 3,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 26,
+            "pos": [
+              63.76758575439453,
+              125.95410919189453
+            ],
+            "refinery_waiting": {
+              "goal": [
+                45.150001525878906,
+                96.30000305175781
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 17
+            },
+            "state": "waiting",
+            "stationary_seconds": 20.000000000015916
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 1,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 34,
+            "pos": [
+              39.938621520996094,
+              94.1858901977539
+            ],
+            "refinery_waiting": {
+              "goal": [
+                39.849998474121094,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 16
+            },
+            "state": "idle",
+            "stationary_seconds": 10.000000000007958
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 2,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 39,
+            "pos": [
+              46.70856857299805,
+              92.25762939453125
+            ],
+            "refinery_docking": {
+              "credited": false,
+              "inside": [
+                42.5,
+                90.25
+              ],
+              "outside": [
+                42.5,
+                93.1500015258789
+              ],
+              "phase": "approach",
+              "remaining": 2.0,
+              "source": 6
+            },
+            "state": "waiting",
+            "stationary_seconds": 2.0000000000015916
+          }
+        ]
+      }
+    ],
+    "low_power_seconds": 0.5999999999994543
+  },
+  "seed733_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 930.3666666664778,
+    "phase_counts": {
+      "assemble": 267,
+      "advance": 103,
+      "defend": 95
+    },
+    "income": 23499.999999999814,
+    "produced": {
+      "kestrel_anti": 23,
+      "kestrel_attacker": 1,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 17,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 4,
+      "kestrel_tank": 11
+    },
+    "loss": {
+      "kestrel_anti": 23,
+      "kestrel_attacker": 1,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 17,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 4,
+      "kestrel_tank": 11
+    },
+    "death_weapons": {
+      "kestrel_anti": 28,
+      "kestrel_marksman": 33,
+      "kestrel_rifle": 1,
+      "kestrel_tank": 3,
+      "kestrel_gunner": 2,
+      "kestrel_scout": 1,
+      "kestrel_aa_infantry": 1
+    },
+    "all_four_miners_waiting_samples": 13,
+    "first_four_waiting": [
+      {
+        "time": 356.0000000000676,
+        "money": 210.9999999999436,
+        "miners": [
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 5,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 7,
+            "pos": [
+              152.06138610839844,
+              94.1858901977539
+            ],
+            "refinery_waiting": {
+              "goal": [
+                152.14999389648438,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 16
+            },
+            "state": "idle",
+            "stationary_seconds": 10.000000000007958
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 7,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 26,
+            "pos": [
+              128.23245239257812,
+              125.95410919189453
+            ],
+            "refinery_waiting": {
+              "goal": [
+                146.85000610351562,
+                96.30000305175781
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 17
+            },
+            "state": "waiting",
+            "stationary_seconds": 20.000000000015916
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 4,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 34,
+            "pos": [
+              146.69622802734375,
+              93.57615661621094
+            ],
+            "refinery_waiting": {
+              "goal": [
+                146.85000610351562,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 15
+            },
+            "state": "idle",
+            "stationary_seconds": 22.000000000017508
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 6,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 39,
+            "pos": [
+              145.797119140625,
+              91.79993438720703
+            ],
+            "refinery_docking": {
+              "credited": false,
+              "inside": [
+                149.5,
+                90.25
+              ],
+              "outside": [
+                149.5,
+                93.1500015258789
+              ],
+              "phase": "approach",
+              "remaining": 2.0,
+              "source": 5
+            },
+            "state": "waiting",
+            "stationary_seconds": 0.0
+          }
+        ]
+      }
+    ],
+    "low_power_seconds": 51.36666666661995
+  },
+  "seed734_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 930.599999999811,
+    "phase_counts": {
+      "assemble": 257,
+      "advance": 25,
+      "defend": 183
+    },
+    "income": 7999.999999999928,
+    "produced": {
+      "kestrel_anti": 8,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 1,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "loss": {
+      "kestrel_anti": 8,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 1,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "death_weapons": {
+      "kestrel_anti": 9,
+      "kestrel_rifle": 1,
+      "kestrel_marksman": 16,
+      "kestrel_tank": 2
+    },
+    "all_four_miners_waiting_samples": 24,
+    "first_four_waiting": [
+      {
+        "time": 352.0000000000644,
+        "money": 117.99999999994361,
+        "miners": [
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 0,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 8,
+            "pos": [
+              45.32192611694336,
+              93.55218505859375
+            ],
+            "refinery_waiting": {
+              "goal": [
+                45.150001525878906,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 15
+            },
+            "state": "idle",
+            "stationary_seconds": 16.000000000012733
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 3,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 26,
+            "pos": [
+              63.76758575439453,
+              125.95410919189453
+            ],
+            "refinery_waiting": {
+              "goal": [
+                45.150001525878906,
+                96.30000305175781
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 17
+            },
+            "state": "waiting",
+            "stationary_seconds": 20.000000000015916
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 1,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 34,
+            "pos": [
+              39.938621520996094,
+              94.1858901977539
+            ],
+            "refinery_waiting": {
+              "goal": [
+                39.849998474121094,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 6,
+              "ticket": 16
+            },
+            "state": "idle",
+            "stationary_seconds": 10.000000000007958
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 2,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 39,
+            "pos": [
+              46.70856857299805,
+              92.25762939453125
+            ],
+            "refinery_docking": {
+              "credited": false,
+              "inside": [
+                42.5,
+                90.25
+              ],
+              "outside": [
+                42.5,
+                93.1500015258789
+              ],
+              "phase": "approach",
+              "remaining": 2.0,
+              "source": 6
+            },
+            "state": "waiting",
+            "stationary_seconds": 2.0000000000015916
+          }
+        ]
+      }
+    ],
+    "low_power_seconds": 0.5999999999994543
+  },
+  "seed734_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 930.3666666664778,
+    "phase_counts": {
+      "assemble": 267,
+      "advance": 103,
+      "defend": 95
+    },
+    "income": 23499.999999999814,
+    "produced": {
+      "kestrel_anti": 23,
+      "kestrel_attacker": 1,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 17,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 4,
+      "kestrel_tank": 11
+    },
+    "loss": {
+      "kestrel_anti": 23,
+      "kestrel_attacker": 1,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 17,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 4,
+      "kestrel_tank": 11
+    },
+    "death_weapons": {
+      "kestrel_anti": 28,
+      "kestrel_marksman": 33,
+      "kestrel_rifle": 1,
+      "kestrel_tank": 3,
+      "kestrel_gunner": 2,
+      "kestrel_scout": 1,
+      "kestrel_aa_infantry": 1
+    },
+    "all_four_miners_waiting_samples": 13,
+    "first_four_waiting": [
+      {
+        "time": 356.0000000000676,
+        "money": 210.9999999999436,
+        "miners": [
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 5,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 7,
+            "pos": [
+              152.06138610839844,
+              94.1858901977539
+            ],
+            "refinery_waiting": {
+              "goal": [
+                152.14999389648438,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 16
+            },
+            "state": "idle",
+            "stationary_seconds": 10.000000000007958
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 7,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 26,
+            "pos": [
+              128.23245239257812,
+              125.95410919189453
+            ],
+            "refinery_waiting": {
+              "goal": [
+                146.85000610351562,
+                96.30000305175781
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 17
+            },
+            "state": "waiting",
+            "stationary_seconds": 20.000000000015916
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 4,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 34,
+            "pos": [
+              146.69622802734375,
+              93.57615661621094
+            ],
+            "refinery_waiting": {
+              "goal": [
+                146.85000610351562,
+                93.8499984741211
+              ],
+              "mode": "",
+              "source": 5,
+              "ticket": 15
+            },
+            "state": "idle",
+            "stationary_seconds": 22.000000000017508
+          },
+          {
+            "cargo": 499.9999999999956,
+            "commands": [],
+            "emerging": false,
+            "harvest_mine": 6,
+            "harvest_override": false,
+            "hp": 420.0,
+            "id": 39,
+            "pos": [
+              145.797119140625,
+              91.79993438720703
+            ],
+            "refinery_docking": {
+              "credited": false,
+              "inside": [
+                149.5,
+                90.25
+              ],
+              "outside": [
+                149.5,
+                93.1500015258789
+              ],
+              "phase": "approach",
+              "remaining": 2.0,
+              "source": 5
+            },
+            "state": "waiting",
+            "stationary_seconds": 0.0
+          }
+        ]
+      }
+    ],
+    "low_power_seconds": 51.36666666661995
+  }
+}

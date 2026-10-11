@@ -18,6 +18,7 @@ const BeamWeapons = preload("res://scripts/beam_weapons.gd")
 const ZeppelinWeapons = preload("res://scripts/zeppelin_weapons.gd")
 const ProductionLifecycle = preload("res://scripts/production_lifecycle.gd")
 const ProductionClearance = preload("res://scripts/production_clearance.gd")
+const InfantrySquads = preload("res://scripts/infantry_squads.gd")
 const RefineryDocking = preload("res://scripts/refinery_docking.gd")
 const RepairDepot=preload("res://scripts/repair_depot.gd")
 const BuildingConstruction = preload("res://scripts/building_construction.gd")
@@ -133,6 +134,7 @@ var notices: Array[String] = []
 var events: Array[Dictionary] = []
 var ai_enabled: bool = true
 var ai_state: Array = []
+var independent_ai: RefCounted = null
 var match_options: Dictionary = {}
 var vision_enabled: bool = false
 var team_vision: Dictionary = {"last_known": []}
@@ -229,11 +231,14 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	if not match_options.has("slots") or match_options.slots.size() != factions.size():
 		match_options.slots = []
 		for team in range(factions.size()): match_options.slots.append({"faction": factions[team], "control": "ai" if enable_ai and team > 0 else "human", "difficulty": "normal"})
-	elif bool(match_options.modern):
+	elif bool(match_options.modern) or bool(match_options.get("explicit_controls",false)):
 		for team in range(factions.size()):
 			var slot: Dictionary=match_options.slots[team]
 			slot.faction=factions[team]
-			slot.control="human" if team==0 or not enable_ai else "ai"
+			if bool(match_options.get("explicit_controls",false)):
+				slot.control="ai" if enable_ai and str(slot.get("control","human"))=="ai" and (team>0 or bool(match_options.get("allow_player_ai",false))) else "human"
+			else:
+				slot.control="human" if team==0 or not enable_ai else "ai"
 			if slot.get("difficulty") not in ["easy","normal","hard"]:slot.difficulty="normal"
 	_resize_team_caches()
 	if progress.is_valid(): await progress.call(0.05, "生成地图")
@@ -293,6 +298,7 @@ func setup_multiteam(config: Dictionary, mode: String, seed_value: int, faction_
 	_low_power.resize(factions.size())
 	_low_power.fill(false)
 	ai_enabled = enable_ai
+	independent_ai = null
 	AIController.initialize(self)
 	for raw in map.get("mines", []):
 		var capacity: float = float(_eco("ore_capacity", raw.get("capacity", 3000)))
@@ -336,7 +342,7 @@ func _setup_campaign_scenario() -> void:
 		{"team":1, "spec":"rivet_rifle", "pos":Vector2(259, 170)},
 		{"team":1, "spec":"rivet_scout", "pos":Vector2(259, 174)},
 	]:
-		debug_spawn(int(deployment.team), str(deployment.spec), deployment.pos)
+		debug_spawn_squad(int(deployment.team), str(deployment.spec), deployment.pos)
 	campaign_controller = CampaignController.new()
 	campaign_controller.setup(self)
 	_rebuild_spatial()
@@ -482,6 +488,28 @@ func _requirements(team: int, spec: Dictionary) -> String:
 
 func availability(team: int, spec: String, builder: int = -1, producer: int = -1) -> String:
 	return TechAvailability.reason(self, team, spec, builder, producer)
+
+func squad_size(spec: String) -> int:
+	return InfantrySquads.size(data_for(spec))
+
+func production_cost(spec: String) -> float:
+	return InfantrySquads.cost(data_for(spec))
+
+func production_time(spec: String) -> float:
+	return InfantrySquads.training_time(data_for(spec))
+
+func squad_members(id: int, available_only: bool = false) -> Array:
+	return InfantrySquads.members(self, id, available_only)
+
+func squad_leader(id: int) -> int:
+	var members: Array = squad_members(id)
+	return int(members[0]) if not members.is_empty() else -1
+
+func expand_squad_ids(ids: Array, available_only: bool = false) -> Array:
+	return InfantrySquads.expand(self, ids, available_only)
+
+func selection_ids(ids: Array, available_only: bool = true) -> Array:
+	return InfantrySquads.representatives(self, ids, available_only)
 
 func order_for_team(team: int, channel: String = "normal") -> Dictionary:
 	return BuildingConstruction.order_for(self, team, channel)
@@ -717,9 +745,10 @@ func produce(building_id: int, spec: String) -> String:
 		return "该设施不能生产此单位"
 	var problem: String = availability(int(e.team), spec, -1, building_id)
 	if not problem.is_empty(): return problem
-	var cost: float = float(info.cost)
+	var cost: float = production_cost(spec)
+	var duration: float = production_time(spec)
 	money[int(e.team)] -= cost
-	e.queue.append({"spec": spec, "remaining": float(info.build_time), "total": float(info.build_time), "cost": cost, "started": false, "ready": false, "progress": 0.0})
+	e.queue.append({"spec": spec, "remaining": duration, "total": duration, "cost": cost, "started": false, "ready": false, "progress": 0.0, "squad_size": squad_size(spec), "spawned": 0, "squad_id": -1})
 	return ""
 
 func cancel_production(building_id: int, index: int) -> String:
@@ -733,7 +762,11 @@ func cancel_production(building_id: int, index: int) -> String:
 	return ""
 
 func _refund_order(team: int, order: Dictionary) -> void:
-	money[team] += float(order.cost) * float(order.remaining) / maxf(float(order.total), 0.001)
+	var refund: float = float(order.cost) * float(order.remaining) / maxf(float(order.total), 0.001)
+	# Deployed members can never be refunded by cancelling their order.
+	var count: int = maxi(1, int(order.get("squad_size", 1)))
+	var unspawned: int = maxi(0, count - int(order.get("spawned", 0)))
+	money[team] += minf(refund, float(order.cost) * float(unspawned) / count)
 
 func sell(id: int, confirmed: bool = false) -> String:
 	if result != "":
@@ -779,17 +812,23 @@ func dismantle_outpost(id: int) -> String:
 	return Construction.dismantle(self, id)
 
 # UI selection affects navigation service, never ownership, costs or damage.
+func _human_navigation_owner(id: int) -> bool:
+	if not entities.has(id) or int(entities[id].team) != 0: return false
+	var slots: Array = match_options.get("slots", [])
+	return slots.is_empty() or str(slots[0].get("control", "human")) == "human"
+
 func set_player_navigation_priority(ids: Array) -> void:
 	_player_navigation_ids.clear()
-	for raw: Variant in ids:
+	for raw: Variant in expand_squad_ids(ids, true):
 		var id: int = int(raw)
-		if entities.has(id) and int(entities[id].team) == 0: _player_navigation_ids[id] = true
+		if _human_navigation_owner(id): _player_navigation_ids[id] = true
 	if _path_worker != null and _path_worker.has_method("prioritize"):
 		_path_worker.prioritize(_player_navigation_ids)
 
 func _navigation_priority(id: int) -> int:
-	if _player_navigation_ids.has(id): return 3
-	if time < float(_navigation_command_until.get(id, -1.0)): return 2
+	if _human_navigation_owner(id):
+		if _player_navigation_ids.has(id): return 3
+		if time < float(_navigation_command_until.get(id, -1.0)): return 2
 	return 1 if entities.has(id) and float(entities[id].get("planning_wait", 0.0)) > 4.0 else 0
 
 func _navigation_queue_index() -> int:
@@ -828,13 +867,29 @@ func _yield_route_connector(start:Vector2,finish:Vector2,radius:float,id:int)->b
 		if not _fast_flat(start.lerp(finish,float(n)/checks),radius):return false
 	return _segment_static(start,finish,radius,id)
 
+func _working_miner(e: Dictionary) -> bool:
+	if e.get("kind", "") != "unit" or str(data_for(str(e.spec)).get("art", "")) != "harvester": return false
+	if e.commands.is_empty(): return not bool(e.get("harvest_override", false))
+	return str(e.commands[0].kind) in ["harvest", "return_miner"]
+
+func _traffic_vehicle(e: Dictionary) -> bool:
+	# Rail-only vehicles deliberately cannot crush. Traffic classification
+	# still treats their full vehicle body as a vehicle, independently of that.
+	return _is_ground_vehicle(e) or (e.get("kind", "") == "unit" and RailNetwork.rail_only(data_for(str(e.spec))))
+
 func _traffic_priority(e: Dictionary) -> int:
 	# Active vehicles take road precedence; an idle vehicle can still yield to
 	# a player-controlled pedestrian. Same-class ties retain the existing
 	# bounded retreat propagation and ID arbitration.
-	var active: bool = not e.commands.is_empty()
-	var vehicle: bool = _is_ground_vehicle(e)
-	return (40 if vehicle else 20)+_navigation_priority(int(e.id)) if active else (10 if vehicle else 0)
+	var working: bool = _working_miner(e)
+	var active: bool = not e.commands.is_empty() or working
+	var vehicle: bool = _traffic_vehicle(e)
+	if not active: return 10 if vehicle else 0
+	var navigation: int = _navigation_priority(int(e.id))
+	# Active economy traffic takes precedence over ordinary combat traffic;
+	# explicitly selected human vehicles retain their foreground priority.
+	if vehicle and working: return 40 + maxi(2, navigation)
+	return (40 if vehicle else 20) + navigation
 
 func _traffic_may_yield(e: Dictionary, other: Dictionary) -> bool:
 	# A yielded blocker may propagate the same request, but must never ask
@@ -843,7 +898,7 @@ func _traffic_may_yield(e: Dictionary, other: Dictionary) -> bool:
 	if (e.get("yield_goal", Vector2.INF) as Vector2).is_finite() and int(e.get("yield_root", -1)) == int(other.id): return false
 	if int(e.team) != int(other.team) or bool(other.get("hold_position", false)): return false
 	if absf(_height(e.pos) - _height(other.pos)) > .8: return false
-	if other.commands.is_empty(): return true
+	if other.commands.is_empty() and not _working_miner(other): return true
 	var source: Dictionary = entities.get(int(e.get("yield_root", -1)), e) if (e.get("yield_goal",Vector2.INF) as Vector2).is_finite() else e
 	var a: int = _traffic_priority(source)
 	var b: int = _traffic_priority(other)
@@ -851,12 +906,12 @@ func _traffic_may_yield(e: Dictionary, other: Dictionary) -> bool:
 	# Experimental spatial headway ranking did not remain stable at narrow
 	# terrain entrances. Vehicle/infantry and explicit player precedence are
 	# the intended new priorities; same-class propagation retains its limits.
-	if _is_ground_vehicle(source)!=_is_ground_vehicle(other):return _is_ground_vehicle(source)
-	if (e.get("yield_goal",Vector2.INF) as Vector2).is_finite():return true
+	if _traffic_vehicle(source)!=_traffic_vehicle(other):return _traffic_vehicle(source)
 	if a!=b:return a>b
+	if (e.get("yield_goal",Vector2.INF) as Vector2).is_finite():return true
 	return int(source.id)<int(other.id)
 
-func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: bool = false) -> void:
+func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: bool = false, expand_members: bool = true) -> void:
 	if result != "":
 		return
 	if kind == "harvest" and target < 0:
@@ -875,7 +930,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 		if bridge_id >= 0:
 			target = BRIDGE_TARGET_BASE - bridge_id
 	var selected: Array = []
-	for raw_id in ids:
+	for raw_id in (expand_squad_ids(ids, true) if expand_members else ids):
 		var id: int = int(raw_id)
 		if entities.has(id) and entities[id].kind == "unit" and float(entities[id].hp) > 0.0 and not Transport.is_loaded(entities[id]):
 			selected.append(id)
@@ -897,6 +952,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 		formation_forward = (pos - center).normalized()
 		if formation_forward.length_squared() < .5: formation_forward = Vector2.RIGHT
 	var formation_side: Vector2 = formation_forward.orthogonal()
+	var squad_offsets: Dictionary = InfantrySquads.formation_offsets(self, ground_selected, formation_forward, formation_side)
 	ground_selected.sort_custom(func(a,b):
 		var da: float=(entities[a].pos as Vector2).dot(formation_side)
 		var db: float=(entities[b].pos as Vector2).dot(formation_side)
@@ -929,6 +985,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 		if kind == "attack" and not _weapon_can_target(e, target): continue
 		if kind == "force_attack" and (str(data_for(e.spec).get("weapon", "")).is_empty() or (target != -1 and not _weapon_can_target(e, target, true))): continue
 		if kind == "harvest" and (not str(e.spec).ends_with("_harvester") or target < 0 or target >= mines.size()): continue
+		if e.has("squad_id") and kind not in ["move", "attack_move", "patrol"]: e.erase("squad_formation_goal")
 		if air:
 			if kind == "return": e.park_after_service = true
 			elif kind not in ["stop", "hold"]:
@@ -938,6 +995,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			elif bool(e.get("takeoff_pending", false)):
 				e.takeoff_pending = false
 		if not append or kind in ["stop", "hold"]:
+			e.erase("squad_formation_goal")
 			if bool(data_for(str(e.spec)).get("hero", false)) and float(e.get("hand_strike", 0.0)) > 0.0: HeroRules.cancel(e)
 			_release_mine(int(e.id))
 			e.commands.clear()
@@ -956,7 +1014,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			e.refinery_search = {}
 			e.planning_wait = 0.0
 			_planning_queue.erase(int(e.id))
-		if int(e.team)==0 and kind not in ["stop","hold"]: _navigation_command_until[int(e.id)]=time+3.0
+		if _human_navigation_owner(int(e.id)) and kind not in ["stop","hold"]: _navigation_command_until[int(e.id)]=time+3.0
 		e.erase("pursuit_goal");e.erase("pursuit_target");e.erase("yield_root")
 		for key in ["yield_saved_path","yield_saved_goal","yield_saved_revision"]:e.erase(key)
 		e.hold_position = kind in ["hold", "resume_outpost"]
@@ -978,25 +1036,31 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			destination = _near_stand(pos, _radius(e), e.id, 5.0)
 		if not air and not _is_naval(e) and kind in ["move", "attack_move", "patrol"] and ground_selected.size() > 1:
 			var spacing: float = formation_spacing
-			destination += (formation_side * (float(ground_index % columns) - float(columns - 1) * .5) * formation_lane_spacing - formation_forward * (float(ground_index / columns) - float(columns - 1) * .5) * spacing)
+			destination += squad_offsets.get(int(e.id), formation_side * (float(ground_index % columns) - float(columns - 1) * .5) * formation_lane_spacing - formation_forward * (float(ground_index / columns) - float(columns - 1) * .5) * spacing)
 			destination = _near_stand(destination, _radius(e), e.id, 8.0, false)
 		if not air and not _is_naval(e) and kind in ["move", "attack_move", "patrol"] and destination.is_finite():
 			var ideal: Vector2 = destination
+			var squad: int = int(e.get("squad_id", -1))
+			var search_spacing: float = InfantrySquads.member_spacing(_radius(e)) if squad >= 0 else formation_spacing
+			var reserve_reach: int = ceili((maximum_radius * 2.0 + InfantrySquads.GROUP_EDGE_GAP) / formation_spacing) if squad >= 0 else 1
 			for attempt in range(33):
 				var free: bool = _standing(destination, _radius(e), e.id, false)
 				var bucket:=Vector2i(floori(destination.x/formation_spacing),floori(destination.y/formation_spacing))
-				for dz in range(-1,2):
-					for dx in range(-1,2):
-						for slot in reserved.get(bucket+Vector2i(dx,dz),[]):
-							if slot.distance_to(destination)<formation_spacing-.01:free=false
+				for dz in range(-reserve_reach, reserve_reach + 1):
+					for dx in range(-reserve_reach, reserve_reach + 1):
+						for slot: Dictionary in reserved.get(bucket+Vector2i(dx,dz),[]):
+							var minimum: float = formation_spacing - .01
+							if squad >= 0 and int(slot.squad) >= 0:
+								minimum = _radius(e) + float(slot.radius) + (InfantrySquads.MEMBER_CLEARANCE if squad == int(slot.squad) else InfantrySquads.GROUP_EDGE_GAP)
+							if (slot.pos as Vector2).distance_to(destination) < minimum - .001: free = false
 				if free: break
 				var ring: float = 1 + floorf(float(attempt) / 16)
-				destination = ideal + Vector2.RIGHT.rotated(float(attempt % 16) * TAU / 16) * formation_spacing * ring
+				destination = ideal + Vector2.RIGHT.rotated(float(attempt % 16) * TAU / 16) * search_spacing * ring
 				if attempt == 32: destination = ideal # Keep the order; crowding is preferable to unbounded slot searches.
 			if destination.is_finite():
 				var bucket:=Vector2i(floori(destination.x/formation_spacing),floori(destination.y/formation_spacing))
 				if not reserved.has(bucket):reserved[bucket]=[]
-				reserved[bucket].append(destination)
+				reserved[bucket].append({"pos":destination,"radius":_radius(e),"squad":squad})
 		if kind in ["move", "attack_move", "patrol"] and not air and not _is_naval(e):
 			if RailNetwork.rail_only(data_for(e.spec)):
 				destination = RailNetwork.center(RailNetwork.key(pos)) if not _rail_network.path(int(e.team), e.pos, pos).is_empty() else _rail_network.nearest_connected(self, e, pos, 3.0)
@@ -1011,6 +1075,7 @@ func issue(ids: Array, kind: String, pos: Vector2, target: int = -1, append: boo
 			e.commands.append({"kind": "patrol", "pos": origin, "target": -1})
 		else:
 			e.commands.append({"kind": kind, "pos": destination, "target": target})
+		if e.has("squad_id") and kind in ["move", "attack_move", "patrol"]: e.squad_formation_goal = destination
 		if kind == "resume_outpost" and not append: Construction.assign_builder(self, int(e.id), target)
 		if ground_selected.size()>1 and kind in ["move","attack_move","patrol"] and not air and not _is_naval(e):e.commands.back().navigation_lane=ground_index%3
 		e.auto_target = -1
@@ -1037,6 +1102,29 @@ func debug_spawn(team: int, spec: String, pos: Vector2, force_spawn: bool = fals
 		if not pos.is_finite():
 			return -1
 	return _spawn(team, spec, pos, true)
+
+## Explicit whole-squad spawning for authored new battles and visual fixtures.
+## debug_spawn retains its single-entity meaning for existing rule diagnostics.
+func debug_spawn_squad(team: int, spec: String, pos: Vector2, force_spawn: bool = false) -> int:
+	var first: int = debug_spawn(team, spec, pos, force_spawn)
+	if first < 0: return first
+	var count: int = squad_size(spec)
+	if count <= 1: return first
+	var created: Array = [first]
+	var radius: float = float(data_for(spec).get("radius", .35))
+	var spacing: float = InfantrySquads.member_spacing(radius)
+	var origin: Vector2 = entities[first].pos
+	for slot: int in range(1, count):
+		var desired: Vector2 = origin + Vector2(float(slot % 2) * spacing, float(slot / 2) * spacing)
+		var point: Vector2 = _near_stand(desired, radius, -1, 8.0)
+		if not point.is_finite():
+			for id: int in created:
+				_spatial_remove(id, entities[id].pos)
+				entities.erase(id)
+			return -1
+		created.append(_spawn(team, spec, point, true))
+	for slot: int in range(created.size()): InfantrySquads.assign(entities[created[slot]], first, slot, count)
+	return first
 
 func _spawn(team: int, spec: String, pos: Vector2, completed: bool, rotation_quarters: int = -1) -> int:
 	var id: int = _next_id
@@ -1165,6 +1253,7 @@ func step(delta: float) -> void:
 		_kernels.step_entities(self,entities,_spec_cache,rules.weapons,_air_specs,_naval_specs,_weapon_target_masks,multipliers,delta,float(_eco("fire_angle",15)))
 	else:
 		_step_entities_script(delta,multipliers)
+	InfantrySquads.regroup(self, delta)
 	Transport.sync_passengers(self)
 	GarrisonOperations.step(self,delta)
 	AirNavalExpansion.step_fleet(self,delta)
@@ -1187,8 +1276,9 @@ func step(delta: float) -> void:
 	_check_result()
 	if profile_enabled:
 		profile = {"prepare_us": profile_units_start-profile_start, "entities_us": profile_units_end-profile_units_start, "damage_us": Time.get_ticks_usec()-profile_units_end, "total_us": Time.get_ticks_usec()-profile_start}
-	if result == "" and ai_enabled and bool(match_options.get("modern", false)):
-		AIController.step(self, delta)
+	if result == "" and ai_enabled and (bool(match_options.get("modern", false)) or bool(match_options.get("explicit_controls",false))):
+		if independent_ai != null: independent_ai.step(self, delta)
+		else: AIController.step(self, delta)
 	elif result == "" and ai_enabled:
 		_ai_clock -= delta
 		_ai_attack_clock += delta
@@ -1269,27 +1359,41 @@ func _step_building(e: Dictionary, delta: float, multiplier: float) -> void:
 			statistics.add(int(e.team),"units_produced")
 		else:
 			_blocked(e)
-	if not e.queue.is_empty() and not entities.has(int(e.get("production_unit", -1))):
+	if not e.queue.is_empty() and ProductionLifecycle.order_can_advance(self, e, e.queue[0]):
 		var order: Dictionary = e.queue[0]
 		order.started = true
 		order.remaining = maxf(0.0, float(order.remaining) - delta * multiplier)
 		order.progress = 1.0 - float(order.remaining) / maxf(float(order.total), 0.001)
 		order.ready = float(order.remaining) <= 0.0
 		if float(order.remaining) <= 0.0:
-			var spawn_pos: Vector2 = _spawn_point(e, str(order.spec))
+			var spawn_pos: Vector2 = ProductionLifecycle.queued_spawn_point(self, e, order)
 			if spawn_pos.is_finite():
-				var unit_id: int = _spawn(int(e.team), str(order.spec), spawn_pos, true)
+				var count: int = int(order.get("squad_size", 1))
+				var slot: int = int(order.get("spawned", 0))
+				var initial_pos: Vector2 = ProductionLifecycle.origin(self, e, str(order.spec), spawn_pos) if count > 1 else spawn_pos
+				var unit_id: int = _spawn(int(e.team), str(order.spec), initial_pos, true)
+				if int(order.get("squad_id", -1)) < 0: order.squad_id = unit_id
+				InfantrySquads.assign(entities[unit_id], int(order.squad_id), slot, count)
+				order.spawned = slot + 1
 				ProductionLifecycle.begin(self, e, entities[unit_id], spawn_pos)
-				e.queue.pop_front()
+				if count > 1 and slot == 0:
+					events.append({"kind":"squad_ready","pos":spawn_pos,"id":unit_id,"squad_id":int(order.squad_id),"building":int(e.id),"team":int(e.team),"spec":str(order.spec),"members":count})
+				if int(order.spawned) >= count: e.queue.pop_front()
 				e.blocked_notice = false
 				if not str(order.spec).ends_with("_harvester") and not _is_air(entities[unit_id]):
 					var rally_goal: Vector2 = _air_goal(e.rally) if _is_air(entities[unit_id]) else (e.rally if _is_naval(entities[unit_id]) else _near_stand(e.rally, _radius(entities[unit_id]), unit_id, 6.0))
+					if count > 1 and rally_goal.is_finite():
+						var forward: Vector2 = (rally_goal - (e.pos as Vector2)).normalized()
+						if forward.length_squared() < .5: forward = Vector2.DOWN
+						rally_goal += InfantrySquads.slot_offset(slot, count, _radius(entities[unit_id]), forward, forward.orthogonal())
 					if rally_goal.is_finite():
-						issue([unit_id], "move", rally_goal)
+						issue([unit_id], "move", rally_goal, -1, false, false)
 				events.append({"kind": "produce", "pos": spawn_pos, "id": unit_id, "team": int(e.team), "spec": str(order.spec)})
 				statistics.add(int(e.team),"units_produced")
 			else:
-				_blocked(e)
+				# A following member waiting for safe headway is normal cohort
+				# movement, not a newly blocked production exit notification.
+				if not ProductionLifecycle.pending_batch(e) or ProductionLifecycle.active_members(self, e).is_empty(): _blocked(e)
 	var weapon_id: String = str(info.get("weapon", ""))
 	if weapon_id != "" and not building_low_power(e):
 		var weapon: Dictionary = weapon_for(e,weapon_id)
@@ -1770,6 +1874,7 @@ func _step_capture(e: Dictionary, command: Dictionary, delta: float) -> void:
 		else: e.state = "unreachable"
 		return
 	var old_team: int = int(target.team)
+	ProductionLifecycle.before_capture(self, target)
 	for order in target.queue: _refund_order(old_team, order)
 	target.queue.clear()
 	_detach_aircraft(target_id)
@@ -2175,14 +2280,14 @@ func _impact_damage(center: Vector2, blast: float, damage: float, multipliers: D
 		for ruin in _nearby_ruins(center, blast):
 			if (force or GarrisonOperations.hostile(self,source_team,RUIN_TARGET_BASE-int(ruin.id))) and float(ruin.hp) > 0.0 and _circle_rect(center, blast, ruin.pos, ruin.half):
 				var factor: float=ArmorCombat.falloff(info,ArmorCombat.distance_to_rectangle(center,ruin.pos,ruin.half),blast)
-				_add_damage(RUIN_TARGET_BASE-int(ruin.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor),force,{"source":int(info.get("source",-1)),"source_team":source_team,"weapon":str(info.get("weapon",""))})
+				_add_damage(RUIN_TARGET_BASE-int(ruin.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor,rules.get("combat_model",{})),force,{"source":int(info.get("source",-1)),"source_team":source_team,"weapon":str(info.get("weapon",""))})
 	for bridge in bridges:
 		if "ground" in targets and bool(bridge.alive) and _circle_bounds(center, blast, bridge.bounds):
 			var bounds: Array=bridge.bounds
 			var half: Vector2=Vector2(float(bounds[2]),float(bounds[3]))*.5
 			var pos: Vector2=Vector2(float(bounds[0]),float(bounds[1]))+half
 			var factor: float=ArmorCombat.falloff(info,ArmorCombat.distance_to_rectangle(center,pos,half),blast)
-			_add_damage(BRIDGE_TARGET_BASE-int(bridge.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor))
+			_add_damage(BRIDGE_TARGET_BASE-int(bridge.id),damage*factor*ArmorCombat.penetration_factor(info,0,factor,rules.get("combat_model",{})))
 
 func _step_projectiles(delta: float) -> void:
 	ZeppelinWeapons.step_secondary(self,delta)
@@ -2269,6 +2374,7 @@ func _kill_entity(id: int, destroyed: bool) -> void:
 	if not entities.has(id):
 		return
 	var e: Dictionary = entities[id]
+	ProductionLifecycle.remove(self, e)
 	RefineryDocking.release(self,e)
 	if data_for(e.spec).get("role", "") == "drill": MiningDrills.release(self, e)
 	_invalidate_base_cache()
@@ -3535,6 +3641,12 @@ func _swept_unit_contact(start: Vector2, finish: Vector2, center: Vector2, radiu
 
 
 
+func _yield_destination(other: Dictionary, requested: Vector2) -> Vector2:
+	if not RailNetwork.rail_only(data_for(other.spec)): return requested
+	var point: Vector2 = RailNetwork.center(RailNetwork.key(requested))
+	if point.distance_to(other.pos) < .25: return Vector2.INF
+	return point if not _rail_network.traversable_path(self,other,other.pos,point).is_empty() else Vector2.INF
+
 func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, next: Vector2) -> void:
 	if _is_air(other): return # Parked aircraft remain stationary on the ground.
 	var id: int = int(other.id)
@@ -3591,7 +3703,8 @@ func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, n
 		for distance in distances:
 			for offset in [side,-side,forward,-forward,(side-forward).normalized(),(-side-forward).normalized()]:
 				if not synchronous_path_tests and _local_nav_us+Time.get_ticks_usec()-yield_start>=LOCAL_NAV_BUDGET_US:break
-				var point: Vector2=other.pos+offset*distance
+				var point: Vector2=_yield_destination(other,other.pos+offset*distance)
+				if not point.is_finite(): continue
 				if _standing(point,_radius(other),id) and _segment_static(other.pos,point,_radius(other),id):
 					if not _claim_yield_probe(yield_start):break
 					if _movement_clear(other,other.pos,(other.pos as Vector2).move_toward(point,speed),false):
@@ -3608,7 +3721,8 @@ func _request_movement_yield(e: Dictionary, other: Dictionary, start: Vector2, n
 			var occupied_fallback:=Vector2.INF
 			for offset in [axis,forward,side,-side,(side+forward).normalized(),(-side+forward).normalized()]:
 				if not synchronous_path_tests and _local_nav_us+Time.get_ticks_usec()-yield_start>=LOCAL_NAV_BUDGET_US:break
-				var point: Vector2=other.pos+offset*1.2
+				var point: Vector2=_yield_destination(other,other.pos+offset*1.2)
+				if not point.is_finite(): continue
 				if _standing(point,_radius(other),id,false) and _segment_static(other.pos,point,_radius(other),id):
 					if not occupied_fallback.is_finite():occupied_fallback=point
 					if not _claim_yield_probe(yield_start):break
@@ -4214,7 +4328,7 @@ func _step_ai() -> void:
 						if rules.units.has(aa) and (_enemy_air_count(team) > _unit_spec_count(team, aa) or int(time / 2.0) % 4 == 0): choice = aa
 						elif rules.units.has(artillery) and _requirements(team, data_for(artillery)) == "" and int(time / 2.0) % 3 == 0: choice = artillery
 						elif rules.units.has(faction + "_advanced") and _requirements(team, data_for(faction + "_advanced")) == "" and int(time / 2.0) % 7 == 0: choice = faction + "_advanced"
-						if money[team] >= reserve + float(data_for(choice).cost): produce(int(e.id), choice)
+						if money[team] >= reserve + production_cost(choice): produce(int(e.id), choice)
 				elif role == "airfield":
 					var aircraft: String = _ai_aircraft_choice(team)
 					if rules.units.has(aircraft) and money[team] >= infrastructure_reserve + float(data_for(aircraft).cost): produce(int(e.id), aircraft)
@@ -4385,6 +4499,7 @@ func load_game(path: String) -> String:
 				snapshot.building_orders[team] = {}
 			else: old_defense.append({})
 		snapshot.defense_orders = old_defense
+	ProductionLifecycle.normalize_legacy(snapshot)
 	var validation_error: String = SaveValidator.check(snapshot)
 	if validation_error != "":
 		return validation_error
@@ -4641,7 +4756,7 @@ func _submit_path_jobs() -> void:
 		var work: Dictionary=job.duplicate()
 		work.geometry=_path_geometry
 		work.priority=priority
-		work.base_priority=2 if float(_navigation_command_until.get(id,0.0))>time else 0
+		work.base_priority=2 if _human_navigation_owner(id) and float(_navigation_command_until.get(id,0.0))>time else 0
 		if entities.has(id) and not entities[id].commands.is_empty():work.navigation_lane=int(entities[id].commands[0].get("navigation_lane",-1))
 		if not _path_worker.submit(work):break
 		job.status="running"

@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "language": "en",
+  "sample_rate": 22050,
+  "format": "PCM signed 16-bit mono WAV",
+  "license": "Synthetic project dialogue generated locally with Apache-2.0 Kokoro weights; no human recording or CC0 claim.",
+  "speech_notice": "Actual spoken English, generated offline. Fixed distinct stock neural voices; no API key required to play.",
+  "dialogue_source": "Current Chinese audio manifests and data/localization/en_*.json, with missing faction variants restored.",
+  "regenerate": "python tools/generate_english_audio.py --download-model --generate",
+  "profiles": {
+    "announcer": {
+      "voice": "af_aoede",
+      "speaker_identity": "af_aoede",
+      "speaker_id": "kokoro/af_aoede@speed=1.000",
+      "speaker_gender": "female",
+      "tempo": 1.0,
+      "accent": "en-us",
+      "direction": "Neutral tactical announcer",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting"
+    }
+  },
+  "clips": [
+    {
+      "key": "system/low_power/1",
+      "faction": "",
+      "category": "system",
+      "action": "low_power",
+      "variant": 1,
+      "text": "Low power. Build more power plants.",
+      "source_text": "电力不足，请增建电站。",
+      "source_text_zh_CN": "电力不足，请增建电站。",
+      "language": "en",
+      "spoken_words": true,
+      "voice": "af_aoede",
+      "speaker_identity": "af_aoede",
+      "speaker_id": "kokoro/af_aoede@speed=1.000",
+      "speaker_gender": "female",
+      "tempo": 1.0,
+      "accent": "en-us",
+      "direction": "Neutral tactical announcer",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting",
+      "file": "res://assets/audio/english/system/low_power.wav",
+      "duration_s": 2.725,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "3e9be1bab95c20a1baa5562e66111568883048e7661997aca72a756ca23bae8f",
+      "audio_checks": {
+        "rms": 0.114541,
+        "peak": 0.599976,
+        "clipped_samples": 0
+      },
+      "source_sha256": "a1e0c07a5a8a871c2ce5006f83812bf636ad4f5d6090140baa5efdc3e54c78d6",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Local CPU inference; no network or paid API",
+        "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+        "model_license": "Apache-2.0",
+        "inference_wrapper": "kokoro-onnx",
+        "wrapper_version": "0.4.9",
+        "wrapper_license": "MIT",
+        "model_sha256": "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c",
+        "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+        "human_recording": false,
+        "stock_voice": "af_aoede",
+        "post_processing": {
+          "pitch_shift": 0,
+          "sample_rate": 22050,
+          "radio_band_hz": [
+            70,
+            7000
+          ],
+          "peak_target": 0.6,
+          "trim_padding_only": true
+        }
+      }
+    },
+    {
+      "key": "system/power_restored/1",
+      "faction": "",
+      "category": "system",
+      "action": "power_restored",
+      "variant": 1,
+      "text": "Power restored.",
+      "source_text": "电力已恢复。",
+      "source_text_zh_CN": "电力已恢复。",
+      "language": "en",
+      "spoken_words": true,
+      "voice": "af_aoede",
+      "speaker_identity": "af_aoede",
+      "speaker_id": "kokoro/af_aoede@speed=1.000",
+      "speaker_gender": "female",
+      "tempo": 1.0,
+      "accent": "en-us",
+      "direction": "Neutral tactical announcer",
+      "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+      "request_strategy": "One fixed stock neural speaker for every action and variant; no pitch shifting",
+      "file": "res://assets/audio/english/system/power_restored.wav",
+      "duration_s": 1.675,
+      "sample_rate": 22050,
+      "channels": 1,
+      "sample_width": 2,
+      "sha256": "2a8eb0116e26cf4fc7936709845aee7b6d7addec3ec5dcbd9bb1bf0dbdf973a1",
+      "audio_checks": {
+        "rms": 0.116874,
+        "peak": 0.599976,
+        "clipped_samples": 0
+      },
+      "source_sha256": "0b0766d1c20a1684c88eb4b65a3b510a12dae9e330c2a5fa5577ec62a3abb614",
+      "provenance": {
+        "type": "synthesized_speech",
+        "provider": "Local CPU inference; no network or paid API",
+        "model": "Kokoro-82M v1.0 / kokoro-onnx model-files-v1.1 int8",
+        "model_license": "Apache-2.0",
+        "inference_wrapper": "kokoro-onnx",
+        "wrapper_version": "0.4.9",
+        "wrapper_license": "MIT",
+        "model_sha256": "ae315a79b623f244700e4afb9246c46a26066782e049ba174bf3ba433970ee9c",
+        "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+        "human_recording": false,
+        "stock_voice": "af_aoede",
+        "post_processing": {
+          "pitch_shift": 0,
+          "sample_rate": 22050,
+          "radio_band_hz": [
+            70,
+            7000
+          ],
+          "peak_target": 0.6,
+          "trim_padding_only": true
+        }
+      }
+    }
+  ]
+}

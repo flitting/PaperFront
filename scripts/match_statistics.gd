@@ -15,6 +15,8 @@ const DEFINITIONS := {
 	"winner_teams": "Derived from the authoritative player-relative result for two-side matches (and sole-player victory in multiteam). winner_teams_known is false when no unique winner can be inferred or a match is unfinished.",
 	"infantry_total": "Live ground units classified as infantry by simulation armor rules; includes transported and garrisoned units.",
 	"army_value": "Nominal rules cost of live units, including gifts/captures/transported units; not expenditure.",
+	"idle_harvesters": "Miners idle or manually stopped, excluding autonomous mining with an empty command queue; waiting/blocked miners are reported separately.",
+	"waiting_harvesters": "Miners whose current simulation state is waiting or blocked; may include normal queueing, so this alone is not a stall diagnosis.",
 	"building_value": "Nominal rules cost of live structures, including construction and rails; not expenditure.",
 	"units_lost_value": "Nominal rules cost of destroyed units; excludes noncombat removals.",
 	"buildings_lost_value": "Nominal rules cost of destroyed nonrail structures; excludes sales.",
@@ -185,7 +187,7 @@ func _current_rows(sim) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = teams.duplicate(true)
 	for index: int in rows.size():
 		var row: Dictionary = rows[index]
-		row.merge({"team": index, "money_remaining": float(sim.money[index]), "alive_units": 0, "alive_buildings": 0, "building_total": 0, "victory_building_total": 0, "infantry_total": 0, "structures_complete": 0, "structures_under_construction": 0, "army_value": 0.0, "building_value": 0.0, "units_by_spec": {}, "buildings_by_spec": {}, "unit_categories": {"infantry": 0, "vehicle": 0, "air": 0, "naval": 0}, "harvesters": 0, "idle_harvesters": 0, "unit_queue_total": 0, "wounded_units": 0}, true)
+		row.merge({"team": index, "money_remaining": float(sim.money[index]), "alive_units": 0, "alive_buildings": 0, "building_total": 0, "victory_building_total": 0, "infantry_total": 0, "structures_complete": 0, "structures_under_construction": 0, "army_value": 0.0, "building_value": 0.0, "units_by_spec": {}, "buildings_by_spec": {}, "unit_categories": {"infantry": 0, "vehicle": 0, "air": 0, "naval": 0}, "harvesters": 0, "idle_harvesters": 0, "waiting_harvesters":0, "unit_queue_total": 0, "wounded_units": 0}, true)
 		row.funds_spent = maxf(0, float(initial_money[index]) + float(row.funds_earned) + float(row.sales_income) - float(sim.money[index]))
 		row.funds_spent_kind = "net investment after refunds"
 		row.funds_empty = float(sim.money[index]) < 1.0
@@ -221,7 +223,8 @@ func _current_rows(sim) -> Array[Dictionary]:
 			if float(entity.hp) < float(sim.max_hp(entity)): row.wounded_units += 1
 			if str(info.get("role", "")) == "harvester" or spec.ends_with("_harvester"):
 				row.harvesters += 1
-				if entity.get("commands", []).is_empty(): row.idle_harvesters += 1
+				if str(entity.get("state","idle")) == "idle" or (entity.get("commands",[]).is_empty() and bool(entity.get("harvest_override",false))): row.idle_harvesters += 1
+				if str(entity.get("state","")) in ["waiting","blocked"]: row.waiting_harvesters += 1
 	for row: Dictionary in rows: row.eliminated = int(row.victory_building_total) == 0
 	return rows
 

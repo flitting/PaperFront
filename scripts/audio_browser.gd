@@ -4,6 +4,7 @@ class_name AudioBrowser
 # The browser reads the same applied file inventory as the game and owns one
 # preview player. Preview never sends simulation commands or writes preferences.
 const DEMO_PATH := "res://scripts/audio_animation_preview.gd"
+const Localization = preload("res://scripts/localization.gd")
 const Catalog = preload("res://scripts/audio_browser_catalog.gd")
 const INK := Color("392c21")
 const CREAM := Color("f0dfbd")
@@ -218,16 +219,25 @@ func _ready() -> void:
 	configure(audio, rules)
 
 func configure(owner_audio: PaperAudio, config: Dictionary = {}) -> void:
-	if audio != owner_audio: set_session_active(false)
+	if audio != owner_audio:
+		set_session_active(false)
+		if is_instance_valid(audio) and audio.voice_language_changed.is_connected(_voice_language_changed):
+			audio.voice_language_changed.disconnect(_voice_language_changed)
 	audio = owner_audio
+	if is_instance_valid(audio) and not audio.voice_language_changed.is_connected(_voice_language_changed):
+		audio.voice_language_changed.connect(_voice_language_changed)
 	rules = config
 	if not is_node_ready(): return
-	catalog = Catalog.load_catalog()
+	catalog = Catalog.load_catalog(audio.voice_language if is_instance_valid(audio) else "en")
 	row_by_id.clear()
 	for row: Dictionary in catalog: row_by_id[str(row.id)] = row
 	_refresh_filters()
 	_rebuild_entries()
 	set_session_active(enabled and is_visible_in_tree())
+
+func _voice_language_changed(_language: String) -> void:
+	stop_preview()
+	configure(audio, rules)
 
 func set_enabled(value: bool) -> void:
 	enabled = value
@@ -306,7 +316,8 @@ func _rebuild_entries() -> void:
 		if not _chosen(faction_filter).is_empty() and str(row.get("faction", "")) != _chosen(faction_filter): continue
 		if not _chosen(category_filter).is_empty() and str(row.get("category", "")) != _chosen(category_filter): continue
 		if not _chosen(action_filter).is_empty() and str(row.get("action", "")) != _chosen(action_filter): continue
-		var haystack: String = " ".join([_row_title(row), str(row.get("text", "")), str(row.id), str(row.file), str(row.get("provider", ""))]).to_lower()
+		var haystack: String = " ".join([_row_title(row), str(row.get("text", "")), str(row.id), str(row.file), str(row.get("provider", "")), str(row.get("spoken_text", ""))]).to_lower()
+		haystack += " " + Localization.text(haystack).to_lower()
 		var matches := true
 		for term: String in query.split(" ", false):
 			if not haystack.contains(term): matches = false; break

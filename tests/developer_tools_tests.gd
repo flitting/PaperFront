@@ -122,7 +122,15 @@ func _test_real_routes(sim,faction: String) -> void:
 			sim.step(.05)
 			if sim.entities[tank].pos.distance_to(Vector2(60,51.5)) < .7: break
 		_check(sim.entities[tank].pos.distance_to(Vector2(60,51.5)) < .7,faction+" real two-cell tank physically crosses bridge")
-	var transport: int = sim.debug_spawn(0,faction+"_ship_transport",Vector2(38,80))
+	var transport_spec: String = ""
+	for spec: String in sim.rules.units:
+		var info: Dictionary = sim.rules.units[spec]
+		if str(info.faction) == faction and str(info.get("domain","ground")) == "naval" and int(info.get("transport_capacity",0)) > 0 and not bool(info.get("roster_hidden",false)) and not bool(info.get("internal_only",false)):
+			transport_spec = spec
+			break
+	_check(not transport_spec.is_empty(),faction+" current public naval roster supplies a real troop transport")
+	if transport_spec.is_empty(): return
+	var transport: int = sim.debug_spawn(0,transport_spec,Vector2(38,80))
 	var soldier: int = sim.debug_spawn(0,faction+"_rifle",Vector2(29.5,74.5))
 	_check(transport > 0 and soldier > 0,faction+" real transport and passenger spawn beside catalog dock")
 	if transport < 0 or soldier < 0: return

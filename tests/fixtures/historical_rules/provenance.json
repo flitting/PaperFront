@@ -1,0 +1,12 @@
+[
+  {
+    "file": "before_armor_20261007.json",
+    "original_capture": "artifacts/rts_revision_v2_20261007/rules_before.json",
+    "sha256": "dcd664c61b6884558247d229b1aa9883c602d87873ed32e57667baf68d7839a0"
+  },
+  {
+    "file": "before_armor_balance_20261009.json",
+    "original_capture": "artifacts/armor_balance_revision_20261009/before_rules.json",
+    "sha256": "9c7b6bb7aa81c6da29f530f4f9e36ffe2ff2b38a69fb9c756cf23ea53273dfbb"
+  }
+]

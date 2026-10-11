@@ -1,0 +1,430 @@
+{
+  "seed733_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 829.4999999999029,
+    "income": 10613.333333333243,
+    "produced": {
+      "kestrel_anti": 6,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 5,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "lost": {
+      "kestrel_anti": 6,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 2,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 5,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "phases": {
+      "assemble": 205,
+      "defend": 209
+    },
+    "low_power_seconds": 0.0,
+    "first_deaths": [
+      [
+        306.0000000000278,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ],
+      [
+        306.5000000000282,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        307.6666666666958,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        308.43333333336307,
+        "kestrel_rifle",
+        "kestrel_anti"
+      ],
+      [
+        309.2333333333637,
+        "kestrel_anti",
+        "kestrel_gunner"
+      ],
+      [
+        312.36666666669953,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        316.7000000000363,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        317.00000000003655,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        317.7000000000371,
+        "kestrel_anti",
+        "kestrel_anti"
+      ],
+      [
+        318.433333333371,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        319.9666666667056,
+        "kestrel_scout",
+        "kestrel_anti"
+      ],
+      [
+        322.5333333333743,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        330.36666666671385,
+        "kestrel_harvester",
+        "kestrel_marksman"
+      ],
+      [
+        332.60000000004896,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        349.23333333339554,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed733_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 506.8000000001876,
+    "income": 9058.333333333254,
+    "produced": {
+      "kestrel_anti": 5,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "lost": {
+      "kestrel_anti": 5,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "phases": {
+      "assemble": 181,
+      "defend": 72
+    },
+    "low_power_seconds": 12.800000000010186,
+    "first_deaths": [
+      [
+        303.8333333333594,
+        "kestrel_scout",
+        "kestrel_anti"
+      ],
+      [
+        304.4333333333599,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        306.0666666666945,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ],
+      [
+        307.43333333336227,
+        "kestrel_marksman",
+        "kestrel_gunner"
+      ],
+      [
+        310.000000000031,
+        "kestrel_anti",
+        "kestrel_gunner"
+      ],
+      [
+        311.2333333333653,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        311.93333333336585,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        313.2333333333669,
+        "kestrel_anti",
+        "kestrel_marksman"
+      ],
+      [
+        313.4000000000337,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        318.3666666667043,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        320.7000000000395,
+        "kestrel_rifle",
+        "kestrel_anti"
+      ],
+      [
+        324.2000000000423,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        337.0333333333858,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        340.0333333333882,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        349.1666666667288,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed734_default_alpha_review.json": {
+    "winner": "beta",
+    "duration": 829.4999999999029,
+    "income": 10613.333333333243,
+    "produced": {
+      "kestrel_anti": 6,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 5,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "lost": {
+      "kestrel_anti": 6,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 3,
+      "kestrel_harvester": 2,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 5,
+      "kestrel_scout": 2,
+      "kestrel_tank": 4
+    },
+    "phases": {
+      "assemble": 205,
+      "defend": 209
+    },
+    "low_power_seconds": 0.0,
+    "first_deaths": [
+      [
+        306.0000000000278,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ],
+      [
+        306.5000000000282,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        307.6666666666958,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        308.43333333336307,
+        "kestrel_rifle",
+        "kestrel_anti"
+      ],
+      [
+        309.2333333333637,
+        "kestrel_anti",
+        "kestrel_gunner"
+      ],
+      [
+        312.36666666669953,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        316.7000000000363,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        317.00000000003655,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        317.7000000000371,
+        "kestrel_anti",
+        "kestrel_anti"
+      ],
+      [
+        318.433333333371,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        319.9666666667056,
+        "kestrel_scout",
+        "kestrel_anti"
+      ],
+      [
+        322.5333333333743,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        330.36666666671385,
+        "kestrel_harvester",
+        "kestrel_marksman"
+      ],
+      [
+        332.60000000004896,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        349.23333333339554,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed734_swap_alpha_review.json": {
+    "winner": "beta",
+    "duration": 506.8000000001876,
+    "income": 9058.333333333254,
+    "produced": {
+      "kestrel_anti": 5,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "lost": {
+      "kestrel_anti": 5,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 4,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 11,
+      "kestrel_rifle": 4,
+      "kestrel_scout": 2,
+      "kestrel_tank": 3
+    },
+    "phases": {
+      "assemble": 181,
+      "defend": 72
+    },
+    "low_power_seconds": 12.800000000010186,
+    "first_deaths": [
+      [
+        303.8333333333594,
+        "kestrel_scout",
+        "kestrel_anti"
+      ],
+      [
+        304.4333333333599,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        306.0666666666945,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ],
+      [
+        307.43333333336227,
+        "kestrel_marksman",
+        "kestrel_gunner"
+      ],
+      [
+        310.000000000031,
+        "kestrel_anti",
+        "kestrel_gunner"
+      ],
+      [
+        311.2333333333653,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        311.93333333336585,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        313.2333333333669,
+        "kestrel_anti",
+        "kestrel_marksman"
+      ],
+      [
+        313.4000000000337,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        318.3666666667043,
+        "kestrel_tank",
+        "kestrel_anti"
+      ],
+      [
+        320.7000000000395,
+        "kestrel_rifle",
+        "kestrel_anti"
+      ],
+      [
+        324.2000000000423,
+        "kestrel_gunner",
+        "kestrel_marksman"
+      ],
+      [
+        337.0333333333858,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        340.0333333333882,
+        "kestrel_marksman",
+        "kestrel_marksman"
+      ],
+      [
+        349.1666666667288,
+        "kestrel_rifle",
+        "kestrel_marksman"
+      ]
+    ]
+  }
+}

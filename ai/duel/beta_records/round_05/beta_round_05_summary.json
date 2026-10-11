@@ -1,0 +1,2172 @@
+[
+  {
+    "match": "seed733_default",
+    "duration": 829.4999999999029,
+    "winner": "beta",
+    "own": {
+      "funds_earned": 28499.999999999778,
+      "funds_spent": 30199.000000000025,
+      "money_remaining": 2300.9999999997535,
+      "units_produced": 67.0,
+      "units_lost": 20.0,
+      "units_lost_value": 5046.0,
+      "enemy_units_destroyed_value": 9554.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 7,
+        "kestrel_gunner": 2,
+        "kestrel_marksman": 7,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 2
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 16,
+        "kestrel_artillery": 5,
+        "kestrel_engineer": 1,
+        "kestrel_gunner": 4,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 25,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 18613.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 10613.333333333243,
+      "units_lost_value": 9554.0,
+      "enemy_units_destroyed_value": 5046.0,
+      "peak_army_value": 5457.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 37.533333333333765,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 126.43333333332872,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 187.9999999999919,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 253.99999999998815,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 255.5333333333214,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 286.0000000000119,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 290.43333333334874,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 494.0000000001774,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      },
+      {
+        "time": 550.0000000001571,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      }
+    ],
+    "phases": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v3_income_defense muster force=0 infantry=0 value=0 anchor=16.0 contact=0 remembered=0 local=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 272.00000000000074,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=18.2 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks"
+      },
+      {
+        "time": 354.000000000066,
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1794 anchor=97.7 contact=428 remembered=2901 local=1170 home_threat=0 economy=army"
+      },
+      {
+        "time": 392.00000000009624,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3875 anchor=18.0 contact=0 remembered=0 local=3875 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 1008,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 135.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1886.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 4,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 130,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 180,
+        "own": {
+          "army_value": 2984.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 107.99999999998272,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=7 infantry=6 value=2091 anchor=18.8 contact=0 remembered=0 local=2091 home_threat=0 economy=power",
+        "own_force": 7,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 6,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 607.9999999999784,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.5 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 220,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 1107.999999999974,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2999.9999999999736,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.5 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 3402.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 467.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3819.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=9 infantry=8 value=2676 anchor=18.5 contact=0 remembered=0 local=2676 home_threat=0 economy=refinery",
+        "own_force": 9,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 270,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 49.99999999996544,
+          "harvesters": 3,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4599.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=11 infantry=10 value=3262 anchor=18.3 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 10,
+          "attack_move": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 5080.0,
+          "funds_earned": 4999.999999999955,
+          "money_remaining": 179.9999999999568,
+          "harvesters": 4,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5457.0,
+          "funds_earned": 5499.999999999951,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=73.2 contact=0 remembered=0 local=3598 home_threat=0 economy=army",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 2,
+          "attack_move": 10
+        }
+      },
+      {
+        "time": 320,
+        "own": {
+          "army_value": 4568.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 63.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 1348.0,
+          "enemy_units_destroyed_value": 3281.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2656.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=9 infantry=9 value=2419 anchor=90.9 contact=0 remembered=2659 local=1834 home_threat=0 economy=army",
+        "own_force": 11,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 9,
+          "move": 2
+        }
+      },
+      {
+        "time": 340,
+        "own": {
+          "army_value": 4930.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 63.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 1766.0,
+          "enemy_units_destroyed_value": 4271.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2796.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=10 infantry=9 value=3093 anchor=106.8 contact=0 remembered=3331 local=1299 home_threat=0 economy=army",
+        "own_force": 10,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 7,
+          "attack": 3
+        }
+      },
+      {
+        "time": 360,
+        "own": {
+          "army_value": 4094.0,
+          "funds_earned": 7999.999999999928,
+          "money_remaining": 735.9999999999309,
+          "harvesters": 4,
+          "units_lost_value": 3082.0,
+          "enemy_units_destroyed_value": 4381.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2974.0,
+          "funds_earned": 7090.83333333327,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=6 infantry=5 value=2217 anchor=61.0 contact=0 remembered=0 local=1545 home_threat=0 economy=army",
+        "own_force": 6,
+        "max_miner_stall": 2.0000000000015916,
+        "combat_commands": {
+          "move": 4,
+          "attack_move": 2
+        }
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 5936.0,
+          "funds_earned": 9499.999999999916,
+          "money_remaining": 741.9999999999179,
+          "harvesters": 4,
+          "units_lost_value": 3082.0,
+          "enemy_units_destroyed_value": 4381.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3399.0,
+          "funds_earned": 8590.833333333258,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=15 infantry=14 value=4796 anchor=30.5 contact=0 remembered=0 local=3875 home_threat=0 economy=tech",
+        "own_force": 15,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 6,
+          "idle": 7,
+          "move": 2
+        }
+      },
+      {
+        "time": 450,
+        "own": {
+          "army_value": 6246.0,
+          "funds_earned": 11499.999999999902,
+          "money_remaining": 105.99999999990064,
+          "harvesters": 4,
+          "units_lost_value": 3608.0,
+          "enemy_units_destroyed_value": 7460.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2176.0,
+          "funds_earned": 10090.833333333247,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=16 infantry=15 value=4897 anchor=106.9 contact=0 remembered=2011 local=3726 home_threat=0 economy=tech",
+        "own_force": 16,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 6,
+          "attack_move": 10
+        }
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 6594.0,
+          "funds_earned": 13999.999999999884,
+          "money_remaining": 39.99999999987904,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9240.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1334.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=18 infantry=17 value=5448 anchor=119.2 contact=0 remembered=930 local=3416 home_threat=0 economy=factory",
+        "own_force": 18,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 13,
+          "idle": 5
+        }
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 9998.0,
+          "funds_earned": 18999.999999999847,
+          "money_remaining": 523.9999999998358,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9418.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1156.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=31 infantry=29 value=9746 anchor=118.7 contact=0 remembered=0 local=7232 home_threat=0 economy=army",
+        "own_force": 31,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 23,
+          "attack_move": 8
+        }
+      },
+      {
+        "time": 700,
+        "own": {
+          "army_value": 14346.0,
+          "funds_earned": 22499.99999999982,
+          "money_remaining": 567.9999999998056,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9418.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1156.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=36 infantry=29 value=13224 anchor=119.4 contact=0 remembered=0 local=11173 home_threat=0 economy=army",
+        "own_force": 36,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 31,
+          "attack_move": 5
+        }
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 18613.0,
+          "funds_earned": 26999.99999999979,
+          "money_remaining": 800.9999999997665,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9554.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1020.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16701 anchor=135.6 contact=0 remembered=0 local=15363 home_threat=0 economy=army",
+        "own_force": 42,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 23,
+          "attack_move": 19
+        }
+      }
+    ],
+    "miner_deaths": [
+      {
+        "time": 330.36666666671385,
+        "team": 0,
+        "cause": {
+          "explosive": false,
+          "source": 27,
+          "source_team": 1,
+          "weapon": "kestrel_marksman"
+        }
+      },
+      {
+        "time": 446.7666666668065,
+        "team": 0,
+        "cause": {
+          "explosive": true,
+          "source": 57,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        }
+      }
+    ]
+  },
+  {
+    "match": "seed733_swap",
+    "duration": 506.8000000001876,
+    "winner": "beta",
+    "own": {
+      "funds_earned": 13999.999999999884,
+      "funds_spent": 17907.000000000004,
+      "money_remaining": 92.99999999987875,
+      "units_produced": 44.0,
+      "units_lost": 22.0,
+      "units_lost_value": 4916.0,
+      "enemy_units_destroyed_value": 9166.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 7,
+        "kestrel_gunner": 3,
+        "kestrel_marksman": 9,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 1
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 12,
+        "kestrel_engineer": 1,
+        "kestrel_gunner": 3,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 18,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 3
+      },
+      "peak_army_value": 7041.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 9058.333333333254,
+      "units_lost_value": 9166.0,
+      "enemy_units_destroyed_value": 4916.0,
+      "peak_army_value": 5457.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 37.533333333333765,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 126.43333333332872,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 187.9999999999919,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 253.99999999998815,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 255.5333333333214,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 286.0000000000119,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 290.43333333334874,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      }
+    ],
+    "phases": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v3_income_defense muster force=0 infantry=0 value=0 anchor=16.0 contact=0 remembered=0 local=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 272.00000000000074,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=18.8 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks"
+      }
+    ],
+    "commands": 652,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 135.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1886.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 4,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 130,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 180,
+        "own": {
+          "army_value": 2984.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 107.99999999998272,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=7 infantry=6 value=2091 anchor=18.6 contact=0 remembered=0 local=2091 home_threat=0 economy=power",
+        "own_force": 7,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 6,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 607.9999999999784,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.6 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 220,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 1107.999999999974,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2999.9999999999736,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.6 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 3402.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 467.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3819.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=9 infantry=8 value=2676 anchor=18.6 contact=0 remembered=0 local=2676 home_threat=0 economy=refinery",
+        "own_force": 9,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 270,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 49.99999999996544,
+          "harvesters": 3,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4599.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=11 infantry=10 value=3262 anchor=19.5 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 10,
+          "attack_move": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 5080.0,
+          "funds_earned": 4999.999999999955,
+          "money_remaining": 179.9999999999568,
+          "harvesters": 4,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5457.0,
+          "funds_earned": 4999.999999999955,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=78.2 contact=0 remembered=0 local=3598 home_threat=0 economy=army",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 10,
+          "idle": 2
+        }
+      },
+      {
+        "time": 320,
+        "own": {
+          "army_value": 4328.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 603.9999999999438,
+          "harvesters": 4,
+          "units_lost_value": 1348.0,
+          "enemy_units_destroyed_value": 3171.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2696.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=10 infantry=10 value=2414 anchor=89.1 contact=154 remembered=2735 local=1579 home_threat=0 economy=army",
+        "own_force": 10,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 7,
+          "attack_move": 3
+        }
+      },
+      {
+        "time": 340,
+        "own": {
+          "army_value": 4498.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 77.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 2184.0,
+          "enemy_units_destroyed_value": 3691.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3416.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=11 infantry=11 value=2965 anchor=43.2 contact=0 remembered=0 local=1170 home_threat=0 economy=army",
+        "own_force": 11,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 3,
+          "idle": 2,
+          "attack_move": 6
+        }
+      },
+      {
+        "time": 360,
+        "own": {
+          "army_value": 3778.0,
+          "funds_earned": 7999.999999999928,
+          "money_remaining": 317.9999999999309,
+          "harvesters": 4,
+          "units_lost_value": 2904.0,
+          "enemy_units_destroyed_value": 4151.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3451.0,
+          "funds_earned": 7499.999999999933,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=8 infantry=8 value=2243 anchor=82.9 contact=0 remembered=1678 local=1744 home_threat=0 economy=army",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 7,
+          "idle": 1
+        }
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 5758.0,
+          "funds_earned": 9499.999999999916,
+          "money_remaining": 571.9999999999179,
+          "harvesters": 4,
+          "units_lost_value": 3252.0,
+          "enemy_units_destroyed_value": 6014.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2594.0,
+          "funds_earned": 8058.333333333261,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=14 infantry=13 value=4396 anchor=88.5 contact=0 remembered=1223 local=1632 home_threat=0 economy=tech",
+        "own_force": 14,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 10,
+          "attack": 4
+        }
+      },
+      {
+        "time": 450,
+        "own": {
+          "army_value": 6491.0,
+          "funds_earned": 11999.999999999898,
+          "money_remaining": 782.9999999998963,
+          "harvesters": 4,
+          "units_lost_value": 4746.0,
+          "enemy_units_destroyed_value": 7530.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2146.0,
+          "funds_earned": 9058.333333333254,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=15 infantry=12 value=4802 anchor=111.8 contact=336 remembered=998 local=2554 home_threat=0 economy=tech",
+        "own_force": 15,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 13,
+          "idle": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 7041.0,
+          "funds_earned": 13499.999999999887,
+          "money_remaining": 2.99999999988313,
+          "harvesters": 4,
+          "units_lost_value": 4916.0,
+          "enemy_units_destroyed_value": 9166.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 510.0,
+          "funds_earned": 9058.333333333254,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense attack force=17 infantry=14 value=5527 anchor=135.9 contact=0 remembered=0 local=4855 home_threat=0 economy=tech",
+        "own_force": 17,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 6,
+          "attack_move": 9,
+          "move": 2
+        }
+      }
+    ],
+    "miner_deaths": [
+      {
+        "time": 430.20000000012664,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 52,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      },
+      {
+        "time": 457.83333333348196,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 75,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      },
+      {
+        "time": 496.6000000001795,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 87,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      }
+    ]
+  },
+  {
+    "match": "seed734_default",
+    "duration": 829.4999999999029,
+    "winner": "beta",
+    "own": {
+      "funds_earned": 28499.999999999778,
+      "funds_spent": 30199.000000000025,
+      "money_remaining": 2300.9999999997535,
+      "units_produced": 67.0,
+      "units_lost": 20.0,
+      "units_lost_value": 5046.0,
+      "enemy_units_destroyed_value": 9554.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 7,
+        "kestrel_gunner": 2,
+        "kestrel_marksman": 7,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 2
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 16,
+        "kestrel_artillery": 5,
+        "kestrel_engineer": 1,
+        "kestrel_gunner": 4,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 25,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 18613.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 10613.333333333243,
+      "units_lost_value": 9554.0,
+      "enemy_units_destroyed_value": 5046.0,
+      "peak_army_value": 5457.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 37.533333333333765,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 126.43333333332872,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 187.9999999999919,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 253.99999999998815,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 255.5333333333214,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 286.0000000000119,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 290.43333333334874,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 494.0000000001774,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      },
+      {
+        "time": 550.0000000001571,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      }
+    ],
+    "phases": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v3_income_defense muster force=0 infantry=0 value=0 anchor=16.0 contact=0 remembered=0 local=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 272.00000000000074,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=18.2 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks"
+      },
+      {
+        "time": 354.000000000066,
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1794 anchor=97.7 contact=428 remembered=2901 local=1170 home_threat=0 economy=army"
+      },
+      {
+        "time": 392.00000000009624,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3875 anchor=18.0 contact=0 remembered=0 local=3875 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 1008,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 135.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1886.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 4,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 130,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=18.8 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 180,
+        "own": {
+          "army_value": 2984.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 107.99999999998272,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=7 infantry=6 value=2091 anchor=18.8 contact=0 remembered=0 local=2091 home_threat=0 economy=power",
+        "own_force": 7,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 6,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 607.9999999999784,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.5 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 220,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 1107.999999999974,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2999.9999999999736,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.5 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 3402.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 467.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3819.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=9 infantry=8 value=2676 anchor=18.5 contact=0 remembered=0 local=2676 home_threat=0 economy=refinery",
+        "own_force": 9,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 270,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 49.99999999996544,
+          "harvesters": 3,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4599.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=11 infantry=10 value=3262 anchor=18.3 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 10,
+          "attack_move": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 5080.0,
+          "funds_earned": 4999.999999999955,
+          "money_remaining": 179.9999999999568,
+          "harvesters": 4,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5457.0,
+          "funds_earned": 5499.999999999951,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=73.2 contact=0 remembered=0 local=3598 home_threat=0 economy=army",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 2,
+          "attack_move": 10
+        }
+      },
+      {
+        "time": 320,
+        "own": {
+          "army_value": 4568.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 63.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 1348.0,
+          "enemy_units_destroyed_value": 3281.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2656.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=9 infantry=9 value=2419 anchor=90.9 contact=0 remembered=2659 local=1834 home_threat=0 economy=army",
+        "own_force": 11,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 9,
+          "move": 2
+        }
+      },
+      {
+        "time": 340,
+        "own": {
+          "army_value": 4930.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 63.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 1766.0,
+          "enemy_units_destroyed_value": 4271.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2796.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=10 infantry=9 value=3093 anchor=106.8 contact=0 remembered=3331 local=1299 home_threat=0 economy=army",
+        "own_force": 10,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 7,
+          "attack": 3
+        }
+      },
+      {
+        "time": 360,
+        "own": {
+          "army_value": 4094.0,
+          "funds_earned": 7999.999999999928,
+          "money_remaining": 735.9999999999309,
+          "harvesters": 4,
+          "units_lost_value": 3082.0,
+          "enemy_units_destroyed_value": 4381.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2974.0,
+          "funds_earned": 7090.83333333327,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=6 infantry=5 value=2217 anchor=61.0 contact=0 remembered=0 local=1545 home_threat=0 economy=army",
+        "own_force": 6,
+        "max_miner_stall": 2.0000000000015916,
+        "combat_commands": {
+          "move": 4,
+          "attack_move": 2
+        }
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 5936.0,
+          "funds_earned": 9499.999999999916,
+          "money_remaining": 741.9999999999179,
+          "harvesters": 4,
+          "units_lost_value": 3082.0,
+          "enemy_units_destroyed_value": 4381.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3399.0,
+          "funds_earned": 8590.833333333258,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=15 infantry=14 value=4796 anchor=30.5 contact=0 remembered=0 local=3875 home_threat=0 economy=tech",
+        "own_force": 15,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 6,
+          "idle": 7,
+          "move": 2
+        }
+      },
+      {
+        "time": 450,
+        "own": {
+          "army_value": 6246.0,
+          "funds_earned": 11499.999999999902,
+          "money_remaining": 105.99999999990064,
+          "harvesters": 4,
+          "units_lost_value": 3608.0,
+          "enemy_units_destroyed_value": 7460.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2176.0,
+          "funds_earned": 10090.833333333247,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=16 infantry=15 value=4897 anchor=106.9 contact=0 remembered=2011 local=3726 home_threat=0 economy=tech",
+        "own_force": 16,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 6,
+          "attack_move": 10
+        }
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 6594.0,
+          "funds_earned": 13999.999999999884,
+          "money_remaining": 39.99999999987904,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9240.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1334.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=18 infantry=17 value=5448 anchor=119.2 contact=0 remembered=930 local=3416 home_threat=0 economy=factory",
+        "own_force": 18,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 13,
+          "idle": 5
+        }
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 9998.0,
+          "funds_earned": 18999.999999999847,
+          "money_remaining": 523.9999999998358,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9418.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1156.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=31 infantry=29 value=9746 anchor=118.7 contact=0 remembered=0 local=7232 home_threat=0 economy=army",
+        "own_force": 31,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 23,
+          "attack_move": 8
+        }
+      },
+      {
+        "time": 700,
+        "own": {
+          "army_value": 14346.0,
+          "funds_earned": 22499.99999999982,
+          "money_remaining": 567.9999999998056,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9418.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1156.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=36 infantry=29 value=13224 anchor=119.4 contact=0 remembered=0 local=11173 home_threat=0 economy=army",
+        "own_force": 36,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 31,
+          "attack_move": 5
+        }
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 18613.0,
+          "funds_earned": 26999.99999999979,
+          "money_remaining": 800.9999999997665,
+          "harvesters": 4,
+          "units_lost_value": 5046.0,
+          "enemy_units_destroyed_value": 9554.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1020.0,
+          "funds_earned": 10613.333333333243,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16701 anchor=135.6 contact=0 remembered=0 local=15363 home_threat=0 economy=army",
+        "own_force": 42,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 23,
+          "attack_move": 19
+        }
+      }
+    ],
+    "miner_deaths": [
+      {
+        "time": 330.36666666671385,
+        "team": 0,
+        "cause": {
+          "explosive": false,
+          "source": 27,
+          "source_team": 1,
+          "weapon": "kestrel_marksman"
+        }
+      },
+      {
+        "time": 446.7666666668065,
+        "team": 0,
+        "cause": {
+          "explosive": true,
+          "source": 57,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        }
+      }
+    ]
+  },
+  {
+    "match": "seed734_swap",
+    "duration": 506.8000000001876,
+    "winner": "beta",
+    "own": {
+      "funds_earned": 13999.999999999884,
+      "funds_spent": 17907.000000000004,
+      "money_remaining": 92.99999999987875,
+      "units_produced": 44.0,
+      "units_lost": 22.0,
+      "units_lost_value": 4916.0,
+      "enemy_units_destroyed_value": 9166.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 7,
+        "kestrel_gunner": 3,
+        "kestrel_marksman": 9,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 1
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 12,
+        "kestrel_engineer": 1,
+        "kestrel_gunner": 3,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 18,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 3
+      },
+      "peak_army_value": 7041.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 9058.333333333254,
+      "units_lost_value": 9166.0,
+      "enemy_units_destroyed_value": 4916.0,
+      "peak_army_value": 5457.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 37.533333333333765,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 126.43333333332872,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 187.9999999999919,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 253.99999999998815,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 255.5333333333214,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      },
+      {
+        "time": 286.0000000000119,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 290.43333333334874,
+        "kind": "produce",
+        "spec": "kestrel_harvester"
+      }
+    ],
+    "phases": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v3_income_defense muster force=0 infantry=0 value=0 anchor=16.0 contact=0 remembered=0 local=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 272.00000000000074,
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=18.8 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks"
+      }
+    ],
+    "commands": 652,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 135.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1886.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 4,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 130,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 125.99999999999136,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2396.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=5 infantry=4 value=1419 anchor=20.0 contact=0 remembered=0 local=1419 home_threat=0 economy=army",
+        "own_force": 5,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 5
+        }
+      },
+      {
+        "time": 180,
+        "own": {
+          "army_value": 2984.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 107.99999999998272,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=7 infantry=6 value=2091 anchor=18.6 contact=0 remembered=0 local=2091 home_threat=0 economy=power",
+        "own_force": 7,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 6,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 607.9999999999784,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.6 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 220,
+        "own": {
+          "army_value": 3162.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 1107.999999999974,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3069.0,
+          "funds_earned": 2999.9999999999736,
+          "harvesters": 2
+        },
+        "reason": "beta_v3_income_defense muster force=8 infantry=7 value=2340 anchor=18.6 contact=0 remembered=0 local=2340 home_threat=0 economy=refinery",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8
+        }
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 3402.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 467.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3819.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=9 infantry=8 value=2676 anchor=18.6 contact=0 remembered=0 local=2676 home_threat=0 economy=refinery",
+        "own_force": 9,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 8,
+          "attack_move": 1
+        }
+      },
+      {
+        "time": 270,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 49.99999999996544,
+          "harvesters": 3,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4599.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense muster force=11 infantry=10 value=3262 anchor=19.5 contact=0 remembered=0 local=3262 home_threat=0 economy=barracks",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 10,
+          "attack_move": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 5080.0,
+          "funds_earned": 4999.999999999955,
+          "money_remaining": 179.9999999999568,
+          "harvesters": 4,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5457.0,
+          "funds_earned": 4999.999999999955,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=12 infantry=11 value=3598 anchor=78.2 contact=0 remembered=0 local=3598 home_threat=0 economy=army",
+        "own_force": 12,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 10,
+          "idle": 2
+        }
+      },
+      {
+        "time": 320,
+        "own": {
+          "army_value": 4328.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 603.9999999999438,
+          "harvesters": 4,
+          "units_lost_value": 1348.0,
+          "enemy_units_destroyed_value": 3171.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2696.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=10 infantry=10 value=2414 anchor=89.1 contact=154 remembered=2735 local=1579 home_threat=0 economy=army",
+        "own_force": 10,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "idle": 7,
+          "attack_move": 3
+        }
+      },
+      {
+        "time": 340,
+        "own": {
+          "army_value": 4498.0,
+          "funds_earned": 6499.999999999942,
+          "money_remaining": 77.99999999994384,
+          "harvesters": 4,
+          "units_lost_value": 2184.0,
+          "enemy_units_destroyed_value": 3691.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3416.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=11 infantry=11 value=2965 anchor=43.2 contact=0 remembered=0 local=1170 home_threat=0 economy=army",
+        "own_force": 11,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 3,
+          "idle": 2,
+          "attack_move": 6
+        }
+      },
+      {
+        "time": 360,
+        "own": {
+          "army_value": 3778.0,
+          "funds_earned": 7999.999999999928,
+          "money_remaining": 317.9999999999309,
+          "harvesters": 4,
+          "units_lost_value": 2904.0,
+          "enemy_units_destroyed_value": 4151.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3451.0,
+          "funds_earned": 7499.999999999933,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=8 infantry=8 value=2243 anchor=82.9 contact=0 remembered=1678 local=1744 home_threat=0 economy=army",
+        "own_force": 8,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 7,
+          "idle": 1
+        }
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 5758.0,
+          "funds_earned": 9499.999999999916,
+          "money_remaining": 571.9999999999179,
+          "harvesters": 4,
+          "units_lost_value": 3252.0,
+          "enemy_units_destroyed_value": 6014.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2594.0,
+          "funds_earned": 8058.333333333261,
+          "harvesters": 4
+        },
+        "reason": "beta_v3_income_defense attack force=14 infantry=13 value=4396 anchor=88.5 contact=0 remembered=1223 local=1632 home_threat=0 economy=tech",
+        "own_force": 14,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 10,
+          "attack": 4
+        }
+      },
+      {
+        "time": 450,
+        "own": {
+          "army_value": 6491.0,
+          "funds_earned": 11999.999999999898,
+          "money_remaining": 782.9999999998963,
+          "harvesters": 4,
+          "units_lost_value": 4746.0,
+          "enemy_units_destroyed_value": 7530.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2146.0,
+          "funds_earned": 9058.333333333254,
+          "harvesters": 3
+        },
+        "reason": "beta_v3_income_defense attack force=15 infantry=12 value=4802 anchor=111.8 contact=336 remembered=998 local=2554 home_threat=0 economy=tech",
+        "own_force": 15,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack_move": 13,
+          "idle": 1,
+          "move": 1
+        }
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 7041.0,
+          "funds_earned": 13499.999999999887,
+          "money_remaining": 2.99999999988313,
+          "harvesters": 4,
+          "units_lost_value": 4916.0,
+          "enemy_units_destroyed_value": 9166.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 510.0,
+          "funds_earned": 9058.333333333254,
+          "harvesters": 1
+        },
+        "reason": "beta_v3_income_defense attack force=17 infantry=14 value=5527 anchor=135.9 contact=0 remembered=0 local=4855 home_threat=0 economy=tech",
+        "own_force": 17,
+        "max_miner_stall": 0.0,
+        "combat_commands": {
+          "attack": 6,
+          "attack_move": 9,
+          "move": 2
+        }
+      }
+    ],
+    "miner_deaths": [
+      {
+        "time": 430.20000000012664,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 52,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      },
+      {
+        "time": 457.83333333348196,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 75,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      },
+      {
+        "time": 496.6000000001795,
+        "team": 1,
+        "cause": {
+          "explosive": true,
+          "source": 87,
+          "source_team": 0,
+          "weapon": "kestrel_anti"
+        }
+      }
+    ]
+  }
+]

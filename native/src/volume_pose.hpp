@@ -224,7 +224,7 @@ int64_t update_volume_native(Dictionary model, const Dictionary &e, bool selecte
     }
     Transform3D transform = root->get_global_transform();
     append(record->shadow_batch, transform * shadow->get_transform(),record->shadow_queue);
-    if (selected) append(record->ring_batch, transform * record->ring->get_transform(),record->ring_queue);
+    // Selection circles are disabled; squad boundaries are drawn by the HUD.
     if (selected || double(e.get(k.hit_flash, 0.0)) > 0) {
         Transform3D hp_transform = transform * hp->get_transform();
         const Array &bars=record->hp_bars, &batches=record->hp_batches;

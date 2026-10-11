@@ -118,6 +118,8 @@ func _test_train_and_rail_budget() -> void:
 	check(poor.sim.entities[poor.factory].queue.is_empty() and poor.sim._role_count(0,"rail") == old_rails,"unaffordable recovery miner never initiates paid rail construction")
 	check(is_equal_approx(poor.sim.money[0],float(rules.units.iron_harvester.cost)-1.0),"unaffordable recovery keeps every remaining credit")
 	var before: float = poor.sim.money[0]
+	var spent_before: float = float(poor.sim.statistics.teams[0].get("funds_spent",0))
 	check(poor.sim._rail_network.ai_connect_factory(poor.sim,poor.sim.entities[poor.factory]),"rail budget fixture has a real purchasable factory-to-mine connection")
 	var new_rails: int = poor.sim._role_count(0,"rail")-old_rails
 	check(new_rails > 0 and is_equal_approx(before-float(poor.sim.money[0]),new_rails*float(rules.buildings.iron_rail.cost)),"fixture railway really charges every new segment at its normal price")
+	check(is_equal_approx(float(poor.sim.statistics.teams[0].get("funds_spent",0))-spent_before,before-float(poor.sim.money[0])),"paid railway construction appears exactly once in economic spending telemetry")

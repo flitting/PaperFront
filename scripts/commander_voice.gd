@@ -10,6 +10,7 @@ const COOLDOWN := {"base_attacked":12.0,"enemy_base":25.0,"harvester_attacked":1
 const INFANTRY := ["rifle","anti","engineer","demolition"]
 const HOTSPOT_LIFETIME := 45.0
 const MASS_THRESHOLD := 8
+var voice_language: String = "en"
 var clips: Dictionary = {}
 var streams: Dictionary = {}
 var pending: Dictionary = {}
@@ -42,12 +43,25 @@ func _ready() -> void:
 	player.bus = BUS
 	player.volume_db = -15.0
 	add_child(player)
-	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST))
+	_load_voice_bank()
+
+func _load_voice_bank() -> void:
+	clips.clear(); streams.clear()
+	var path: String = PaperAudio.commander_manifest(voice_language)
+	if not FileAccess.file_exists(path): return
+	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if manifest is Dictionary:
 		for clip: Dictionary in manifest.get("clips", []):
 			var key := str(clip.action)
 			clips[key] = clip
-			streams[key] = load(str(clip.file))
+			streams[key] = load(str(clip.file)) if ResourceLoader.exists(str(clip.file)) else null
+
+func set_voice_language(language: String) -> void:
+	clear_playback()
+	if player != null: player.stream = null
+	last.clear(); reports.clear()
+	voice_language = PaperAudio.normalize_voice_language(language)
+	if is_node_ready(): _load_voice_bank()
 
 func reset(sim = null) -> void:
 	simulation = sim
@@ -157,7 +171,7 @@ func _process(delta: float) -> void:
 	player.play()
 	reports.append(entry)
 	if reports.size() > 64: reports.pop_front()
-	audio.unit_caption.emit("指挥官：" + str(clips[next].text), float(clips[next].duration_s) + .25)
+	audio.unit_caption.emit("指挥官：" + PaperAudio.caption_text(clips[next]), float(clips[next].duration_s) + .25)
 
 func _priority(action: String) -> int:
 	return int(configuration.get("priorities", {}).get(action, PRIORITY.get(action, 0)))

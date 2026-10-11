@@ -7,7 +7,7 @@ func check(ok:bool,label:String)->void:
 	if not ok:failures.append(label)
 func run()->void:
 	var before:int=AudioServer.bus_count
-	var audio:=PaperAudio.new();root.add_child(audio);audio.set_scene("menu")
+	var audio:=PaperAudio.new(); audio.voice_language = "zh_CN";root.add_child(audio);audio.set_scene("menu")
 	for i in range(60):audio.music._process(.05)
 	await create_timer(.6).timeout
 	audio.music.set_playback_paused(true)

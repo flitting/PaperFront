@@ -1,0 +1,94 @@
+[
+  {
+    "match": "seed733_default",
+    "duration": 549.0666666668246,
+    "finished": true,
+    "status": "completed",
+    "winner": "alpha",
+    "team": 1,
+    "source_sha256": "13ac3607a20f79706ca7e53c86cecc18f451fc6c1e9da498918fcd23647b0227",
+    "own": {
+      "funds_earned": 12499.999999999894,
+      "units_lost_value": 10852.0,
+      "enemy_units_destroyed_value": 3825.0,
+      "buildings_lost": 9.0,
+      "units_produced": 42.0,
+      "units_lost": 42.0,
+      "low_power_seconds_sampled": 13.066666666654783
+    },
+    "enemy": {
+      "funds_earned": 14499.99999999988,
+      "units_lost_value": 3825.0,
+      "buildings_lost": 0
+    }
+  },
+  {
+    "match": "seed733_swap",
+    "duration": 693.1333333333603,
+    "finished": true,
+    "status": "completed",
+    "winner": "beta",
+    "team": 0,
+    "source_sha256": "13ac3607a20f79706ca7e53c86cecc18f451fc6c1e9da498918fcd23647b0227",
+    "own": {
+      "funds_earned": 21999.999999999825,
+      "units_lost_value": 10377.0,
+      "enemy_units_destroyed_value": 14146.0,
+      "buildings_lost": 0,
+      "units_produced": 73.0,
+      "units_lost": 42.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 15499.999999999873,
+      "units_lost_value": 14146.0,
+      "buildings_lost": 9.0
+    }
+  },
+  {
+    "match": "seed734_default",
+    "duration": 549.0666666668246,
+    "finished": true,
+    "status": "completed",
+    "winner": "alpha",
+    "team": 1,
+    "source_sha256": "13ac3607a20f79706ca7e53c86cecc18f451fc6c1e9da498918fcd23647b0227",
+    "own": {
+      "funds_earned": 12499.999999999894,
+      "units_lost_value": 10852.0,
+      "enemy_units_destroyed_value": 3825.0,
+      "buildings_lost": 9.0,
+      "units_produced": 42.0,
+      "units_lost": 42.0,
+      "low_power_seconds_sampled": 13.066666666654783
+    },
+    "enemy": {
+      "funds_earned": 14499.99999999988,
+      "units_lost_value": 3825.0,
+      "buildings_lost": 0
+    }
+  },
+  {
+    "match": "seed734_swap",
+    "duration": 693.1333333333603,
+    "finished": true,
+    "status": "completed",
+    "winner": "beta",
+    "team": 0,
+    "source_sha256": "13ac3607a20f79706ca7e53c86cecc18f451fc6c1e9da498918fcd23647b0227",
+    "own": {
+      "funds_earned": 21999.999999999825,
+      "units_lost_value": 10377.0,
+      "enemy_units_destroyed_value": 14146.0,
+      "buildings_lost": 0,
+      "units_produced": 73.0,
+      "units_lost": 42.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 15499.999999999873,
+      "units_lost_value": 14146.0,
+      "buildings_lost": 9.0
+    }
+  }
+]

@@ -8,7 +8,7 @@ func check(ok:bool,label:String)->void:
 	if not ok:failures.append(label)
 func run()->void:
 	var before:int=AudioServer.bus_count
-	var audio:=PaperAudio.new();root.add_child(audio)
+	var audio:=PaperAudio.new(); audio.voice_language = "zh_CN";root.add_child(audio)
 	await process_frame
 	audio.configure_units(RulesLoader.load_rules());audio.set_mix({"muted":false,"master":.8,"music":.4,"sfx":.8,"voice":.8})
 	audio.set_scene("menu");await create_timer(2.2).timeout

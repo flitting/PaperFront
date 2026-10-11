@@ -33,7 +33,7 @@ func run() -> void:
 		call_deferred("finish")
 		return
 	var initial_buses := AudioServer.bus_count
-	var sound := PaperAudio.new()
+	var sound := PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	sound.set_process(false)

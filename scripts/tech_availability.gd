@@ -71,5 +71,6 @@ static func reason(sim: RefCounted, team: int, spec_id: String, builder: int = -
 		if not limit_error.is_empty(): return limit_error
 	if unit and info.get("domain", "ground") == "air" and not bool(info.get("permanent_air",false)) and sim._airfield_load(producer) >= int(sim.data_for(sim.entities[producer].spec).get("aircraft_capacity", 4)):
 		return "机场机位已满（含生产队列）；请取消订单或增建机场"
-	if not (building and engineer_building(sim, team, info)) and sim.money[team] < float(info.get("cost", 0.0)): return "资金不足"
+	var purchase_cost: float = sim.production_cost(spec_id) if unit else float(info.get("cost", 0.0))
+	if not (building and engineer_building(sim, team, info)) and sim.money[team] < purchase_cost: return "资金不足"
 	return ""

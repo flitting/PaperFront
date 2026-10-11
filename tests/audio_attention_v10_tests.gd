@@ -10,7 +10,7 @@ func hold(player:AudioStreamPlayer)->void:
 	var stream:AudioStreamWAV=player.stream.duplicate();stream.loop_mode=AudioStreamWAV.LOOP_FORWARD;stream.loop_end=roundi(stream.get_length()*stream.mix_rate)
 	player.stream=stream;player.play()
 func run()->void:
-	var sound:=PaperAudio.new();root.add_child(sound);await process_frame
+	var sound:=PaperAudio.new(); sound.voice_language = "zh_CN";root.add_child(sound);await process_frame
 	sound.set_process(false);sound.configure_units(RulesLoader.load_rules());sound.set_scene("silent")
 	sound.unit_caption.connect(func(text:String,_duration:float):caption=text)
 	sound.camera_focus=Vector2(10,10)

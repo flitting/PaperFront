@@ -1,64 +1,65 @@
 # Native performance kernels
 
-Visual restoration update (2026-10-03): gameplay now always submits complete
-authored meshes, pigment, borders and model animation. The native world lifecycle,
-culling and batch upload remain enabled; the simplified native performance pose
-path is retained for historical diagnostics but no longer selected by gameplay.
-The old performance scores below refer to the earlier visual configuration; see
-`docs/visual_fidelity_restoration.md` for current scope and validation.
+Paper Front keeps its authoritative game state in [simulation.gd](../scripts/simulation.gd). The project-authored `PaperFrontKernels` GDExtension accelerates unit updates, movement, spatial queries, collision geometry and rendering submission. It does not replace the game rules, reduce entity counts or slow the simulation clock to raise reported frame rate.
 
-The authoritative simulation stays in `scripts/simulation.gd`. `PaperFrontKernels` accelerates exact nearest-target queries, tick-local spatial indexes, weapon-domain checks, repair accounting and performance-tier model poses. It does not change clocks, update frequency, entity counts or combat rules. GDScript implementations remain available with `PAPER_FRONT_DISABLE_NATIVE=1` for comparison.
+The extension uses vendored, MIT-licensed **godot-cpp**, pinned to commit `e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77` (Godot 4.5 API, used with Godot 4.6.2). No binding download is required. Godot itself is not modified. Notices are in [assets/native/GODOT_CPP_LICENSE.md](../assets/native/GODOT_CPP_LICENSE.md).
 
-Build from the repository root:
+## Build Linux x86_64
+
+Requires CMake 3.17+, Make, a C++17 compiler and Python 3. From the repository root:
 
 ```sh
 ./tools/build_native.sh
 ```
 
-Requires CMake, a C++17 compiler, Make and Python 3. The vendored MIT Godot C++ bindings are pinned to `e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77` (Godot 4.5 API, tested with the installed Godot 4.6.2). No download is needed to rebuild. Compiler options intentionally exclude fast-math and fused contraction so target-distance ties retain the script result. The library is currently built and tested only for Linux x86_64.
+Output: `assets/native/libpaper_front_kernels.so`. Build files go to `native/build/`. The standard release build statically links GCC's libstdc++/libgcc while leaving glibc dynamic. The v0.8.0 build requires glibc 2.38 or newer; the build manifest records the requirement detected from the actual library.
 
-`native/build/` and `native/vendor/` are excluded from Godot import using `.gdignore`; the runtime extension lives under `assets/native/`. When exporting, Godot copies `libpaper_front_kernels.so` beside the executable. Distribute that sidecar and the binding license with the executable. The current distribution is `artifacts/linux/`; see its manifest and `BUILD.sha256` for the exact visual-restoration build, which supersedes the earlier performance build.
+## Cross-build Windows x86_64 on Linux
 
-Validation scripts:
+Install a MinGW-w64 POSIX x86_64 toolchain, or set `PAPER_FRONT_MINGW_BIN` to its `bin` directory:
 
-- `tests/native_nearest_tests.gd`: actual native/script index, target, ownership, domain, transport and forced-target comparisons. Fails explicitly if the native class was not loaded.
-- `tests/support_repair_equivalence_tests.gd`: exact health and money comparison against the original repair scan, including insufficient funds and eight owners.
-- `tests/native_volume_tests.gd`: four-faction pose, transform, cargo, aircraft height, capture and cached-submission comparisons.
-- `tools/profile_final_pressure_cpu.gd`: fixed 800-unit, eight-owner real simulation with reserve costs separated. This is a CPU diagnostic, not an FPS acceptance result.
+```sh
+./tools/build_native_windows.sh
+./tools/build_portable_launcher.sh
+```
 
-Only run one GPU benchmark at a time. Do not compile or run other CPU-heavy tests concurrently with a GPU benchmark. The measured default rendering mode remains Safe; the separate rendering thread experiment produced engine errors and is not enabled in project settings.
+The extension output is `assets/native/paper_front_kernels.dll`; its build directory is `native/build-windows/`. MinGW's relevant C++/gcc/pthread runtimes are linked statically. The release tool checks DLL imports so players need no loose compiler-runtime DLLs. Building the portable launcher icon also requires ImageMagick and Python Pillow.
 
+To export and package both player builds with the matching Godot 4.6.2 export templates:
 
-Batched world geometry uses `scripts/pose_mesh.gd` for its CPU transform hierarchy and mesh references. It creates no redundant render instance; the MultiMesh remains responsible for drawing. Standalone models and Wiki previews keep real MeshInstance3D nodes. `PAPER_FRONT_RENDER_NODES=1` selects the old hidden render-node hierarchy for controlled comparisons. `tests/pose_mesh_tests.gd` checks mesh/pose/muzzle/particle equivalence; the four-faction frozen screenshot comparison is pixel-identical in the recorded capture.
+```sh
+python3 tools/build_release.py --version 0.8.0 --output artifacts/release_20261011
+```
 
+Linux packages keep the `.so` beside `PaperFront.x86_64`; Windows packages keep the `.dll` beside `bin/PaperFrontRuntime.exe`. Do not distribute the executable alone. [Release notes](../docs/release_notes.md) state actual validation scope; a successful cross-build is not Windows hardware play testing.
 
-The common unit state machine can now execute in the native kernel. It retains insertion-order tick processing and the original navigation, production, air service, special-command and damage-settlement methods. `PAPER_FRONT_SCRIPT_UNITS=1` restores the GDScript state machine; `PAPER_FRONT_SCRIPT_GEOMETRY=1` restores script collision queries; `PAPER_FRONT_SCRIPT_WORLD=1` restores the script world iteration. The full native/script unit comparison includes all factions, all unit definitions, live combat and a save/reload checkpoint. Renderer records cache stable node/resource references without owning their containing model Dictionary, so they do not form reference cycles.
+## Reference paths and validation
 
+GDScript reference paths remain available for focused comparisons:
 
-Additional validation now includes `native_unit_tick_tests.gd` (whole authoritative tick and save/load equivalence), `native_geometry_tests.gd` (terrain/footprint/dynamic occupancy queries), `native_world_sync_tests.gd` (whole visual reader comparisons), and `unit_lod_provenance_tests.gd` (all four factions and eight owner palettes plus stale-resource fallback). All are included in `tools/test.sh`. The final full regression and the specified 1080p normal/stress performance gates passed. Native fullscreen is reported separately; see `docs/performance_640_results.md` for exact scope, tail latency, build identity and margins.
+| Environment variable | Comparison path |
+|---|---|
+| `PAPER_FRONT_DISABLE_NATIVE=1` | Disable native kernels in simulation and world presentation |
+| `PAPER_FRONT_SCRIPT_UNITS=1` | Script unit state-machine dispatch |
+| `PAPER_FRONT_SCRIPT_GEOMETRY=1` | Script collision/geometry queries |
+| `PAPER_FRONT_SCRIPT_MOVEMENT=1` | Script ground movement |
+| `PAPER_FRONT_SCRIPT_WORLD=1` | Script world iteration |
+| `PAPER_FRONT_SCRIPT_BATCHES=1` | Script render batches |
+| `PAPER_FRONT_BATCH_SETTERS=1` | Per-instance setters instead of whole-buffer uploads |
+| `PAPER_FRONT_RENDER_NODES=1` | Hidden render-node hierarchy instead of lightweight pose meshes |
 
+These are diagnostic controls, not separate gameplay modes. Compiler flags deliberately exclude fast-math and fused contraction to preserve ordering and target-distance ties. Rendering uses the current authored model/material/animation and distance tiers; historical simplified native pose benchmarks do not describe the current visual configuration.
 
-The pinned binding generator has a local patch in `native/patches/container-assignment.patch`: Dictionary move assignment previously copied into initialized storage without releasing its old reference; copy and move self-assignment also need guards. Rebuilding generates the fixed operators. The patched generator and patch are part of the performance manifest. `native_lifetime_tests.gd` verifies release and self-assignment reference counts, and native world tests must exit without resource/RID leak diagnostics. Native world iteration no longer constructs costly per-model visual-signature/replay arrays; unchanged GPU matrix uploads are still skipped by the batch uploader.
+Run `PAPER_FRONT_GODOT=godot ./tools/test.sh` after rebuilding. Relevant checks include native nearest-target and lifetime tests, whole-tick/save-load equivalence, geometry, movement, world synchronization, render batches, model provenance and support repair. The runner treats script/engine errors and resource leaks as failures even when Godot exits with status zero.
 
+The binding generator has a local [container assignment patch](patches/container-assignment.patch). It fixes release/self-assignment of Dictionary references; the patch and patched source must travel with rebuilds. `native_lifetime_tests.gd` checks this behavior.
 
-Current native additions include exact ground movement, per-tick definition views,
-renderer model/pose caches, and `PaperFrontRenderBatch` ordered queues. Batch
-capacity initialization establishes the engine CPU cache before bulk updates to
-avoid synchronous GPU readback when sparse and bulk paths alternate. The public
-model map remains usable by tools; cache reset/setup, external removals, resource
-lifetime, insertion-order retirement and script transitions have regression tests.
+For performance measurements, run only one GPU benchmark at a time and do not compile or run CPU-heavy tests concurrently. Record the actual build, resolution, quality, scene, unit counts, simulation time and wall-clock frame timing. Historical reports are evidence for their own builds rather than guarantees for the current release.
 
-`PAPER_FRONT_SCRIPT_MOVEMENT=1` selects reference ground movement;
-`PAPER_FRONT_SCRIPT_BATCHES=1` selects script batches;
-`PAPER_FRONT_BATCH_SETTERS=1` disables whole-buffer uploads;
-`PAPER_FRONT_RENDER_OVERLAP=0` selects serial simulation/render scheduling.
-These switches are diagnostic comparisons, not the measured defaults.
+## 中文
 
-The current renderer uses explicit near/far/extreme meshes in every quality
-preset. `PaperWorld.lod_enabled=false` and
-`world.landscape.scenery_lod_enabled=false` provide the full-geometry diagnostic
-control. Rebuild entity/scenery tiers with `tools/bake_unit_lod_indices.gd` and
-`tools/bake_scenery_lods.gd`; editor-only simplification never runs in gameplay.
+规则状态仍由 GDScript 的 `WarSimulation` 管理，C++ 内核负责高频更新、移动、空间查询、碰撞和批量提交；不会通过减少单位、降低规则更新频率或放慢时钟伪造性能。
 
-Run `tools/test.sh` after rebuilding. It treats Godot script/engine errors and
-leak diagnostics as failures even when the process returns exit code zero.
+Linux 使用 `./tools/build_native.sh`；在 Linux 上交叉编译 Windows 使用 `./tools/build_native_windows.sh`。两平台完整打包命令见上文，需要与 Godot 4.6.2 匹配的导出模板。发布必须保留相邻原生库、许可与来源，构建通过不代表 Windows 实机验收。
+
+重建后运行对应回归和原生/脚本等价测试；环境变量仅供对照诊断。GPU 性能测试单独执行，记录完整场景与画质条件。当前发行验证范围统一见发布说明。

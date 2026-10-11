@@ -1,0 +1,100 @@
+{
+  "title": "Paper Front — in-engine showcase",
+  "language": "English",
+  "duration_seconds": 28,
+  "video": "1280×720, H.264, 30 fps",
+  "audio": "AAC",
+  "visual_origin": "Animated montage of actual in-engine screenshots. Camera motion is added in the edit. Faction, fleet and infantry details use authored deployments with current production PaperWorld and rules. No AI imagery; not a recorded player match.",
+  "scenes": [
+    {
+      "entities": 26,
+      "fps": 24,
+      "frames": 1,
+      "map_mode": "forest",
+      "map_size": 320,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "shot": "battlefield",
+      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+    },
+    {
+      "entities": 32,
+      "fps": 24,
+      "frames": 1,
+      "map_mode": "symmetric",
+      "map_size": 192,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "shot": "factions",
+      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+    },
+    {
+      "entities": 6,
+      "fps": 24,
+      "frames": 1,
+      "map_mode": "symmetric",
+      "map_size": 192,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "shot": "fleet",
+      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+    },
+    {
+      "entities": 34,
+      "fps": 24,
+      "frames": 1,
+      "map_mode": "symmetric",
+      "map_size": 192,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "shot": "squads",
+      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+    }
+  ],
+  "renderer": "forward_plus",
+  "capture_device": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "credits": [
+    "Thanks to Codex for its contributions",
+    "Powered by Godot Engine"
+  ],
+  "music": {
+    "file": "assets/audio/music/battle_city.wav",
+    "track_id": "battle_city",
+    "license": "CC0-1.0",
+    "origin": "project-authored mathematical synthesis; no external samples",
+    "generator": "tools/generate_demo_music.py",
+    "manifest": "assets/audio/music/manifest.json",
+    "sha256": "20c247db2a3be0e7af7d1afd5560e54e936fe3c992f154884204180b3a1d15a1"
+  },
+  "assets_notice": "assets/LICENSE.md and docs/demo_credits.md govern underlying game assets. This media does not relicense third-party assets.",
+  "files": {
+    "gameplay-battlefield.jpg": {
+      "bytes": 778821,
+      "sha256": "f5de2437662aec80f81bb4b8eef3102611230a907ffbfb315f4641137e25f22f"
+    },
+    "gameplay-factions.jpg": {
+      "bytes": 319508,
+      "sha256": "fc2c8cc7ed64c60ad7d84bf1e13f2d9aa5dfb3679daeb2078415f8399fdae724"
+    },
+    "gameplay-fleet.jpg": {
+      "bytes": 178226,
+      "sha256": "8445455cbe2abf1fa0af50bfe8f70835d13db99f0dc607b6818e06f0f8bab21f"
+    },
+    "paper-front-trailer.mp4": {
+      "bytes": 5013281,
+      "sha256": "79958e2a8985ad4f4354e2fe435a0884a28fd5aa268491d6d05a64700a3fd604"
+    },
+    "poster.jpg": {
+      "bytes": 529202,
+      "sha256": "ac7c92f79d838fe0231493e1c9dc10f3be3adb733d6151b39a4239a5eb5a661c"
+    }
+  }
+}

@@ -48,11 +48,29 @@ func run() -> void:
 		var faction_yard: int = sim._spawn(0, faction + "_shipyard", sim.map.harbors[0].water_pos, true)
 		hud.refresh(sim, [faction_yard], null, true, "", 0)
 		hud.select_catalog("naval")
-		check(hud.entry_widgets.size() == 3 and hud.entry_widgets.keys().all(func(id): return rules.units[id].domain == "naval" and rules.units[id].faction == faction), "navy catalog contains only the faction's actual three ships")
-		var ship: Dictionary = rules.units[faction + "_ship_transport"]
+		var expected_ships: Array[String] = []
+		var transport_spec: String = ""
+		for id: String in rules.units:
+			var info: Dictionary = rules.units[id]
+			if str(info.faction) != faction or str(info.get("producer","")) not in ["shipyard","amphibious"] or bool(info.get("roster_hidden",false)) or bool(info.get("internal_only",false)): continue
+			if not sim._requirements(0,info).is_empty(): continue
+			expected_ships.append(id)
+			if int(info.get("transport_capacity",0)) > 0: transport_spec = id
+		var actual_ships: Array = hud.entry_widgets.keys()
+		expected_ships.sort()
+		actual_ships.sort()
+		check(not expected_ships.is_empty() and actual_ships == expected_ships and actual_ships.all(func(id): return rules.units[id].domain == "naval" and rules.units[id].faction == faction), "navy catalog exactly matches the faction's current unlocked public shipyard and amphibious roster")
+		check(not transport_spec.is_empty() and hud.entry_widgets.has(transport_spec), "navy catalog includes the faction's active troop transport instead of retired transport definitions")
+		var ship: Dictionary = rules.units[transport_spec]
 		var tooltip: String = hud.spec_tooltip(ship)
 		check(tooltip.contains("海上单位") and tooltip.contains("搭载 %d 名地面步兵" % int(ship.transport_capacity)) and tooltip.contains("工程兵") and tooltip.contains("登陆海岸"), "navy transport tooltip reads actual capacity and explains coastal boarding")
-		check(rows_text(rules, str(faction) + "_ship_transport").contains("行动领域 海上") and rows_text(rules, str(faction) + "_ship_transport").contains(str(rules.buildings[faction + "_shipyard"].name)), "wiki resolves naval domain and authored shipyard producer")
+		var producer_names: Array[String] = [str(rules.buildings[faction + "_shipyard"].name)]
+		if ship.producer == "amphibious": producer_names.append(str(rules.buildings[faction + "_factory"].name))
+		var transport_rows: String = rows_text(rules,transport_spec)
+		check(transport_rows.contains("行动领域 海上") and producer_names.all(func(producer): return transport_rows.contains(producer)), faction + " wiki resolves naval domain and the named shipyard or both shared amphibious facilities")
+		for id: String in rules.units:
+			if str(rules.units[id].faction) == faction and str(rules.units[id].get("producer","")) == "carrier":
+				check(rows_text(rules,id).contains("生产设施 航母飞行甲板"), faction + " carrier aircraft wiki names its real flight-deck producer")
 		check(rows_text(rules, str(faction) + "_ship_frigate").contains("海上"), "wiki reads actual sea weapon target domain")
 		check(hud.spec_tooltip(rules.buildings[faction + "_shipyard"]).contains("保护港湾") and hud.spec_tooltip(rules.buildings[faction + "_shipyard"]).contains("分基地"), "shipyard tooltip explains home authority and expansion outposts")
 		sim.factions[0] = "iron"

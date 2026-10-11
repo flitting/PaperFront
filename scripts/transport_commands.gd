@@ -6,7 +6,7 @@ const NavalOperations = preload("res://scripts/naval_operations.gd")
 ## Input routing shares transport eligibility with the authoritative simulation.
 ## The carrier keeps movement/landing decisions; input only assigns passengers.
 static func infantry(sim, ids: Array) -> Array:
-	return ids.filter(func(id):
+	return sim.expand_squad_ids(ids, true).filter(func(id):
 		if not sim.entities.has(id): return false
 		var e: Dictionary = sim.entities[id]
 		var info: Dictionary = sim.data_for(e.spec)
@@ -42,17 +42,22 @@ static func menu_state(sim, ids: Array) -> Dictionary:
 static func board(sim, ids: Array, target: int, append: bool) -> Dictionary:
 	if carriers(sim, [target]).is_empty(): return {"passengers": [], "error": "请选择己方有搭载能力的运输载具"}
 	var carrier: Dictionary = sim.entities[target]
-	var seats: int = free_seats(sim, target, ids)
+	var eligible: Array = infantry(sim, ids)
+	var seats: int = free_seats(sim, target, eligible)
 	var passengers: Array = []
+	var seen: Dictionary = {}
 	var reason: String = "运输载具已满员"
-	for id in infantry(sim, ids):
+	for id in eligible:
+		if seen.has(int(id)): continue
+		var members: Array = sim.squad_members(int(id), true)
+		for member: int in members: seen[member] = true
 		var error: String = sim.board_error(int(id), target)
 		if not error.is_empty():
 			reason = error
-		elif passengers.size() < seats:
-			passengers.append(int(id))
-	if not passengers.is_empty():
-		sim.issue(passengers, "board", carrier.pos, target, append)
+		elif members.size() <= seats:
+			sim.issue(members, "board", carrier.pos, target, append)
+			passengers.append_array(members)
+			seats -= members.size()
 	return {"passengers": passengers, "error": "" if not passengers.is_empty() else reason}
 
 ## Carrier selection targets infantry; infantry selection targets a carrier.

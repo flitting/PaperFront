@@ -22,7 +22,7 @@ func click(point:Vector2)->void:
 func run()->void:
 	root.size=Vector2i(1400,900)
 	var before:int=AudioServer.bus_count
-	var audio:=PaperAudio.new();root.add_child(audio);await process_frame
+	var audio:=PaperAudio.new(); audio.voice_language = "zh_CN";root.add_child(audio);await process_frame
 	audio.set_mix({"master":2.0,"music":1.75,"voice":2.0,"sfx":1.5,"muted":false})
 	check(audio.get_mix().master==2.0 and audio.get_mix().voice==2.0,"runtime preserves200% preferences")
 	var browser:=Browser.new();root.add_child(browser);browser.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT);browser.configure(audio,RulesLoader.load_rules())

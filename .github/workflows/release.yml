@@ -1,0 +1,109 @@
+name: Build and publish player releases
+
+on:
+  push:
+    tags: ['v[0-9]*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ gcc-mingw-w64-x86-64-posix g++-mingw-w64-x86-64-posix binutils-mingw-w64-x86-64 imagemagick python3-pil unzip
+      - name: Install verified Godot 4.6.2 and export templates
+        run: |
+          ./tools/install_ci_godot.sh "$RUNNER_TEMP/paper-front-godot"
+          echo "PAPER_FRONT_GODOT=$RUNNER_TEMP/paper-front-godot/godot" >> "$GITHUB_ENV"
+      - name: Verify version
+        run: |
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          version = re.search(r'^config/version="([^"]+)"', Path('project.godot').read_text(), re.M)[1]
+          tag = os.environ.get('GITHUB_REF_NAME', '')
+          if os.environ['GITHUB_REF_TYPE'] == 'tag' and tag != 'v' + version:
+              raise SystemExit(f'Tag {tag} does not match project version {version}')
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write(f'PAPER_FRONT_VERSION={version}\n')
+          PY
+      - name: Build Linux and Windows player packages
+        env:
+          PAPER_FRONT_BUILD_JOBS: '4'
+        run: python3 tools/build_release.py --version "$PAPER_FRONT_VERSION" --output artifacts/release
+      - name: Check current gameplay regressions
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/paper-front-test-data
+          XDG_CONFIG_HOME: ${{ runner.temp }}/paper-front-test-config
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/release/regression
+          for test in infantry_squad_tests infantry_squad_spacing_tests infantry_squad_emission_tests squad_ground_marker_tests hud_compact_portrait_tests selection_ring_removal_tests infantry_squad_input_tests localization_tests voice_language_tests armor_balance_revision_tests penetration_presentation_tests veteran_kill_experience_tests independent_ai_runtime_tests native_nearest_tests native_lifetime_tests native_unit_tick_tests ai_land_planner_tests wiki_catalog_tests stage3_hud_tests developer_tools_tests; do
+            "$PAPER_FRONT_GODOT" --headless --path . --script "res://tests/$test.gd" > "artifacts/release/regression/$test.log" 2>&1
+            cat "artifacts/release/regression/$test.log"
+            if grep -Eq 'SCRIPT ERROR:|^ERROR:|ObjectDB instances leaked|resources still in use at exit|RID(s)? of type .*leaked' "artifacts/release/regression/$test.log"; then
+              exit 1
+            fi
+          done
+      - name: Smoke test the exported Linux runtime
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/paper-front-export-data
+          XDG_CONFIG_HOME: ${{ runner.temp }}/paper-front-export-config
+        run: |
+          set -euo pipefail
+          artifacts/release/PaperFront-v"$PAPER_FRONT_VERSION"-linux-x86_64/start.sh --headless --quit-after 10 > artifacts/release/linux-startup.log 2>&1
+          cat artifacts/release/linux-startup.log
+          if grep -Eq 'SCRIPT ERROR:|^ERROR:|ObjectDB instances leaked|resources still in use at exit|RID(s)? of type .*leaked' artifacts/release/linux-startup.log; then
+            exit 1
+          fi
+      - name: Record release validation scope
+        run: |
+          cp docs/release_validation.md artifacts/release/local-validation.md
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path('artifacts/release')
+          run_url = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          text = f"""# Release build validation
+
+          Source commit: `{os.environ['GITHUB_SHA']}`
+          Build: [GitHub Actions]({run_url}), Ubuntu 24.04, official Godot 4.6.2.
+
+          Passed: native Linux and MinGW Windows compilation; both Godot release
+          exports; embedded PCK audit excluding developer/retired resources;
+          native sidecar identity; 20 current gameplay/native regression scripts;
+          exported Linux headless menu startup and clean shutdown.
+
+          Windows was cross-compiled and its imported DLLs were checked. This CI
+          run does not execute Windows or test a physical GPU, audio output,
+          long matches, balance, or performance. See BUILD_INFO.json inside each
+          archive for exact runtime/native hashes and glibc requirements.
+
+          Downloads are identified by the accompanying SHA256SUMS.
+          """
+          (root / 'build-validation.md').write_text('\n'.join(line[10:] if line.startswith('          ') else line for line in text.splitlines()) + '\n')
+          PY
+      - name: Publish release assets
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          assets=(artifacts/release/PaperFront-v"$PAPER_FRONT_VERSION"-linux-x86_64.tar.gz artifacts/release/PaperFront-v"$PAPER_FRONT_VERSION"-windows-x86_64.zip artifacts/release/SHA256SUMS artifacts/release/build-validation.md artifacts/release/local-validation.md media/paper-front-trailer.mp4)
+          (cd media && sha256sum paper-front-trailer.mp4) >> artifacts/release/SHA256SUMS
+          gh release create "$GITHUB_REF_NAME" "${assets[@]}" --verify-tag --prerelease --latest=false --title "Paper Front $GITHUB_REF_NAME · Preview" --notes-file docs/release_notes.md

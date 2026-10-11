@@ -326,6 +326,10 @@ static func check(snapshot: Dictionary) -> String:
 		if int(unique_counts[unique_key]) > int(snapshot.rules.units[unique_spec].max_active): return "存档英雄数量超过上限"
 	var garrison_error:String=preload("res://scripts/garrison_operations.gd").validate_snapshot(snapshot)
 	if not garrison_error.is_empty():return garrison_error
+	var squad_error: String = preload("res://scripts/infantry_squads.gd").validate_snapshot(snapshot)
+	if not squad_error.is_empty(): return squad_error
+	var emergence_error: String = preload("res://scripts/production_lifecycle.gd").validate_snapshot(snapshot)
+	if not emergence_error.is_empty(): return emergence_error
 	var transport_error: String = _transports(snapshot)
 	if not transport_error.is_empty(): return transport_error
 	for id in snapshot.entities:

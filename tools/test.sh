@@ -18,9 +18,12 @@ run_godot() {
     return "$paper_test_status"
 }
 run_godot --headless --path "$PROJECT_DIR" --editor --import --quit
-for TEST_SCRIPT in symmetric_map_tests symmetric_map_navigation_tests match_telemetry_tests settlement_history_ui_tests headless_match_tests; do
+for TEST_SCRIPT in infantry_squad_tests infantry_squad_spacing_tests infantry_squad_emission_tests squad_ground_marker_tests hud_compact_portrait_tests selection_ring_removal_tests infantry_squad_input_tests localization_tests voice_language_tests symmetric_map_tests symmetric_map_navigation_tests match_telemetry_tests settlement_history_ui_tests headless_match_tests headless_ai_controls_tests independent_ai_runtime_tests armor_combat_revision_tests armor_balance_revision_tests penetration_presentation_tests veteran_kill_experience_tests ai_land_planner_tests ai_first_tank_budget_tests refinery_dynamic_blockage_tests rail_yield_recovery_tests; do
     run_godot --headless --path "$PROJECT_DIR" --script "res://tests/$TEST_SCRIPT.gd"
 done
+python3 "$PROJECT_DIR/tools/test_independent_ai_duel.py"
+python3 "$PROJECT_DIR/tools/test_balance_experiments.py"
+python3 "$PROJECT_DIR/tools/test_ai_reliability_analysis.py"
 for TEST_SCRIPT in developer_tools_tests developer_tools_input_tests; do
     run_godot --headless --path "$PROJECT_DIR" --script "res://tests/$TEST_SCRIPT.gd"
 done

@@ -18,4 +18,8 @@ if(MINGW)
     # Include MinGW's C++/gcc/pthread runtimes so the portable ZIP needs no
     # compiler-runtime DLLs or system-wide runtime installation.
     target_link_options(paper_front_kernels PRIVATE -static -static-libgcc -static-libstdc++)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    # Keep the player package independent of the build host's libstdc++/libgcc.
+    # glibc remains dynamic; the release manifest records its required version.
+    target_link_options(paper_front_kernels PRIVATE -static-libgcc -static-libstdc++)
 endif()

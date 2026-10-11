@@ -1,80 +1,63 @@
-# 纸境战线 / Paper Front — 首轮游戏设计
+# Game mechanics / 当前玩法设计
 
-依据 `plan.md` v1.0 与用户 2026-10-01 的 `upgrade_3d.md` 制作。引擎固定 Godot 4.6.2 stable，GDScript，桌面 Forward+ / Vulkan。参考图指导场景构图、空间体积和色彩；本工程使用独立原创素材和独立规则实现。
+This describes current new-match behavior. [data/rules.json](../data/rules.json), simulation modules and the in-game Wiki are authoritative for exact values. Historical saves carry their own rules. For keyboard bindings and the first-match walkthrough, see [the README](../README.md).
 
-## 玩家体验
+本页说明当前新对局。价格、前置和特殊能力以当前规则与游戏图鉴为准；旧存档保留旧规则。本页不把世界观中的长期战役构想当作已完成玩法。
 
-一局从一座完整基地与 4000 资金开始；重锤使用基地兵营，其他阵营使用总部。每个阵营初始基地提供半径12格、容量100电力的局部供电，仅支持范围内建筑；远处建设仍需独立保障供电。正典、铁钉与天翼通常先投资电站，再选择精炼厂建立可持续收入或兵营争夺通路；普通建筑在侧栏先完成加工，再由玩家决定落地位置。分基地由工程兵直接选址，抵达后搭建脚手架并在现场施工，按施工进度扣款。这三个阵营的扩建范围由已完成的总部、经济、生产和科技建筑提供；这使基地扩张同时承担经济投入、通行空间和受袭风险。
+## Match structure / 对局结构
 
-重锤的基地建筑统一命名为基地兵营；开局与工程兵新建的都是同一种建筑，使用同一建筑定义与全部数值。基地兵营开局即可训练基础步兵、反甲兵与工程兵，只生产步兵，不建造建筑。重锤全部建筑由工程兵抵达现场后搭建脚手架，随施工进度付费；普通建筑必须位于基地兵营的建设范围内。重锤取消分基地，工兵可在已有范围外建造基地兵营扩张，也可在基地兵营失守后重建。每座基地兵营生命3500、占地4×4、视野28格、建设范围24格，提供独立步兵生产队列与半径12格、容量100电力的局部供电；新建造价1000资金、施工15秒，同时满足基地和兵营科技前置。其他重锤建筑不扩展建设范围，价格与建造时间保持原值。
+The game offers one tutorial mission and single-player skirmishes with 2–4 armies. Six main battlefield profiles are 320 × 320; the symmetric land map is 192 × 192 and supports two armies. The development map is available through development controls. Older map generators remain for compatibility, but do not all appear in the new-match menu.
 
-阵营差异通过兵种与具体机制体现，不再使用正典同域集群增伤、重锤推进首击或铁钉全军减伤。暂时保留铁钉单位脱战6秒后每秒恢复最大生命1.2%的自愈，装载时暂停。断流车EMP、标定车持续跟踪、蓄能站局部支援与维修/拖救车辆继续依照具体平台、距离、视线、电力和资金条件生效。
+Each army begins with its faction base and 4000 funds. Defeat is determined by loss of every building that counts toward survival, excluding walls, barricades and rails; losing the Headquarters alone does not always end a match. A simultaneous loss in the same damage settlement can draw.
 
-地图始终公开。玩家关注的是资金、供电、生产设施位置、部队站位和固定炮弹落点，而非视野或复杂属性。普通移动执行行军；进攻移动承担途中自动交战；指定攻击追击单个目标。坦克沿攻击移动路线持续前进，独立炮塔在射程内索敌瞄准并开火；固定落点的可见炮弹给快速单位留下躲避机会，集结过密则会放大友军误伤风险。
+## Economy, construction and power / 经济、施工与供电
 
-正典、铁钉与天翼每方最多一座总部，总部不能再建造总部；总部被毁后可由工程兵修建分基地恢复持续建设能力。重锤基地兵营可建造多座，由工程兵继续建设与扩张。只要其他已放置的有效建筑还存在，生产和交战继续。消灭全部有效建筑才结束比赛；围墙与拒马不参与最终胜负统计，防御塔与其他建筑仍参与。同一伤害批次双方有效建筑归零为平局。
+Canon, Long Nail and Skywing process ordinary building orders through completed Headquarters/Outposts, then place completed orders on legal terrain. Normal and defensive construction channels are independent. Engineers can establish Outposts outside the existing base radius by moving to a site and constructing paid scaffolding.
 
-## 镜头与构图调整
+Heavy Hammer uses Base Barracks instead. Every Base Barracks produces infantry and engineers, provides local power and construction coverage, and can be rebuilt or duplicated. Its engineers build all structures on site; normal sites need Base Barracks coverage, while a new Base Barracks can expand beyond it. Work progresses only with the required engineer and funds. Damaged scaffolding is repaired before construction continues. Another engineer can take over interrupted work; dismantling does not refund already spent construction funds.
 
-根据用户对整体观感的反馈，本轮把原任务书的45°默认俯角调整为30°。实际比较24° / 30° / 36°后选择30°，加强模型侧墙、车体与屋顶的空间关系，同时保持地面路径间距可辨。菜单提供20–45°俯角滑杆，战场可用R/T即时调节并保存偏好；FOV42与透视保留。俯角只改变观察，实体车体/炮塔的世界朝向、步兵的80°镜像、地面占地与战斗规则均不变。
+Crystal deposits are persistent resources in current new matches. Ordinary harvesters mine and deliver to a refinery; the initial refinery includes its configured free harvester. Long Nail mining vehicles require friendly railway. Heavy Hammer engineers build mining drills at deposits instead of relying on the ordinary refinery/harvester economy. Congested doors and mining positions must clear rather than producing overlapping units.
 
-2026-10-06 试玩修订后，相机以当前焦点地形为目标，只对镜头所在位置附近的地形、静态景物和建筑保留净空。远处高山不再把整张320×320地图的镜头顶高；同一平坦区域平移保持高度，遇到实际地形高差时随局部地形调整。滚轮能真实拉近镜头并放大模型，景深与地面拾取继续使用真实地形。小地图镜头框投影到当前焦点高度，逐帧更新独立绘制层；底图与单位标记仍保持缓存和原刷新频率。
+Bases provide local power: capacity and distance are separate constraints. Distant buildings still need nearby supply. Low power slows construction/production and disables affected defenses and service operations; existing troops and harvesting continue according to their own rules.
 
-设置页可选择动态或固定俯角。动态模式放大时趋近 20°，缩小时平滑升至 45°，宽视野保持 45°；固定模式通过 20°–45° 滑块平滑调整，缩放保持所选角度。滚轮每格改变约 3% 的目标比例，完整缩放范围约需 58 格；画面逐帧缓动并对快速输入限速，反向滚动取消未完成的旧方向缩放。动态俯角跟随正在显示的缩放值，固定俯角与模式切换也作限速缓动。镜头净空由完整轨道调整并补偿投影视角，避免只抬高相机导致实际俯角偏离设定。路径线、选择框与命令标记绘制在战场上方、HUD 下方，并裁剪在战场区域内。加载界面隐藏 FPS 标签及底板，结束加载后恢复。
+正典、长钉与天翼先加工普通建筑订单，再选择合法地面放置；工兵可在范围外搭建分基地。重锤全部建筑由工兵现场施工，基地兵营可重复建造并拓展建设范围。供电同时受容量和距离约束，堵门不会重叠生成单位。当前矿点持续供给，长钉矿车需轨道，重锤靠矿脉钻机建立收入。
 
-## 原创纸艺语言
+## Troops and movement / 部队与移动
 
-地面是暖色牛皮纸的立体沙盘，四层高度为 0 / 2 / 4 / 6，坡道呈连续纸面，高地边缘不规则起伏。蓝色河床位于岸面之下，完整石拱桥与立体桥墩跨越峡谷；公路使用深一档的纸色和手绘断线。局部橄榄绿土斑、碎石、草点和树影增强接地感。
+Combat infantry recruit in 2–6 person squads depending on role; engineers remain independent. Each squad member is a real soldier with separate health, collision, weapon cooldown, veterancy and transport seat. Selecting a member selects the available squad. Casualties preserve group identity and a survivor becomes its representative. One purchase pays the whole squad cost; sequential emergence uses the actual production doorway. There is no free replenishment.
 
-士兵继续使用透明背景原创 SVG 手绘插画，剪裁轮廓具有薄边与双面，保留五动作状态。车辆和全部建筑采用原创真正的简化实体模型：封闭车体、履带/车轮、分离炮塔、厚屋顶、四面侧墙、门窗、烟囱和立体旗杆。暗色几何墨线、局部纸纤维纹理和哑光色块保持手制模型风格。
+Ground movement uses terrain-aware paths, continuous footprint checks, local avoidance and yielding. Different units need different clearance. Movement orders and attack-move are distinct; tanks with suitable weapons can move while their turrets engage. Railway vehicles use track, ships navigate water, amphibious units cross appropriate shore connections, and aircraft use a separate aerial movement domain.
 
-铆钉采用方正帽盔、铆接标记、厚履带、宽工业建筑与重型炮车。游隼采用翼形标记、轻型车体、帐篷与轻工棚、风轮电站和投掷爆破手。己方蓝色、敌方红色独立于阵营身份，屋顶、车身、旗帜与徽记形成清楚的颜色对比。
+Some vehicles can crush enemy infantry, with heavy units having different crush rules. Friendly infantry are protected from vehicle crushing. Engineers can repair, capture eligible enemy buildings and rebuild broken bridges through contextual commands. Ordinary combat infantry can garrison suitable neutral houses; engineers cannot. Transports reserve one seat per real member and require legal boarding/unloading conditions.
 
-完整建筑、森林、岩石与晶矿固定于地图，不随镜头旋转。车辆车体跟随真实行进世界角，炮塔使用独立世界角；步兵保留固定 α 的 80°剪纸镜像。体积模型血条向观察方向保持可读，步兵血条仍附着原世界纸面。暖色方向光形成明确受光面与冷色暗部，真实动态阴影及适量 SSAO 加强模型接地与屋檐/履带细节。
+## Combat and technology / 战斗与科技
 
-模型提供完整近景、远景和极远景三层网格。按屏幕投影尺寸选择，并在切换阈值两侧保留缓冲区；所有画质共用该视觉尺度策略。近景保持原建模，远景保留所属颜料、主要轮廓、材质、活动部件与骨骼蒙皮。建筑、海军、脚手架、森林、桥梁、遗迹与资源均有对应层级；步兵远景保留原插画及所属遮罩，极远景采用双面透明剪纸平面。程序生成的地形保留坡道、悬崖与水岸，只有纯平整且同类的面允许合并。显示层级不改变寻路、碰撞、点选或毁坏状态。桥头与陆地共面部分保留独立地面层：完整桥面独占，毁桥显示原地面，修复后恢复桥面；桥板裁齐真实边界，导航高度不变。
+Weapons have explicit target domains, ranges, armor penetration, damage modifiers and special behavior. A ground-moving unit is not necessarily limited to ground targets. Projectiles can retain their fired landing point; splash damage can affect allies and falls off with distance. Normal move/attack-move does not automatically destroy neutral scenery; force attack can target trees, houses, stone walls and friendly objects. Bridges can be attacked, destroyed and repaired.
 
-各方初始基地视野半径为28格；重锤后续建造的基地兵营同样为28格，正典、铁钉、天翼分基地视野为24格。基地建设与局部供电使用各自独立半径，地形仍可遮挡视线。
+Current armor damage tiers use effective penetration:
 
-## 地图结构
+| Condition | Damage factor |
+|---|---:|
+| Armor is zero, or penetration exceeds armor | 100% |
+| Penetration reaches 80% of armor without exceeding armor | 50% |
+| Penetration is below 80% of armor | 25% |
 
-- 48×48 规则试验场：总部、对称矿点、四层坡道、桥梁、永久陆路；开发工具可补充资金和单位、轮检朝向边界。
-- 320×320 山地大战场：默认菜单项，增加多层山地、山口和高地通路，保留平坦基地与无桥永久陆路。
-- 160×160 手工战场：左右等价基地和两处近矿，中间河流与可毁桥；北部高地通路、南部永久陆路及扩张矿点提供多条路线。
-- 160×160 随机战场：输入并显示种子，对称资源条件，变化的高地宽度、河流区段和装饰分布。生成后检查平坦基地、资源与坡道连通、无桥陆路；失败重试或修复。
+These are damage factors, not hit probabilities. Splash can reduce effective penetration with distance. Old snapshots without the threshold field retain their older behavior. Light/medium/heavy building armor and unit roles make dedicated anti-armor and siege support useful rather than providing a universal tank bonus.
 
-随机生成当前采用有约束的结构变化，以保证公平和可达。没有上下重叠立交，也没有高地攻击加成。
+Combat value earned from enemy kills grants veterancy after the configured threshold. Veteran bonuses and the doubled experience value of killing an enemy veteran are rule fields. Friendly kills do not grant experience; increased experience is not extra income.
 
-## 规则与可调整数据
+Technology follows facility prerequisites. Barracks open T1, a factory or airfield opens T2, and the faction technology building opens T3; Heavy Hammer Base Barracks also fills the barracks role. Cards hide unavailable technology, while the Wiki remains a full reference. Aircraft with finite ammunition return for servicing; permanent airborne helicopter/airship behavior and carrier operations follow each unit's specific definition.
 
-`data/rules.json` 集中维护 23 个单位、26 个建筑、21 个武器、两阵营身份、经济、电力、前置和动画映射。UI、电脑和战斗均读取这份数据。显示名称与稳定 ID 分离。启动检查价格、射程、攻击间隔、缺失引用、跨表 ID、前置循环及动画资源。
+护甲判定是伤害倍率，不是命中概率。专职反甲与攻城装备通过穿深和目标倍率发挥作用。伤害、命令、占领、铁路、运输、生产与经验均属于模拟状态，而非画面效果。新旧存档依各自规则判定。
 
-矿车自主寻找可达矿柱、装载、交付和返回。矿柱无限且不可摧毁，地面单位不可穿过；双方合计每根同时只允许一辆矿车开采，其他车等待或转场。精炼厂免费附带矿车只触发一次，堵门时等待。正典、铁钉与天翼已完成总部或分基地为普通建筑队列和扩建提供授权；重锤建筑由工程兵现场建设，通过基地兵营扩展基地范围。工程兵在范围外现场建设仅适用于其他阵营分基地与重锤基地兵营；普通重锤建筑仍须基地兵营覆盖。单位生产队列独立 FIFO，入队即付款。局部供电先支持总部或重锤基地兵营覆盖范围内建筑，范围外仍依靠电站；低电使建造和生产速度减半并停塔，采矿和既有部队照常工作。
+## Information and AI / 信息与电脑
 
-地面单位按任意角度寻路：无遮挡时直接沿起点到终点的直线移动；有障碍时由按半径缓存的 AStar 图生成候选绕行路线，再按完整路径可见性合并为自由角度线段。每段按单位圆形半径与建筑、矿柱和残骸的矩形占地检测连续碰撞，危险图连线会被排除并重新寻路。动态单位使用空间索引、连续扫掠、局部绕行与让路；多选命令分配附近站位。不可达会进入等待状态并限频重寻路。车辆可以碾压敌方可碾压步兵，任何移动命令均不能碾压友方步兵。空军按直线飞行并对其他空中单位做连续避碰，不受建筑和地形阻挡，编队终点与生产出口保留足够间距。
+Visibility uses observers, terrain and target detection, with last-known enemy records. AI acts on its own units, the public map and observed enemy information. It buys production and construction through ordinary interfaces, without extra funds or damage bonuses. Difficulty and strategy affect decision timing, budgets and force composition.
 
-各规则半径的静态通行缓存在地图加载时准备。新增障碍和断桥只使经过对应区域的路径失效；完整规划以FIFO公平排队，每个30Hz tick最多4次。等待期间经济、战斗和时间继续推进。矿区/精炼厂候选跨tick续查，队列和搜索进度随存档保留，停止命令和死亡会退出等待队列。
+Balanced, pressure and armor strategies share a land planner with faction adapters for construction, mining, rails and unit choices. Naval and campaign behavior have their own paths. Historical experiments establish behavior only under their documented conditions; they do not certify all maps, late-game behavior or equal faction strength. See [AI experiments](ai_balance_experiments.md).
 
-工程兵现场施工不预付：重锤可建基地兵营及其他全部建筑，其他阵营可建分基地。脚手架受损后先付费维修再施工，工兵阵亡或离开则暂停，其他工兵可接手，也可拆除未完工脚手架（已花资金不退款）。
+## Presentation and persistence / 表现与持久化
 
-树木、中立房屋和石墙不会被普通右键攻击或攻击移动破坏，只可由 H 强制攻击目标或地面清理；H 也允许攻击友方。中立桥可攻击、可破坏、可由工程兵在桥头按进度付费修复。断桥结算时桥上双方单位死亡，岸上路径失效；修复中断保留进度。炮弹保存发射时固定落点，落地才按占地结算范围伤害。
+Vehicles/buildings use 3D paper models; infantry are cut-paper figures. Rendering uses model and scenery levels of detail while retaining simulation positions, collision, targeting and unit counts. Camera movement, zoom, orbit and pitch are player controls. Lower render scale reduces the internal 3D resolution while keeping UI/click coordinates at native resolution.
 
-## 电脑策略
-
-电脑从同样的总部和 4000 资金开始，按需求建立供电、精炼、兵营、工厂、防御与科技。所有订单通过真实的造价、前置和队列接口。兵力集结后进攻，基地遭威胁时调动附近部队，资金允许时修理受损建筑。它不获得免费单位、隐藏资金、加速或伤害奖励。无迷雾条件下双方共享公开场上信息。
-
-这是可完成遭遇战的规则电脑，未提供多档难度或学习型策略。20 分钟是后续平衡目标，不是终局计时器。
-
-## 保存与输入
-
-保存位于 Godot 的 `user://` 数据目录，记录版本、规则快照、实际地图与种子、时刻、资金、实体稳定 ID、生命与朝向、命令和路径、冷却、建造与生产队列、矿车货物、矿柱开采占用、分基地施工进度和工兵状态、桥梁状态与修复进度、在途炮弹。保存调用发生在完整规则 tick 之间，读档保留权威状态，仅重建派生导航。设置页与新战局配置页临时暂停对局，关闭时恢复打开前的暂停状态；保存、确认出售和失去焦点不会主动暂停模拟。
-
-旧存档继续使用其规则快照；从旧档返回后开始新局，也会重新读取并验证当前JSON配置。无效新配置显示具体错误并保留当前对局，不用部分数据覆盖已加载状态。
-
-左键点选 / 拖框，右键移动 / 攻击 / 设集结点，Shift 追加，Ctrl+数字保存编队，数字选择，Z 后左键进攻移动，X 停止，C 追加路径点，H 强制攻击目标或地面，F 强制移动和指定碾压。Q/E 环绕，中键/WASD平移，滚轮缩放，空格定位选中，Home 回总部。F5 保存，F9 读取，Esc 与齿轮按钮打开同一设置页，重复按 Esc 关闭；已有放置、命令、弹窗或图鉴操作时优先取消当前操作。工程师右键断桥或桥头修复；武装单位右键桥梁攻击。
-
-音量与手动静音仍保存为用户偏好。测试和画面诊断使用隔离数据目录；会临时改变设置的景深验证同时备份、还原原文件，避免把测试静音写入玩家设置。
-
-## 工程边界
-
-不加入迷雾、补给、士气、空海军、随机命中、装甲克制、复杂插件后端或联网。256 为性能参考规模，单位生产没有人口上限。四类地图与测试都复用 `WarSimulation`。本轮提供 Linux 可执行程序与源工程；Windows/macOS 需要实际构建与设备验证，不能以路径兼容推定已通过。
+The Settings gear manages graphics, camera, audio and independent interface/voice languages. Saving captures the actual map, current rules and simulation state. Match reports retain time-series statistics and events, rather than a playable replay. See [architecture](architecture.md) and [statistics](balance_preparation.md).

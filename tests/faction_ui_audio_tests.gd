@@ -30,7 +30,7 @@ func run() -> void:
 			for action_id: String in PaperAudio.RADIO_ACTIONS:
 				var key: String = faction + "/" + category + "/" + action_id
 				require(clips.has(key) and clips[key].size() >= 3, "Every class/action has three actual Mandarin speech variants: " + key)
-	var sound := PaperAudio.new()
+	var sound := PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	sound.configure_units(rules)

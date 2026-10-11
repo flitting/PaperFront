@@ -28,10 +28,10 @@ static func _read_manifest(path: String) -> Dictionary:
 
 static func _row(entry: Dictionary, type: String, id: String, group: String, title: String, category: String, action: String, origin: String = "") -> Dictionary:
 	var source: Dictionary = entry.get("provenance", {})
-	var text: String = str(entry.get("text", title))
+	var text: String = PaperAudio.caption_text(entry) if type == "voice" else str(entry.get("text", title))
 	return {
 		"id": id, "group_id": group, "file": str(entry.get("file", entry.get("path", ""))),
-		"title": title, "text": text, "duration_s": float(entry.get("duration_s", 0.0)),
+		"title": title, "text": text, "spoken_text": str(entry.get("text", text)), "voice_language": str(entry.get("language", "zh_CN")), "duration_s": float(entry.get("duration_s", 0.0)),
 		"channels": int(entry.get("channels", 1)), "sample_width": int(entry.get("sample_width", 2)),
 		"sample_rate": int(entry.get("sample_rate", 22050 if type in ["voice", "music"] else 44100)),
 		"type": type, "faction": str(entry.get("faction", "")), "category": category, "action": action,
@@ -50,10 +50,10 @@ static func _add(result: Array[Dictionary], seen: Dictionary, row: Dictionary) -
 	seen[file] = true
 	result.append(row)
 
-static func load_catalog() -> Array[Dictionary]:
+static func load_catalog(voice_language: String = "en") -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	var seen: Dictionary = {}
-	var voices: Dictionary = _read_manifest(PaperAudio.VOICE_MANIFEST)
+	var voices: Dictionary = _read_manifest(PaperAudio.voice_manifest(voice_language))
 	for entry: Dictionary in voices.get("clips", []):
 		var faction: String = str(entry.get("faction", ""))
 		var category: String = str(entry.get("category", ""))
@@ -63,7 +63,7 @@ static func load_catalog() -> Array[Dictionary]:
 		var variant: int = int(entry.get("variant", 1))
 		var title: String = "%s · %s · %s %d" % [FACTION_NAMES.get(faction, faction), CATEGORY_NAMES.get(category, category), ACTION_NAMES.get(action, action), variant]
 		_add(result, seen, _row(entry, "voice", group + "/" + str(variant), group, title, category, action))
-	for entry: Dictionary in _read_manifest(SYSTEM_MANIFEST).get("clips", []):
+	for entry: Dictionary in _read_manifest(PaperAudio.system_manifest(voice_language)).get("clips", []):
 		var action: String = str(entry.get("action", ""))
 		var group: String = "voice/system/" + action
 		var title: String = "电力不足警报" if action == "low_power" else "供电恢复提示"

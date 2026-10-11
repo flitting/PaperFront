@@ -1,0 +1,654 @@
+{
+  "seed733_default_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 470.8333333334923,
+    "income": 7304.999999999937,
+    "produced": {
+      "kestrel_anti": 3,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 16,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "low_power_seconds": 9.833333333341159,
+    "failed_commands": 0,
+    "first_deaths": [
+      [
+        307.4000000000289,
+        "kestrel_marksman",
+        [
+          62.340049743652344,
+          97.8965835571289
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        308.0666666666961,
+        "kestrel_marksman",
+        [
+          61.36682891845703,
+          94.2957763671875
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        309.6666666666974,
+        "kestrel_marksman",
+        [
+          59.75145721435547,
+          97.69874572753906
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        310.43333333336466,
+        "kestrel_marksman",
+        [
+          57.70674514770508,
+          97.59134674072266
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.9000000000333,
+        "kestrel_anti",
+        [
+          55.166648864746094,
+          97.8118667602539
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        315.66666666670216,
+        "kestrel_tank",
+        [
+          53.846656799316406,
+          95.80975341796875
+        ],
+        "kestrel_anti"
+      ],
+      [
+        316.300000000036,
+        "kestrel_marksman",
+        [
+          54.57275390625,
+          97.57219696044922
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        317.43333333337023,
+        "kestrel_rifle",
+        [
+          56.23988342285156,
+          96.4315414428711
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        318.06666666670407,
+        "kestrel_anti",
+        [
+          53.919029235839844,
+          95.73502349853516
+        ],
+        "kestrel_anti"
+      ],
+      [
+        320.3666666667059,
+        "kestrel_anti",
+        [
+          53.29528045654297,
+          94.07583618164062
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        322.2000000000407,
+        "kestrel_marksman",
+        [
+          53.25148010253906,
+          98.05999755859375
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        324.30000000004236,
+        "kestrel_rifle",
+        [
+          52.21287155151367,
+          96.11661529541016
+        ],
+        "kestrel_anti"
+      ],
+      [
+        325.100000000043,
+        "kestrel_scout",
+        [
+          56.628135681152344,
+          104.95025634765625
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        332.70000000004904,
+        "kestrel_tower",
+        [
+          50.0,
+          96.0
+        ],
+        "kestrel_anti"
+      ],
+      [
+        334.70000000005064,
+        "kestrel_marksman",
+        [
+          44.305416107177734,
+          98.88157653808594
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        336.3000000000519,
+        "kestrel_marksman",
+        [
+          41.28578186035156,
+          100.84683990478516
+        ],
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed733_swap_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 935.2999999998067,
+    "income": 12344.166666666564,
+    "produced": {
+      "kestrel_anti": 14,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 26,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 1
+    },
+    "low_power_seconds": 345.29999999968595,
+    "failed_commands": 0,
+    "first_deaths": [
+      [
+        303.333333333359,
+        "kestrel_marksman",
+        [
+          134.79405212402344,
+          98.11370849609375
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        303.8333333333594,
+        "kestrel_anti",
+        [
+          135.06466674804688,
+          99.48223114013672
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        304.6000000000267,
+        "kestrel_rifle",
+        [
+          135.47438049316406,
+          96.42804718017578
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        305.96666666669444,
+        "kestrel_marksman",
+        [
+          136.02386474609375,
+          97.57982635498047
+        ],
+        "kestrel_anti"
+      ],
+      [
+        306.53333333336155,
+        "kestrel_marksman",
+        [
+          136.23521423339844,
+          96.5929183959961
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        306.7666666666951,
+        "kestrel_marksman",
+        [
+          136.1457977294922,
+          94.99232482910156
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        310.03333333336434,
+        "kestrel_scout",
+        [
+          135.12750244140625,
+          104.75562286376953
+        ],
+        "kestrel_anti"
+      ],
+      [
+        310.53333333336474,
+        "kestrel_marksman",
+        [
+          138.14295959472656,
+          99.44004821777344
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.6333333333664,
+        "kestrel_anti",
+        [
+          138.48646545410156,
+          96.23846435546875
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.83333333336657,
+        "kestrel_tank",
+        [
+          139.1292724609375,
+          98.12254333496094
+        ],
+        "kestrel_anti"
+      ],
+      [
+        313.4666666667004,
+        "kestrel_rifle",
+        [
+          135.3940887451172,
+          95.10957336425781
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        314.93333333336824,
+        "kestrel_anti",
+        [
+          138.9542999267578,
+          96.67945861816406
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        406.60000000010785,
+        "kestrel_anti",
+        [
+          134.0023956298828,
+          96.7548828125
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        406.6333333334412,
+        "kestrel_marksman",
+        [
+          134.00938415527344,
+          95.81909942626953
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        408.466666666776,
+        "kestrel_anti",
+        [
+          135.83018493652344,
+          96.47103881835938
+        ],
+        "kestrel_anti"
+      ],
+      [
+        409.5666666667769,
+        "kestrel_anti",
+        [
+          134.18971252441406,
+          97.43829345703125
+        ],
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed734_default_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 470.8333333334923,
+    "income": 7304.999999999937,
+    "produced": {
+      "kestrel_anti": 3,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 16,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 1
+    },
+    "low_power_seconds": 9.833333333341159,
+    "failed_commands": 0,
+    "first_deaths": [
+      [
+        307.4000000000289,
+        "kestrel_marksman",
+        [
+          62.340049743652344,
+          97.8965835571289
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        308.0666666666961,
+        "kestrel_marksman",
+        [
+          61.36682891845703,
+          94.2957763671875
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        309.6666666666974,
+        "kestrel_marksman",
+        [
+          59.75145721435547,
+          97.69874572753906
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        310.43333333336466,
+        "kestrel_marksman",
+        [
+          57.70674514770508,
+          97.59134674072266
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.9000000000333,
+        "kestrel_anti",
+        [
+          55.166648864746094,
+          97.8118667602539
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        315.66666666670216,
+        "kestrel_tank",
+        [
+          53.846656799316406,
+          95.80975341796875
+        ],
+        "kestrel_anti"
+      ],
+      [
+        316.300000000036,
+        "kestrel_marksman",
+        [
+          54.57275390625,
+          97.57219696044922
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        317.43333333337023,
+        "kestrel_rifle",
+        [
+          56.23988342285156,
+          96.4315414428711
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        318.06666666670407,
+        "kestrel_anti",
+        [
+          53.919029235839844,
+          95.73502349853516
+        ],
+        "kestrel_anti"
+      ],
+      [
+        320.3666666667059,
+        "kestrel_anti",
+        [
+          53.29528045654297,
+          94.07583618164062
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        322.2000000000407,
+        "kestrel_marksman",
+        [
+          53.25148010253906,
+          98.05999755859375
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        324.30000000004236,
+        "kestrel_rifle",
+        [
+          52.21287155151367,
+          96.11661529541016
+        ],
+        "kestrel_anti"
+      ],
+      [
+        325.100000000043,
+        "kestrel_scout",
+        [
+          56.628135681152344,
+          104.95025634765625
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        332.70000000004904,
+        "kestrel_tower",
+        [
+          50.0,
+          96.0
+        ],
+        "kestrel_anti"
+      ],
+      [
+        334.70000000005064,
+        "kestrel_marksman",
+        [
+          44.305416107177734,
+          98.88157653808594
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        336.3000000000519,
+        "kestrel_marksman",
+        [
+          41.28578186035156,
+          100.84683990478516
+        ],
+        "kestrel_marksman"
+      ]
+    ]
+  },
+  "seed734_swap_alpha_review.json": {
+    "finished": true,
+    "winner_if_finished": "beta",
+    "duration": 935.2999999998067,
+    "income": 12344.166666666564,
+    "produced": {
+      "kestrel_anti": 14,
+      "kestrel_engineer": 1,
+      "kestrel_harvester": 3,
+      "kestrel_marksman": 26,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 1
+    },
+    "low_power_seconds": 345.29999999968595,
+    "failed_commands": 0,
+    "first_deaths": [
+      [
+        303.333333333359,
+        "kestrel_marksman",
+        [
+          134.79405212402344,
+          98.11370849609375
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        303.8333333333594,
+        "kestrel_anti",
+        [
+          135.06466674804688,
+          99.48223114013672
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        304.6000000000267,
+        "kestrel_rifle",
+        [
+          135.47438049316406,
+          96.42804718017578
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        305.96666666669444,
+        "kestrel_marksman",
+        [
+          136.02386474609375,
+          97.57982635498047
+        ],
+        "kestrel_anti"
+      ],
+      [
+        306.53333333336155,
+        "kestrel_marksman",
+        [
+          136.23521423339844,
+          96.5929183959961
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        306.7666666666951,
+        "kestrel_marksman",
+        [
+          136.1457977294922,
+          94.99232482910156
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        310.03333333336434,
+        "kestrel_scout",
+        [
+          135.12750244140625,
+          104.75562286376953
+        ],
+        "kestrel_anti"
+      ],
+      [
+        310.53333333336474,
+        "kestrel_marksman",
+        [
+          138.14295959472656,
+          99.44004821777344
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.6333333333664,
+        "kestrel_anti",
+        [
+          138.48646545410156,
+          96.23846435546875
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        312.83333333336657,
+        "kestrel_tank",
+        [
+          139.1292724609375,
+          98.12254333496094
+        ],
+        "kestrel_anti"
+      ],
+      [
+        313.4666666667004,
+        "kestrel_rifle",
+        [
+          135.3940887451172,
+          95.10957336425781
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        314.93333333336824,
+        "kestrel_anti",
+        [
+          138.9542999267578,
+          96.67945861816406
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        406.60000000010785,
+        "kestrel_anti",
+        [
+          134.0023956298828,
+          96.7548828125
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        406.6333333334412,
+        "kestrel_marksman",
+        [
+          134.00938415527344,
+          95.81909942626953
+        ],
+        "kestrel_marksman"
+      ],
+      [
+        408.466666666776,
+        "kestrel_anti",
+        [
+          135.83018493652344,
+          96.47103881835938
+        ],
+        "kestrel_anti"
+      ],
+      [
+        409.5666666667769,
+        "kestrel_anti",
+        [
+          134.18971252441406,
+          97.43829345703125
+        ],
+        "kestrel_marksman"
+      ]
+    ]
+  }
+}

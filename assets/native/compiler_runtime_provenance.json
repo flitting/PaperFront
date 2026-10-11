@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-10-05T03:02:16.186581+00:00",
+  "recorded_utc": "2026-10-09T05:38:59.312550+00:00",
   "scope": "Current native extension statically links GNU libstdc++ and libgcc; this record and exact local compiler notice accompany those runtime portions, not the GCC application. Bound to the native SHA below.",
   "compiler_version": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
   "local_license_source": "/usr/share/doc/gcc-13-base/copyright",
@@ -13,22 +13,22 @@
   "link_command_sha256": "237be420aef9cf98282b7d8e0447f079f3ecc18f9dbb6d590b130c5c1de85e58",
   "primary_license_url": "https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html",
   "license": "GPLv3 with GCC Runtime Library Exception 3.1; applicable Target Code permission described in the official license.",
-  "native_sha256": "22891f08d0129a734a2b0ea3ba8180ad9ea141fe88b8d89b914c52aa21a9faec",
+  "native_sha256": "ad58d2ad16b63aad8197126831d8b0dbe19b4f667046bdf16f591fca9c27bcfb",
   "link_file_sha256": "926076069aacf2b95c1c3f24c9ed2a66b808b90a577a87c433412c0b1bd8dc69",
   "godot_cpp_archive_sha256": "d68df927b147e06fba5ef39dcfbe26a8ccbba1bbf98d0ea1ee8d08b61cfd5eec",
   "compile_flags": "-O3 -DNDEBUG -fPIC -O3 -ffp-contract=off -fno-exceptions",
   "native_source_sha256": {
-    "native/src/geometry_queries.hpp": "5bfc8b6813c668cd25fe9254891a3486591cc4decdadbd2c872ca9d9b3858217",
-    "native/src/ground_movement.hpp": "b6cb0d91e37e1ac08282e492a630bba5d991080dad7f08f36d776a6875a234c6",
-    "native/src/kernels.cpp": "df08f587bbc382b2720a164265c5419a6e91db96e2f260dc26f02a48d30ca3c1",
+    "native/src/geometry_queries.hpp": "51d27378cbde048330da3f82a2f996b70d13fb3409be292295c5adb002f09354",
+    "native/src/ground_movement.hpp": "1dbf77c30760635f30aa07b8179ed50dba7270083cad1edacf176a6162abb8d0",
+    "native/src/kernels.cpp": "824d0a716a5fc4457b10f5b12d752abab5c62bc41b59b5ca6ba719c420d0b667",
     "native/src/render_batch.hpp": "49daf565253cc06afbe02a4bdaf86ed1e1078f5fc0c7a79cc77cd8b859836693",
-    "native/src/repair_support.hpp": "edbdd1cabac0176e0a8ae59585233bc3cbfa24445a500ba3cca8609e2c6eadde",
-    "native/src/sight_mask.hpp": "86b759aa9ffce61949dbfc122c99401b567f63983e3d48c1c0f9b36209f93653",
-    "native/src/spatial_index.hpp": "7432da52022980007432073843101be26f4445d8153ad133ee384201d554f498",
-    "native/src/terrain_mask.hpp": "da2f1a522cf90fad55bc59cb0ffafefe37df298466d4ae29c23c94ce933f5b12",
-    "native/src/unit_tick.hpp": "8ab8fa86cfbb537e72519850bc9b6fb4625fdb5584bddc251e1e843a24dd7353",
-    "native/src/volume_pose.hpp": "667630972f44734761d8e28faad7a370c6de3ccb45f50952f2003f8d4ffdde23",
+    "native/src/repair_support.hpp": "d56461e2235016b713f46aaa525127088f2430aaef8d49090f2f694c53369a16",
+    "native/src/sight_mask.hpp": "4b882e5ee9f81cb11111b9b199790a82a54eddf6f106718a4e735ca608be2e7d",
+    "native/src/spatial_index.hpp": "1a132cc1fc697917bf4dad80940ca32c460adb6c8dc74e9059a112b0ee74cd37",
+    "native/src/terrain_mask.hpp": "717ed19ca752cbd225d66dab9581b16b5f459a9434ccf9773eafb6de7366cc11",
+    "native/src/unit_tick.hpp": "c739444e6ff5b55d8681e8543db20052599b74bc94e2c66bcc821f519bb4784f",
+    "native/src/volume_pose.hpp": "b207e28328b8b1c60ae8a747c9caf9a1edad063098a237ac114cf57c084f5a79",
     "native/src/world_model_cache.hpp": "343ce073bb661cf5dfe955f5a36d6bcab03e09baef6e57f8bf8470a3ebcad4d3",
-    "native/src/world_sync.hpp": "19f9963cc82e80ff9a37062783872c46a2b01a7ac89215e6dae890ccb157f0d5"
+    "native/src/world_sync.hpp": "0d5e8897ed5b7f39bfe2303d94d366c9c01442b0d6be7a981dcfad21e0a46494"
   }
 }

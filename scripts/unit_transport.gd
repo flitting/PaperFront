@@ -2,6 +2,7 @@ extends RefCounted
 
 const AircraftOperations = preload("res://scripts/aircraft_operations.gd")
 const NavalOperations = preload("res://scripts/naval_operations.gd")
+const InfantrySquads = preload("res://scripts/infantry_squads.gd")
 
 ## Embarked infantry keep their entity and health, but leave navigation/combat.
 ## The simulation calls these helpers so transport shares its normal movement,
@@ -30,6 +31,7 @@ static func board_error(sim, passenger_id: int, carrier_id: int) -> String:
 	if passenger.team != carrier.team: return "只能搭载友方步兵"
 	if float(passenger.hp) <= 0.0 or float(carrier.hp) <= 0.0: return "步兵或运输车辆已被摧毁"
 	if carrier.get("passengers", []).size() >= capacity(sim, carrier): return "运输载具已满员"
+	if carrier.get("passengers", []).size() + InfantrySquads.boarding_count(sim, passenger, carrier_id, "board") > capacity(sim, carrier): return "运输载具已满员或剩余空位不足以搭载整个小队"
 	if sim._is_air(carrier) and bool(carrier.get("airborne", true)):
 		if carrier.get("flight_state", "") == "returning":
 			if not sim._airfield_valid(int(carrier.get("home_airfield", -1)), int(carrier.team)): return "运输机附近没有可用机场；请先指定降落地点"

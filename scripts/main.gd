@@ -1,5 +1,7 @@
 extends Node3D
 
+const Localization = preload("res://scripts/localization.gd")
+
 var sim: WarSimulation
 var world: PaperWorld
 var camera: Camera3D
@@ -190,6 +192,8 @@ const CAMERA_PITCH_EPSILON: float = .001
 const RENDER_SCALES: Array[float] = [1.0,0.85,0.75]
 
 func _ready() -> void:
+	Localization.initialize("en")
+	_update_window_language()
 	get_tree().auto_accept_quit = false
 	# Keep every desktop popup on the native path, including the built-in
 	# LineEdit context menu. Individual OptionButton overrides are insufficient
@@ -1160,7 +1164,7 @@ func _process(delta: float) -> void:
 	sim.statistics.sample(sim)
 	sim.events.clear()
 	while not sim.notices.is_empty(): post(str(sim.notices.pop_front()))
-	selected=selected.filter(func(id):return sim.entities.has(id) and int(sim.entities[id].get("transport_id",-1))<0 and sim.entity_visible_to(0,int(id)))
+	selected=selectable_squad(selected)
 	prune_control_groups()
 	if started and not sim.result.is_empty() and not benchmark and not golden_mode:
 		_show_battle_scoreboard()
@@ -1470,7 +1474,7 @@ func _open_settings() -> void:
 	middle_drag = false
 	overlay.active = false
 	var values: Dictionary = audio.get_mix()
-	values.merge({"quality": graphics_quality, "render_scale": render_scale, "depth_of_field": lens.dof_blur_near_enabled, "pitch": camera_pitch, "pitch_mode": camera_pitch_mode, "effective_pitch": effective_camera_pitch(), "fullscreen": get_window().mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN], "ambient_occlusion": environment.ssao_enabled, "shadows": key_light.shadow_enabled, "debug_enabled": debug_available, "audio_browser_enabled": audio_browser_enabled, "in_match": started, "can_save": started})
+	values.merge({"quality": graphics_quality, "render_scale": render_scale, "depth_of_field": lens.dof_blur_near_enabled, "pitch": camera_pitch, "pitch_mode": camera_pitch_mode, "effective_pitch": effective_camera_pitch(), "fullscreen": get_window().mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN], "ambient_occlusion": environment.ssao_enabled, "shadows": key_light.shadow_enabled, "debug_enabled": debug_available, "audio_browser_enabled": audio_browser_enabled, "in_match": started, "can_save": started, "language": Localization.language(), "voice_language": audio.voice_language})
 	hud.settings.open(values)
 
 func _open_match_setup() -> void:
@@ -1781,8 +1785,12 @@ func click_select(screen: Vector2, append: bool) -> void:
 	inspected_bridge=sim.bridge_at(ground) if id<0 and inspected_ruin==-1 and ground.is_finite() else -1
 	if not append:selected.clear()
 	if id>=0:
-		if append and id in selected:selected.erase(id)
-		else:selected.append(id)
+		var squad: Array = selectable_squad([id])
+		if append and id in selected:
+			for member in squad: selected.erase(member)
+		else:
+			for member in squad:
+				if member not in selected: selected.append(member)
 		audio.play("select")
 		speak_selection("select")
 	hud.cache_key=""
@@ -1794,8 +1802,12 @@ func box_select(rect: Rect2, append: bool) -> void:
 		if e.team!=0 or e.kind!="unit" or sim.Transport.is_loaded(e):continue
 		var p: Vector3 = entity_visual_center(e)
 		if not camera.is_position_behind(p) and rect.has_point(project_world_to_screen(p)) and e.id not in selected:selected.append(e.id)
+	selected = selectable_squad(selected)
 	audio.play("select")
 	speak_selection("select")
+
+func selectable_squad(ids: Array) -> Array:
+	return sim.expand_squad_ids(ids, true).filter(func(id): return sim.entity_visible_to(0, int(id)))
 
 # The model root anchors to terrain, while an aircraft body moves above it.
 func entity_visual_center(e: Dictionary) -> Vector3:
@@ -2011,7 +2023,7 @@ func prune_control_groups() -> void:
 func save_control_group(number: int) -> void:
 	if number < 1 or number > 6: return
 	groups[number] = selected.filter(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and str(sim.entities[id].kind) == "unit" and float(sim.entities[id].hp) > 0.0)
-	var count: int = groups[number].size()
+	var count: int = sim.selection_ids(groups[number]).size()
 	if count == 0: groups.erase(number)
 	hud.refresh_groups(groups)
 	post("编队 %d 已保存 · %d 单位" % [number, count] if count > 0 else "编队 %d 已清空" % number)
@@ -2021,7 +2033,7 @@ func select_control_group(number: int) -> void:
 	prune_control_groups()
 	hud.refresh_groups(groups)
 	if not groups.has(number): return
-	selected = groups[number].filter(func(id): return int(sim.entities[id].get("transport_id", -1)) < 0 and sim.entity_visible_to(0, int(id)))
+	selected = selectable_squad(groups[number])
 	hud.refresh(sim, selected, camera, dev_mode, "\n".join(feedback), sim_cpu_ms, inspected_bridge, debug_available)
 	audio.play("select"); speak_selection("select")
 
@@ -2067,6 +2079,19 @@ func handle_action(kind: String, value: Variant) -> void:
 	elif kind=="audio_mix":
 		audio.set_mix(value)
 		hud.muted=audio.muted
+		save_preferences()
+	elif kind=="language":
+		Localization.set_language(str(value))
+		_update_window_language()
+		hud.cache_key = ""
+		hud.queue_cache = ""
+		hud.group_key = ""
+		hud.refresh(sim, selected, camera, dev_mode, "\n".join(feedback), sim_cpu_ms, inspected_bridge, debug_available)
+		save_preferences()
+	elif kind=="voice_language":
+		if not audio.set_voice_language(str(value)):
+			hud.settings.show_notice("所选语音资源不可用，请检查游戏文件。")
+		hud.settings.voice_language_option.select(1 if audio.voice_language == "en" else 0)
 		save_preferences()
 	elif kind=="graphics_quality":
 		set_graphics_quality(str(value));save_preferences()
@@ -2418,8 +2443,8 @@ func spawn_roster() -> void:
 		for spec in sim.rules.units:
 			if sim.rules.units[spec].faction!=sim.factions[team]:continue
 			var p:=standable_near(center+Vector2((index%3)*2.5,(index/3)*2.5))
-			var id:int=sim.debug_spawn(team,spec,p)
-			if team==0:selected.append(id)
+			var id:int=sim.debug_spawn_squad(team,spec,p)
+			if team==0 and id>=0:selected.append_array(sim.expand_squad_ids([id], true))
 			index+=1
 	post("试验场已加入两阵营独立兵种，右键可移动与交战。")
 
@@ -2535,6 +2560,9 @@ func finish_benchmark() -> void:
 func load_preferences() -> void:
 	var settings:=ConfigFile.new()
 	if settings.load("user://settings.cfg")!=OK:return
+	Localization.set_language(str(settings.get_value("interface", "language", "en")))
+	audio.set_voice_language(str(settings.get_value("audio", "voice_language", "en")))
+	_update_window_language()
 	set_debug_enabled(bool(settings.get_value("debug","enabled",debug_available)))
 	set_audio_browser_enabled(bool(settings.get_value("debug","audio_browser_enabled",true)))
 	var mix:Dictionary=audio.get_mix()
@@ -2571,10 +2599,15 @@ func load_preferences() -> void:
 	if bool(settings.get_value("graphics","fullscreen",false)) and not golden_mode and not benchmark:
 		get_window().mode=Window.MODE_FULLSCREEN
 
+func _update_window_language() -> void:
+	get_window().title = "Paper Front" if Localization.language() == "en" else "纸境战线 · Paper Front"
+
 func save_preferences() -> void:
 	if quit_pending:return
 	var settings:=ConfigFile.new()
 	for key:String in audio.get_mix():settings.set_value("audio",key,audio.get_mix()[key])
+	settings.set_value("interface", "language", Localization.language())
+	settings.set_value("audio", "voice_language", audio.voice_language)
 	settings.set_value("audio","baseline_version",11)
 	settings.set_value("graphics","fullscreen",get_window().mode in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN])
 	settings.set_value("camera","pitch",camera_pitch)

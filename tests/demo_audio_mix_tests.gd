@@ -76,7 +76,7 @@ func run() -> void:
 	recorder.format = AudioStreamWAV.FORMAT_16_BITS
 	recorder_index = AudioServer.get_bus_effect_count(0)
 	AudioServer.add_bus_effect(0, recorder, recorder_index)
-	sound = PaperAudio.new()
+	sound = PaperAudio.new(); sound.voice_language = "zh_CN"
 	root.add_child(sound)
 	await process_frame
 	sound.set_mix({"master": 0.85, "music": 0.45, "sfx": 0.9, "voice": 0.85, "muted": false})

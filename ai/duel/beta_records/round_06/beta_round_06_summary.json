@@ -1,0 +1,320 @@
+[
+  {
+    "match": "seed733_default",
+    "duration": 728.633333333328,
+    "finished": true,
+    "review_status": "completed",
+    "winner": "beta",
+    "own_team": 1,
+    "own_funds_earned": 24999.999999999804,
+    "enemy_funds_earned": 5231.666666666623,
+    "own_units_lost_value": 4568.0,
+    "enemy_units_lost_value": 5182.0,
+    "own_buildings_lost": 0,
+    "own_army_value": 16686.0,
+    "enemy_buildings": {},
+    "memory": {
+      "attack_peak": 15229.1038,
+      "contacts": {},
+      "economy_goal": "",
+      "last_objective": [
+        18.5,
+        77.5
+      ],
+      "phase": "attack",
+      "recover_until": 428.00000000009464,
+      "version": "beta_v3_income_defense"
+    },
+    "command_errors": {}
+  },
+  {
+    "match": "seed734_default",
+    "duration": 728.633333333328,
+    "finished": true,
+    "review_status": "completed",
+    "winner": "beta",
+    "own_team": 1,
+    "own_funds_earned": 24999.999999999804,
+    "enemy_funds_earned": 5231.666666666623,
+    "own_units_lost_value": 4568.0,
+    "enemy_units_lost_value": 5182.0,
+    "own_buildings_lost": 0,
+    "own_army_value": 16686.0,
+    "enemy_buildings": {},
+    "memory": {
+      "attack_peak": 15229.1038,
+      "contacts": {},
+      "economy_goal": "",
+      "last_objective": [
+        18.5,
+        77.5
+      ],
+      "phase": "attack",
+      "recover_until": 428.00000000009464,
+      "version": "beta_v3_income_defense"
+    },
+    "command_errors": {}
+  },
+  {
+    "match": "seed733_swap_continued_01",
+    "duration": 2399.999999998475,
+    "finished": false,
+    "review_status": "unfinished",
+    "winner": null,
+    "own_team": 0,
+    "own_funds_earned": 45999.999999999556,
+    "enemy_funds_earned": 4999.999999999955,
+    "own_units_lost_value": 3020.0,
+    "enemy_units_lost_value": 4806.0,
+    "own_buildings_lost": 0,
+    "own_army_value": 18613.0,
+    "enemy_buildings": {
+      "kestrel_barracks": 1
+    },
+    "memory": {
+      "attack_peak": 16906.8,
+      "contacts": {},
+      "economy_goal": "",
+      "last_objective": [
+        172.0,
+        76.0
+      ],
+      "phase": "attack",
+      "recover_until": 406.00000000007714,
+      "version": "beta_v3_income_defense"
+    },
+    "command_errors": {},
+    "remaining_barracks": {
+      "id": 9,
+      "pos": [
+        170.5,
+        106.5
+      ],
+      "visible_sample_count": 0,
+      "first_visible": null,
+      "last_visible": null,
+      "command_target_samples": [],
+      "final_nearest_combat_distance": 23.40265098242798,
+      "final_combat_bounds": {
+        "x": [
+          165.62681579589844,
+          174.77220153808594
+        ],
+        "y": [
+          70.55181884765625,
+          83.12770080566406
+        ]
+      }
+    },
+    "stalled_samples": [
+      {
+        "time": 500.0000000001822,
+        "reason": "beta_v3_income_defense attack force=23 infantry=20 value=7875 anchor=134.3 contact=0 remembered=0 local=5420 home_threat=0 economy=factory",
+        "force": {
+          "attacking": 0,
+          "count": 23,
+          "engaged": 12,
+          "front": 139.41444396972656,
+          "hp": 3389.6,
+          "idle": 0,
+          "max_hp": 3389.6,
+          "value": 6628.0
+        },
+        "visible_counts": {
+          "kestrel_factory": 1
+        }
+      },
+      {
+        "time": 700.0000000000207,
+        "reason": "beta_v3_income_defense attack force=33 infantry=29 value=11352 anchor=137.4 contact=0 remembered=0 local=10639 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 33,
+          "engaged": 0,
+          "front": 143.0253143310547,
+          "hp": 4612.4,
+          "idle": 30,
+          "max_hp": 4612.4,
+          "value": 9494.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 1199.999999999566,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=137.8 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 143.72857666015625,
+          "hp": 8152.4,
+          "idle": 24,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 1799.9999999990202,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=137.8 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 144.21609497070312,
+          "hp": 8152.4,
+          "idle": 28,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 2397.9999999984766,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=138.9 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 142.77220153808594,
+          "hp": 8152.4,
+          "idle": 17,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      }
+    ]
+  },
+  {
+    "match": "seed734_swap_continued_01",
+    "duration": 2399.999999998475,
+    "finished": false,
+    "review_status": "unfinished",
+    "winner": null,
+    "own_team": 0,
+    "own_funds_earned": 45999.999999999556,
+    "enemy_funds_earned": 4999.999999999955,
+    "own_units_lost_value": 3020.0,
+    "enemy_units_lost_value": 4806.0,
+    "own_buildings_lost": 0,
+    "own_army_value": 18613.0,
+    "enemy_buildings": {
+      "kestrel_barracks": 1
+    },
+    "memory": {
+      "attack_peak": 16906.8,
+      "contacts": {},
+      "economy_goal": "",
+      "last_objective": [
+        172.0,
+        76.0
+      ],
+      "phase": "attack",
+      "recover_until": 406.00000000007714,
+      "version": "beta_v3_income_defense"
+    },
+    "command_errors": {},
+    "remaining_barracks": {
+      "id": 9,
+      "pos": [
+        170.5,
+        106.5
+      ],
+      "visible_sample_count": 0,
+      "first_visible": null,
+      "last_visible": null,
+      "command_target_samples": [],
+      "final_nearest_combat_distance": 23.40265098242798,
+      "final_combat_bounds": {
+        "x": [
+          165.62681579589844,
+          174.77220153808594
+        ],
+        "y": [
+          70.55181884765625,
+          83.12770080566406
+        ]
+      }
+    },
+    "stalled_samples": [
+      {
+        "time": 500.0000000001822,
+        "reason": "beta_v3_income_defense attack force=23 infantry=20 value=7875 anchor=134.3 contact=0 remembered=0 local=5420 home_threat=0 economy=factory",
+        "force": {
+          "attacking": 0,
+          "count": 23,
+          "engaged": 12,
+          "front": 139.41444396972656,
+          "hp": 3389.6,
+          "idle": 0,
+          "max_hp": 3389.6,
+          "value": 6628.0
+        },
+        "visible_counts": {
+          "kestrel_factory": 1
+        }
+      },
+      {
+        "time": 700.0000000000207,
+        "reason": "beta_v3_income_defense attack force=33 infantry=29 value=11352 anchor=137.4 contact=0 remembered=0 local=10639 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 33,
+          "engaged": 0,
+          "front": 143.0253143310547,
+          "hp": 4612.4,
+          "idle": 30,
+          "max_hp": 4612.4,
+          "value": 9494.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 1199.999999999566,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=137.8 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 143.72857666015625,
+          "hp": 8152.4,
+          "idle": 24,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 1799.9999999990202,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=137.8 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 144.21609497070312,
+          "hp": 8152.4,
+          "idle": 28,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      },
+      {
+        "time": 2397.9999999984766,
+        "reason": "beta_v3_income_defense attack force=42 infantry=29 value=16907 anchor=138.9 contact=0 remembered=0 local=16907 home_threat=0 economy=army",
+        "force": {
+          "attacking": 0,
+          "count": 42,
+          "engaged": 0,
+          "front": 142.77220153808594,
+          "hp": 8152.4,
+          "idle": 17,
+          "max_hp": 8152.4,
+          "value": 16437.0
+        },
+        "visible_counts": {}
+      }
+    ]
+  }
+]

@@ -3,6 +3,7 @@ class_name MatchHistoryChart
 
 ## A native, read-only plot of authoritative match samples. No interpolated
 ## samples are created: hovering inspects the nearest recorded simulation tick.
+const Localization = preload("res://scripts/localization.gd")
 const INK := Color("392c21")
 const GRID := Color("d8c9af")
 var metric := ""
@@ -21,6 +22,10 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_exited.connect(_clear_hover)
 	resized.connect(queue_redraw)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED:
+		queue_redraw()
 
 func configure(history: Array, players: Array, field: String, duration: float, since_time: float = 0.0) -> void:
 	metric = field
@@ -115,8 +120,8 @@ func _draw() -> void:
 		draw_string(font, Vector2(clampf(x - width * 0.5, 0.0, size.x - width), plot.end.y + font_size + 10.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, INK)
 	draw_rect(plot, Color("b29771"), false, 1.0)
 	if not has_recorded_values():
-		var width: float = font.get_string_size(empty_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-		draw_string(font, Vector2(maxf(plot.position.x + 8.0, plot.get_center().x - width * 0.5), plot.get_center().y), empty_text, HORIZONTAL_ALIGNMENT_LEFT, plot.size.x - 16.0, font_size, INK)
+		var width: float = font.get_string_size(Localization.text(empty_text), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+		draw_string(font, Vector2(maxf(plot.position.x + 8.0, plot.get_center().x - width * 0.5), plot.get_center().y), Localization.text(empty_text), HORIZONTAL_ALIGNMENT_LEFT, plot.size.x - 16.0, font_size, INK)
 		return
 	for line: Dictionary in series:
 		var segment := PackedVector2Array()
@@ -141,6 +146,7 @@ func _draw_inspection(font: Font, plot: Rect2) -> void:
 		var value: Variant = line.values[hovered_sample]
 		rows.append(str(line.name) + "  " + ("—" if value == null else "%.0f" % float(value)))
 		if value != null: draw_circle(point_for(hovered_sample, float(value)), 5.0, line.color)
+	for index: int in rows.size(): rows[index] = Localization.text(rows[index])
 	for row: String in rows: width = maxf(width, font.get_string_size(row, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
 	var box := Rect2(Vector2(clampf(x + 14.0, 0.0, size.x - width - 24.0), plot.position.y + 10.0), Vector2(width + 24.0, (font_size + 8.0) * rows.size() + 12.0))
 	draw_rect(box, Color("f5e8cc"))

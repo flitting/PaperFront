@@ -1,0 +1,325 @@
+{
+  "scope": "Local raw experiment telemetry is excluded from Git. Strategies, recorders, derived summaries and reflections remain tracked. These checksums identify the preserved local inputs; regenerate reviews with the documented duel tools.",
+  "files": [
+    {
+      "path": "ai/duel/alpha_records/round_01/seed733_default_alpha_review.json",
+      "bytes": 14445810,
+      "sha256": "31b06901acfadf014f6d47f1b23d83e6e867197ae3b0ff88fa572fba1a2f2e45"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_01/seed733_swap_alpha_review.json",
+      "bytes": 11354133,
+      "sha256": "15c8d503401b792db66ff4ab757733f0889d8f6663b5ffc18417946f525af813"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_01/seed734_default_alpha_review.json",
+      "bytes": 14445810,
+      "sha256": "b1f5e00a0add8cd6aae4f6036ca009630801130f9c08cc8fd895b514ca1a25d4"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_01/seed734_swap_alpha_review.json",
+      "bytes": 11354133,
+      "sha256": "b6504620297e48ce3a2a6bd1e534d19dc679af464d7b05d16501b7fa44dccc8d"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_02/seed733_default_alpha_review.json",
+      "bytes": 18864716,
+      "sha256": "3b07050b33c3dba2795dbe2d3281e2c3e46dfdd12507fedde6438aeea71458c4"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_02/seed733_swap_alpha_review.json",
+      "bytes": 6706431,
+      "sha256": "118f1aa05ee21c982c01afd93f659943d06b5d64d1bf0fc938399e872265330d"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_02/seed734_default_alpha_review.json",
+      "bytes": 18864716,
+      "sha256": "9349fe5c22bbd0e6e0999ee1bdcae9e0fce7fc26300304a0660ddcef5065e169"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_02/seed734_swap_alpha_review.json",
+      "bytes": 6706431,
+      "sha256": "d2aa19d3a51e01565acd605be82138aa740e1baf95c6a9f27308b9f3fba009f9"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_03/seed733_default_alpha_review.json",
+      "bytes": 12069420,
+      "sha256": "ef8d87ceae842525ddf33c5a753f91bfab29eb793a0a55c6001bb83111e9a210"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_03/seed733_swap_alpha_review.json",
+      "bytes": 14166302,
+      "sha256": "8bbe685e17263cb43b8adf5aa6f81110bae6cc2c5bd4ff4404c2256d963ed864"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_03/seed734_default_alpha_review.json",
+      "bytes": 12069420,
+      "sha256": "a39538fba0f5daac78031862334f368e0cd062a3502c5a709647db8826e73054"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_03/seed734_swap_alpha_review.json",
+      "bytes": 14166302,
+      "sha256": "a05796747358d737469f761448360030da31835507af5c8a6358beefcf8329aa"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_04/seed733_default_alpha_review.json",
+      "bytes": 9228177,
+      "sha256": "374289eb3c7e0029b316a731305321e1bda00029abc224837be3a80616d14cba"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_04/seed733_swap_alpha_review.json",
+      "bytes": 13416648,
+      "sha256": "5f64fe479ec970376972998bed559fc799a2bb1e5124e84ec08a0858f07db68b"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_04/seed734_default_alpha_review.json",
+      "bytes": 9228177,
+      "sha256": "17a4aa355e82109d0a2786862ee262d30f90721cfebd8e77be197475492ca3ef"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_04/seed734_swap_alpha_review.json",
+      "bytes": 13416648,
+      "sha256": "94276b8587d9b710effa219ff0dc73437bf1b65eaa63ffbcddd1c0622469cd34"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_05/seed733_default_alpha_review.json",
+      "bytes": 11967696,
+      "sha256": "621140bda983d6964c3665320c9265a97868feb76c83dc890146587f8b8c0f12"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_05/seed733_swap_alpha_review.json",
+      "bytes": 7004010,
+      "sha256": "eec91e1544cadf1cd42b81786e5e275dddd321de51c25f06592b5627dd9a0fe4"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_05/seed734_default_alpha_review.json",
+      "bytes": 11967696,
+      "sha256": "4136a6ee303cdf75e17d62d31e1a6ee902fa45a70e90e6db944be1fb8367d4bc"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_05/seed734_swap_alpha_review.json",
+      "bytes": 7004010,
+      "sha256": "c341bc732027c17d00048b55b86753f1212325280a9df75cc100b76660b21080"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_06/seed733_default_alpha_review.json",
+      "bytes": 9277112,
+      "sha256": "b0f83802147bf456a0202d3784242a50b76dbeeeffececde7c8b8ffc117f4ba7"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_06/seed733_swap_continued_01_alpha_review.json",
+      "bytes": 26706566,
+      "sha256": "2cdcf4831b450b84cc510c90a1e8be686015e4a5b9b578b78f77263a57f2f6ee"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_06/seed734_default_alpha_review.json",
+      "bytes": 9277112,
+      "sha256": "11eb63b4a19ede0254e65940342a3d136dab0adebb0c7845fe55df5dc5a163ba"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_06/seed734_swap_continued_01_alpha_review.json",
+      "bytes": 26706566,
+      "sha256": "91054b0f0906af9944fafe3cc873f6b53d7010353ba3868787806204bfb84f2b"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_07/seed733_default_alpha_review.json",
+      "bytes": 13358924,
+      "sha256": "8a6799cab812b0412f904c9f9ea793c5a10d5f4b8c48550c43dd47a0031353e1"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_07/seed733_swap_alpha_review.json",
+      "bytes": 15460230,
+      "sha256": "d77c2102a5881879519b81ff26f48d62316e192b30dc6bfbaf625f686d4332cd"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_07/seed734_default_alpha_review.json",
+      "bytes": 13358924,
+      "sha256": "4fcae82c0637c68dd343bb170320a8879188dfbcb67887d195f5ac5c6b438684"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_07/seed734_swap_alpha_review.json",
+      "bytes": 15460230,
+      "sha256": "821eaf8b63357d04d1a0551073d3b57298853c932c444233773992a29a6cc572"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_08/seed733_default_alpha_review.json",
+      "bytes": 6362552,
+      "sha256": "4482d4ea305f6f08ccb984649981a66ff9927c5fe50b061fa945b462a208b1c9"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_08/seed733_swap_alpha_review.json",
+      "bytes": 12698714,
+      "sha256": "7264d959ecbfef6fa171636ef2acce346889717a6578ec543200759d4df9f95c"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_08/seed734_default_alpha_review.json",
+      "bytes": 6362552,
+      "sha256": "18a49dc978ac0d65393f2f3075d1f5f02e277c1f80ff56a825dd9adb0f896363"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_08/seed734_swap_alpha_review.json",
+      "bytes": 12698714,
+      "sha256": "cb4be294ccfae42b77fe551252a3ae1e57f6dc8f031e4d4da88ce0878f152f36"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_09/seed733_default_alpha_review.json",
+      "bytes": 8879259,
+      "sha256": "d94392fd72be8a16c2e1413abcaaf452f42ae4e88f5bbf82478f54a955b2b048"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_09/seed733_swap_alpha_review.json",
+      "bytes": 10486248,
+      "sha256": "a0874285609f0a1b3e0b5f24e9a8bbd8e79c3350f1e948114e53719bf0c6b080"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_09/seed734_default_alpha_review.json",
+      "bytes": 8879259,
+      "sha256": "8124b6f2ad8b518ab9abaa3c4972b6d6347802828eeb43d120f42e667bd905ef"
+    },
+    {
+      "path": "ai/duel/alpha_records/round_09/seed734_swap_alpha_review.json",
+      "bytes": 10486248,
+      "sha256": "9a6eaa95c7c4cc7c0e95edcd39a2d6eb66e20218fd489909ccc12ca1ea565b40"
+    },
+    {
+      "path": "ai/duel/beta_records/round_01/seed733_default_beta_review.json",
+      "bytes": 13843409,
+      "sha256": "a9669a424381a2752c76556ca60e2a5eb0d2b7786a86c17f3b757151af4683a8"
+    },
+    {
+      "path": "ai/duel/beta_records/round_01/seed733_swap_beta_review.json",
+      "bytes": 11005043,
+      "sha256": "eb25a24ccceba72d2317083c948951a732643cbf089474b482c6af99002326c8"
+    },
+    {
+      "path": "ai/duel/beta_records/round_01/seed734_default_beta_review.json",
+      "bytes": 13843409,
+      "sha256": "aa0a513941023f5cb1c188b4f522db502da81f5f028f6055af225aad4cf38dfb"
+    },
+    {
+      "path": "ai/duel/beta_records/round_01/seed734_swap_beta_review.json",
+      "bytes": 11005043,
+      "sha256": "7393f58d4130f6aa41e73228bd01cda3f69368755d3d40fa0ba0ebf5529bfe99"
+    },
+    {
+      "path": "ai/duel/beta_records/round_02/seed733_default_beta_review.json",
+      "bytes": 13659631,
+      "sha256": "cd2427f831c9e6140fdf6435b05abce809c65f66faf8686271de474c0870b292"
+    },
+    {
+      "path": "ai/duel/beta_records/round_02/seed733_swap_beta_review.json",
+      "bytes": 5360701,
+      "sha256": "5d9fe1f8c1baae5e695f592e1522e2442f5c56a3ee57adc59db4330e86ccf869"
+    },
+    {
+      "path": "ai/duel/beta_records/round_02/seed734_default_beta_review.json",
+      "bytes": 13659631,
+      "sha256": "f23899ab16f42ab1e3744f2d57fd26c37b27f776998f1ea6963bd0f5f8677d21"
+    },
+    {
+      "path": "ai/duel/beta_records/round_02/seed734_swap_beta_review.json",
+      "bytes": 5360701,
+      "sha256": "326501f24cc55c520b925f332254a8fd2aa93e72753274197e316db8024d9a7c"
+    },
+    {
+      "path": "ai/duel/beta_records/round_03/seed733_default_beta_review.json",
+      "bytes": 12112238,
+      "sha256": "114815ad226e3ecb083b5371e95558531442115538bfdfd6aa5a73bcb8d73bda"
+    },
+    {
+      "path": "ai/duel/beta_records/round_03/seed733_swap_beta_review.json",
+      "bytes": 12831541,
+      "sha256": "a713177e464c9b06b7c8a18981d85650e93453da7bc6040b6d5577f825711b8f"
+    },
+    {
+      "path": "ai/duel/beta_records/round_03/seed734_default_beta_review.json",
+      "bytes": 12112238,
+      "sha256": "3685e27784981699b24aa5c02c5af8a40036a50d26fc0833df555e23ccf50250"
+    },
+    {
+      "path": "ai/duel/beta_records/round_03/seed734_swap_beta_review.json",
+      "bytes": 12831541,
+      "sha256": "1f37900f4acb22ad140c8261cdbb40d16e74ddbb74a838a161cd30ab5e3ddc4b"
+    },
+    {
+      "path": "ai/duel/beta_records/round_04/seed733_default_beta_review.json",
+      "bytes": 7154545,
+      "sha256": "68c9a0fb611a8bb2f5ccad163b7d3e19c9c46ed19f9993f37b4355d60f5dfd82"
+    },
+    {
+      "path": "ai/duel/beta_records/round_04/seed733_swap_beta_review.json",
+      "bytes": 8489664,
+      "sha256": "a9e38c88e301e7f26c4d1604af93a6bd5d924f2ed21f69308068ec0d4a309772"
+    },
+    {
+      "path": "ai/duel/beta_records/round_04/seed734_default_beta_review.json",
+      "bytes": 7154545,
+      "sha256": "a2e702e7d298e72a224eb56d271724ff27182bba8c9f8c262b61b9b3445dd718"
+    },
+    {
+      "path": "ai/duel/beta_records/round_04/seed734_swap_beta_review.json",
+      "bytes": 8489664,
+      "sha256": "6bc20eed01a7e5ba9c8596c7a79a8d68d913e35a05da416e690d4bf306483e17"
+    },
+    {
+      "path": "ai/duel/beta_records/round_05/seed733_default_beta_review.json",
+      "bytes": 15989420,
+      "sha256": "e43e2c7214685b8c5610fe3345df3c3f10807b5caf47d90bed40c443f8fd8ced"
+    },
+    {
+      "path": "ai/duel/beta_records/round_05/seed733_swap_beta_review.json",
+      "bytes": 8238343,
+      "sha256": "7b4d53e8a75bca6d8650741b4e5b67a076627ce7ec368a3763df0a23718c810c"
+    },
+    {
+      "path": "ai/duel/beta_records/round_05/seed734_default_beta_review.json",
+      "bytes": 15989420,
+      "sha256": "e7c64e899451887928351297ff6b09dc73ba4abb489a1a58efdaff45585a5eb7"
+    },
+    {
+      "path": "ai/duel/beta_records/round_05/seed734_swap_beta_review.json",
+      "bytes": 8238343,
+      "sha256": "686bb999def465ea1c5cbe0c7d1f3ffaa96748d9e0b1e50570a5fc266267af7b"
+    },
+    {
+      "path": "ai/duel/beta_records/round_06/seed733_default_beta_review.json",
+      "bytes": 13426586,
+      "sha256": "bfc287adf6395947afe0a7e6fca3ba788bc03dd4db0c4092e28a2687d4d90551"
+    },
+    {
+      "path": "ai/duel/beta_records/round_06/seed733_swap_continued_01_beta_review.json",
+      "bytes": 59456602,
+      "sha256": "963d319ff61d7e713f10fc692429d440ad3c708a041284247992516bf011542a"
+    },
+    {
+      "path": "ai/duel/beta_records/round_06/seed734_default_beta_review.json",
+      "bytes": 13426586,
+      "sha256": "ab1b457939577fbc94cc01d262ae73dc3345f6f3fb5485e6b5e54794ddbb3c86"
+    },
+    {
+      "path": "ai/duel/beta_records/round_06/seed734_swap_continued_01_beta_review.json",
+      "bytes": 59456602,
+      "sha256": "543b2bb9a5d0f58dcc672ba660dea300b0d435633d73a96e1b6d413a30210adb"
+    },
+    {
+      "path": "ai/duel/beta_records/round_09/seed733_default_beta_review.json",
+      "bytes": 8185922,
+      "sha256": "80da88aff5dc82a2260f790eae51be967d24af8d044b7197d6739a9a1c67002d"
+    },
+    {
+      "path": "ai/duel/beta_records/round_09/seed733_swap_beta_review.json",
+      "bytes": 12124265,
+      "sha256": "8019a979a605a7ae11926fb59a8870acbe41e714b42f608e5fbf4c34f755f089"
+    },
+    {
+      "path": "ai/duel/beta_records/round_09/seed734_default_beta_review.json",
+      "bytes": 8185922,
+      "sha256": "fb962abf8921c2ef4d92af71b38e0c5e7e2eee1487b3d656bafa426cb728fefa"
+    },
+    {
+      "path": "ai/duel/beta_records/round_09/seed734_swap_beta_review.json",
+      "bytes": 12124265,
+      "sha256": "9554897a8c52e11834f7fb644857594966dd09cb1d43d04f7eb300e53c38e3ea"
+    }
+  ]
+}

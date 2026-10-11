@@ -1,0 +1,3380 @@
+[
+  {
+    "match": "seed733_default",
+    "winner": "beta",
+    "duration": 930.599999999811,
+    "own": {
+      "funds_earned": 27499.999999999785,
+      "funds_spent": 27593.000000000025,
+      "money_remaining": 3906.999999999761,
+      "units_produced": 56.0,
+      "units_lost": 9.0,
+      "units_lost_value": 2654.0,
+      "enemy_units_destroyed_value": 8590.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 3,
+        "kestrel_gunner": 2,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 2
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 16,
+        "kestrel_artillery": 5,
+        "kestrel_gunner": 5,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 14,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 18399.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 7999.999999999928,
+      "units_lost_value": 8590.0,
+      "enemy_units_destroyed_value": 2654.0,
+      "peak_army_value": 5263.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 167.99999999999304,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 294.00000000001825,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 434.00000000012966,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 580.0000000001298,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      },
+      {
+        "time": 612.0000000001007,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      }
+    ],
+    "phase_changes": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v2_supply_formation muster force=0 infantry=0 value=0 anchor=16.0 contact=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 282.0000000000087,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=2926 anchor=19.3 contact=204 home_threat=204 economy=army"
+      },
+      {
+        "time": 308.0000000000294,
+        "reason": "beta_v2_supply_formation muster force=5 infantry=5 value=1445 anchor=35.9 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 378.0000000000851,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3153 anchor=17.8 contact=0 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 797,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1920.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 31.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 5,
+          "engaged": 0,
+          "front": 19.284469604492188,
+          "hp": 901.0,
+          "idle": 3,
+          "max_hp": 901.0,
+          "value": 1410.0
+        },
+        "reason": "beta_v2_supply_formation muster force=5 infantry=4 value=1506 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 140,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.9842529296875,
+          "hp": 1098.0,
+          "idle": 6,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=19.3 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1098.0,
+          "idle": 7,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=19.8 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 170,
+        "own": {
+          "army_value": 2516.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1210.0,
+          "idle": 7,
+          "max_hp": 1210.0,
+          "value": 2006.0
+        },
+        "reason": "beta_v2_supply_formation muster force=8 infantry=7 value=2340 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                1.466666666666688
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 192,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 513.9999999999827,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 1013.9999999999784,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3795.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 1918.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 5.999999999974079,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2731.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2710.0,
+          "funds_earned": 5499.999999999951,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 4,
+          "engaged": 1,
+          "front": 26.6094970703125,
+          "hp": 359.7684241973241,
+          "idle": 0,
+          "max_hp": 383.79999999999995,
+          "value": 898.0
+        },
+        "reason": "beta_v2_supply_formation defend force=4 infantry=4 value=1204 anchor=26.5 contact=145 home_threat=145 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_gunner",
+                2.100000000000014
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 350,
+        "own": {
+          "army_value": 3046.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 47.999999999965326,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2909.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4093.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.4644775390625,
+          "hp": 1066.8,
+          "idle": 5,
+          "max_hp": 1087.8,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2319 anchor=19.0 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 5999.999999999946,
+          "money_remaining": 283.99999999994793,
+          "harvesters": 3,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2909.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4093.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 12,
+          "engaged": 0,
+          "front": 64.43476104736328,
+          "hp": 1572.8,
+          "idle": 1,
+          "max_hp": 1593.8,
+          "value": 3040.0
+        },
+        "reason": "beta_v2_supply_formation attack force=12 infantry=11 value=3738 anchor=61.3 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                3.4666666666666845
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 5406.0,
+          "funds_earned": 8999.99999999992,
+          "money_remaining": 1199.999999999922,
+          "harvesters": 3,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 7944.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 646.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 16,
+          "engaged": 1,
+          "front": 129.1682586669922,
+          "hp": 1913.6870408809282,
+          "idle": 10,
+          "max_hp": 2042.85,
+          "value": 3876.0
+        },
+        "reason": "beta_v2_supply_formation attack force=16 infantry=15 value=4785 anchor=123.9 contact=0 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 8120.0,
+          "funds_earned": 13499.999999999887,
+          "money_remaining": 185.99999999988268,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 24,
+          "engaged": 0,
+          "front": 138.28662109375,
+          "hp": 3182.5757325106697,
+          "idle": 17,
+          "max_hp": 3242.6499999999996,
+          "value": 6080.0
+        },
+        "reason": "beta_v2_supply_formation attack force=24 infantry=22 value=7485 anchor=134.4 contact=0 home_threat=0 economy=factory",
+        "power": [
+          440.0,
+          300.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 14912.0,
+          "funds_earned": 20499.999999999836,
+          "money_remaining": 393.9999999998222,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 38,
+          "engaged": 0,
+          "front": 139.7611846923828,
+          "hp": 6374.140132510662,
+          "idle": 35,
+          "max_hp": 6430.65,
+          "value": 12872.0
+        },
+        "reason": "beta_v2_supply_formation attack force=38 infantry=30 value=13921 anchor=136.7 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          400.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 900,
+        "own": {
+          "army_value": 18399.0,
+          "funds_earned": 25499.9999999998,
+          "money_remaining": 1906.999999999779,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 43,
+          "engaged": 0,
+          "front": 141.92572021484375,
+          "hp": 8354.140132510662,
+          "idle": 31,
+          "max_hp": 8410.65,
+          "value": 16359.0
+        },
+        "reason": "beta_v2_supply_formation attack force=43 infantry=30 value=16710 anchor=135.9 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          400.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      }
+    ],
+    "max_miner_stall": 23.999999999978172
+  },
+  {
+    "match": "seed733_swap",
+    "winner": "beta",
+    "duration": 930.3666666664778,
+    "own": {
+      "funds_earned": 27999.99999999978,
+      "funds_spent": 31847.000000000022,
+      "money_remaining": 152.99999999975807,
+      "units_produced": 99.0,
+      "units_lost": 67.0,
+      "units_lost_value": 16710.0,
+      "enemy_units_destroyed_value": 21482.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 30,
+        "kestrel_gunner": 7,
+        "kestrel_marksman": 22,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 6
+      },
+      "units_produced_by_spec": {
+        "kestrel_aa_infantry": 2,
+        "kestrel_anti": 39,
+        "kestrel_gunner": 10,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 32,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 9597.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 23499.999999999814,
+      "units_lost_value": 21482.0,
+      "enemy_units_destroyed_value": 16710.0,
+      "peak_army_value": 6755.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 167.99999999999304,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 294.00000000001825,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 562.0000000001462,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 917.9999999998224,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      }
+    ],
+    "phase_changes": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v2_supply_formation muster force=0 infantry=0 value=0 anchor=16.0 contact=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 282.0000000000087,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=2926 anchor=18.7 contact=0 home_threat=0 economy=refinery"
+      },
+      {
+        "time": 284.0000000000103,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=2926 anchor=22.4 contact=1533 home_threat=1533 economy=army"
+      },
+      {
+        "time": 334.0000000000501,
+        "reason": "beta_v2_supply_formation muster force=1 infantry=1 value=249 anchor=-9.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 424.0000000001217,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3203 anchor=19.3 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 428.0000000001249,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=3094 anchor=25.0 contact=1814 home_threat=1814 economy=army"
+      },
+      {
+        "time": 468.0000000001567,
+        "reason": "beta_v2_supply_formation muster force=3 infantry=3 value=749 anchor=35.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 520.0000000001844,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3041 anchor=19.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 568.0000000001407,
+        "reason": "beta_v2_supply_formation muster force=6 infantry=5 value=1954 anchor=28.2 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 594.0000000001171,
+        "reason": "beta_v2_supply_formation defend force=8 infantry=7 value=2601 anchor=18.0 contact=624 home_threat=624 economy=army"
+      },
+      {
+        "time": 618.0000000000953,
+        "reason": "beta_v2_supply_formation muster force=10 infantry=10 value=2788 anchor=25.4 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 620.0000000000935,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=10 value=2788 anchor=21.9 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 668.0000000000498,
+        "reason": "beta_v2_supply_formation muster force=7 infantry=7 value=2054 anchor=74.6 contact=328 home_threat=0 economy=army"
+      },
+      {
+        "time": 692.000000000028,
+        "reason": "beta_v2_supply_formation attack force=12 infantry=11 value=3734 anchor=19.2 contact=0 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 1452,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1920.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 31.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 5,
+          "engaged": 0,
+          "front": 20.07943344116211,
+          "hp": 901.0,
+          "idle": 2,
+          "max_hp": 901.0,
+          "value": 1410.0
+        },
+        "reason": "beta_v2_supply_formation muster force=5 infantry=4 value=1506 anchor=19.7 contact=0 home_threat=0 economy=army",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 140,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1098.0,
+          "idle": 6,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=18.8 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1098.0,
+          "idle": 7,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=18.7 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 170,
+        "own": {
+          "army_value": 2516.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1210.0,
+          "idle": 7,
+          "max_hp": 1210.0,
+          "value": 2006.0
+        },
+        "reason": "beta_v2_supply_formation muster force=8 infantry=7 value=2340 anchor=18.2 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                1.466666666666688
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 192,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 513.9999999999827,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 1013.9999999999784,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3795.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 1918.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 175.99999999997408,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 1951.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3482.0,
+          "funds_earned": 4999.999999999955,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 4,
+          "engaged": 3,
+          "front": 28.42376708984375,
+          "hp": 317.875,
+          "idle": 0,
+          "max_hp": 379.75,
+          "value": 898.0
+        },
+        "reason": "beta_v2_supply_formation defend force=4 infantry=4 value=1175 anchor=25.0 contact=572 home_threat=572 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 350,
+        "own": {
+          "army_value": 1978.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 217.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 2424.0,
+          "enemy_units_destroyed_value": 2129.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4780.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 2,
+          "engaged": 0,
+          "front": 18.77783966064453,
+          "hp": 592.0,
+          "idle": 1,
+          "max_hp": 592.0,
+          "value": 958.0
+        },
+        "reason": "beta_v2_supply_formation muster force=2 infantry=1 value=873 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 3046.0,
+          "funds_earned": 5999.999999999946,
+          "money_remaining": 971.9999999999482,
+          "harvesters": 2,
+          "units_lost_value": 2424.0,
+          "enemy_units_destroyed_value": 2129.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5453.0,
+          "funds_earned": 7499.999999999933,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.304298400878906,
+          "hp": 1071.0,
+          "idle": 6,
+          "max_hp": 1071.0,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2368 anchor=20.1 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                4.366666666666671
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 3556.0,
+          "funds_earned": 8999.99999999992,
+          "money_remaining": 661.9999999999222,
+          "harvesters": 3,
+          "units_lost_value": 5224.0,
+          "enemy_units_destroyed_value": 5932.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5119.0,
+          "funds_earned": 11499.999999999902,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.122840881347656,
+          "hp": 1002.9375,
+          "idle": 4,
+          "max_hp": 1071.0,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2207 anchor=19.2 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 4306.0,
+          "funds_earned": 12999.99999999989,
+          "money_remaining": 155.99999999988768,
+          "harvesters": 4,
+          "units_lost_value": 8442.0,
+          "enemy_units_destroyed_value": 8443.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5216.0,
+          "funds_earned": 15499.999999999873,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 1,
+          "front": 24.81039047241211,
+          "hp": 1010.19,
+          "idle": 0,
+          "max_hp": 1156.0,
+          "value": 2266.0
+        },
+        "reason": "beta_v2_supply_formation defend force=8 infantry=7 value=2591 anchor=19.8 contact=1166 home_threat=1166 economy=army",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 6161.0,
+          "funds_earned": 22499.99999999982,
+          "money_remaining": 1180.9999999998056,
+          "harvesters": 4,
+          "units_lost_value": 15418.0,
+          "enemy_units_destroyed_value": 17300.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3416.0,
+          "funds_earned": 22999.999999999818,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 15,
+          "engaged": 0,
+          "front": 117.93467712402344,
+          "hp": 2332.925,
+          "idle": 1,
+          "max_hp": 2419.8,
+          "value": 4121.0
+        },
+        "reason": "beta_v2_supply_formation attack force=15 infantry=12 value=4502 anchor=105.2 contact=0 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 900,
+        "own": {
+          "army_value": 7749.0,
+          "funds_earned": 26999.99999999979,
+          "money_remaining": 520.9999999997667,
+          "harvesters": 4,
+          "units_lost_value": 16710.0,
+          "enemy_units_destroyed_value": 20420.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1062.0,
+          "funds_earned": 23499.999999999814,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 22,
+          "engaged": 5,
+          "front": 137.9160919189453,
+          "hp": 2659.8419162990585,
+          "idle": 2,
+          "max_hp": 3105.3999999999996,
+          "value": 5709.0
+        },
+        "reason": "beta_v2_supply_formation attack force=22 infantry=19 value=6442 anchor=127.6 contact=782 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                0.6000000000000201
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                7.46666666666667
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "max_miner_stall": 13.999999999987267
+  },
+  {
+    "match": "seed734_default",
+    "winner": "beta",
+    "duration": 930.599999999811,
+    "own": {
+      "funds_earned": 27499.999999999785,
+      "funds_spent": 27593.000000000025,
+      "money_remaining": 3906.999999999761,
+      "units_produced": 56.0,
+      "units_lost": 9.0,
+      "units_lost_value": 2654.0,
+      "enemy_units_destroyed_value": 8590.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 3,
+        "kestrel_gunner": 2,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 2
+      },
+      "units_produced_by_spec": {
+        "kestrel_anti": 16,
+        "kestrel_artillery": 5,
+        "kestrel_gunner": 5,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 14,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 18399.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 7999.999999999928,
+      "units_lost_value": 8590.0,
+      "enemy_units_destroyed_value": 2654.0,
+      "peak_army_value": 5263.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 167.99999999999304,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 294.00000000001825,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 434.00000000012966,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 580.0000000001298,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      },
+      {
+        "time": 612.0000000001007,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      }
+    ],
+    "phase_changes": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v2_supply_formation muster force=0 infantry=0 value=0 anchor=16.0 contact=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 282.0000000000087,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=2926 anchor=19.3 contact=204 home_threat=204 economy=army"
+      },
+      {
+        "time": 308.0000000000294,
+        "reason": "beta_v2_supply_formation muster force=5 infantry=5 value=1445 anchor=35.9 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 378.0000000000851,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3153 anchor=17.8 contact=0 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 797,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1920.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 31.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 5,
+          "engaged": 0,
+          "front": 19.284469604492188,
+          "hp": 901.0,
+          "idle": 3,
+          "max_hp": 901.0,
+          "value": 1410.0
+        },
+        "reason": "beta_v2_supply_formation muster force=5 infantry=4 value=1506 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 140,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.9842529296875,
+          "hp": 1098.0,
+          "idle": 6,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=19.3 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1098.0,
+          "idle": 7,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=19.8 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 170,
+        "own": {
+          "army_value": 2516.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1210.0,
+          "idle": 7,
+          "max_hp": 1210.0,
+          "value": 2006.0
+        },
+        "reason": "beta_v2_supply_formation muster force=8 infantry=7 value=2340 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                1.466666666666688
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 192,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 513.9999999999827,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 1013.9999999999784,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3795.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.382781982421875,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=20.2 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 1918.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 5.999999999974079,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2731.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2710.0,
+          "funds_earned": 5499.999999999951,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 4,
+          "engaged": 1,
+          "front": 26.6094970703125,
+          "hp": 359.7684241973241,
+          "idle": 0,
+          "max_hp": 383.79999999999995,
+          "value": 898.0
+        },
+        "reason": "beta_v2_supply_formation defend force=4 infantry=4 value=1204 anchor=26.5 contact=145 home_threat=145 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_gunner",
+                2.100000000000014
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 350,
+        "own": {
+          "army_value": 3046.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 47.999999999965326,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2909.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4093.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.4644775390625,
+          "hp": 1066.8,
+          "idle": 5,
+          "max_hp": 1087.8,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2319 anchor=19.0 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 4570.0,
+          "funds_earned": 5999.999999999946,
+          "money_remaining": 283.99999999994793,
+          "harvesters": 3,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 2909.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4093.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 12,
+          "engaged": 0,
+          "front": 64.43476104736328,
+          "hp": 1572.8,
+          "idle": 1,
+          "max_hp": 1593.8,
+          "value": 3040.0
+        },
+        "reason": "beta_v2_supply_formation attack force=12 infantry=11 value=3738 anchor=61.3 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                3.4666666666666845
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 5406.0,
+          "funds_earned": 8999.99999999992,
+          "money_remaining": 1199.999999999922,
+          "harvesters": 3,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 7944.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 646.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 16,
+          "engaged": 1,
+          "front": 129.1682586669922,
+          "hp": 1913.6870408809282,
+          "idle": 10,
+          "max_hp": 2042.85,
+          "value": 3876.0
+        },
+        "reason": "beta_v2_supply_formation attack force=16 infantry=15 value=4785 anchor=123.9 contact=0 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 8120.0,
+          "funds_earned": 13499.999999999887,
+          "money_remaining": 185.99999999988268,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 24,
+          "engaged": 0,
+          "front": 138.28662109375,
+          "hp": 3182.5757325106697,
+          "idle": 17,
+          "max_hp": 3242.6499999999996,
+          "value": 6080.0
+        },
+        "reason": "beta_v2_supply_formation attack force=24 infantry=22 value=7485 anchor=134.4 contact=0 home_threat=0 economy=factory",
+        "power": [
+          440.0,
+          300.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 14912.0,
+          "funds_earned": 20499.999999999836,
+          "money_remaining": 393.9999999998222,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 38,
+          "engaged": 0,
+          "front": 139.7611846923828,
+          "hp": 6374.140132510662,
+          "idle": 35,
+          "max_hp": 6430.65,
+          "value": 12872.0
+        },
+        "reason": "beta_v2_supply_formation attack force=38 infantry=30 value=13921 anchor=136.7 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          400.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 900,
+        "own": {
+          "army_value": 18399.0,
+          "funds_earned": 25499.9999999998,
+          "money_remaining": 1906.999999999779,
+          "harvesters": 4,
+          "units_lost_value": 2654.0,
+          "enemy_units_destroyed_value": 8590.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 0.0,
+          "funds_earned": 7999.999999999928,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 43,
+          "engaged": 0,
+          "front": 141.92572021484375,
+          "hp": 8354.140132510662,
+          "idle": 31,
+          "max_hp": 8410.65,
+          "value": 16359.0
+        },
+        "reason": "beta_v2_supply_formation attack force=43 infantry=30 value=16710 anchor=135.9 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          400.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      }
+    ],
+    "max_miner_stall": 23.999999999978172
+  },
+  {
+    "match": "seed734_swap",
+    "winner": "beta",
+    "duration": 930.3666666664778,
+    "own": {
+      "funds_earned": 27999.99999999978,
+      "funds_spent": 31847.000000000022,
+      "money_remaining": 152.99999999975807,
+      "units_produced": 99.0,
+      "units_lost": 67.0,
+      "units_lost_value": 16710.0,
+      "enemy_units_destroyed_value": 21482.0,
+      "buildings_lost": 0,
+      "units_lost_by_spec": {
+        "kestrel_anti": 30,
+        "kestrel_gunner": 7,
+        "kestrel_marksman": 22,
+        "kestrel_rifle": 2,
+        "kestrel_tank": 6
+      },
+      "units_produced_by_spec": {
+        "kestrel_aa_infantry": 2,
+        "kestrel_anti": 39,
+        "kestrel_gunner": 10,
+        "kestrel_harvester": 4,
+        "kestrel_marksman": 32,
+        "kestrel_rifle": 2,
+        "kestrel_scout": 1,
+        "kestrel_tank": 9
+      },
+      "peak_army_value": 9597.0,
+      "low_power_seconds_sampled": 0.0
+    },
+    "enemy": {
+      "funds_earned": 23499.999999999814,
+      "units_lost_value": 21482.0,
+      "enemy_units_destroyed_value": 16710.0,
+      "peak_army_value": 6755.0
+    },
+    "builds": [
+      {
+        "time": 13.999999999999961,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 36.00000000000052,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 47.99999999999984,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 73.99999999999837,
+        "kind": "build",
+        "spec": "kestrel_factory"
+      },
+      {
+        "time": 167.99999999999304,
+        "kind": "build",
+        "spec": "kestrel_power"
+      },
+      {
+        "time": 294.00000000001825,
+        "kind": "build",
+        "spec": "kestrel_refinery"
+      },
+      {
+        "time": 562.0000000001462,
+        "kind": "build",
+        "spec": "kestrel_barracks"
+      },
+      {
+        "time": 917.9999999998224,
+        "kind": "build",
+        "spec": "kestrel_tech"
+      }
+    ],
+    "phase_changes": [
+      {
+        "time": 2.0000000000000027,
+        "reason": "beta_v2_supply_formation muster force=0 infantry=0 value=0 anchor=16.0 contact=0 home_threat=0 economy=shared_startup"
+      },
+      {
+        "time": 282.0000000000087,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=2926 anchor=18.7 contact=0 home_threat=0 economy=refinery"
+      },
+      {
+        "time": 284.0000000000103,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=2926 anchor=22.4 contact=1533 home_threat=1533 economy=army"
+      },
+      {
+        "time": 334.0000000000501,
+        "reason": "beta_v2_supply_formation muster force=1 infantry=1 value=249 anchor=-9.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 424.0000000001217,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3203 anchor=19.3 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 428.0000000001249,
+        "reason": "beta_v2_supply_formation defend force=10 infantry=9 value=3094 anchor=25.0 contact=1814 home_threat=1814 economy=army"
+      },
+      {
+        "time": 468.0000000001567,
+        "reason": "beta_v2_supply_formation muster force=3 infantry=3 value=749 anchor=35.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 520.0000000001844,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=9 value=3041 anchor=19.5 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 568.0000000001407,
+        "reason": "beta_v2_supply_formation muster force=6 infantry=5 value=1954 anchor=28.2 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 594.0000000001171,
+        "reason": "beta_v2_supply_formation defend force=8 infantry=7 value=2601 anchor=18.0 contact=624 home_threat=624 economy=army"
+      },
+      {
+        "time": 618.0000000000953,
+        "reason": "beta_v2_supply_formation muster force=10 infantry=10 value=2788 anchor=25.4 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 620.0000000000935,
+        "reason": "beta_v2_supply_formation attack force=10 infantry=10 value=2788 anchor=21.9 contact=0 home_threat=0 economy=army"
+      },
+      {
+        "time": 668.0000000000498,
+        "reason": "beta_v2_supply_formation muster force=7 infantry=7 value=2054 anchor=74.6 contact=328 home_threat=0 economy=army"
+      },
+      {
+        "time": 692.000000000028,
+        "reason": "beta_v2_supply_formation attack force=12 infantry=11 value=3734 anchor=19.2 contact=0 home_threat=0 economy=army"
+      }
+    ],
+    "commands": 1452,
+    "errors": {},
+    "samples": [
+      {
+        "time": 100,
+        "own": {
+          "army_value": 1920.0,
+          "funds_earned": 499.9999999999956,
+          "money_remaining": 31.99999999999568,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1994.0,
+          "funds_earned": 499.9999999999956,
+          "harvesters": 1
+        },
+        "force": {
+          "attacking": 0,
+          "count": 5,
+          "engaged": 0,
+          "front": 20.07943344116211,
+          "hp": 901.0,
+          "idle": 2,
+          "max_hp": 901.0,
+          "value": 1410.0
+        },
+        "reason": "beta_v2_supply_formation muster force=5 infantry=4 value=1506 anchor=19.7 contact=0 home_threat=0 economy=army",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 140,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1098.0,
+          "idle": 6,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=18.8 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 150,
+        "own": {
+          "army_value": 2338.0,
+          "funds_earned": 999.9999999999912,
+          "money_remaining": 291.99999999999136,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2504.0,
+          "funds_earned": 999.9999999999912,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1098.0,
+          "idle": 7,
+          "max_hp": 1098.0,
+          "value": 1828.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2091 anchor=18.7 contact=0 home_threat=0 economy=power",
+        "power": [
+          220.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 170,
+        "own": {
+          "army_value": 2516.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1210.0,
+          "idle": 7,
+          "max_hp": 1210.0,
+          "value": 2006.0
+        },
+        "reason": "beta_v2_supply_formation muster force=8 infantry=7 value=2340 anchor=18.2 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                1.466666666666688
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 192,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1499.9999999999868,
+          "money_remaining": 13.99999999998704,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 1999.9999999999825,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 200,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 1999.9999999999825,
+          "money_remaining": 513.9999999999827,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 2759.0,
+          "funds_earned": 2499.999999999978,
+          "harvesters": 2
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 250,
+        "own": {
+          "army_value": 2756.0,
+          "funds_earned": 2499.999999999978,
+          "money_remaining": 1013.9999999999784,
+          "harvesters": 1,
+          "units_lost_value": 0.0,
+          "enemy_units_destroyed_value": 0.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3795.0,
+          "funds_earned": 3999.9999999999645,
+          "harvesters": 3
+        },
+        "force": {
+          "attacking": 0,
+          "count": 9,
+          "engaged": 0,
+          "front": 21.476985931396484,
+          "hp": 1295.0,
+          "idle": 9,
+          "max_hp": 1295.0,
+          "value": 2246.0
+        },
+        "reason": "beta_v2_supply_formation muster force=9 infantry=8 value=2676 anchor=18.8 contact=0 home_threat=0 economy=refinery",
+        "power": [
+          440.0,
+          180.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 300,
+        "own": {
+          "army_value": 1918.0,
+          "funds_earned": 2999.9999999999736,
+          "money_remaining": 175.99999999997408,
+          "harvesters": 2,
+          "units_lost_value": 1526.0,
+          "enemy_units_destroyed_value": 1951.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3482.0,
+          "funds_earned": 4999.999999999955,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 4,
+          "engaged": 3,
+          "front": 28.42376708984375,
+          "hp": 317.875,
+          "idle": 0,
+          "max_hp": 379.75,
+          "value": 898.0
+        },
+        "reason": "beta_v2_supply_formation defend force=4 infantry=4 value=1175 anchor=25.0 contact=572 home_threat=572 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 350,
+        "own": {
+          "army_value": 1978.0,
+          "funds_earned": 3999.9999999999645,
+          "money_remaining": 217.99999999996544,
+          "harvesters": 2,
+          "units_lost_value": 2424.0,
+          "enemy_units_destroyed_value": 2129.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 4780.0,
+          "funds_earned": 6499.999999999942,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 2,
+          "engaged": 0,
+          "front": 18.77783966064453,
+          "hp": 592.0,
+          "idle": 1,
+          "max_hp": 592.0,
+          "value": 958.0
+        },
+        "reason": "beta_v2_supply_formation muster force=2 infantry=1 value=873 anchor=18.8 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 400,
+        "own": {
+          "army_value": 3046.0,
+          "funds_earned": 5999.999999999946,
+          "money_remaining": 971.9999999999482,
+          "harvesters": 2,
+          "units_lost_value": 2424.0,
+          "enemy_units_destroyed_value": 2129.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5453.0,
+          "funds_earned": 7499.999999999933,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 21.304298400878906,
+          "hp": 1071.0,
+          "idle": 6,
+          "max_hp": 1071.0,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2368 anchor=20.1 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                4.366666666666671
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 500,
+        "own": {
+          "army_value": 3556.0,
+          "funds_earned": 8999.99999999992,
+          "money_remaining": 661.9999999999222,
+          "harvesters": 3,
+          "units_lost_value": 5224.0,
+          "enemy_units_destroyed_value": 5932.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5119.0,
+          "funds_earned": 11499.999999999902,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 7,
+          "engaged": 0,
+          "front": 20.122840881347656,
+          "hp": 1002.9375,
+          "idle": 4,
+          "max_hp": 1071.0,
+          "value": 2026.0
+        },
+        "reason": "beta_v2_supply_formation muster force=7 infantry=6 value=2207 anchor=19.2 contact=0 home_threat=0 economy=army",
+        "power": [
+          440.0,
+          240.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 600,
+        "own": {
+          "army_value": 4306.0,
+          "funds_earned": 12999.99999999989,
+          "money_remaining": 155.99999999988768,
+          "harvesters": 4,
+          "units_lost_value": 8442.0,
+          "enemy_units_destroyed_value": 8443.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 5216.0,
+          "funds_earned": 15499.999999999873,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 8,
+          "engaged": 1,
+          "front": 24.81039047241211,
+          "hp": 1010.19,
+          "idle": 0,
+          "max_hp": 1156.0,
+          "value": 2266.0
+        },
+        "reason": "beta_v2_supply_formation defend force=8 infantry=7 value=2591 anchor=19.8 contact=1166 home_threat=1166 economy=army",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_anti",
+                1.6000000000000112
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "time": 800,
+        "own": {
+          "army_value": 6161.0,
+          "funds_earned": 22499.99999999982,
+          "money_remaining": 1180.9999999998056,
+          "harvesters": 4,
+          "units_lost_value": 15418.0,
+          "enemy_units_destroyed_value": 17300.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 3416.0,
+          "funds_earned": 22999.999999999818,
+          "harvesters": 4
+        },
+        "force": {
+          "attacking": 0,
+          "count": 15,
+          "engaged": 0,
+          "front": 117.93467712402344,
+          "hp": 2332.925,
+          "idle": 1,
+          "max_hp": 2419.8,
+          "value": 4121.0
+        },
+        "reason": "beta_v2_supply_formation attack force=15 infantry=12 value=4502 anchor=105.2 contact=0 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": []
+          }
+        ]
+      },
+      {
+        "time": 900,
+        "own": {
+          "army_value": 7749.0,
+          "funds_earned": 26999.99999999979,
+          "money_remaining": 520.9999999997667,
+          "harvesters": 4,
+          "units_lost_value": 16710.0,
+          "enemy_units_destroyed_value": 20420.0,
+          "low_power": false
+        },
+        "enemy": {
+          "army_value": 1062.0,
+          "funds_earned": 23499.999999999814,
+          "harvesters": 0
+        },
+        "force": {
+          "attacking": 0,
+          "count": 22,
+          "engaged": 5,
+          "front": 137.9160919189453,
+          "hp": 2659.8419162990585,
+          "idle": 2,
+          "max_hp": 3105.3999999999996,
+          "value": 5709.0
+        },
+        "reason": "beta_v2_supply_formation attack force=22 infantry=19 value=6442 anchor=127.6 contact=782 home_threat=0 economy=tech",
+        "power": [
+          440.0,
+          260.0
+        ],
+        "producers": [
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                0.6000000000000201
+              ]
+            ]
+          },
+          {
+            "role": "factory",
+            "queue": []
+          },
+          {
+            "role": "refinery",
+            "queue": []
+          },
+          {
+            "role": "barracks",
+            "queue": [
+              [
+                "kestrel_marksman",
+                7.46666666666667
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "max_miner_stall": 13.999999999987267
+  }
+]

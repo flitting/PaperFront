@@ -87,7 +87,7 @@ static int64_t update_paper_native(Object *world, Dictionary model, const Dictio
     const Dictionary paper_batch=model[w.paper_batch];
     append(paper_batch, transform * art->get_transform(),render_batch(paper_batch));
     append(record->shadow_batch, transform * record->shadow->get_transform(),record->shadow_queue);
-    if (selected) append(record->ring_batch, transform * record->ring->get_transform(),record->ring_queue);
+    // Selection circles are disabled; squad boundaries are drawn by the HUD.
     if (selected || double(e.get(k.hit_flash, 0.0)) > 0) {
         Transform3D hp_transform = transform * record->hp->get_transform();
         const Array &bars=record->hp_bars, &batches=record->hp_batches;

@@ -10,6 +10,7 @@ const CatalogText = preload("res://scripts/wiki_catalog.gd")
 const ContextualProduction = preload("res://scripts/contextual_production.gd")
 const TransportCommands = preload("res://scripts/transport_commands.gd")
 const UnitBrief = preload("res://scripts/unit_brief.gd")
+const OwnerPortrait = preload("res://scripts/owner_portrait_material.gd")
 
 const INK := Color("392c21")
 const PAPER := Color("d5b88d")
@@ -75,8 +76,16 @@ var time_label: Label
 var money_value: Label
 var power_value: Label
 var population_value: Label
+var production_column: VBoxContainer
 var production_panel: PanelContainer
 var selection_panel: PanelContainer
+var selection_header: HBoxContainer
+var selection_portrait_frame: PanelContainer
+var selection_portrait: TextureRect
+var selection_portrait_spec: String = ""
+var selection_portrait_team: int = -1
+var _selection_portrait_key: String = ""
+var _fitting_production: bool = false
 var command_panel: PanelContainer
 var unit_cancel_button: Button
 var pause_button: Button
@@ -249,6 +258,8 @@ func _ready() -> void:
 	production_panel.name = "ProductionPaper"
 	dock = production_panel # Retained for callers which used the old dock reference.
 	var production_col := VBoxContainer.new()
+	production_column = production_col
+	production_col.minimum_size_changed.connect(_queue_production_fit)
 	production_col.add_theme_constant_override("separation", 3)
 	production_panel.add_child(production_col)
 	var heading := HBoxContainer.new()
@@ -301,7 +312,7 @@ func _ready() -> void:
 	build_scroll = ScrollContainer.new()
 	build_scroll.mouse_force_pass_scroll_events = false
 	build_scroll.gui_input.connect(_build_scroll_input)
-	build_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	build_scroll.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	build_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	build_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	production_col.add_child(build_scroll)
@@ -310,6 +321,7 @@ func _ready() -> void:
 	list_box.add_theme_constant_override("separation", 5)
 	list_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	build_scroll.add_child(list_box)
+	list_box.minimum_size_changed.connect(_queue_production_fit)
 	queue_label = label("", 10)
 	queue_label.hide()
 	root.add_child(queue_label)
@@ -362,9 +374,29 @@ func _ready() -> void:
 	info_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	var selection_column := VBoxContainer.new()
 	selection_panel.add_child(selection_column)
+	selection_column.minimum_size_changed.connect(_fit_selection)
+	selection_header = HBoxContainer.new()
+	selection_header.name = "SelectedIdentity"
+	selection_header.add_theme_constant_override("separation", 10)
+	selection_column.add_child(selection_header)
+	selection_portrait_frame = PanelContainer.new()
+	selection_portrait_frame.name = "SelectedPortraitFrame"
+	selection_portrait_frame.custom_minimum_size = Vector2(76, 82)
+	selection_portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	selection_header.add_child(selection_portrait_frame)
+	selection_portrait = TextureRect.new()
+	selection_portrait.name = "SelectedPortrait"
+	selection_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	selection_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	selection_portrait.custom_minimum_size = Vector2(64, 70)
+	selection_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	selection_portrait_frame.add_child(selection_portrait)
 	owner_label = label("", 15)
 	owner_label.name = "SelectedOwner"
-	selection_column.add_child(owner_label)
+	owner_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	owner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	owner_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	selection_header.add_child(owner_label)
 	selection_column.add_child(info_label)
 	maintenance_row = HBoxContainer.new()
 	selection_column.add_child(maintenance_row)
@@ -801,8 +833,9 @@ func refresh(new_sim: WarSimulation, ids: Array, camera: Camera3D, dev_mode: boo
 		var pr: float = float(bo.get("progress", 0.0))
 		order_label.text = d.name + (" · 选址，左键指定位置" if choosing_site else (" · 就绪，点击后放置" if ready else " · 建造 %d%%" % int(pr * 100)))
 	info_label.text = selection_text()
-	owner_label.visible = selection.size() == 1
+	owner_label.visible = sim.selection_ids(selection).size() == 1
 	if owner_label.visible: owner_label.text = entity_owner_text(sim.entities[selection[0]])
+	refresh_selection_portrait()
 	selection_panel.visible = not selection.is_empty() or bridge_id >= 0
 	if selection.is_empty() and bridge_id>=0:
 		var bridge:Dictionary=sim._bridge_by_id(bridge_id)
@@ -821,14 +854,14 @@ func refresh(new_sim: WarSimulation, ids: Array, camera: Camera3D, dev_mode: boo
 	var building := selected_building()
 	var engineer := selected_engineer()
 	var scaffold:bool=building>=0 and sim.entities[building].has("construction") and float(sim.entities[building].construct_remaining)>0.0
-	info_label.max_lines_visible=4 if scaffold else (8 if selection.size()==1 and sim.entities[selection[0]].kind=="unit" else 3)
+	info_label.max_lines_visible=4 if scaffold else (8 if sim.selection_ids(selection).size()==1 and sim.entities[selection[0]].kind=="unit" else 3)
 	maintenance_row.visible = building >= 0 and not scaffold
 	dismantle_button.visible=scaffold
 	return_button.visible = selection.any(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and (str(sim.data_for(sim.entities[id].spec).get("domain", "ground")) == "air" and not bool(sim.data_for(sim.entities[id].spec).get("permanent_air",false)) or sim.data_for(sim.entities[id].spec).get("art","")=="harvester"))
 	unload_button.visible = selection.any(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and not sim.entities[id].get("passengers", []).is_empty())
 	land_button.visible = selection.any(func(id): return sim.entities.has(id) and int(sim.entities[id].team) == 0 and sim._is_air(sim.entities[id]) and int(sim.data_for(sim.entities[id].spec).get("transport_capacity", 0)) > 0)
 	unload_move_button.visible = unload_button.visible
-	selection_panel.offset_top = -358 if scaffold else (-336 if building >= 0 or engineer >= 0 or return_button.visible or unload_button.visible else -308)
+	selection_panel.offset_top = selection_panel.offset_bottom - selection_panel.get_combined_minimum_size().y
 	production_panel.visible = not available_categories.is_empty()
 	construction_channels.visible = "build" in available_categories
 	catalog_tabs.visible = available_categories.size() > 1
@@ -859,6 +892,7 @@ func refresh(new_sim: WarSimulation, ids: Array, camera: Camera3D, dev_mode: boo
 		rebuild_list()
 	refresh_entry_progress()
 	_fit_production()
+	_fit_selection()
 	if not sim.result.is_empty() and not menu.visible and not modal_catalog_visible():
 		end_panel.hide()
 		end_panel.get_child(1).get_node("Outcome").text = ("战役完成 · 无字桥补给线" if sim.result == "win" else "战役失败 · 总部失守") if sim.map.mode == "campaign" else {"win":"胜利 · 战场归你", "lose":"失败 · 基地失守", "draw":"平局 · 双方基地覆灭"}.get(sim.result, sim.result)
@@ -870,10 +904,21 @@ func selection_text() -> String:
 	for id in selection:
 		if sim.entities.has(id): valid.append(sim.entities[id])
 	if valid.is_empty(): return "选中对象已消失"
+	var command_ids: Array = sim.selection_ids(selection)
+	if command_ids.size() == 1 and int(valid[0].get("squad_capacity", 1)) > 1:
+		var leader: Dictionary = sim.entities[command_ids[0]]
+		var info: Dictionary = sim.data_for(leader.spec)
+		var squad_members: Array = sim.squad_members(int(leader.id)).filter(func(member): return int(leader.team) == 0 or sim.entity_visible_to(0, int(member)))
+		var hp: float = 0.0
+		var maximum: float = 0.0
+		for member_id in squad_members:
+			hp += float(sim.entities[member_id].hp)
+			maximum += sim.max_hp(sim.entities[member_id])
+		return tr("%s · %s\n成员 %d/%d · HP %d/%d\n独立生命 · 单队指挥\n%s") % [tr(str(info.name)), tr("狙击小队" if info.get("squad_role", "") == "sniper" else "步兵小队"), squad_members.size(), int(leader.squad_capacity), int(hp), int(maximum), tr(UnitBrief.role(sim.rules, info))]
 	if valid.size() > 1:
 		var aircraft: int = valid.filter(func(item): return str(sim.data_for(item.spec).get("domain", "ground")) == "air").size()
 		var ships: int = valid.filter(func(item): return str(sim.data_for(item.spec).get("domain", "ground")) == "naval").size()
-		return "已选中 %d 个单位%s%s\nZ 进攻移动 · X 停止 · Shift 追加" % [valid.size(), " · 飞机 %d" % aircraft if aircraft > 0 else "", " · 舰艇 %d" % ships if ships > 0 else ""]
+		return tr("已选中 %d 个操控对象 · %d 名成员%s%s\nZ 进攻移动 · X 停止 · Shift 追加") % [command_ids.size(), valid.size(), " · 飞机 %d" % aircraft if aircraft > 0 else "", " · 舰艇 %d" % ships if ships > 0 else ""]
 	var e: Dictionary = valid[0]
 	var d: Dictionary = sim.data_for(e.spec)
 	var owner_text: String = entity_owner_text(e)
@@ -1034,7 +1079,7 @@ func rebuild_list() -> void:
 		if ResourceLoader.exists(art_path):
 			picture = TextureRect.new()
 			picture.texture = load(art_path)
-			if str(d.get("art","")) in VolumeModels.INFANTRY_ART or art_path.get_extension().to_lower() == "png": picture.material = preload("res://scripts/owner_portrait_material.gd").make(art_path,0)
+			if str(d.get("art","")) in VolumeModels.INFANTRY_ART or art_path.get_extension().to_lower() == "png": picture.material = OwnerPortrait.make(art_path,0)
 			picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -1050,7 +1095,7 @@ func rebuild_list() -> void:
 		tier_text.add_theme_color_override("font_color", INK)
 		tier_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(tier_text)
-		var name_text := label(d.name, 11)
+		var name_text := label(production_name(d), 11)
 		name_text.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 		name_text.offset_left = 5
 		name_text.offset_right = -5
@@ -1060,7 +1105,7 @@ func rebuild_list() -> void:
 		name_text.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		name_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(name_text)
-		var price_text := label("$%d" % d.cost, 11)
+		var price_text := label("$%d" % purchase_cost(d), 11)
 		price_text.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 		price_text.offset_left = 5
 		price_text.offset_right = -5
@@ -1081,7 +1126,7 @@ func rebuild_list() -> void:
 		progress.add_theme_stylebox_override("background", progress_style(Color("645740")))
 		progress.add_theme_stylebox_override("fill", progress_style(Color("76a044")))
 		b.add_child(progress)
-		entry_widgets[spec] = {"button": b, "progress": progress, "name_label": name_text, "price_label": price_text, "tier_label": tier_text, "picture": picture, "text": str(d.name), "ready": false, "locked": false}
+		entry_widgets[spec] = {"button": b, "progress": progress, "name_label": name_text, "price_label": price_text, "tier_label": tier_text, "picture": picture, "text": production_name(d), "ready": false, "locked": false}
 	_catalog_width = minf(840.0, maxf(440.0, float(entry_widgets.size()) * 110.0 + float(maxi(0, entry_widgets.size() - 1)) * 5.0 + 14.0))
 	_fit_production()
 	refresh_entry_progress()
@@ -1130,7 +1175,7 @@ func refresh_entry_progress() -> void:
 		var locked: bool = not ready and not reason.is_empty()
 		entry.button.disabled = locked
 		entry.button.tooltip_text = spec_tooltip(sim.data_for(spec)) + ("\n" + reason if not reason.is_empty() and not ready else "")
-		entry.price_label.text = ("选址 · 无需预付" if int(order.get("builder",-1))>=0 else ("就绪 · 放置" if tab in ["build", "defense"] else "等待出口")) if ready else "$%d" % sim.data_for(spec).cost
+		entry.price_label.text = ("选址 · 无需预付" if int(order.get("builder",-1))>=0 else ("就绪 · 放置" if tab in ["build", "defense"] else "等待出口")) if ready else "$%d" % sim.production_cost(spec)
 		if ready and tab not in ["build","defense"] and producer >= 0: entry.price_label.text = "等待铁路连接" if bool(sim.entities[producer].get("rail_waiting",false)) else "等待出厂"
 		if tab not in ["build", "defense"] and producer >= 0:
 			var copies: int = 0
@@ -1139,7 +1184,7 @@ func refresh_entry_progress() -> void:
 			if copies > 0: entry.price_label.text += "  ×%d" % copies
 		if locked:
 			var status: String = "资金不足" if reason == "资金不足" else ("机位已满" if reason.contains("机位") else ("数量已满" if reason.contains("英雄") else ("前置不足" if reason.begins_with("缺少") else "队列忙")))
-			entry.price_label.text = status + " · $%d" % sim.data_for(spec).cost
+			entry.price_label.text = status + " · $%d" % sim.production_cost(spec)
 		if ready != entry.ready or locked != entry.locked:
 			entry.ready = ready
 			entry.locked = locked
@@ -1164,11 +1209,24 @@ func blocks_world_scroll(screen: Vector2) -> bool:
 	return false
 
 # One detailed definition feeds production cards and selected-object tooltips.
+func purchase_cost(d: Dictionary) -> int:
+	return int(d.cost) * int(d.get("squad_size", 1))
+
+func production_name(d: Dictionary) -> String:
+	var members: int = int(d.get("squad_size", 1))
+	return tr("%s · %d人小队") % [tr(str(d.name)), members] if members > 1 else str(d.name)
+
 func spec_tooltip(d: Dictionary) -> String:
 	var lines: PackedStringArray = [str(d.get("formal_name", d.get("name", ""))), str(d.get("description", ""))]
-	if d.has("speed"): lines.append("定位：" + UnitBrief.role(sim.rules,d))
+	if d.has("speed"):
+		lines.append("定位：" + UnitBrief.role(sim.rules,d))
+		lines.append(CatalogText.veteran_kill_experience_text(sim.rules))
 	lines.append_array(TraitText.spec_lines(sim.rules, d))
-	lines.append("造价 $%d · %s %s秒 · 生命 %d" % [int(d.cost), "现场施工" if d.get("role","")=="outpost" else "生产", str(d.build_time), int(d.hp)])
+	var members: int = int(d.get("squad_size", 1))
+	lines.append(tr("造价 $%d · %s %s秒 · 生命 %d") % [purchase_cost(d), tr("现场施工" if d.get("role","")=="outpost" else "生产"), str(d.get("squad_build_time", float(d.build_time) * members)), int(d.hp)])
+	if members > 1:
+		lines.append(tr("小队编制 %d 人 · 每人 $%d · 每人生命 %d") % [members, int(d.cost), int(d.hp)])
+		lines.append(tr("整队生产与指挥；每名成员独立承受伤害。"))
 	if d.has("vision_radius"):lines.append("视野半径 %.0f格" % float(d.vision_radius))
 	if d.has("armor"):lines.append("护甲 %.0f" % float(d.armor))
 	if d.has("role"):lines.append("建造预览：R每次旋转90°，仅四个直角朝向。")
@@ -1177,7 +1235,7 @@ func spec_tooltip(d: Dictionary) -> String:
 	if not weapon.is_empty():
 		if weapon.get("trajectory", "") == "gravity_bomb": lines.append("主武器 · 短程自由落体炸弹：飞临目标附近后从吊舱向下投放，受重力下落。")
 		lines.append("伤害 %.0f · 射程 %.1f · 间隔 %.2f秒 · 攻击%s" % [float(weapon.damage), float(weapon.range), float(weapon.interval), CatalogText.target_names(weapon.get("targets", weapon.get("target_domains", ["ground"])))])
-		if weapon.has("penetration"): lines.append("穿透 %.0f · 穿透≤护甲时伤害为1/4" % float(weapon.penetration))
+		if weapon.has("penetration"): lines.append("穿透 %.0f · %s" % [float(weapon.penetration), CatalogText.penetration_rule_text(sim.rules, true)])
 		if float(weapon.get("blast", 0.0)) > 0: lines.append(("范围伤害 %.1f格 · 注意友军位置" if bool(weapon.get("friendly_fire",true)) else "范围伤害 %.1f格 · 仅伤害敌军") % float(weapon.blast))
 	var secondary: Dictionary = sim.rules.weapons.get(str(d.get("secondary_weapon", "")), {})
 	if not secondary.is_empty():
@@ -1211,7 +1269,13 @@ func _detail_list(value: Variant) -> String:
 
 func selection_details() -> String:
 	var lines: PackedStringArray = []
-	for id in selection:
+	if sim.selection_ids(selection).size() == 1 and not selection.is_empty() and int(sim.entities[selection[0]].get("squad_capacity", 1)) > 1:
+		for member in sim.squad_members(int(selection[0])):
+			if int(sim.entities[member].team) != 0 and not sim.entity_visible_to(0, int(member)): continue
+			var soldier: Dictionary = sim.entities[member]
+			lines.append(tr("成员 %d · HP %d/%d") % [int(soldier.get("squad_slot", 0)) + 1, int(soldier.hp), int(sim.max_hp(soldier))])
+		return selection_text() + "\n\n" + "\n".join(lines)
+	for id in sim.selection_ids(selection):
 		if sim.entities.has(id):
 			lines.append(spec_tooltip(sim.data_for(sim.entities[id].spec)))
 			if lines.size() >= 4: break
@@ -1252,7 +1316,7 @@ func refresh_groups(groups: Dictionary) -> void:
 	var active_count := 0
 	for number in range(1, 7):
 		var counts: Dictionary = {}
-		for id in groups.get(number, []):
+		for id in sim.selection_ids(groups.get(number, [])):
 			if not sim.entities.has(id) or int(sim.entities[id].team) != 0 or sim.entities[id].kind != "unit" or float(sim.entities[id].hp) <= 0: continue
 			var spec: String = str(sim.entities[id].spec)
 			counts[spec] = int(counts.get(spec, 0)) + 1
@@ -1268,7 +1332,7 @@ func refresh_groups(groups: Dictionary) -> void:
 		for spec: String in counts:
 			var info: Dictionary = sim.data_for(spec)
 			var symbol: String = "✈" if info.get("domain", "ground") == "air" else "⚓" if info.get("domain", "ground") == "naval" else "◇" if info.get("art", "") in ["rifle", "anti", "engineer", "demolition"] else "▰"
-			parts.append("%s %s ×%d" % [symbol, str(info.name), int(counts[spec])])
+			parts.append("%s %s ×%d" % [symbol, production_name(info), int(counts[spec])])
 		var row: Button = group_rows[number]
 		row.visible = not counts.is_empty()
 		row.text = ""
@@ -1389,8 +1453,51 @@ func _process(delta: float) -> void:
 		if voice_timer <= 0.0: voice_label.hide()
 
 
+func _queue_production_fit() -> void:
+	call_deferred("_fit_production")
+
+func _fit_selection() -> void:
+	if selection_panel == null: return
+	selection_panel.offset_top = selection_panel.offset_bottom - selection_panel.get_combined_minimum_size().y
+
+func refresh_selection_portrait() -> void:
+	var command_ids: Array = sim.selection_ids(selection) if sim != null else []
+	selection_header.visible = command_ids.size() == 1
+	if command_ids.size() != 1:
+		selection_portrait_frame.hide()
+		selection_portrait.texture = null
+		selection_portrait.material = null
+		selection_portrait_spec = ""
+		selection_portrait_team = -1
+		_selection_portrait_key = ""
+		return
+	var entity: Dictionary = sim.entities[command_ids[0]]
+	var definition: Dictionary = sim.data_for(str(entity.spec))
+	var path: String = str(definition.get("portrait", definition.get("animations", {}).get("idle", "")))
+	if not ResourceLoader.exists(path): path = str(definition.get("animations", {}).get("idle", ""))
+	selection_portrait_frame.visible = ResourceLoader.exists(path)
+	if not selection_portrait_frame.visible:
+		selection_portrait.texture = null
+		selection_portrait.material = null
+		selection_portrait_spec = ""
+		selection_portrait_team = -1
+		_selection_portrait_key = ""
+		return
+	var team: int = int(entity.team)
+	var owner_color: Color = VolumeModels.player_color(team)
+	var key: String = str(entity.spec) + "/" + path + "/" + str(team) + "/" + owner_color.to_html()
+	if key == _selection_portrait_key: return
+	_selection_portrait_key = key
+	selection_portrait_spec = str(entity.spec)
+	selection_portrait_team = team
+	selection_portrait.texture = load(path)
+	selection_portrait.material = OwnerPortrait.make(path, team)
+	selection_portrait_frame.add_theme_stylebox_override("panel", style(CREAM.lightened(.04), owner_color, 2))
+	selection_portrait_frame.tooltip_text = str(definition.get("formal_name", definition.get("name", "")))
+
 func _fit_production() -> void:
-	if production_panel == null or minimap_panel == null or command_panel == null: return
+	if _fitting_production or production_panel == null or minimap_panel == null or command_panel == null or build_scroll == null: return
+	_fitting_production = true
 	var screen_width: float = get_viewport().get_visible_rect().size.x
 	var left: float = minimap_panel.get_global_rect().end.x + 12.0
 	var right: float = command_panel.get_global_rect().position.x - 12.0
@@ -1400,3 +1507,17 @@ func _fit_production() -> void:
 	production_panel.offset_right = center - screen_width * .5 + width * .5
 	for category: String in category_buttons:
 		category_buttons[category].size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var panel_margins: Vector2 = production_panel.get_theme_stylebox("panel").get_minimum_size()
+	var cards: Vector2 = list_box.get_combined_minimum_size()
+	var horizontal_overflow: bool = cards.x > width - panel_margins.x + .5
+	var scrollbar_height: float = build_scroll.get_h_scroll_bar().get_combined_minimum_size().y if horizontal_overflow else 0.0
+	build_scroll.custom_minimum_size.y = cards.y + scrollbar_height
+	var height: float = panel_margins.y
+	var visible_rows: int = 0
+	for child: Control in production_column.get_children():
+		if not child.visible: continue
+		height += build_scroll.custom_minimum_size.y if child == build_scroll else child.get_combined_minimum_size().y
+		visible_rows += 1
+	height += maxi(0, visible_rows - 1) * production_column.get_theme_constant("separation")
+	production_panel.offset_top = production_panel.offset_bottom - ceilf(height)
+	_fitting_production = false

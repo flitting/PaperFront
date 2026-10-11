@@ -121,7 +121,7 @@ func _draw() -> void:
 	if sim == null: return
 	_refresh_map_rect()
 	var font: Font = hud.theme_paper.default_font
-	draw_string(font, Vector2(1, 14), "战场", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, PaperHUD.INK)
+	draw_string(font, Vector2(1, 14), tr("战场"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, PaperHUD.INK)
 	var key := str(sim.map.seed) + str(sim.map.mode) + str(sim.map.get("profile", {}).get("players", 2))
 	if texture == null or key != map_key:
 		map_key = key

@@ -1,0 +1,1000 @@
+{
+  "seed733_default_alpha_review.json": {
+    "winner": "alpha",
+    "duration": 1065.2333333330218,
+    "phase_counts": {
+      "assemble": 254,
+      "defend": 7,
+      "advance": 271
+    },
+    "funds_earned": 37019.16666666636,
+    "enemy_funds_earned": 19674.999999999844,
+    "units_produced_by_spec": {
+      "kestrel_anti": 26,
+      "kestrel_artillery": 2,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 15,
+      "kestrel_harvester": 4,
+      "kestrel_heavy_tank": 1,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 3,
+      "kestrel_scout": 4,
+      "kestrel_tank": 17
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 14,
+      "kestrel_gunner": 8,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 3,
+      "kestrel_scout": 4,
+      "kestrel_tank": 8
+    },
+    "units_produced": 80.0,
+    "units_lost": 39.0,
+    "units_killed": 49.0,
+    "first_advance": "alpha_v2_cohesive_infantry phase=advance fighters=9 inf=7 vehicles=2 gathered=7 median=17.7 home_threat=0 money=660 power_ready=true orders=9",
+    "first_advance_time": 316.00000000003575,
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 26,
+          "source_team": 1,
+          "weapon": "kestrel_scout"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 16,
+        "kind": "death",
+        "position": [
+          52.245758056640625,
+          96.18350982666016
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 240.39999999998892
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 23,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 27,
+        "kind": "death",
+        "position": [
+          52.4061393737793,
+          97.71284484863281
+        ],
+        "spec": "kestrel_scout",
+        "team": 0,
+        "time": 254.19999999998814
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 29,
+        "kind": "death",
+        "position": [
+          51.23196792602539,
+          94.95215606689453
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 255.69999999998805
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          50.84794235229492,
+          96.07652282714844
+        ],
+        "spec": "kestrel_gunner",
+        "team": 0,
+        "time": 258.49999999999
+      }
+    ],
+    "low_power_seconds": 0.0,
+    "peak_infantry": 24.0,
+    "first_builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        169.5,
+        "kestrel_power"
+      ],
+      [
+        225.5,
+        "kestrel_refinery"
+      ],
+      [
+        495.5,
+        "kestrel_airfield"
+      ],
+      [
+        583.5,
+        "kestrel_airfield"
+      ],
+      [
+        617.5,
+        "kestrel_power"
+      ],
+      [
+        755.5,
+        "kestrel_tower"
+      ],
+      [
+        843.5,
+        "kestrel_tech"
+      ],
+      [
+        891.5,
+        "kestrel_factory"
+      ]
+    ],
+    "explicit_commands": 761,
+    "failed_commands": 0,
+    "samples": {
+      "120": {
+        "money": 125.99999999999136,
+        "earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "army": 1994.0,
+        "enemy_army": 1824.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 1,
+        "enemy_harvesters": 1,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=5 inf=4 vehicles=1 gathered=5 median=18.6 home_threat=0 money=126 power_ready=false orders=0"
+      },
+      "180": {
+        "money": 510.99999999998266,
+        "earned": 1999.9999999999825,
+        "enemy_earned": 1999.9999999999825,
+        "army": 2759.0,
+        "enemy_army": 2589.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 2,
+        "enemy_harvesters": 2,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=18.8 home_threat=0 money=511 power_ready=true orders=1"
+      },
+      "240": {
+        "money": 324.99999999996953,
+        "earned": 3499.999999999969,
+        "enemy_earned": 3499.999999999969,
+        "army": 3625.0,
+        "enemy_army": 3879.0,
+        "infantry": 7,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=7 inf=5 vehicles=2 gathered=7 median=19.1 home_threat=171 money=495 power_ready=true orders=0"
+      },
+      "300": {
+        "money": 16.166666666622405,
+        "earned": 5339.1666666666215,
+        "enemy_earned": 5499.999999999951,
+        "army": 3492.0,
+        "enemy_army": 3752.0,
+        "infantry": 7,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 6.0,
+        "enemy_lost": 6.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=7 inf=6 vehicles=1 gathered=4 median=18.3 home_threat=0 money=16 power_ready=true orders=0"
+      },
+      "420": {
+        "money": 207.16666666659216,
+        "earned": 8839.166666666591,
+        "enemy_earned": 8967.49999999992,
+        "army": 4016.0,
+        "enemy_army": 3930.0,
+        "infantry": 7,
+        "enemy_infantry": 5,
+        "harvesters": 4,
+        "enemy_harvesters": 3,
+        "lost": 18.0,
+        "enemy_lost": 16.0,
+        "reason": "alpha_v2_cohesive_infantry phase=defend fighters=7 inf=6 vehicles=1 gathered=6 median=17.3 home_threat=1239 money=207 power_ready=true orders=0"
+      },
+      "600": {
+        "money": 16.166666666536003,
+        "earned": 15519.166666666544,
+        "enemy_earned": 14674.99999999988,
+        "army": 5429.0,
+        "enemy_army": 2084.0,
+        "infantry": 3,
+        "enemy_infantry": 3,
+        "harvesters": 4,
+        "enemy_harvesters": 3,
+        "lost": 31.0,
+        "enemy_lost": 35.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=4 inf=1 vehicles=3 gathered=4 median=20.0 home_threat=134 money=16 power_ready=true orders=0"
+      },
+      "840": {
+        "money": 487.1666666664453,
+        "earned": 26019.166666666468,
+        "enemy_earned": 19674.999999999844,
+        "army": 8660.0,
+        "enemy_army": 1020.0,
+        "infantry": 17,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 2,
+        "lost": 39.0,
+        "enemy_lost": 49.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=19 inf=16 vehicles=3 gathered=2 median=126.8 home_threat=0 money=487 power_ready=true orders=2"
+      },
+      "1000": {
+        "money": 361.1666666663805,
+        "earned": 33519.16666666641,
+        "enemy_earned": 19674.999999999844,
+        "army": 15896.0,
+        "enemy_army": 1020.0,
+        "infantry": 22,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 2,
+        "lost": 39.0,
+        "enemy_lost": 49.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=31 inf=21 vehicles=10 gathered=2 median=126.8 home_threat=0 money=361 power_ready=true orders=4"
+      }
+    }
+  },
+  "seed733_swap_alpha_review.json": {
+    "winner": "alpha",
+    "duration": 449.8333333334756,
+    "phase_counts": {
+      "assemble": 140,
+      "advance": 84
+    },
+    "funds_earned": 11499.999999999902,
+    "enemy_funds_earned": 7254.166666666605,
+    "units_produced_by_spec": {
+      "kestrel_anti": 9,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 5,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 5
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 1,
+      "kestrel_gunner": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 2
+    },
+    "units_produced": 30.0,
+    "units_lost": 8.0,
+    "units_killed": 22.0,
+    "first_advance": "alpha_v2_cohesive_infantry phase=advance fighters=9 inf=7 vehicles=2 gathered=8 median=18.9 home_threat=0 money=87 power_ready=true orders=9",
+    "first_advance_time": 282.0000000000087,
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 26,
+          "source_team": 0,
+          "weapon": "kestrel_scout"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          139.32919311523438,
+          96.10411071777344
+        ],
+        "spec": "kestrel_gunner",
+        "team": 1,
+        "time": 236.96666666665578
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 23,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 27,
+        "kind": "death",
+        "position": [
+          133.5857696533203,
+          94.7958755493164
+        ],
+        "spec": "kestrel_scout",
+        "team": 1,
+        "time": 248.2333333333218
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 32,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          91.41062927246094,
+          96.00105285644531
+        ],
+        "spec": "kestrel_tank",
+        "team": 1,
+        "time": 306.7666666666951
+      },
+      {
+        "cause": {
+          "explosive": false,
+          "source": 37,
+          "source_team": 0,
+          "weapon": "kestrel_gunner"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 11,
+        "kind": "death",
+        "position": [
+          89.45134735107422,
+          96.91535186767578
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 307.53333333336235
+      }
+    ],
+    "low_power_seconds": 0.0,
+    "peak_infantry": 14.0,
+    "first_builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        169.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        429.5,
+        "kestrel_tower"
+      ]
+    ],
+    "explicit_commands": 265,
+    "failed_commands": 0,
+    "samples": {
+      "120": {
+        "money": 125.99999999999136,
+        "earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "army": 1994.0,
+        "enemy_army": 1824.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 1,
+        "enemy_harvesters": 1,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=5 inf=4 vehicles=1 gathered=5 median=19.6 home_threat=0 money=126 power_ready=false orders=0"
+      },
+      "180": {
+        "money": 510.99999999998266,
+        "earned": 1999.9999999999825,
+        "enemy_earned": 1999.9999999999825,
+        "army": 2759.0,
+        "enemy_army": 2589.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 2,
+        "enemy_harvesters": 2,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=20.3 home_threat=0 money=511 power_ready=true orders=0"
+      },
+      "240": {
+        "money": 324.99999999996953,
+        "earned": 3499.999999999969,
+        "enemy_earned": 3999.9999999999645,
+        "army": 3455.0,
+        "enemy_army": 3624.0,
+        "infantry": 6,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 1.0,
+        "enemy_lost": 1.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=19.3 home_threat=779 money=495 power_ready=true orders=5"
+      },
+      "300": {
+        "money": 86.99999999995657,
+        "earned": 4999.999999999955,
+        "enemy_earned": 5499.999999999951,
+        "army": 5108.0,
+        "enemy_army": 4532.0,
+        "infantry": 8,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 2.0,
+        "enemy_lost": 5.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=10 inf=7 vehicles=3 gathered=0 median=55.9 home_threat=0 money=87 power_ready=true orders=2"
+      },
+      "420": {
+        "money": 831.999999999909,
+        "earned": 10499.999999999909,
+        "enemy_earned": 7254.166666666605,
+        "army": 7007.0,
+        "enemy_army": 0.0,
+        "infantry": 13,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 0,
+        "lost": 8.0,
+        "enemy_lost": 22.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=16 inf=12 vehicles=4 gathered=0 median=128.0 home_threat=0 money=832 power_ready=true orders=1"
+      }
+    }
+  },
+  "seed734_default_alpha_review.json": {
+    "winner": "alpha",
+    "duration": 1065.2333333330218,
+    "phase_counts": {
+      "assemble": 254,
+      "defend": 7,
+      "advance": 271
+    },
+    "funds_earned": 37019.16666666636,
+    "enemy_funds_earned": 19674.999999999844,
+    "units_produced_by_spec": {
+      "kestrel_anti": 26,
+      "kestrel_artillery": 2,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 15,
+      "kestrel_harvester": 4,
+      "kestrel_heavy_tank": 1,
+      "kestrel_helicopter": 1,
+      "kestrel_marksman": 6,
+      "kestrel_rifle": 3,
+      "kestrel_scout": 4,
+      "kestrel_tank": 17
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 14,
+      "kestrel_gunner": 8,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 3,
+      "kestrel_scout": 4,
+      "kestrel_tank": 8
+    },
+    "units_produced": 80.0,
+    "units_lost": 39.0,
+    "units_killed": 49.0,
+    "first_advance": "alpha_v2_cohesive_infantry phase=advance fighters=9 inf=7 vehicles=2 gathered=7 median=17.7 home_threat=0 money=660 power_ready=true orders=9",
+    "first_advance_time": 316.00000000003575,
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 26,
+          "source_team": 1,
+          "weapon": "kestrel_scout"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 16,
+        "kind": "death",
+        "position": [
+          52.245758056640625,
+          96.18350982666016
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 240.39999999998892
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 23,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 27,
+        "kind": "death",
+        "position": [
+          52.4061393737793,
+          97.71284484863281
+        ],
+        "spec": "kestrel_scout",
+        "team": 0,
+        "time": 254.19999999998814
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 29,
+        "kind": "death",
+        "position": [
+          51.23196792602539,
+          94.95215606689453
+        ],
+        "spec": "kestrel_anti",
+        "team": 0,
+        "time": 255.69999999998805
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 15,
+          "source_team": 1,
+          "weapon": "kestrel_anti"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          50.84794235229492,
+          96.07652282714844
+        ],
+        "spec": "kestrel_gunner",
+        "team": 0,
+        "time": 258.49999999999
+      }
+    ],
+    "low_power_seconds": 0.0,
+    "peak_infantry": 24.0,
+    "first_builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        169.5,
+        "kestrel_power"
+      ],
+      [
+        225.5,
+        "kestrel_refinery"
+      ],
+      [
+        495.5,
+        "kestrel_airfield"
+      ],
+      [
+        583.5,
+        "kestrel_airfield"
+      ],
+      [
+        617.5,
+        "kestrel_power"
+      ],
+      [
+        755.5,
+        "kestrel_tower"
+      ],
+      [
+        843.5,
+        "kestrel_tech"
+      ],
+      [
+        891.5,
+        "kestrel_factory"
+      ]
+    ],
+    "explicit_commands": 761,
+    "failed_commands": 0,
+    "samples": {
+      "120": {
+        "money": 125.99999999999136,
+        "earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "army": 1994.0,
+        "enemy_army": 1824.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 1,
+        "enemy_harvesters": 1,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=5 inf=4 vehicles=1 gathered=5 median=18.6 home_threat=0 money=126 power_ready=false orders=0"
+      },
+      "180": {
+        "money": 510.99999999998266,
+        "earned": 1999.9999999999825,
+        "enemy_earned": 1999.9999999999825,
+        "army": 2759.0,
+        "enemy_army": 2589.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 2,
+        "enemy_harvesters": 2,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=18.8 home_threat=0 money=511 power_ready=true orders=1"
+      },
+      "240": {
+        "money": 324.99999999996953,
+        "earned": 3499.999999999969,
+        "enemy_earned": 3499.999999999969,
+        "army": 3625.0,
+        "enemy_army": 3879.0,
+        "infantry": 7,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=7 inf=5 vehicles=2 gathered=7 median=19.1 home_threat=171 money=495 power_ready=true orders=0"
+      },
+      "300": {
+        "money": 16.166666666622405,
+        "earned": 5339.1666666666215,
+        "enemy_earned": 5499.999999999951,
+        "army": 3492.0,
+        "enemy_army": 3752.0,
+        "infantry": 7,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 6.0,
+        "enemy_lost": 6.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=7 inf=6 vehicles=1 gathered=4 median=18.3 home_threat=0 money=16 power_ready=true orders=0"
+      },
+      "420": {
+        "money": 207.16666666659216,
+        "earned": 8839.166666666591,
+        "enemy_earned": 8967.49999999992,
+        "army": 4016.0,
+        "enemy_army": 3930.0,
+        "infantry": 7,
+        "enemy_infantry": 5,
+        "harvesters": 4,
+        "enemy_harvesters": 3,
+        "lost": 18.0,
+        "enemy_lost": 16.0,
+        "reason": "alpha_v2_cohesive_infantry phase=defend fighters=7 inf=6 vehicles=1 gathered=6 median=17.3 home_threat=1239 money=207 power_ready=true orders=0"
+      },
+      "600": {
+        "money": 16.166666666536003,
+        "earned": 15519.166666666544,
+        "enemy_earned": 14674.99999999988,
+        "army": 5429.0,
+        "enemy_army": 2084.0,
+        "infantry": 3,
+        "enemy_infantry": 3,
+        "harvesters": 4,
+        "enemy_harvesters": 3,
+        "lost": 31.0,
+        "enemy_lost": 35.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=4 inf=1 vehicles=3 gathered=4 median=20.0 home_threat=134 money=16 power_ready=true orders=0"
+      },
+      "840": {
+        "money": 487.1666666664453,
+        "earned": 26019.166666666468,
+        "enemy_earned": 19674.999999999844,
+        "army": 8660.0,
+        "enemy_army": 1020.0,
+        "infantry": 17,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 2,
+        "lost": 39.0,
+        "enemy_lost": 49.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=19 inf=16 vehicles=3 gathered=2 median=126.8 home_threat=0 money=487 power_ready=true orders=2"
+      },
+      "1000": {
+        "money": 361.1666666663805,
+        "earned": 33519.16666666641,
+        "enemy_earned": 19674.999999999844,
+        "army": 15896.0,
+        "enemy_army": 1020.0,
+        "infantry": 22,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 2,
+        "lost": 39.0,
+        "enemy_lost": 49.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=31 inf=21 vehicles=10 gathered=2 median=126.8 home_threat=0 money=361 power_ready=true orders=4"
+      }
+    }
+  },
+  "seed734_swap_alpha_review.json": {
+    "winner": "alpha",
+    "duration": 449.8333333334756,
+    "phase_counts": {
+      "assemble": 140,
+      "advance": 84
+    },
+    "funds_earned": 11499.999999999902,
+    "enemy_funds_earned": 7254.166666666605,
+    "units_produced_by_spec": {
+      "kestrel_anti": 9,
+      "kestrel_engineer": 1,
+      "kestrel_gunner": 5,
+      "kestrel_harvester": 4,
+      "kestrel_marksman": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 2,
+      "kestrel_tank": 5
+    },
+    "units_lost_by_spec": {
+      "kestrel_anti": 1,
+      "kestrel_gunner": 2,
+      "kestrel_rifle": 2,
+      "kestrel_scout": 1,
+      "kestrel_tank": 2
+    },
+    "units_produced": 30.0,
+    "units_lost": 8.0,
+    "units_killed": 22.0,
+    "first_advance": "alpha_v2_cohesive_infantry phase=advance fighters=9 inf=7 vehicles=2 gathered=8 median=18.9 home_threat=0 money=87 power_ready=true orders=9",
+    "first_advance_time": 282.0000000000087,
+    "first_four_deaths": [
+      {
+        "cause": {
+          "explosive": false,
+          "source": 26,
+          "source_team": 0,
+          "weapon": "kestrel_scout"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 21,
+        "kind": "death",
+        "position": [
+          139.32919311523438,
+          96.10411071777344
+        ],
+        "spec": "kestrel_gunner",
+        "team": 1,
+        "time": 236.96666666665578
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 23,
+          "source_team": 1,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 27,
+        "kind": "death",
+        "position": [
+          133.5857696533203,
+          94.7958755493164
+        ],
+        "spec": "kestrel_scout",
+        "team": 1,
+        "time": 248.2333333333218
+      },
+      {
+        "cause": {
+          "explosive": true,
+          "source": 32,
+          "source_team": 0,
+          "weapon": "kestrel_tank"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 23,
+        "kind": "death",
+        "position": [
+          91.41062927246094,
+          96.00105285644531
+        ],
+        "spec": "kestrel_tank",
+        "team": 1,
+        "time": 306.7666666666951
+      },
+      {
+        "cause": {
+          "explosive": false,
+          "source": 37,
+          "source_team": 0,
+          "weapon": "kestrel_gunner"
+        },
+        "destroyed": true,
+        "entity_kind": "unit",
+        "id": 11,
+        "kind": "death",
+        "position": [
+          89.45134735107422,
+          96.91535186767578
+        ],
+        "spec": "kestrel_rifle",
+        "team": 1,
+        "time": 307.53333333336235
+      }
+    ],
+    "low_power_seconds": 0.0,
+    "peak_infantry": 14.0,
+    "first_builds": [
+      [
+        15.5,
+        "kestrel_power"
+      ],
+      [
+        37.5,
+        "kestrel_refinery"
+      ],
+      [
+        49.5,
+        "kestrel_barracks"
+      ],
+      [
+        75.5,
+        "kestrel_factory"
+      ],
+      [
+        169.5,
+        "kestrel_power"
+      ],
+      [
+        227.5,
+        "kestrel_refinery"
+      ],
+      [
+        429.5,
+        "kestrel_tower"
+      ]
+    ],
+    "explicit_commands": 265,
+    "failed_commands": 0,
+    "samples": {
+      "120": {
+        "money": 125.99999999999136,
+        "earned": 999.9999999999912,
+        "enemy_earned": 999.9999999999912,
+        "army": 1994.0,
+        "enemy_army": 1824.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 1,
+        "enemy_harvesters": 1,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=5 inf=4 vehicles=1 gathered=5 median=19.6 home_threat=0 money=126 power_ready=false orders=0"
+      },
+      "180": {
+        "money": 510.99999999998266,
+        "earned": 1999.9999999999825,
+        "enemy_earned": 1999.9999999999825,
+        "army": 2759.0,
+        "enemy_army": 2589.0,
+        "infantry": 5,
+        "enemy_infantry": 4,
+        "harvesters": 2,
+        "enemy_harvesters": 2,
+        "lost": 0,
+        "enemy_lost": 0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=20.3 home_threat=0 money=511 power_ready=true orders=0"
+      },
+      "240": {
+        "money": 324.99999999996953,
+        "earned": 3499.999999999969,
+        "enemy_earned": 3999.9999999999645,
+        "army": 3455.0,
+        "enemy_army": 3624.0,
+        "infantry": 6,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 1.0,
+        "enemy_lost": 1.0,
+        "reason": "alpha_v2_cohesive_infantry phase=assemble fighters=6 inf=4 vehicles=2 gathered=6 median=19.3 home_threat=779 money=495 power_ready=true orders=5"
+      },
+      "300": {
+        "money": 86.99999999995657,
+        "earned": 4999.999999999955,
+        "enemy_earned": 5499.999999999951,
+        "army": 5108.0,
+        "enemy_army": 4532.0,
+        "infantry": 8,
+        "enemy_infantry": 4,
+        "harvesters": 3,
+        "enemy_harvesters": 3,
+        "lost": 2.0,
+        "enemy_lost": 5.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=10 inf=7 vehicles=3 gathered=0 median=55.9 home_threat=0 money=87 power_ready=true orders=2"
+      },
+      "420": {
+        "money": 831.999999999909,
+        "earned": 10499.999999999909,
+        "enemy_earned": 7254.166666666605,
+        "army": 7007.0,
+        "enemy_army": 0.0,
+        "infantry": 13,
+        "enemy_infantry": 0,
+        "harvesters": 4,
+        "enemy_harvesters": 0,
+        "lost": 8.0,
+        "enemy_lost": 22.0,
+        "reason": "alpha_v2_cohesive_infantry phase=advance fighters=16 inf=12 vehicles=4 gathered=0 median=128.0 home_threat=0 money=832 power_ready=true orders=1"
+      }
+    }
+  }
+}

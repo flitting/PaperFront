@@ -42,11 +42,19 @@ func run() -> void:
 		sim._apply_damage()
 		sim._damage.clear()
 	var observed: Dictionary = sim.match_statistics()
-	check(observed.teams[0].funds_spent == float(rules.units.kestrel_rifle.cost) and observed.teams[0].money_remaining == float(rules.economy.initial_money) - float(rules.units.kestrel_rifle.cost), "economic curve records the actual prepaid unit cost and remaining spendable funds")
+	check(observed.teams[0].funds_spent == sim.production_cost("kestrel_rifle") and observed.teams[0].money_remaining == float(rules.economy.initial_money) - sim.production_cost("kestrel_rifle"), "economic curve records the actual prepaid squad cost and remaining spendable funds")
 	check(observed.teams[0].infantry_lost == 1 and observed.teams[1].infantry_killed == 1 and observed.teams[0].units_lost_by_spec.get("kestrel_rifle", 0) == 1, "authoritative casualty hook records detailed losses and credit")
 	check(observed.teams[0].units_lost_value == float(rules.units.kestrel_rifle.cost) and observed.teams[1].enemy_units_destroyed_value == float(rules.units.kestrel_rifle.cost), "nominal destroyed values are explicit and capped to one casualty")
 	check(observed.teams[0].damage_received == float(rules.units.kestrel_rifle.hp) and observed.teams[1].damage_dealt == float(rules.units.kestrel_rifle.hp), "received and dealt damage both exclude overkill")
 	check(observed.history.back().teams[0].infantry_total == 0 and observed.history.back().teams[1].infantry_total == 1, "live infantry curve counts current surviving units on each side")
+	var mining_probe: int=sim.debug_spawn(0,"kestrel_harvester",Vector2(13,40))
+	sim.entities[mining_probe].state="harvest"
+	check(sim.match_statistics().teams[0].idle_harvesters==0,"autonomous miner with no explicit commands is not mislabeled idle while harvesting")
+	sim.entities[mining_probe].state="waiting"
+	check(sim.match_statistics().teams[0].waiting_harvesters==1 and sim.match_statistics().teams[0].idle_harvesters==0,"blocked or queued miners are reported separately from idle miners")
+	sim.entities[mining_probe].state="idle"
+	check(sim.match_statistics().teams[0].idle_harvesters==1,"truly idle miner is still observable")
+	sim._kill_entity(mining_probe,false)
 	var history_size: int = sim.statistics.history.size()
 	var wallet: Array = sim.money.duplicate()
 	var positions: Dictionary = {}
