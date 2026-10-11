@@ -1,100 +1,1175 @@
 {
-  "title": "Paper Front — in-engine showcase",
+  "title": "Paper Front - actual gameplay showcase",
   "language": "English",
-  "duration_seconds": 28,
-  "video": "1280×720, H.264, 30 fps",
-  "audio": "AAC",
-  "visual_origin": "Animated montage of actual in-engine screenshots. Camera motion is added in the edit. Faction, fleet and infantry details use authored deployments with current production PaperWorld and rules. No AI imagery; not a recorded player match.",
+  "duration_seconds": 29.0,
+  "camera_locked": true,
+  "video": "1280x720, H.264, 30 fps",
+  "audio": "AAC, 48 kHz stereo",
+  "visual_origin": "Controlled current in-engine dynamic gameplay with real construction/combat commands and simulation progression, formal unedited maps and the complete English HUD. Intro and credits use still frames from this footage.",
+  "editing": "Only fixed scale and pad. Full 16:9 viewport retained; no frame-dependent reframing. Captions occupy an independent 36px top strip. Map views use hard cuts.",
   "scenes": [
     {
-      "entities": 26,
-      "fps": 24,
-      "frames": 1,
-      "map_mode": "forest",
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/river_structure/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "map",
+      "shot_id": "river_structure",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          955,
+          353,
+          100,
+          20
+        ],
+        [
+          1190,
+          300,
+          80,
+          100
+        ],
+        [
+          1030,
+          120,
+          120,
+          30
+        ]
+      ],
+      "native_size": [
+        1600,
+        900
+      ],
       "map_size": 320,
-      "resolution": [
-        1920,
-        1080
-      ],
-      "shot": "battlefield",
-      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+      "map_mode": "forest",
+      "camera_fixed": true,
+      "simulation": {
+        "time_start": 68.0999999999987,
+        "time_end": 70.5999999999986,
+        "commands": [
+          {
+            "action": "build",
+            "funds_after": 3640.0,
+            "funds_before": 4000.0,
+            "phase": "preroll",
+            "sim_time": 0.0,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "build",
+            "funds_after": 3280.0,
+            "funds_before": 3640.0,
+            "phase": "preroll",
+            "sim_time": 13.2666666666666,
+            "spec": "kestrel_barracks"
+          },
+          {
+            "action": "build",
+            "funds_after": 2120.0,
+            "funds_before": 3280.0,
+            "phase": "preroll",
+            "sim_time": 26.5333333333338,
+            "spec": "kestrel_refinery"
+          },
+          {
+            "action": "select_headquarters",
+            "frame": 0,
+            "id": 1,
+            "seconds": 0.0,
+            "shot": "interface",
+            "sim_time": 73.0999999999984
+          },
+          {
+            "action": "normal_build_handler",
+            "frame": 18,
+            "funds_after": 1210.0,
+            "funds_before": 1570.0,
+            "seconds": 0.6,
+            "shot": "interface",
+            "sim_time": 73.6999999999984,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "select_barracks",
+            "frame": 45,
+            "id": 4,
+            "seconds": 1.5,
+            "shot": "interface",
+            "sim_time": 74.5999999999983
+          },
+          {
+            "action": "normal_produce_handler",
+            "frame": 54,
+            "funds_after": 660.0,
+            "funds_before": 1210.0,
+            "members": 5,
+            "order_time": 18.0,
+            "seconds": 1.8,
+            "shot": "interface",
+            "sim_time": 74.8999999999983,
+            "spec": "kestrel_rifle"
+          },
+          {
+            "action": "normal_squad_move",
+            "destination": [
+              66.0,
+              76.0
+            ],
+            "frame": 81,
+            "ids": [
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "seconds": 2.7,
+            "shot": "interface",
+            "sim_time": 75.7999999999983
+          }
+        ],
+        "map_geometry_sha256": "99c449ffb7d9d43e24dbf28f6beecb75286644844f31d4ae2eeee3b5a9d83882",
+        "geometry_unchanged": true,
+        "camera_start": {
+          "basis": [
+            0.9800665974617,
+            0.0,
+            -0.198669359087944,
+            -0.140480443835258,
+            0.707106828689575,
+            -0.693011701107025,
+            0.14048045873642,
+            0.70710676908493,
+            0.69301176071167
+          ],
+          "distance": 180.0,
+          "focus": [
+            139.0,
+            166.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 45.0,
+          "position": [
+            164.286483764648,
+            127.279220581055,
+            290.742126464844
+          ],
+          "yaw": 0.2
+        },
+        "camera_end": {
+          "basis": [
+            0.9800665974617,
+            0.0,
+            -0.198669359087944,
+            -0.140480443835258,
+            0.707106828689575,
+            -0.693011701107025,
+            0.14048045873642,
+            0.70710676908493,
+            0.69301176071167
+          ],
+          "distance": 180.0,
+          "focus": [
+            139.0,
+            166.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 45.0,
+          "position": [
+            164.286483764648,
+            127.279220581055,
+            290.742126464844
+          ],
+          "yaw": 0.2
+        }
+      },
+      "id": "river_structure",
+      "camera_locked": true,
+      "evidence_sha256": "3394b666a9cb23776daec7484fa7675ad91d1527306431a15743f5c749cb4664"
     },
     {
-      "entities": 32,
-      "fps": 24,
-      "frames": 1,
-      "map_mode": "symmetric",
-      "map_size": 192,
-      "resolution": [
-        1920,
-        1080
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/ridge_structure/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "map",
+      "shot_id": "ridge_structure",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          880,
+          360,
+          130,
+          70
+        ],
+        [
+          740,
+          440,
+          60,
+          50
+        ],
+        [
+          290,
+          445,
+          90,
+          100
+        ]
       ],
-      "shot": "factions",
-      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+      "native_size": [
+        1600,
+        900
+      ],
+      "map_size": 320,
+      "map_mode": "forest",
+      "camera_fixed": true,
+      "simulation": {
+        "time_start": 70.5999999999986,
+        "time_end": 73.0999999999984,
+        "commands": [
+          {
+            "action": "build",
+            "funds_after": 3640.0,
+            "funds_before": 4000.0,
+            "phase": "preroll",
+            "sim_time": 0.0,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "build",
+            "funds_after": 3280.0,
+            "funds_before": 3640.0,
+            "phase": "preroll",
+            "sim_time": 13.2666666666666,
+            "spec": "kestrel_barracks"
+          },
+          {
+            "action": "build",
+            "funds_after": 2120.0,
+            "funds_before": 3280.0,
+            "phase": "preroll",
+            "sim_time": 26.5333333333338,
+            "spec": "kestrel_refinery"
+          },
+          {
+            "action": "select_headquarters",
+            "frame": 0,
+            "id": 1,
+            "seconds": 0.0,
+            "shot": "interface",
+            "sim_time": 73.0999999999984
+          },
+          {
+            "action": "normal_build_handler",
+            "frame": 18,
+            "funds_after": 1210.0,
+            "funds_before": 1570.0,
+            "seconds": 0.6,
+            "shot": "interface",
+            "sim_time": 73.6999999999984,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "select_barracks",
+            "frame": 45,
+            "id": 4,
+            "seconds": 1.5,
+            "shot": "interface",
+            "sim_time": 74.5999999999983
+          },
+          {
+            "action": "normal_produce_handler",
+            "frame": 54,
+            "funds_after": 660.0,
+            "funds_before": 1210.0,
+            "members": 5,
+            "order_time": 18.0,
+            "seconds": 1.8,
+            "shot": "interface",
+            "sim_time": 74.8999999999983,
+            "spec": "kestrel_rifle"
+          },
+          {
+            "action": "normal_squad_move",
+            "destination": [
+              66.0,
+              76.0
+            ],
+            "frame": 81,
+            "ids": [
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "seconds": 2.7,
+            "shot": "interface",
+            "sim_time": 75.7999999999983
+          }
+        ],
+        "map_geometry_sha256": "99c449ffb7d9d43e24dbf28f6beecb75286644844f31d4ae2eeee3b5a9d83882",
+        "geometry_unchanged": true,
+        "camera_start": {
+          "basis": [
+            0.921060979366302,
+            0.0,
+            0.389418333768845,
+            0.239749893546104,
+            0.788010776042938,
+            -0.567061841487885,
+            -0.306865811347961,
+            0.61566150188446,
+            0.725805938243866
+          ],
+          "distance": 108.0,
+          "focus": [
+            66.0,
+            42.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 38.0,
+          "position": [
+            32.8584899902344,
+            66.4914398193359,
+            120.387046813965
+          ],
+          "yaw": -0.4
+        },
+        "camera_end": {
+          "basis": [
+            0.921060979366302,
+            0.0,
+            0.389418333768845,
+            0.239749893546104,
+            0.788010776042938,
+            -0.567061841487885,
+            -0.306865811347961,
+            0.61566150188446,
+            0.725805938243866
+          ],
+          "distance": 108.0,
+          "focus": [
+            66.0,
+            42.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 38.0,
+          "position": [
+            32.8584899902344,
+            66.4914398193359,
+            120.387046813965
+          ],
+          "yaw": -0.4
+        }
+      },
+      "id": "ridge_structure",
+      "camera_locked": true,
+      "evidence_sha256": "3394b666a9cb23776daec7484fa7675ad91d1527306431a15743f5c749cb4664"
     },
     {
-      "entities": 6,
-      "fps": 24,
-      "frames": 1,
-      "map_mode": "symmetric",
-      "map_size": 192,
-      "resolution": [
-        1920,
-        1080
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/interface/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "interface",
+      "shot_id": "interface",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          640,
+          340,
+          130,
+          70
+        ],
+        [
+          170,
+          400,
+          140,
+          100
+        ],
+        [
+          1030,
+          360,
+          150,
+          100
+        ]
       ],
-      "shot": "fleet",
-      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+      "native_size": [
+        1600,
+        900
+      ],
+      "map_size": 320,
+      "map_mode": "forest",
+      "camera_fixed": true,
+      "simulation": {
+        "time_start": 73.0999999999984,
+        "time_end": 77.5999999999982,
+        "commands": [
+          {
+            "action": "build",
+            "funds_after": 3640.0,
+            "funds_before": 4000.0,
+            "phase": "preroll",
+            "sim_time": 0.0,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "build",
+            "funds_after": 3280.0,
+            "funds_before": 3640.0,
+            "phase": "preroll",
+            "sim_time": 13.2666666666666,
+            "spec": "kestrel_barracks"
+          },
+          {
+            "action": "build",
+            "funds_after": 2120.0,
+            "funds_before": 3280.0,
+            "phase": "preroll",
+            "sim_time": 26.5333333333338,
+            "spec": "kestrel_refinery"
+          },
+          {
+            "action": "select_headquarters",
+            "frame": 0,
+            "id": 1,
+            "seconds": 0.0,
+            "shot": "interface",
+            "sim_time": 73.0999999999984
+          },
+          {
+            "action": "normal_build_handler",
+            "frame": 18,
+            "funds_after": 1210.0,
+            "funds_before": 1570.0,
+            "seconds": 0.6,
+            "shot": "interface",
+            "sim_time": 73.6999999999984,
+            "spec": "kestrel_power"
+          },
+          {
+            "action": "select_barracks",
+            "frame": 45,
+            "id": 4,
+            "seconds": 1.5,
+            "shot": "interface",
+            "sim_time": 74.5999999999983
+          },
+          {
+            "action": "normal_produce_handler",
+            "frame": 54,
+            "funds_after": 660.0,
+            "funds_before": 1210.0,
+            "members": 5,
+            "order_time": 18.0,
+            "seconds": 1.8,
+            "shot": "interface",
+            "sim_time": 74.8999999999983,
+            "spec": "kestrel_rifle"
+          },
+          {
+            "action": "normal_squad_move",
+            "destination": [
+              66.0,
+              76.0
+            ],
+            "frame": 81,
+            "ids": [
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "seconds": 2.7,
+            "shot": "interface",
+            "sim_time": 75.7999999999983
+          }
+        ],
+        "map_geometry_sha256": "99c449ffb7d9d43e24dbf28f6beecb75286644844f31d4ae2eeee3b5a9d83882",
+        "geometry_unchanged": true,
+        "camera_start": {
+          "basis": [
+            0.983843743801117,
+            0.0,
+            0.179029524326324,
+            0.105230905115604,
+            0.80901700258255,
+            -0.578288793563843,
+            -0.144837930798531,
+            0.587785243988037,
+            0.795946359634399
+          ],
+          "distance": 53.0,
+          "focus": [
+            61.0,
+            66.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 36.0,
+          "position": [
+            53.3235893249512,
+            31.1526184082031,
+            108.185150146484
+          ],
+          "yaw": -0.18
+        },
+        "camera_end": {
+          "basis": [
+            0.983843743801117,
+            0.0,
+            0.179029524326324,
+            0.105230905115604,
+            0.80901700258255,
+            -0.578288793563843,
+            -0.144837930798531,
+            0.587785243988037,
+            0.795946359634399
+          ],
+          "distance": 53.0,
+          "focus": [
+            61.0,
+            66.0
+          ],
+          "fov": 42.0,
+          "h_offset": 0.0,
+          "pitch": 36.0,
+          "position": [
+            53.3235893249512,
+            31.1526184082031,
+            108.185150146484
+          ],
+          "yaw": -0.18
+        }
+      },
+      "id": "interface",
+      "camera_locked": true,
+      "evidence_sha256": "3394b666a9cb23776daec7484fa7675ad91d1527306431a15743f5c749cb4664"
     },
     {
-      "entities": 34,
-      "fps": 24,
-      "frames": 1,
-      "map_mode": "symmetric",
-      "map_size": 192,
-      "resolution": [
-        1920,
-        1080
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/action/construction/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "construction",
+      "evidence_path": "artifacts/trailer_revision_20261011/action/construction_manifest.json",
+      "static_regions": [
+        [
+          520,
+          220,
+          115,
+          75
+        ],
+        [
+          329,
+          372,
+          40,
+          45
+        ],
+        [
+          425,
+          435,
+          90,
+          50
+        ]
       ],
-      "shot": "squads",
-      "simulation": "authored deployments, production rendering, camera and visual animation; no match progression"
+      "native_size": [
+        1280,
+        720
+      ],
+      "map_size": 320,
+      "map_mode": "forest",
+      "camera_fixed": true,
+      "simulation": {
+        "sim_time_start": 0.1,
+        "sim_time_end": 21.0,
+        "simulation_multiplier": 3.0,
+        "initial_money": 12000.0,
+        "final_money": 11400.0,
+        "event_counts": {
+          "build": 1,
+          "deploy": 1,
+          "ready": 1
+        },
+        "orders": [
+          {
+            "builder": 3,
+            "command": "build",
+            "error": "",
+            "spec": "rivet_power",
+            "team": 0
+          },
+          {
+            "command": "place_building",
+            "error": "",
+            "site": [
+              65.5,
+              65.5
+            ],
+            "team": 0
+          },
+          {
+            "command": "select",
+            "frame": 45,
+            "ids": [
+              4
+            ],
+            "purpose": "Show the actual scaffold progress, payment and health in the normal HUD"
+          },
+          {
+            "command": "select",
+            "frame": 165,
+            "ids": [
+              3,
+              4
+            ],
+            "purpose": "Restore the engineer construction cards beside the completed building"
+          }
+        ],
+        "construction_complete_frame": 150,
+        "terrain_edited": false,
+        "sampled_states": [
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291896, 0.06210531, 0, 0.7771459, 0.62932044, -0.07991461, -0.6273077, 0.7746604, 65.37053, 27.060778, 98.01039)",
+            "construction": {
+              "complete": false,
+              "hp": 33.0,
+              "id": 4,
+              "progress": 0.0,
+              "remaining": 15.0,
+              "spent": 0.0
+            },
+            "entities": 4,
+            "frame": 0,
+            "money": 12000.0,
+            "selected_ids": [
+              3,
+              4
+            ],
+            "sim_time": 0.1,
+            "total_hp": 6483.0,
+            "window_size": [
+              1280,
+              720
+            ]
+          },
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291896, 0.06210531, 0, 0.7771459, 0.62932044, -0.07991461, -0.6273077, 0.7746604, 65.37053, 27.060778, 98.01039)",
+            "construction": {
+              "complete": false,
+              "hp": 779.900000000001,
+              "id": 4,
+              "progress": 0.700000000000001,
+              "remaining": 4.49999999999999,
+              "spent": 420.0
+            },
+            "entities": 4,
+            "frame": 105,
+            "money": 11580.0,
+            "selected_ids": [
+              4
+            ],
+            "sim_time": 10.6,
+            "total_hp": 7229.9,
+            "window_size": [
+              1280,
+              720
+            ]
+          },
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291896, 0.06210531, 0, 0.7771459, 0.62932044, -0.07991461, -0.6273077, 0.7746604, 65.37053, 27.060778, 98.01039)",
+            "construction": {
+              "complete": true,
+              "hp": 1100.0,
+              "id": 4,
+              "progress": 1.0,
+              "remaining": 0.0,
+              "spent": 600.0
+            },
+            "entities": 4,
+            "frame": 150,
+            "money": 11400.0,
+            "selected_ids": [
+              4
+            ],
+            "sim_time": 15.1,
+            "total_hp": 7550.0,
+            "window_size": [
+              1280,
+              720
+            ]
+          },
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291896, 0.06210531, 0, 0.7771459, 0.62932044, -0.07991461, -0.6273077, 0.7746604, 65.37053, 27.060778, 98.01039)",
+            "construction": {
+              "complete": true,
+              "hp": 1100.0,
+              "id": 4,
+              "progress": 1.0,
+              "remaining": 0.0,
+              "spent": 600.0
+            },
+            "entities": 4,
+            "frame": 209,
+            "money": 11400.0,
+            "selected_ids": [
+              3,
+              4
+            ],
+            "sim_time": 21.0,
+            "total_hp": 7550.0,
+            "window_size": [
+              1280,
+              720
+            ]
+          }
+        ],
+        "geometry_unchanged": true,
+        "map_geometry_sha256": "99c449ffb7d9d43e24dbf28f6beecb75286644844f31d4ae2eeee3b5a9d83882"
+      },
+      "id": "construction",
+      "camera_locked": true,
+      "evidence_sha256": "c71b1d655789165cf77e0a0a42c4e9767203cf86cc4120c2066f4220a7e661ab"
+    },
+    {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/action/combat/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "combat",
+      "evidence_path": "artifacts/trailer_revision_20261011/action/combat_manifest.json",
+      "static_regions": [
+        [
+          170,
+          203,
+          42,
+          38
+        ],
+        [
+          270,
+          355,
+          70,
+          55
+        ],
+        [
+          855,
+          435,
+          90,
+          50
+        ]
+      ],
+      "native_size": [
+        1280,
+        720
+      ],
+      "map_size": 320,
+      "map_mode": "forest",
+      "camera_fixed": true,
+      "simulation": {
+        "sim_time_start": 0.0333333333333333,
+        "sim_time_end": 7.99999999999998,
+        "simulation_multiplier": 1.0,
+        "initial_money": 12000.0,
+        "final_money": 12000.0,
+        "event_counts": {
+          "death": 13,
+          "fire": 149,
+          "impact": 147,
+          "under_attack": 36
+        },
+        "orders": [
+          {
+            "command": "attack_move",
+            "ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              13
+            ],
+            "target": [
+              88.5,
+              77.5
+            ],
+            "team": 0
+          },
+          {
+            "command": "attack_move",
+            "ids": [
+              18,
+              19,
+              20,
+              21,
+              27
+            ],
+            "target": [
+              72.5,
+              77.5
+            ],
+            "team": 1
+          }
+        ],
+        "construction_complete_frame": -1,
+        "terrain_edited": false,
+        "sampled_states": [
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291974, 0.06210541, 0, 0.7771459, 0.62932044, -0.07991474, -0.62730765, 0.77466035, 83.60527, 31.466019, 118.23302)",
+            "entities": 32,
+            "frame": 0,
+            "money": 12000.0,
+            "selected_ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17
+            ],
+            "sim_time": 0.0333333333333333,
+            "total_hp": 12730.0,
+            "window_size": [
+              1280,
+              720
+            ]
+          },
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291974, 0.06210541, 0, 0.7771459, 0.62932044, -0.07991474, -0.62730765, 0.77466035, 83.60527, 31.466019, 118.23302)",
+            "entities": 25,
+            "frame": 120,
+            "money": 12000.0,
+            "selected_ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              13,
+              14,
+              15,
+              17
+            ],
+            "sim_time": 4.03333333333333,
+            "total_hp": 11300.4935298755,
+            "window_size": [
+              1280,
+              720
+            ]
+          },
+          {
+            "camera_fixed": true,
+            "camera_fov": 42.0,
+            "camera_size": 1.0,
+            "camera_transform": "Transform3D(0.99680173, -0.050291974, 0.06210541, 0, 0.7771459, 0.62932044, -0.07991474, -0.62730765, 0.77466035, 83.60527, 31.466019, 118.23302)",
+            "entities": 19,
+            "frame": 239,
+            "money": 12000.0,
+            "selected_ids": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              13,
+              14,
+              15,
+              17
+            ],
+            "sim_time": 7.99999999999998,
+            "total_hp": 10281.7397900066,
+            "window_size": [
+              1280,
+              720
+            ]
+          }
+        ],
+        "geometry_unchanged": true,
+        "map_geometry_sha256": "99c449ffb7d9d43e24dbf28f6beecb75286644844f31d4ae2eeee3b5a9d83882"
+      },
+      "id": "combat",
+      "camera_locked": true,
+      "evidence_sha256": "d4e0a14d219c3a3aad9eba68991d2fc8cacce99f6c301f0a460bc6a3fa2375a9"
     }
   ],
-  "renderer": "forward_plus",
-  "capture_device": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "segments": [
+    {
+      "source": "river_structure",
+      "duration": 2.5,
+      "caption": "Read rivers, bridges and shorelines",
+      "timeline_start": 2.0
+    },
+    {
+      "source": "ridge_structure",
+      "duration": 2.5,
+      "caption": "Find routes through the ridges",
+      "timeline_start": 4.5
+    },
+    {
+      "source": "construction",
+      "duration": 7.0,
+      "caption": "Build your base - 3x speed",
+      "timeline_start": 7.0
+    },
+    {
+      "source": "combat",
+      "duration": 8.0,
+      "caption": "Command the battle",
+      "timeline_start": 14.0
+    },
+    {
+      "source": "interface",
+      "duration": 3.0,
+      "caption": "Select. Build. Produce. Command.",
+      "timeline_start": 22.0
+    }
+  ],
   "credits": [
     "Thanks to Codex for its contributions",
     "Powered by Godot Engine"
   ],
+  "sound_effects": {
+    "origin": "Selected current nonverbal native sound effects aligned to recorded event frames, mixed quietly below music",
+    "license": "Provider-generated output under OpenRouter / ByteDance Seed Audio service terms; not CC0",
+    "manifest": "assets/audio/revision_v8/sfx/manifest.json",
+    "events": [
+      {
+        "timeline_seconds": 14.666666666666666,
+        "source": "combat",
+        "source_frame": 20,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 14.733333333333333,
+        "source": "combat",
+        "source_frame": 22,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 15.3,
+        "source": "combat",
+        "source_frame": 39,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 15.966666666666667,
+        "source": "combat",
+        "source_frame": 59,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 16.633333333333333,
+        "source": "combat",
+        "source_frame": 79,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 16.666666666666668,
+        "source": "combat",
+        "source_frame": 80,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 17.266666666666666,
+        "source": "combat",
+        "source_frame": 98,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 17.833333333333332,
+        "source": "combat",
+        "source_frame": 115,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 18.266666666666666,
+        "source": "combat",
+        "source_frame": 128,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 18.5,
+        "source": "combat",
+        "source_frame": 135,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 18.866666666666667,
+        "source": "combat",
+        "source_frame": 146,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 19.066666666666666,
+        "source": "combat",
+        "source_frame": 152,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 19.833333333333332,
+        "source": "combat",
+        "source_frame": 175,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 20.5,
+        "source": "combat",
+        "source_frame": 195,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 20.733333333333334,
+        "source": "combat",
+        "source_frame": 202,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 21.066666666666666,
+        "source": "combat",
+        "source_frame": 212,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 21.433333333333334,
+        "source": "combat",
+        "source_frame": 223,
+        "kind": "fire",
+        "file": "assets/audio/revision_v8/sfx/fire_cannon_1.wav",
+        "sha256": "785af67354c9f120efab7827f866540b6d6b6373a25fb1d6fe2eb011f0ebe056",
+        "peak_gain_target_dbfs": -21.4
+      },
+      {
+        "timeline_seconds": 21.633333333333333,
+        "source": "combat",
+        "source_frame": 229,
+        "kind": "impact",
+        "file": "assets/audio/revision_v8/sfx/impact_medium_1.wav",
+        "sha256": "60f5ae39e96a327e16c2e10173004a6e3ea65e9bc005fa13380c61940a1422c1",
+        "peak_gain_target_dbfs": -21.4
+      }
+    ]
+  },
   "music": {
     "file": "assets/audio/music/battle_city.wav",
     "track_id": "battle_city",
     "license": "CC0-1.0",
-    "origin": "project-authored mathematical synthesis; no external samples",
-    "generator": "tools/generate_demo_music.py",
+    "origin": "project-authored mathematical synthesis",
     "manifest": "assets/audio/music/manifest.json",
     "sha256": "20c247db2a3be0e7af7d1afd5560e54e936fe3c992f154884204180b3a1d15a1"
   },
-  "assets_notice": "assets/LICENSE.md and docs/demo_credits.md govern underlying game assets. This media does not relicense third-party assets.",
+  "assets_notice": "assets/LICENSE.md and docs/demo_credits.md govern underlying game assets.",
   "files": {
     "gameplay-battlefield.jpg": {
-      "bytes": 778821,
-      "sha256": "f5de2437662aec80f81bb4b8eef3102611230a907ffbfb315f4641137e25f22f"
+      "bytes": 734652,
+      "sha256": "ee1691a9e094930dfd04bd128bf5e0ff13187d537ecb3446441d68bf7259153e"
     },
-    "gameplay-factions.jpg": {
-      "bytes": 319508,
-      "sha256": "fc2c8cc7ed64c60ad7d84bf1e13f2d9aa5dfb3679daeb2078415f8399fdae724"
+    "gameplay-combat.jpg": {
+      "bytes": 239643,
+      "sha256": "de648d40d434235f1ffb4648178d05dcefd090dc107222f2d98d987db7ec3c22"
     },
-    "gameplay-fleet.jpg": {
-      "bytes": 178226,
-      "sha256": "8445455cbe2abf1fa0af50bfe8f70835d13db99f0dc607b6818e06f0f8bab21f"
+    "gameplay-construction.jpg": {
+      "bytes": 251319,
+      "sha256": "720d83e2820350a46b2d92a8f050a4a01b7b8ad19c6a82920ba4c019a1faebab"
+    },
+    "gameplay-interface.jpg": {
+      "bytes": 598828,
+      "sha256": "25106083b64f6fb58889ae75e967528346e9aafea581f8cbb0c4ba2fc8cae929"
     },
     "paper-front-trailer.mp4": {
-      "bytes": 5013281,
-      "sha256": "79958e2a8985ad4f4354e2fe435a0884a28fd5aa268491d6d05a64700a3fd604"
+      "bytes": 3060821,
+      "sha256": "97ee113075ebb1f8794f623cc9c790d09d16d14ccaf03d4dfb7d7db3dfea396b"
     },
     "poster.jpg": {
-      "bytes": 529202,
-      "sha256": "ac7c92f79d838fe0231493e1c9dc10f3be3adb733d6151b39a4239a5eb5a661c"
+      "bytes": 222265,
+      "sha256": "10f9a6ff1a99fc61ac484723c0e00a79e3deef075bccc2445d8c30a0a652786e"
     }
   }
 }

@@ -1,0 +1,57 @@
+name: Update the published trailer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'media/paper-front-trailer.mp4'
+      - 'media/provenance.json'
+      - 'media/poster.jpg'
+      - '.github/workflows/update-trailer.yml'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release to update
+        required: true
+        default: v0.8.0
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trailer-${{ inputs.release_tag || 'v0.8.0' }}
+  cancel-in-progress: false
+
+jobs:
+  trailer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PAPER_FRONT_RELEASE_TAG: ${{ inputs.release_tag || 'v0.8.0' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install media inspection tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Inspect the existing release and the new trailer
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/trailer-publication
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$PAPER_FRONT_RELEASE_TAG" > artifacts/trailer-publication/original-release.json
+          gh release download "$PAPER_FRONT_RELEASE_TAG" --pattern SHA256SUMS --dir artifacts/trailer-publication
+          ffprobe -v error -show_streams -show_format -of json media/paper-front-trailer.mp4 > artifacts/trailer-publication/ffprobe.json
+          python3 tools/prepare_trailer_publication.py
+      - name: Update promotional assets and checksums
+        run: |
+          gh release upload "$PAPER_FRONT_RELEASE_TAG" media/paper-front-trailer.mp4 media/poster.jpg artifacts/trailer-publication/trailer-provenance.json artifacts/trailer-publication/SHA256SUMS --clobber
+      - name: Verify the uploaded files and unchanged player packages
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$PAPER_FRONT_RELEASE_TAG" > artifacts/trailer-publication/published-release.json
+          python3 tools/prepare_trailer_publication.py --verify-upload

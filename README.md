@@ -52,8 +52,6 @@ If rendering is slow, lower quality or 3D render scale in Settings. UI resolutio
 
 Exact costs, prerequisites and abilities are shown in production cards and the Wiki. See the generated [faction reference](docs/faction_catalog.md) for the current rule data.
 
-![The four armies — in-engine model showcase](media/gameplay-factions.jpg)
-
 ## Your first match
 
 1. Start with the **tutorial**, or choose **Skirmish**, a faction, a battlefield and AI opponents. The symmetric map is a clear place to learn a two-army land battle.
@@ -64,6 +62,8 @@ Exact costs, prerequisites and abilities are shown in production cards and the W
 6. Destroy all enemy buildings that count toward survival. Walls, barricades and railway infrastructure do not keep an otherwise defeated army alive.
 
 Most combat infantry are recruited as squads of 2–6 soldiers; engineers remain individuals. Each soldier has separate health, experience and a transport seat. Orders select and control the squad together. Production prices and times represent the whole squad, and casualties do not replenish for free.
+
+![Base construction with the actual English interface](media/gameplay-construction.jpg)
 
 ## Controls
 

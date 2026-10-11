@@ -82,6 +82,12 @@ def main():
             environment["DISPLAY"] = ":" + number
             environment.pop("WAYLAND_DISPLAY", None)
             environment.pop("XAUTHORITY", None)
+            # Unsetting WAYLAND_DISPLAY alone still allows Godot to connect to
+            # the host's default wayland-0 socket after an X11/Vulkan failure.
+            # An empty private runtime directory makes that fallback impossible.
+            private_runtime = Path(temporary) / "runtime"
+            private_runtime.mkdir(mode=0o700)
+            environment["XDG_RUNTIME_DIR"] = str(private_runtime)
             environment["PAPER_FRONT_CAPTURE_OFFSCREEN"] = "1"
             driver = "opengl3" if args.method == "gl_compatibility" else "vulkan"
             script = args.script if args.script.startswith("res://") else "res://"+args.script

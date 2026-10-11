@@ -1,0 +1,197 @@
+{
+  "version": 2,
+  "sources": {
+    "river_structure": {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/river_structure/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "map",
+      "shot_id": "river_structure",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          955,
+          353,
+          100,
+          20
+        ],
+        [
+          1190,
+          300,
+          80,
+          100
+        ],
+        [
+          1030,
+          120,
+          120,
+          30
+        ]
+      ]
+    },
+    "ridge_structure": {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/ridge_structure/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "map",
+      "shot_id": "ridge_structure",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          880,
+          360,
+          130,
+          70
+        ],
+        [
+          740,
+          440,
+          60,
+          50
+        ],
+        [
+          290,
+          445,
+          90,
+          100
+        ]
+      ]
+    },
+    "interface": {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/map_ui/interface/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "interface",
+      "shot_id": "interface",
+      "evidence_path": "artifacts/trailer_revision_20261011/map_ui/capture_manifest.json",
+      "static_regions": [
+        [
+          640,
+          340,
+          130,
+          70
+        ],
+        [
+          170,
+          400,
+          140,
+          100
+        ],
+        [
+          1030,
+          360,
+          150,
+          100
+        ]
+      ]
+    },
+    "construction": {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/action/construction/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "construction",
+      "evidence_path": "artifacts/trailer_revision_20261011/action/construction_manifest.json",
+      "static_regions": [
+        [
+          520,
+          220,
+          115,
+          75
+        ],
+        [
+          329,
+          372,
+          40,
+          45
+        ],
+        [
+          425,
+          435,
+          90,
+          50
+        ]
+      ]
+    },
+    "combat": {
+      "kind": "sequence",
+      "path": "artifacts/trailer_revision_20261011/action/combat/%04d.png",
+      "fps": 30,
+      "start_number": 0,
+      "role": "combat",
+      "evidence_path": "artifacts/trailer_revision_20261011/action/combat_manifest.json",
+      "static_regions": [
+        [
+          170,
+          203,
+          42,
+          38
+        ],
+        [
+          270,
+          355,
+          70,
+          55
+        ],
+        [
+          855,
+          435,
+          90,
+          50
+        ]
+      ]
+    }
+  },
+  "segments": [
+    {
+      "source": "river_structure",
+      "duration": 2.5,
+      "caption": "Read rivers, bridges and shorelines"
+    },
+    {
+      "source": "ridge_structure",
+      "duration": 2.5,
+      "caption": "Find routes through the ridges"
+    },
+    {
+      "source": "construction",
+      "duration": 7.0,
+      "caption": "Build your base - 3x speed"
+    },
+    {
+      "source": "combat",
+      "duration": 8.0,
+      "caption": "Command the battle"
+    },
+    {
+      "source": "interface",
+      "duration": 3.0,
+      "caption": "Select. Build. Produce. Command."
+    }
+  ],
+  "screenshots": {
+    "gameplay-battlefield.jpg": {
+      "source": "river_structure",
+      "time": 1.25
+    },
+    "gameplay-construction.jpg": {
+      "source": "construction",
+      "time": 2.6666666666666665
+    },
+    "gameplay-combat.jpg": {
+      "source": "combat",
+      "time": 4.0
+    },
+    "gameplay-interface.jpg": {
+      "source": "interface",
+      "time": 2.0
+    }
+  },
+  "poster": {
+    "source": "combat",
+    "time": 4.0
+  }
+}
